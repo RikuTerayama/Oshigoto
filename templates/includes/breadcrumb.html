@@ -1,0 +1,41 @@
+{# パンくずリスト（UI + 構造化データ） #}
+{# 表示用には breadcrumb_title（短いラベル）を優先。SEO用の長い page_title は使わない（生テキスト防止） #}
+{% set breadcrumb_items = build_breadcrumb_items(request.path|default('/') if request is defined and request else '/', page_title|default(''), breadcrumb_title|default('')) %}
+
+{# パンくずリストUI（LPは非表示） #}
+{% if request and request.path and request.path != '/' and breadcrumb_items|length > 1 %}
+<nav aria-label="breadcrumb" class="breadcrumb-nav" style="margin-bottom: 20px; padding: 0 20px;">
+    <ol class="breadcrumb-list" style="list-style: none; padding: 0; margin: 0; display: inline-flex; gap: 8px; font-size: 0.9em; color: rgba(255, 255, 255, 0.7); flex-wrap: wrap; align-items: center;">
+        {% for item in breadcrumb_items %}
+            {% if loop.last %}
+                <li aria-current="page" style="color: #FFFFFF; font-weight: 500;">{{ item.name }}</li>
+            {% else %}
+                <li>
+                    <a href="{{ item.url }}" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; transition: color 0.2s;">{{ item.name }}</a>
+                    <span style="margin: 0 4px; color: rgba(255, 255, 255, 0.5);">›</span>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ol>
+</nav>
+{% endif %}
+
+{# BreadcrumbList JSON-LDは structured_data.html の extra_structured_data ブロックで生成 #}
+
+<style>
+    .breadcrumb-nav {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .breadcrumb-list a:hover {
+        color: #4A9EFF;
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .breadcrumb-list {
+            font-size: 0.85em;
+        }
+    }
+</style>

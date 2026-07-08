@@ -1,0 +1,27 @@
+{# ツールページの共通レイアウトシェル #}
+{# 使用例: {% include 'includes/tool_shell.html' %} #}
+{# 説明エリア、入力エリア、出力エリアの枠を提供 #}
+<div class="tool-shell" style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+    {# 説明エリア #}
+    <div class="tool-description" style="background: rgba(30, 30, 30, 0.5); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.1);">
+        {% block tool_description %}
+            <p style="color: rgba(255, 255, 255, 0.9); line-height: 1.8; margin: 0;">ツールの説明をここに記載します。</p>
+        {% endblock %}
+    </div>
+    
+    {# 入力エリア #}
+    <div class="tool-input" style="background: rgba(30, 30, 30, 0.5); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.1);">
+        <h3 style="color: #4A9EFF; font-size: 1.3em; margin: 0 0 20px 0;">入力</h3>
+        {% block tool_input %}
+            <p style="color: rgba(255, 255, 255, 0.7);">入力エリア（次工程で実装）</p>
+        {% endblock %}
+    </div>
+    
+    {# 出力エリア #}
+    <div class="tool-output" style="background: rgba(30, 30, 30, 0.5); border-radius: 12px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.1);">
+        <h3 style="color: #4A9EFF; font-size: 1.3em; margin: 0 0 20px 0;">出力</h3>
+        {% block tool_output %}
+            <p style="color: rgba(255, 255, 255, 0.7);">出力エリア（次工程で実装）</p>
+        {% endblock %}
+    </div>
+</div>

@@ -1,0 +1,4 @@
+﻿{% set affiliate_disclosure_text = disclosure_text|default('当サイトではアフィリエイト広告を利用しています。') %}
+<p class="affiliate-disclosure{% if disclosure_compact %} affiliate-disclosure--compact{% endif %}">{{ affiliate_disclosure_text }}</p>
+
+

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    {% set page_title = 'サイトマップ | Jobcan AutoFill' %}
+    {% set page_description = 'Jobcan AutoFillの全ページ一覧。検索エンジンとユーザーがサイト内のコンテンツを効率的に発見できます。' %}
+    {% include 'includes/head_meta.html' %}
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #FFFFFF;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            color: #4A9EFF;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h2 {
+            color: #4A9EFF;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(74, 158, 255, 0.3);
+            padding-bottom: 10px;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 12px 24px;
+            background: rgba(74, 158, 255, 0.2);
+            border: 1px solid rgba(74, 158, 255, 0.5);
+            border-radius: 8px;
+            color: #4A9EFF;
+            text-decoration: none;
+        }
+        .nav-link:hover {
+            background: rgba(74, 158, 255, 0.3);
+        }
+        .sitemap-section {
+            margin-bottom: 30px;
+        }
+        .sitemap-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sitemap-section li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+        }
+        .sitemap-section a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .sitemap-section a:hover {
+            color: #4A9EFF;
+        }
+        .breadcrumb {
+            margin-bottom: 30px;
+        }
+        .breadcrumb ol {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .breadcrumb li {
+            display: inline;
+        }
+        .breadcrumb li:not(:last-child)::after {
+            content: ' › ';
+            color: rgba(255, 255, 255, 0.5);
+            margin-left: 10px;
+        }
+        .breadcrumb a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #4A9EFF;
+        }
+        .breadcrumb li[aria-current="page"] {
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <nav class="breadcrumb" aria-label="breadcrumb">
+                <ol>
+                    <li><a href="/">ホーム</a></li>
+                    <li aria-current="page">サイトマップ</li>
+                </ol>
+            </nav>
+            
+            <h1>サイトマップ</h1>
+            <p>Jobcan AutoFillの全ページ一覧です。お探しのページが見つかります。</p>
+            <p style="color: rgba(255, 255, 255, 0.85); margin-bottom: 8px;">ツールの使い方・ガイド・導入事例・ブログ・法的情報まで、サイト全体の構成をカテゴリ別にまとめています。</p>
+            <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 20px; font-size: 0.95em;">
+                📄 検索エンジン向けのXMLサイトマップ: <a href="/sitemap.xml" style="color: #4A9EFF;">/sitemap.xml</a>
+            </p>
+            {% with slot_id='public_top_inline', slot_render_fallback=true, slot_extra_class='affiliate-slot--primary-inline' %}
+                {% include 'includes/affiliate_slot.html' %}
+            {% endwith %}
+            
+            <div style="background: rgba(74, 158, 255, 0.1); border-left: 4px solid #4A9EFF; padding: 25px; margin: 30px 0; border-radius: 8px;">
+                <h2 style="color: #4A9EFF; font-size: 1.5em; margin-top: 0; margin-bottom: 15px;">サイトマップの使い方</h2>
+                <p style="line-height: 1.9; margin-bottom: 15px;">
+                    このサイトマップは、Jobcan AutoFillの全ページをカテゴリ別に整理した一覧です。検索エンジンとユーザーの両方が、サイト内のコンテンツを効率的に発見できるよう設計されています。
+                </p>
+                <p style="line-height: 1.9; margin-bottom: 15px;">
+                    各カテゴリには、関連するページがグループ化されており、目的の情報に素早くアクセスできます。初めての方でも、このサイトマップを活用することで、Jobcan AutoFillの機能や使い方を体系的に理解できます。
+                </p>
+                <p style="line-height: 1.9; margin-bottom: 0;">
+                    各ページのリンクをクリックすると、詳細な情報やガイドにアクセスできます。特定の情報を探している場合は、ブラウザの検索機能（Ctrl+F または Cmd+F）を使用して、キーワードで検索することもできます。
+                </p>
+            </div>
+            
+            <div style="background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; padding: 25px; margin: 30px 0; border-radius: 8px;">
+                <h2 style="color: #4CAF50; font-size: 1.5em; margin-top: 0; margin-bottom: 15px;">カテゴリ別の説明</h2>
+                <p style="line-height: 1.9; margin-bottom: 15px;">
+                    <strong>トップページ</strong>では、Jobcan AutoFillの基本的な機能と使い方を紹介しています。初めての方は、まずこちらから始めることをおすすめします。
+                </p>
+                <p style="line-height: 1.9; margin-bottom: 15px;">
+                    <strong>ガイドページ</strong>には、はじめての使い方、Excelファイルの作成方法、トラブルシューティングなど、実践的な情報がまとめられています。操作で困ったときは、これらのガイドを参照してください。
+                </p>
+                <p style="line-height: 1.9; margin-bottom: 15px;">
+                    <strong>リソース</strong>セクションには、よくある質問（FAQ）、用語集、ベストプラクティス、導入事例、ブログ記事など、より深い情報が含まれています。効率的な使用方法や、社内展開のヒントを得たい方は、こちらをご覧ください。
+                </p>
+                <p style="line-height: 1.9; margin-bottom: 0;">
+                    <strong>法的情報</strong>セクションには、プライバシーポリシー、利用規約、お問い合わせページが含まれています。サービスの利用条件や、個人情報の取り扱いについて確認したい場合は、こちらを参照してください。
+                </p>
+            </div>
+            
+            <section class="sitemap-section">
+                <h2>トップページ</h2>
+                <ul>
+                    <li><a href="/">ホーム</a> - Jobcan勤怠データ自動入力ツール</li>
+                </ul>
+            </section>
+            
+            <section class="sitemap-section">
+                <h2>ガイドページ</h2>
+                <ul>
+                    <li><a href="/guide">ガイド一覧</a> - 全ガイドへの入口</li>
+                    <li><a href="/guide/autofill">Jobcan AutoFill ガイド</a> - 使い方・制約・FAQの統合ガイド</li>
+                    <li><a href="/guide/getting-started">はじめての使い方</a> - 初めての方向けの詳細ガイド</li>
+                    <li><a href="/guide/excel-format">Excelファイルの作成方法</a> - ファイル形式の詳細説明</li>
+                    <li><a href="/guide/troubleshooting">トラブルシューティング</a> - よくあるエラーと解決方法</li>
+                    <li><a href="/guide/complete">完全ガイド</a> - Jobcan AutoFill 完全ガイド</li>
+                    <li><a href="/guide/comprehensive-guide">総合ガイド（勤怠管理の効率化）</a> - 勤怠管理の効率化</li>
+                    <li><a href="/guide/image-batch">画像一括変換ガイド</a> - 画像一括変換ツールの使い方</li>
+                    <li><a href="/guide/pdf">PDFユーティリティガイド</a> - PDFツールの使い方</li>
+                    <li><a href="/guide/image-cleanup">画像ユーティリティガイド</a> - 画像ユーティリティの使い方</li>
+                    <li><a href="/guide/csv">CSV/Excelユーティリティガイド</a> - CSV/Excelツールの使い方</li>
+                    <li><a href="/guide/seo">Web/SEOガイド</a> - Web/SEOツールの使い方</li>
+                </ul>
+            </section>
+            
+            <section class="sitemap-section">
+                <h2>リソース</h2>
+                <ul>
+                    <li><a href="/faq">よくある質問（FAQ）</a> - 34件のQ&A</li>
+                    <li><a href="/glossary">用語集</a> - 勤怠管理用語の解説</li>
+                    <li><a href="/best-practices">ベストプラクティス</a> - 効果的な使用方法のガイド</li>
+                    <li><a href="/case-study/contact-center">導入事例：コンタクトセンター</a> - 勤怠照合を自動化した詳細ケース</li>
+                    <li><a href="/case-study/consulting-firm">導入事例：コンサルティングファーム</a> - 月次締めの残業30時間から脱却した成功事例</li>
+                    <li><a href="/case-study/remote-startup">導入事例：小規模スタートアップ</a> - フルリモート環境での勤怠入力をシンプルに</li>
+                    <li><a href="/blog">ブログ</a> - 自動化・DXの最新ナレッジ</li>
+                    <li><a href="/blog/month-end-closing-hell-and-automation">ブログ：月末締めが地獄になる理由と自動化</a> - 実体験を交えた実務ノウハウ</li>
+                    <li><a href="/blog/excel-format-mistakes-and-design">ブログ：Excelフォーマットのミス10選</a> - 開発者視点の技術解説</li>
+                    <li><a href="/blog/convince-it-and-hr-for-automation">ブログ：情シス・人事を説得する5ステップ</a> - 導入プロセスの実践ガイド</li>
+                    <li><a href="/blog/playwright-jobcan-challenges-and-solutions">ブログ：Playwrightでハマったポイント</a> - エンジニア向け技術解説</li>
+                    <li><a href="/blog/playwright-security">ブログ：Playwrightのセキュリティ</a> - 企業の安全性を守る技術解説</li>
+                    <li><a href="/blog/workstyle-reform-automation">ブログ：働き方改革と自動化</a> - DXを加速させる本質的な価値</li>
+                    <li><a href="/blog/excel-attendance-limits">ブログ：Excel管理の限界</a> - API・自動化ツールを併用すべき理由</li>
+                    <li><a href="/blog/implementation-checklist">ブログ：導入チェックリスト</a> - 稟議に役立つ10項目</li>
+                    <li><a href="/blog/automation-roadmap">ブログ記事：90日ロードマップ</a> - 社内展開の具体的手順</li>
+                    <li><a href="/about">サイトについて</a> - ツールの概要とコンセプト</li>
+                </ul>
+            </section>
+            
+            <section class="sitemap-section">
+                <h2>法的情報</h2>
+                <ul>
+                    <li><a href="/privacy">プライバシーポリシー</a> - 個人情報の取り扱い方針</li>
+                    <li><a href="/terms">利用規約</a> - サービスの利用条件</li>
+                    <li><a href="/contact">お問い合わせ</a> - ご質問・お問い合わせ</li>
+                </ul>
+            </section>
+            
+            <a href="/" class="nav-link">← ホームに戻る</a>
+        </div>
+    </main>
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "ホーム",
+                "item": "https://jobcan-automation.onrender.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "サイトマップ",
+                "item": "https://jobcan-automation.onrender.com/sitemap.html"
+            }
+        ]
+    }
+    </script>
+    
+    {# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/footer.html' %}
+</body>
+</html>
+

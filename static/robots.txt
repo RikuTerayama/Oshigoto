@@ -1,0 +1,29 @@
+User-agent: *
+Allow: /
+Disallow: /status/
+Disallow: /api/
+Disallow: /sessions
+Disallow: /download-template
+Disallow: /download-previous-template
+Disallow: /cleanup-sessions
+
+User-agent: Googlebot
+Allow: /
+Disallow: /status/
+Disallow: /api/
+Disallow: /sessions
+Disallow: /download-template
+Disallow: /download-previous-template
+Disallow: /cleanup-sessions
+
+User-agent: AdsBot-Google
+Allow: /
+Disallow: /status/
+Disallow: /api/
+Disallow: /sessions
+Disallow: /download-template
+Disallow: /download-previous-template
+Disallow: /cleanup-sessions
+
+Sitemap: https://jobcan-automation.onrender.com/sitemap.xml
+

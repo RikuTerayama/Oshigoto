@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    {% set page_title = 'Jobcan勤怠管理を効率化する総合ガイド | Jobcan AutoFill' %}
+    {% set page_description = 'Jobcan AutoFillの総合ガイド。他ツールとの違い、Before/Afterの具体例、利用フロー、つまずきポイント、セキュリティと社内規定への向き合い方を詳しく解説。' %}
+    {% include 'includes/head_meta.html' %}
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            color: #FFFFFF;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #FFFFFF;
+            text-align: center;
+            letter-spacing: 0.05em;
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        h3 {
+            font-size: 1.4em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        p, li {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+        ul, ol {
+            padding-left: 30px;
+        }
+        a {
+            color: #4A9EFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .breadcrumb {
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+        }
+        .breadcrumb a {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .breadcrumb a:hover {
+            color: #4A9EFF;
+        }
+        article {
+            margin-bottom: 30px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <div class="container">
+        <div style="margin-bottom: 24px; padding: 16px; background: rgba(74, 158, 255, 0.1); border-left: 4px solid #4A9EFF; border-radius: 8px;">
+            <strong>📌 統合ガイド</strong> Jobcan AutoFill の使い方・制約・FAQを1ページでまとめた<a href="/guide/autofill">統合ガイド</a>もあります。
+        </div>
+        <nav class="breadcrumb">
+            <a href="/">製品一覧</a> &gt; <a href="/autofill">Jobcan AutoFill</a> &gt; <a href="/guide/comprehensive-guide">総合ガイド</a>
+        </nav>
+        
+        <h1>Jobcan勤怠管理を効率化する総合ガイド</h1>
+        
+        <article style="background: rgba(44, 44, 44, 0.6); border-radius: 16px; padding: 35px; margin-bottom: 30px;">
+            <h3 style="color: #4A9EFF; font-size: 1.4em; margin-bottom: 20px; border-bottom: 2px solid rgba(74, 158, 255, 0.3); padding-bottom: 10px;">Jobcan AutoFill とは？他ツールとの違いと設計思想</h3>
+            <p style="line-height: 1.9; margin-bottom: 18px; color: #FFFFFF; font-size: 1.05em;">
+                Jobcan AutoFillは、Jobcan（株式会社ジョブカン）の勤怠管理システムへのデータ入力を自動化する、個人向けの効率化ツールです。一般的なRPAツールやマクロとは異なり、<strong>Excelファイルを起点としたシンプルなワークフロー</strong>を採用しています。
+            </p>
+            <p style="line-height: 1.9; margin-bottom: 18px; color: #FFFFFF; font-size: 1.05em;">
+                他の自動化ツールとの主な違いは、<strong>「既存の勤怠管理プロセスを壊さない」</strong>という設計思想にあります。多くの企業では、既にExcelで勤怠データを集計・管理しているため、新しいツールを覚える必要がありません。テンプレートをダウンロードして、いつものようにExcelに入力するだけです。
+            </p>
+            <p style="line-height: 1.9; margin-bottom: 18px; color: #FFFFFF; font-size: 1.05em;">
+                技術的には、Playwrightという最新のブラウザ自動化ライブラリを使用し、<strong>人間の操作パターンを再現</strong>します。単純なAPI呼び出しではなく、実際にブラウザを操作するため、Jobcan側のセキュリティ機能（CAPTCHAやセッション管理）にも対応しやすくなっています。
+            </p>
+            <p style="line-height: 1.9; color: #FFFFFF; font-size: 1.05em;">
+                また、<strong>処理中のログイン情報やファイルはメモリ上でのみ保持</strong>され、処理完了後は自動的に削除されます。サーバーに永続保存されることはないため、セキュリティリスクを最小限に抑えています。
+            </p>
+        </article>
+        
+        <article style="background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; border-radius: 12px; padding: 30px; margin-bottom: 30px;">
+            <h3 style="color: #4CAF50; font-size: 1.4em; margin-bottom: 20px; border-bottom: 2px solid rgba(76, 175, 80, 0.3); padding-bottom: 10px;">どんな人のどんな業務をどれくらい短縮できるか：Before/Afterの具体例</h3>
+            <p style="line-height: 1.9; margin-bottom: 20px; color: #FFFFFF; font-size: 1.05em;">
+                実際の利用シーンと効果を、具体的な数値で示します。
+            </p>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                <h4 style="color: #4CAF50; font-size: 1.2em; margin-bottom: 15px;">ケース1：月次締め作業（営業職・20営業日分）</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+                    <div>
+                        <p style="color: #E57373; font-weight: 600; margin-bottom: 10px;">Before（手作業）</p>
+                        <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                            <li>1日あたりの入力時間：約1分30秒</li>
+                            <li>20日分の合計：約30分</li>
+                            <li>入力ミスによる差し戻し：月1〜2回</li>
+                            <li>差し戻し対応時間：1回あたり約10分</li>
+                            <li><strong>月間総時間：約40〜50分</strong></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p style="color: #4CAF50; font-weight: 600; margin-bottom: 10px;">After（AutoFill使用）</p>
+                        <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                            <li>Excelファイル準備：約5分</li>
+                            <li>自動入力処理：約2〜3分</li>
+                            <li>確認作業：約2分</li>
+                            <li>入力ミス：ほぼゼロ</li>
+                            <li><strong>月間総時間：約9〜10分</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                <p style="background: rgba(76, 175, 80, 0.2); padding: 15px; border-radius: 8px; margin: 0; color: #4CAF50; font-weight: 600;">
+                    💡 削減効果：約30〜40分/月（約75〜80%の時間削減）
+                </p>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                <h4 style="color: #4CAF50; font-size: 1.2em; margin-bottom: 15px;">ケース2：過去月の修正作業（打刻漏れ・10日分）</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+                    <div>
+                        <p style="color: #E57373; font-weight: 600; margin-bottom: 10px;">Before（手作業）</p>
+                        <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                            <li>1日あたりの修正時間：約2分</li>
+                            <li>10日分の合計：約20分</li>
+                            <li>日付を間違えて再修正：月1回程度</li>
+                            <li><strong>総時間：約25〜30分</strong></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p style="color: #4CAF50; font-weight: 600; margin-bottom: 10px;">After（AutoFill使用）</p>
+                        <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                            <li>Excelファイル準備：約3分</li>
+                            <li>自動入力処理：約1〜2分</li>
+                            <li>確認作業：約1分</li>
+                            <li>日付間違い：ほぼゼロ</li>
+                            <li><strong>総時間：約5〜6分</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                <p style="background: rgba(76, 175, 80, 0.2); padding: 15px; border-radius: 8px; margin: 0; color: #4CAF50; font-weight: 600;">
+                    💡 削減効果：約20〜25分/回（約80%の時間削減）
+                </p>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px;">
+                <h4 style="color: #4CAF50; font-size: 1.2em; margin-bottom: 15px;">ケース3：チーム全体での導入（10名・月次締め）</h4>
+                <p style="line-height: 1.9; margin-bottom: 15px; color: #FFFFFF;">
+                    10名のチームで月次締め作業を行う場合、手作業では合計で約400〜500分（約6.5〜8時間）かかります。AutoFillを使用すると、約90〜100分（約1.5時間）に短縮できます。
+                </p>
+                <p style="background: rgba(76, 175, 80, 0.2); padding: 15px; border-radius: 8px; margin: 0; color: #4CAF50; font-weight: 600;">
+                    💡 チーム全体での削減効果：約300〜400分/月（約75%の時間削減）
+                </p>
+            </div>
+        </article>
+        
+        <article style="background: rgba(74, 158, 255, 0.1); border-left: 4px solid #4A9EFF; border-radius: 12px; padding: 30px; margin-bottom: 30px;">
+            <h3 style="color: #4A9EFF; font-size: 1.4em; margin-bottom: 20px; border-bottom: 2px solid rgba(74, 158, 255, 0.3); padding-bottom: 10px;">実際の利用フロー：ステップバイステップガイド</h3>
+            <p style="line-height: 1.9; margin-bottom: 20px; color: #FFFFFF; font-size: 1.05em;">
+                初めての方でも迷わないよう、実際の操作手順を詳しく解説します。
+            </p>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                <h4 style="color: #4A9EFF; font-size: 1.2em; margin-bottom: 15px;">ステップ1：テンプレートのダウンロード</h4>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    <a href="/autofill">Jobcan AutoFillページ</a>の「今月のテンプレートをダウンロード」ボタンをクリックします。Excelファイルが自動的にダウンロードされ、A列（日付）、B列（開始時刻）、C列（終了時刻）の形式になっています。
+                </p>
+                <p style="line-height: 1.8; color: rgba(255, 255, 255, 0.8); font-size: 0.95em;">
+                    💡 ヒント：先月分のデータを入力する場合は、「先月のテンプレートをダウンロード」を使用してください。
+                </p>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                <h4 style="color: #4A9EFF; font-size: 1.2em; margin-bottom: 15px;">ステップ2：Excelファイルに勤怠データを入力</h4>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    ダウンロードしたテンプレートに、実際の勤怠データを入力します。日付は「2025-11-13」または「2025/11/13」形式、時刻は「09:00」または「0900」形式で入力してください。
+                </p>
+                <p style="line-height: 1.8; color: rgba(255, 255, 255, 0.8); font-size: 0.95em;">
+                    💡 ヒント：入力前に、日付と時刻の形式が正しいか確認してください。詳しくは<a href="/guide/excel-format" style="color: #4A9EFF;">Excelファイルの作成方法ガイド</a>を参照してください。
+                </p>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                <h4 style="color: #4A9EFF; font-size: 1.2em; margin-bottom: 15px;">ステップ3：ログイン情報とファイルをアップロード</h4>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    <a href="/autofill">Jobcan AutoFillページ</a>のフォームに、Jobcanのメールアドレスとパスワードを入力します。会社IDが必要な場合は、任意フィールドに入力してください。その後、作成したExcelファイルを選択します。
+                </p>
+                <p style="line-height: 1.8; color: rgba(255, 255, 255, 0.8); font-size: 0.95em;">
+                    ⚠️ 注意：ログイン情報は処理中のみメモリに保持され、処理完了後は自動的に削除されます。
+                </p>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                <h4 style="color: #4A9EFF; font-size: 1.2em; margin-bottom: 15px;">ステップ4：自動入力処理の実行</h4>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    「勤怠データを自動入力」ボタンをクリックすると、処理が開始されます。ポップアップウィンドウに、リアルタイムで処理状況が表示されます。各データの処理状況（「データ 1/11: 2025-11-13 09:00:00-22:30:00」など）が逐次表示されます。
+                </p>
+                <p style="line-height: 1.8; color: rgba(255, 255, 255, 0.8); font-size: 0.95em;">
+                    💡 ヒント：処理中はブラウザを閉じないでください。通常、11件のデータで約2〜3分程度かかります。
+                </p>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px;">
+                <h4 style="color: #4A9EFF; font-size: 1.2em; margin-bottom: 15px;">ステップ5：Jobcanでの確認</h4>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    処理完了後、Jobcanの出勤簿ページにアクセスして、データが正しく登録されているか確認してください。日付、開始時刻、終了時刻がすべて正しく入力されていることを確認します。
+                </p>
+                <p style="line-height: 1.8; color: rgba(255, 255, 255, 0.8); font-size: 0.95em;">
+                    ⚠️ 重要：自動入力後は必ず確認作業を行ってください。万が一、誤りがあった場合は、Jobcan側で手動修正してください。
+                </p>
+            </div>
+        </article>
+        
+        <article style="background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; border-radius: 12px; padding: 30px; margin-bottom: 30px;">
+            <h3 style="color: #FF9800; font-size: 1.4em; margin-bottom: 20px; border-bottom: 2px solid rgba(255, 152, 0, 0.3); padding-bottom: 10px;">典型的なつまずきポイントと回避策</h3>
+            <p style="line-height: 1.9; margin-bottom: 20px; color: #FFFFFF; font-size: 1.05em;">
+                実際の利用でよく発生する問題と、その解決方法をまとめました。
+            </p>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                <h4 style="color: #FF9800; font-size: 1.2em; margin-bottom: 15px;">❌ よくあるエラー1：Excelファイルの形式が正しくない</h4>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    <strong>症状：</strong>「Excelファイル読み込みエラー」が表示される、またはデータが正しく認識されない。
+                </p>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    <strong>原因：</strong>日付や時刻の形式が正しくない、列の順序が異なる、空白行が含まれている。
+                </p>
+                <p style="line-height: 1.8; color: #FFFFFF;">
+                    <strong>解決方法：</strong>
+                </p>
+                <ul style="line-height: 1.8; padding-left: 25px; margin-top: 10px;">
+                    <li>必ずテンプレートファイルを使用してください（既存のExcelファイルを流用しない）</li>
+                    <li>日付は「2025-11-13」または「2025/11/13」形式で統一してください</li>
+                    <li>時刻は「09:00」または「0900」形式で統一してください</li>
+                    <li>1行目はヘッダー行として残し、2行目以降にデータを入力してください</li>
+                    <li>空白行は自動的にスキップされますが、データ行の間に大きな空白がある場合は削除してください</li>
+                </ul>
+                <p style="background: rgba(255, 152, 0, 0.2); padding: 12px; border-radius: 8px; margin-top: 15px; color: #FF9800; font-size: 0.95em;">
+                    💡 詳しくは<a href="/guide/excel-format" style="color: #FF9800; text-decoration: underline;">Excelファイルの作成方法ガイド</a>を参照してください。
+                </p>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                <h4 style="color: #FF9800; font-size: 1.2em; margin-bottom: 15px;">❌ よくあるエラー2：ログインに失敗する</h4>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    <strong>症状：</strong>「ログインに失敗しました」というメッセージが表示される。
+                </p>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    <strong>原因：</strong>メールアドレスやパスワードが間違っている、会社IDが必要なのに未入力、Jobcan側でセキュリティチェックが発動している。
+                </p>
+                <p style="line-height: 1.8; color: #FFFFFF;">
+                    <strong>解決方法：</strong>
+                </p>
+                <ul style="line-height: 1.8; padding-left: 25px; margin-top: 10px;">
+                    <li>メールアドレスとパスワードが正しいか確認してください（コピー&ペースト時の余分なスペースに注意）</li>
+                    <li>会社IDが必要な場合は、必ず入力してください</li>
+                    <li>JobcanのWebサイトで直接ログインできるか確認してください</li>
+                    <li>CAPTCHAが表示された場合は、手動でログインしてから再度試してください</li>
+                    <li>しばらく待ってから再試行してください（短時間に複数回ログインを試みると、セキュリティチェックが発動する場合があります）</li>
+                </ul>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                <h4 style="color: #FF9800; font-size: 1.2em; margin-bottom: 15px;">❌ よくあるエラー3：処理が途中で止まる</h4>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    <strong>症状：</strong>処理が開始されたが、途中で停止してしまう。ログに「データ X/11」までしか表示されない。
+                </p>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    <strong>原因：</strong>ネットワーク接続が不安定、Jobcan側のサーバーが応答しない、ブラウザのタイムアウト。
+                </p>
+                <p style="line-height: 1.8; color: #FFFFFF;">
+                    <strong>解決方法：</strong>
+                </p>
+                <ul style="line-height: 1.8; padding-left: 25px; margin-top: 10px;">
+                    <li>ネットワーク接続が安定している環境で使用してください</li>
+                    <li>処理中はブラウザを閉じないでください</li>
+                    <li>一度に処理するデータ数を減らしてください（例：11件を5件と6件に分ける）</li>
+                    <li>しばらく待ってから再試行してください</li>
+                    <li>ログを確認して、どのデータで止まったかを特定し、そのデータ以降のみを再処理してください</li>
+                </ul>
+                <p style="background: rgba(255, 152, 0, 0.2); padding: 12px; border-radius: 8px; margin-top: 15px; color: #FF9800; font-size: 0.95em;">
+                    💡 詳しくは<a href="/guide/troubleshooting" style="color: #FF9800; text-decoration: underline;">トラブルシューティングガイド</a>を参照してください。
+                </p>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px;">
+                <h4 style="color: #FF9800; font-size: 1.2em; margin-bottom: 15px;">❌ よくあるエラー4：Jobcan側の設定が原因で入力できない</h4>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    <strong>症状：</strong>ログインは成功するが、打刻修正ページで時刻が入力できない、または打刻ボタンがクリックできない。
+                </p>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    <strong>原因：</strong>Jobcan側で打刻修正機能が無効になっている、管理者権限が必要、特定の日付が編集不可に設定されている。
+                </p>
+                <p style="line-height: 1.8; color: #FFFFFF;">
+                    <strong>解決方法：</strong>
+                </p>
+                <ul style="line-height: 1.8; padding-left: 25px; margin-top: 10px;">
+                    <li>Jobcanの設定で、打刻修正機能が有効になっているか確認してください</li>
+                    <li>手動で打刻修正ページにアクセスして、時刻を入力できるか確認してください</li>
+                    <li>特定の日付が編集不可に設定されていないか確認してください</li>
+                    <li>管理者に確認して、打刻修正の権限があるか確認してください</li>
+                </ul>
+            </div>
+        </article>
+        
+        <article style="background: rgba(220, 53, 69, 0.1); border-left: 4px solid #DC3545; border-radius: 12px; padding: 30px; margin-bottom: 30px;">
+            <h3 style="color: #DC3545; font-size: 1.4em; margin-bottom: 20px; border-bottom: 2px solid rgba(220, 53, 69, 0.3); padding-bottom: 10px;">セキュリティと社内規定への向き合い方：就業規則を守るための注意点</h3>
+            <p style="line-height: 1.9; margin-bottom: 20px; color: #FFFFFF; font-size: 1.05em;">
+                本ツールを使用する際は、所属企業の就業規則やセキュリティポリシーを必ず遵守してください。
+            </p>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                <h4 style="color: #DC3545; font-size: 1.2em; margin-bottom: 15px;">⚠️ 就業規則との整合性確認</h4>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    多くの企業では、勤怠管理システムへの自動入力ツールの使用について、就業規則や情報セキュリティポリシーで規定されています。使用前に、以下の点を確認してください：
+                </p>
+                <ul style="line-height: 1.8; padding-left: 25px; margin-top: 10px;">
+                    <li>自動入力ツールの使用が許可されているか</li>
+                    <li>ログイン情報を外部サービスに提供することが許可されているか</li>
+                    <li>勤怠データの自動入力が、労働基準法や就業規則に準拠しているか</li>
+                    <li>情報システム部門や人事部門への事前報告が必要か</li>
+                </ul>
+                <p style="background: rgba(220, 53, 69, 0.2); padding: 12px; border-radius: 8px; margin-top: 15px; color: #DC3545; font-size: 0.95em;">
+                    ⚠️ 重要：不明な点がある場合は、必ず所属企業の情報システム部門や人事部門に確認してください。
+                </p>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                <h4 style="color: #DC3545; font-size: 1.2em; margin-bottom: 15px;">🔒 セキュリティ面での注意事項</h4>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    本ツールは、セキュリティを最優先に設計されていますが、ユーザー側でも以下の点に注意してください：
+                </p>
+                <ul style="line-height: 1.8; padding-left: 25px; margin-top: 10px;">
+                    <li><strong>ログイン情報の管理：</strong>ログイン情報は、個人のセキュアな環境でのみ使用してください。共有PCや公共のWi-Fi環境では使用を避けてください。</li>
+                    <li><strong>Excelファイルの管理：</strong>処理後のExcelファイルには、勤怠データが含まれているため、適切に管理してください。不要になったら削除してください。</li>
+                    <li><strong>処理ログの確認：</strong>処理完了後は、ログに個人情報が含まれていないか確認してください。</li>
+                    <li><strong>定期的なパスワード変更：</strong>Jobcanのパスワードは、定期的に変更してください。</li>
+                </ul>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 25px;">
+                <h4 style="color: #DC3545; font-size: 1.2em; margin-bottom: 15px;">✅ 適切な使用範囲</h4>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    本ツールは、以下の目的での使用を想定しています：
+                </p>
+                <ul style="line-height: 1.8; padding-left: 25px; margin-top: 10px; margin-bottom: 15px;">
+                    <li>テンプレートからの勤怠データ入力（月次締め作業など）</li>
+                    <li>過去の勤怠データの再入力（打刻漏れの修正など）</li>
+                    <li>定時的な勤怠データ管理作業</li>
+                </ul>
+                <p style="line-height: 1.8; margin-bottom: 12px; color: #FFFFFF;">
+                    <strong>以下の目的での使用は避けてください：</strong>
+                </p>
+                <ul style="line-height: 1.8; padding-left: 25px; margin-top: 10px;">
+                    <li>実際の勤務時間と異なるデータの入力（虚偽の打刻）</li>
+                    <li>勤怠改ざんや不正なアクセス</li>
+                    <li>会社のセキュリティポリシーに反する行為</li>
+                </ul>
+                <p style="background: rgba(220, 53, 69, 0.2); padding: 12px; border-radius: 8px; margin-top: 15px; color: #DC3545; font-size: 0.95em; font-weight: 600;">
+                    ⚠️ 重要：実際の勤務実態と異なる打刻の入力や、所属企業の就業規則・セキュリティポリシーに反する使用は、法令または社内規定に抵触する可能性があります。自動入力機能をご利用の際は、ご自身の判断と責任、そして倫理観をもって慎重にご使用ください。
+                </p>
+            </div>
+        </article>
+        
+        <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <h3 style="color: #FFFFFF; font-size: 1.5em; margin-bottom: 25px;">📚 おすすめコンテンツ</h3>
+            <p style="font-size: 1.05em; margin-bottom: 30px; color: rgba(255, 255, 255, 0.9); line-height: 1.8;">
+                より詳しい情報や使い方については、以下のガイドやリソースをご参照ください。それぞれのページでは、このツール特有のノウハウや実践的なTipsを詳しく解説しています。
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <a href="/guide/getting-started" style="display: block; padding: 25px; background: rgba(74, 158, 255, 0.1); border: 1px solid rgba(74, 158, 255, 0.3); border-radius: 12px; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='rgba(74, 158, 255, 0.2)'" onmouseout="this.style.background='rgba(74, 158, 255, 0.1)'">
+                    <h4 style="color: #4A9EFF; font-size: 1.2em; margin-bottom: 12px;">📖 はじめての使い方ガイド</h4>
+                    <p style="color: rgba(255, 255, 255, 0.9); line-height: 1.7; margin: 0; font-size: 0.95em;">初めての方でも迷わないよう、ステップバイステップで詳しく解説。テンプレートのダウンロードから確認作業まで、すべての手順を網羅しています。</p>
+                </a>
+                <a href="/guide/excel-format" style="display: block; padding: 25px; background: rgba(255, 152, 0, 0.1); border: 1px solid rgba(255, 152, 0, 0.3); border-radius: 12px; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='rgba(255, 152, 0, 0.2)'" onmouseout="this.style.background='rgba(255, 152, 0, 0.1)'">
+                    <h4 style="color: #FF9800; font-size: 1.2em; margin-bottom: 12px;">📋 Excelフォーマット徹底解説</h4>
+                    <p style="color: rgba(255, 255, 255, 0.9); line-height: 1.7; margin: 0; font-size: 0.95em;">よくあるフォーマットエラーとその修正方法を、具体例とともに詳しく解説。日付や時刻の形式、列の順序など、実践的なTipsを満載しています。</p>
+                </a>
+                <a href="/best-practices" style="display: block; padding: 25px; background: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.3); border-radius: 12px; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='rgba(76, 175, 80, 0.2)'" onmouseout="this.style.background='rgba(76, 175, 80, 0.1)'">
+                    <h4 style="color: #4CAF50; font-size: 1.2em; margin-bottom: 12px;">✨ ベストプラクティス集</h4>
+                    <p style="color: rgba(255, 255, 255, 0.9); line-height: 1.7; margin: 0; font-size: 0.95em;">効果的な使用方法や運用パターンを、チェックリスト形式でまとめています。Excelの具体的な記入例や、Jobcan側設定のコツも紹介しています。</p>
+                </a>
+                <a href="/case-study/contact-center" style="display: block; padding: 25px; background: rgba(156, 39, 176, 0.1); border: 1px solid rgba(156, 39, 176, 0.3); border-radius: 12px; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='rgba(156, 39, 176, 0.2)'" onmouseout="this.style.background='rgba(156, 39, 176, 0.1)'">
+                    <h4 style="color: #9C27B0; font-size: 1.2em; margin-bottom: 12px;">📊 導入事例：コンタクトセンター</h4>
+                    <p style="color: rgba(255, 255, 255, 0.9); line-height: 1.7; margin: 0; font-size: 0.95em;">コンタクトセンター業務での導入事例を詳しく紹介。導入前の具体的な課題から、定量的な効果まで、ストーリー形式で解説しています。</p>
+                </a>
+            </div>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+                <a href="/faq" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; color: #FFFFFF; text-decoration: none; transition: all 0.3s;">よくある質問（FAQ）</a>
+                <a href="/guide/troubleshooting" style="display: inline-block; padding: 12px 24px; background: rgba(255, 152, 0, 0.2); border: 1px solid rgba(255, 152, 0, 0.5); border-radius: 8px; color: #FF9800; text-decoration: none; transition: all 0.3s;">トラブルシューティング</a>
+                <a href="/blog" style="display: inline-block; padding: 12px 24px; background: rgba(74, 158, 255, 0.2); border: 1px solid rgba(74, 158, 255, 0.5); border-radius: 8px; color: #4A9EFF; text-decoration: none; transition: all 0.3s;">ブログ</a>
+            </div>
+        </div>
+    </div>
+    {% include 'includes/footer.html' %}
+</body>
+</html>

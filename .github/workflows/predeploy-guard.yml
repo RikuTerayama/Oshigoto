@@ -1,0 +1,43 @@
+name: Predeploy Guard
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  predeploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # git log で lastmod を計算するため
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Check sitemap lastmod manifest
+      run: |
+        python scripts/generate_sitemap_lastmod_manifest.py --check || {
+          echo "::error::data/sitemap_lastmod.json is outdated or differs."
+          echo "::error::Run: python scripts/generate_sitemap_lastmod_manifest.py --write"
+          echo "::error::Then commit the updated file."
+          exit 1
+        }
+
+    - name: Run AdSense preflight
+      run: |
+        python scripts/adsense_preflight.py || {
+          echo "::error::adsense_preflight.py failed. Fix before merging."
+          exit 1
+        }

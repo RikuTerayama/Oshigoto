@@ -1,0 +1,27 @@
+{# ダウンロードパネルコンポーネント #}
+{# 使用例: {% include 'includes/download_panel.html' with {'files': [{'name': 'file1.png', 'url': '#'}]} %} #}
+<div class="download-panel" style="background: rgba(30, 30, 30, 0.5); border-radius: 12px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.1);">
+    <h4 style="color: #4A9EFF; font-size: 1.2em; margin: 0 0 20px 0;">ダウンロード</h4>
+    {% if files and files|length > 0 %}
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+            {% for file in files %}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px;">
+                    <span style="color: rgba(255, 255, 255, 0.9); font-size: 0.95em;">{{ file.name }}</span>
+                    <a href="{{ file.url|default('#') }}" 
+                       style="padding: 8px 16px; background: rgba(74, 158, 255, 0.2); border: 1px solid rgba(74, 158, 255, 0.5); border-radius: 6px; color: #4A9EFF; text-decoration: none; font-size: 0.9em; font-weight: 500; transition: all 0.3s;"
+                       onmouseover="this.style.background='rgba(74, 158, 255, 0.3)'"
+                       onmouseout="this.style.background='rgba(74, 158, 255, 0.2)'">
+                        ダウンロード
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        {% if files|length > 1 %}
+            <button style="width: 100%; padding: 12px; background: rgba(74, 158, 255, 0.2); border: 1px solid rgba(74, 158, 255, 0.5); border-radius: 8px; color: #4A9EFF; font-size: 1em; font-weight: 500; cursor: not-allowed; opacity: 0.5;" disabled>
+                📦 すべてをZIPでダウンロード（近日公開）
+            </button>
+        {% endif %}
+    {% else %}
+        <p style="color: rgba(255, 255, 255, 0.6); text-align: center; margin: 0;">ダウンロード可能なファイルはありません</p>
+    {% endif %}
+</div>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    {% set page_title = '用語集 | Jobcan AutoFill' %}
+    {% include 'includes/head_meta.html' %}
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            color: #FFFFFF;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #FFFFFF;
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        .term-item {
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #4A9EFF;
+        }
+        .term-name {
+            font-weight: 600;
+            color: #4A9EFF;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        .term-reading {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .term-definition {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+        }
+        .term-example {
+            margin-top: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-style: italic;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: #FFFFFF;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        a {
+            color: #4A9EFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    {# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <div class="container">
+        <h1>📖 勤怠管理・Jobcan用語集</h1>
+        <p>この用語集では、勤怠管理・Jobcan AutoFill・自動化に関連する用語を一覧で解説しています。社内説明や導入検討で頻出する用語を、このページで素早く確認できます。導入検討や社内説明の際にご利用ください。</p>
+        <p>用語の前提となる操作手順は<a href="/guide/excel-format" style="color: #4A9EFF;">Excel形式ガイド</a>、運用のポイントは<a href="/best-practices" style="color: #4A9EFF;">ベストプラクティス</a>、よくある質問は<a href="/faq" style="color: #4A9EFF;">FAQ</a>でまとめています。</p>
+        <p style="font-size: 0.95em; color: rgba(255, 255, 255, 0.8);">よく参照される項目：<a href="#basic-terms" style="color: #4A9EFF;">勤怠管理の基本用語</a>｜<a href="#jobcan-terms" style="color: #4A9EFF;">Jobcan関連用語</a>｜<a href="#autofill-terms" style="color: #4A9EFF;">Jobcan AutoFill関連用語</a>｜<a href="#it-security" style="color: #4A9EFF;">IT・セキュリティ用語</a></p>
+
+        <h2 id="basic-terms">勤怠管理の基本用語</h2>
+
+        <div class="term-item">
+            <div class="term-name">勤怠管理（きんたいかんり）</div>
+            <div class="term-reading">Attendance Management</div>
+            <div class="term-definition">
+                従業員の出勤・退勤時刻、労働時間、休暇取得などを記録・管理することです。<strong>本ツールでは、Jobcanへの勤怠データ入力プロセスを自動化することで、勤怠管理の効率化を支援します。</strong>Excelファイルに記入した勤怠データを、Jobcanに自動的に入力することで、手作業の時間を大幅に削減できます。
+            </div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">打刻（だこく）</div>
+            <div class="term-reading">Time Stamping</div>
+            <div class="term-definition">
+                出勤・退勤の時刻を記録することです。<strong>本ツールでは、Jobcanの打刻修正ページにアクセスし、開始時刻と終了時刻を入力して打刻ボタンをクリックする操作を自動化します。</strong>人間の操作パターンを再現するため、各データ処理後に適切な待機時間を設けています。
+            </div>
+            <div class="term-example">例：本ツールでは、「データ 1/11: 2025-11-13 09:00:00-22:30:00」のように、日付と時刻を自動的に打刻します。</div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">開始時刻（かいしじこく）</div>
+            <div class="term-reading">Start Time</div>
+            <div class="term-definition">
+                <strong>本ツールでは、ExcelファイルのB列に入力する勤務開始時刻を指します。</strong>「09:00」または「0900」形式で入力してください。本ツールは、この時刻をJobcanの打刻修正ページに入力し、1回目の打刻ボタンをクリックします。
+            </div>
+            <div class="term-example">例：ExcelファイルのB列に「09:00」と入力すると、本ツールは「⏰ 1回目: 始業時刻を入力: 0900」というログを出力し、Jobcanに「0900」と入力します。</div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">終了時刻（しゅうりょうじこく）</div>
+            <div class="term-reading">End Time</div>
+            <div class="term-definition">
+                <strong>本ツールでは、ExcelファイルのC列に入力する勤務終了時刻を指します。</strong>「18:00」または「1800」形式で入力してください。本ツールは、この時刻をJobcanの打刻修正ページに入力し、2回目の打刻ボタンをクリックします。
+            </div>
+            <div class="term-example">例：ExcelファイルのC列に「22:30」と入力すると、本ツールは「⏰ 2回目: 終了時刻を入力: 2230」というログを出力し、Jobcanに「2230」と入力します。</div>
+        </div>
+
+        <h2 id="jobcan-terms">Jobcan関連用語</h2>
+
+        <div class="term-item">
+            <div class="term-name">Jobcan（ジョブカン）</div>
+            <div class="term-reading">Jobcan</div>
+            <div class="term-definition">
+                株式会社DONUTSが提供する勤怠管理システムです。Web上で出退勤の打刻、勤怠データの管理、シフト作成などが行えます。多くの企業で導入されています。
+            </div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">勤怠データ（きんたいデータ）</div>
+            <div class="term-reading">Attendance Data</div>
+            <div class="term-definition">
+                出勤時刻、退勤時刻、労働時間、休暇取得状況などの記録データです。給与計算や労務管理に使用されます。
+            </div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">打刻修正（だこくしゅうせい）</div>
+            <div class="term-reading">Time Stamp Correction</div>
+            <div class="term-definition">
+                間違って打刻した時刻や、打刻忘れを後から修正することです。<strong>本ツールでは、Jobcanの打刻修正ページ（https://ssl.jobcan.jp/employee/adit/modify?year=YYYY&month=MM&day=DD）にアクセスし、開始時刻と終了時刻を入力して打刻ボタンをクリックする操作を自動化します。</strong>各日付ごとに打刻修正ページに移動し、時刻を入力して打刻ボタンをクリックする処理を繰り返します。
+            </div>
+            <div class="term-example">例：本ツールは、「🔗 打刻修正ページに移動: https://ssl.jobcan.jp/employee/adit/modify?year=2025&month=11&day=13」というログを出力し、該当ページにアクセスします。</div>
+        </div>
+
+        <h2 id="autofill-terms">Jobcan AutoFill関連用語</h2>
+
+        <div class="term-item">
+            <div class="term-name">自動入力（じどうにゅうりょく）</div>
+            <div class="term-reading">Automatic Data Entry</div>
+            <div class="term-definition">
+                人間が手動で行っていた入力作業を、プログラムが自動的に実行することです。本サービスの中核機能です。
+            </div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">テンプレートファイル</div>
+            <div class="term-reading">Template File</div>
+            <div class="term-definition">
+                あらかじめ日付が入力されたExcelファイルのことです。開始時刻と終了時刻を入力するだけで使用できるため、手間を大幅に削減できます。
+            </div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">Excel形式（エクセルけいしき）</div>
+            <div class="term-reading">Excel Format</div>
+            <div class="term-definition">
+                Microsoft Excelで作成・編集できるファイル形式です。本サービスでは.xlsx または .xls形式に対応しています。
+            </div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">アップロード</div>
+            <div class="term-reading">Upload</div>
+            <div class="term-definition">
+                ローカルコンピュータのファイルをサーバーに送信することです。本サービスでは、勤怠データを記入したExcelファイルをアップロードして処理を実行します。
+            </div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">処理状況（しょりじょうきょう）</div>
+            <div class="term-reading">Processing Status</div>
+            <div class="term-definition">
+                自動入力の進行状況を示す情報です。<strong>本ツールでは、ポップアップウィンドウにリアルタイムで処理状況が表示されます。</strong>具体的には、以下のような情報が表示されます：
+                <ul>
+                    <li>「📝 データ X/11: YYYY-MM-DD HH:MM-HH:MM」：現在処理中のデータ</li>
+                    <li>「✅ データ X/11 の処理が完了しました」：各データの処理完了</li>
+                    <li>「📊 全データ処理完了: X件のデータを処理しました」：全データの処理完了</li>
+                    <li>「🎉 処理が正常に完了しました」：最終的な処理完了</li>
+                </ul>
+                エラーが発生した場合は、エラーメッセージとその詳細が表示されます。
+            </div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">ログイン認証（ログインにんしょう）</div>
+            <div class="term-reading">Login Authentication</div>
+            <div class="term-definition">
+                ユーザーの身元を確認するプロセスです。メールアドレスとパスワードを使用して、正当なユーザーであることを証明します。
+            </div>
+        </div>
+
+        <h2 id="it-security">IT・セキュリティ用語</h2>
+
+        <div class="term-item">
+            <div class="term-name">HTTPS（エイチティーティーピーエス）</div>
+            <div class="term-reading">HyperText Transfer Protocol Secure</div>
+            <div class="term-definition">
+                暗号化されたHTTP通信のことです。データの盗聴や改ざんを防ぎ、安全に情報をやり取りできます。本サービスではHTTPSを使用しています。
+            </div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">画像認証（がぞうにんしょう）</div>
+            <div class="term-reading">CAPTCHA</div>
+            <div class="term-definition">
+                自動プログラム（ボット）ではなく、人間が操作していることを確認するための仕組みです。<strong>本ツールでは、CAPTCHAが表示された場合、処理を中断します。</strong>これは、セキュリティ上の理由からです。CAPTCHAが表示された場合は、一度手動でJobcanにログインし、CAPTCHAをクリアしてから、30分〜1時間程度待ってから再度処理を試行してください。
+            </div>
+            <div class="term-example">例：短時間に複数回ログインを試みると、Jobcan側のセキュリティチェックが発動し、CAPTCHAが表示される場合があります。</div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">Cookie（クッキー）</div>
+            <div class="term-reading">Cookie</div>
+            <div class="term-definition">
+                Webサイトがブラウザに保存する小さなデータファイルです。ログイン状態の保持や、ユーザーの設定を記憶するために使用されます。
+            </div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">キャッシュ</div>
+            <div class="term-reading">Cache</div>
+            <div class="term-definition">
+                一度アクセスしたデータを一時的に保存しておく仕組みです。次回アクセス時に高速に表示できますが、古いデータが表示される場合もあります。
+            </div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">タイムアウト</div>
+            <div class="term-reading">Timeout</div>
+            <div class="term-definition">
+                処理が一定時間内に完了しなかった場合、自動的に中断されることです。ネットワーク接続が不安定な場合などに発生します。
+            </div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">Playwright（プレイライト）</div>
+            <div class="term-reading">Playwright</div>
+            <div class="term-definition">
+                <strong>本ツールで使用しているブラウザ自動化ライブラリです。</strong>Playwrightを使用することで、実際のブラウザを操作し、人間の操作パターンを再現します。具体的には、Jobcanのログインページにアクセスし、メールアドレスとパスワードを人間らしいタイピング速度で入力し、ログインボタンをクリックする操作を自動化します。
+            </div>
+            <div class="term-example">例：本ツールは、Playwrightを使用して「⌨️ 人間らしいタイピングを実行 (試行 1/3): input[name="user[email]"]」というログを出力し、人間らしい操作を再現します。</div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">処理間隔（しょりかんかく）</div>
+            <div class="term-reading">Processing Interval</div>
+            <div class="term-definition">
+                <strong>本ツールでは、各データ処理後に設けられる待機時間を指します。</strong>1〜3件目は約2秒、4件目以降は約5秒の待機時間が設けられています。この待機時間は、Jobcan側のサーバー負荷を軽減し、セキュリティチェックが発動しにくくするために設けられています。
+            </div>
+            <div class="term-example">例：4件目以降のデータ処理では、「⏳ メモリ最適化のため5秒待機中...」というログが表示され、5秒間待機します。</div>
+        </div>
+
+        <div class="term-item">
+            <div class="term-name">空白行のスキップ（くうはくぎょうのスキップ）</div>
+            <div class="term-reading">Blank Row Skipping</div>
+            <div class="term-definition">
+                <strong>本ツールでは、Excelファイル内の空白行を自動的にスキップする機能です。</strong>日付、開始時刻、終了時刻がすべて空白の行は、処理対象から除外されます。これにより、休日や欠勤の日を空白行として残しておくことができます。
+            </div>
+            <div class="term-example">例：Excelファイルに11行のデータがあり、そのうち2行が空白の場合、本ツールは「✅ Excelファイル読み込み完了: 11件のデータ」「✅ データ処理で空白行 2 行をスキップしました」「✅ Excelファイル読み込み完了: 9件の有効データ」というログを出力します。</div>
+        </div>
+
+        <h2>就業規則とコンプライアンス</h2>
+
+        <div class="term-item">
+            <div class="term-name">就業規則（しゅうぎょうきそく）</div>
+            <div class="term-reading">Work Rules / Employment Regulations</div>
+            <div class="term-definition">
+                企業が定める労働条件や職場のルールです。<strong>本ツールを使用する際は、所属企業の就業規則やセキュリティポリシーを必ず遵守してください。</strong>自動化ツールの使用が禁止されている場合は、使用を控えてください。詳細は<a href="/terms">利用規約</a>をご確認ください。
+            </div>
+        </div>
+
+        <h2>さらに詳しく知る</h2>
+        <p>その他のリソースもご活用ください：</p>
+        <ul>
+            <li><a href="/guide/getting-started">はじめての使い方</a></li>
+            <li><a href="/guide/excel-format">Excelファイルの作成方法</a></li>
+            <li><a href="/guide/troubleshooting">トラブルシューティング</a></li>
+            <li><a href="/faq">よくある質問（FAQ）</a></li>
+            <li><a href="/about">サイトについて</a></li>
+        </ul>
+
+        <a href="/" class="nav-link">← トップページに戻る</a>
+    </div>
+    
+    {# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/footer.html' %}
+</body>
+</html>
+

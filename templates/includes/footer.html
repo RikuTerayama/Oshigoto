@@ -1,0 +1,116 @@
+﻿<footer style="background: var(--color-bg-primary, #121212); padding: var(--spacing-xl, 48px) var(--spacing-md, 16px); margin-top: var(--spacing-xl, 48px); border-top: 1px solid rgba(255, 255, 255, 0.1);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        {% set can_render_affiliate = affiliate_can_render_textlinks() %}
+        {% set footer_amazon_upper_items = amazon_affiliate_upper_items|default([]) %}
+        {% set footer_amazon_mid_items = amazon_affiliate_mid_items|default([]) %}
+        {% set has_amazon_upper_items = AMAZON_AFFILIATE_ENABLED|default(false) and (footer_amazon_upper_items|length > 0) %}
+        {% set has_amazon_mid_items = AMAZON_AFFILIATE_ENABLED|default(false) and (footer_amazon_mid_items|length > 0) %}
+        {% set affiliate_disclosure_rendered = affiliate_disclosure_rendered|default(false) %}
+        {% set footer_needs_upper_amazon = can_render_affiliate and has_amazon_upper_items and not affiliate_upper_amazon_rendered|default(false) %}
+        {% set footer_needs_mid_amazon = can_render_affiliate and has_amazon_mid_items and not affiliate_mid_amazon_rendered|default(false) %}
+        {% set footer_needs_rakuten = can_render_affiliate and not affiliate_rakuten_rendered|default(false) %}
+        {% set footer_needs_a8 = can_render_affiliate and not affiliate_a8_rendered|default(false) %}
+        {% if related_content_section %}
+            {% include 'includes/related_content.html' %}
+        {% endif %}
+        {% set footer_affiliate_slot_id = affiliate_footer_slot_id %}
+        {% if (not AFFILIATE_STACK_ONLY) and footer_affiliate_slot_id and not (footer_affiliate_slot_id == 'global_footer_banner' and affiliate_top_slot_id) %}
+            {% with slot_id=footer_affiliate_slot_id, hidden_until_ready=(footer_affiliate_slot_id == 'tool_post_result'), show_disclosure=false %}
+                {% include 'includes/affiliate_slot.html' %}
+            {% endwith %}
+        {% endif %}
+        {% if footer_needs_upper_amazon %}
+            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=(not affiliate_disclosure_rendered), affiliate_section_class='affiliate-cards-section--upper affiliate-cards-section--footer-fallback', affiliate_section_tier='upper-amazon', amazon_items_override=footer_amazon_upper_items[:3], amazon_section_title='仕事道具を整える Amazon おすすめ' %}
+                {% include 'includes/affiliate_cards_section.html' %}
+            {% endwith %}
+            {% set affiliate_upper_amazon_rendered = true %}
+            {% set affiliate_disclosure_rendered = true %}
+        {% endif %}
+
+        {% if footer_needs_mid_amazon %}
+            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid affiliate-cards-section--footer-fallback', affiliate_section_tier='mid-amazon', amazon_items_override=footer_amazon_mid_items[:3], amazon_section_title='作業環境・ビジネス書の Amazon おすすめ' %}
+                {% include 'includes/affiliate_cards_section.html' %}
+            {% endwith %}
+            {% set affiliate_mid_amazon_rendered = true %}
+        {% endif %}
+
+        {% if footer_needs_rakuten %}
+            {% with affiliate_networks=['rakuten'], affiliate_section_show_disclosure=(not affiliate_disclosure_rendered), affiliate_section_class='affiliate-cards-section--mid-rakuten affiliate-cards-section--footer-fallback', affiliate_section_tier='mid-rakuten', affiliate_rakuten_variant='two-col' %}
+                {% include 'includes/affiliate_cards_section.html' %}
+            {% endwith %}
+            {% set affiliate_rakuten_rendered = true %}
+            {% set affiliate_disclosure_rendered = true %}
+        {% endif %}
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; text-align: left;">
+            {% for col in footer_columns|default([]) %}
+            <div>
+                <h4 style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px;">{{ col.title }}</h4>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    {% for link in col.links|default([]) %}
+                    <a href="{{ link.path|default('#') }}" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">{{ link.icon|default('') }}{% if link.icon %} {% endif %}{{ link.name|default('') }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <div>
+                <h4 style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px;">ツール一覧</h4>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <a href="/tools" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em; font-weight: 500;">すべてのツール</a>
+                    {% for product in products|default([]) %}
+                        {% if product.status|default('coming-soon') == 'available' %}
+                            <a href="{{ product.path|default('#') }}" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">{{ product.icon|default('') }}{% if product.icon %} {% endif %}{{ product.name|default('ツール') }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div>
+                <h4 style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px;">ガイド</h4>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <a href="/guide/complete" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">完全ガイド</a>
+                    <a href="/guide/getting-started" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">はじめての使い方</a>
+                    <a href="/guide/excel-format" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">Excelファイルの作成方法</a>
+                    <a href="/guide/troubleshooting" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">トラブルシューティング</a>
+                </div>
+            </div>
+            <div>
+                <h4 style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px;">リソース</h4>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <a href="/faq" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">よくある質問</a>
+                    <a href="/glossary" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">用語集</a>
+                    <a href="/best-practices" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">ベストプラクティス</a>
+                    <a href="/blog" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">ブログ</a>
+                    <a href="/about" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">サイトについて</a>
+                    <a href="/sitemap.html" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">サイトマップ</a>
+                </div>
+            </div>
+            <div>
+                <h4 style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px;">法務情報</h4>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <a href="/privacy" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">プライバシーポリシー</a>
+                    <a href="/terms" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">利用規約</a>
+                    <a href="/contact" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">お問い合わせ</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if footer_needs_a8 %}
+            {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--bottom-a8 affiliate-cards-section--footer-fallback', affiliate_section_tier='lower-a8' %}
+                {% include 'includes/affiliate_cards_section.html' %}
+            {% endwith %}
+            {% set affiliate_a8_rendered = true %}
+        {% endif %}
+
+        <div class="site-footer__summary">
+            <p class="site-footer__copy">
+                <strong class="site-footer__copy-title">ご利用にあたって</strong>
+                <span class="site-footer__copy-line">しごと道具箱では、PDF・CSV・画像・URL確認など、仕事でたまに必要になる軽量ツールを掲載しています。</span>
+                <span class="site-footer__copy-line">データの取り扱い方針は <a href="/privacy" class="site-footer__copy-link">プライバシーポリシー</a> をご確認ください。</span>
+            </p>
+            <p class="site-footer__meta">
+                &copy; 2025 しごと道具箱. All rights reserved.
+            </p>
+        </div>
+    </div>
+</footer>

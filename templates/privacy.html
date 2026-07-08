@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    {% set page_title = 'プライバシーポリシー | しごと道具箱' %}
+    {% set page_description = 'しごと道具箱のプライバシーポリシー。ファイル処理、Cookie、Amazon/A8広告、サーバ送信が必要な機能について説明します。' %}
+    {% include 'includes/head_meta.html' %}
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            color: #FFFFFF;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #FFFFFF;
+        }
+        .update-date {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        p, li {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+        }
+        ul {
+            padding-left: 30px;
+        }
+        a {
+            color: #4A9EFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: #FFFFFF;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    {# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <div class="container">
+        <h1>プライバシーポリシー</h1>
+        <p class="update-date">最終更新日：2025年10月10日</p>
+
+        <h2>1. はじめに</h2>
+        <p>しごと道具箱（以下「本サービス」）は、ユーザーの皆様のプライバシーを尊重し、個人情報の保護に努めます。本プライバシーポリシーは、本サービスがどのように情報を収集、使用、保護するかを説明するものです。</p>
+        <p>本サービスは機能ごとに処理方式が異なります。CSV/Excel、画像処理、PDFの多くの操作は主にブラウザ内で処理します。一方、PDFパスワード付与やSEO/URL確認の一部など、サーバーを使う機能があります。</p>
+
+        <h2>2. 収集する情報</h2>
+        <p>本サービスは以下の情報を収集します：</p>
+        <ul>
+            <li><strong>ファイル・入力内容</strong>：ツール利用時にユーザーが選択または入力したファイル、URL、テキスト。ブラウザ内処理の機能ではサーバーへ送信されません。</li>
+            <li><strong>サーバ処理に必要な情報</strong>：PDFパスワード付与やSEO/URL確認など、サーバーを使う機能で処理に必要な最小限の情報。</li>
+            <li><strong>利用状況</strong>：サービスの改善を目的としたアクセスログ（IPアドレス、ブラウザ情報、アクセス日時など）。</li>
+        </ul>
+
+        <h2>3. 情報の使用目的</h2>
+        <p>収集した情報は以下の目的でのみ使用されます：</p>
+        <ul>
+            <li>PDF、CSV/Excel、画像、SEO/URL確認ツールの提供</li>
+            <li>サービスの運用、改善</li>
+            <li>技術的な問題の診断と解決</li>
+            <li>利用規約違反の検出と防止</li>
+        </ul>
+
+        <h2>4. 情報の保管と削除</h2>
+        <p><strong>重要：本サービスは、機能に応じて処理方式が異なります。</strong></p>
+        <ul>
+            <li><strong>ブラウザ内処理のツール</strong>：CSV/Excel、画像、PDFの多くの操作はクライアント側（ブラウザ）で完結し、ファイルはサーバーに送信されません。</li>
+            <li><strong>サーバ処理を使うツール</strong>：PDFパスワード付与やSEO/URL確認の一部では、処理のためにファイルまたはURLを一時的にサーバーで扱う場合があります。処理後は継続保存しません。</li>
+            <li>機密情報・個人情報を含むファイルやURLの取り扱いには十分ご注意ください。</li>
+        </ul>
+
+        <h2>5. 第三者への情報提供</h2>
+        <p>本サービスは、以下の場合を除き、ユーザーの個人情報を第三者に提供、開示することはありません：</p>
+        <ul>
+            <li>ユーザーの同意がある場合</li>
+            <li>法令に基づく場合</li>
+            <li>人の生命、身体または財産の保護のために必要な場合</li>
+        </ul>
+
+        <h2>6. セキュリティ</h2>
+        <p>本サービスは、個人情報の保護のために以下のセキュリティ対策を実施しています：</p>
+        <ul>
+            <li>HTTPS通信による暗号化</li>
+            <li>処理完了後の即座のデータ削除</li>
+            <li>アクセスログの適切な管理</li>
+            <li>定期的なセキュリティ更新</li>
+        </ul>
+
+        <h2>7. Cookie（クッキー）の使用</h2>
+        <p>本サービスは、サービスの改善のためにCookieを使用する場合があります。Cookieの使用を希望しない場合は、ブラウザの設定で無効化することができます。ただし、Cookieを無効化すると、一部の機能が正常に動作しない場合があります。</p>
+
+        <h2>8. 第三者配信事業者による広告配信について</h2>
+        <p>本サイトでは、Amazon Associates、A8.net などのアフィリエイト広告を掲載する場合があります。広告リンクを経由して商品・サービスを購入または申し込んだ場合、当サイトが紹介料を受け取ることがあります。</p>
+        {% if ADSENSE_ENABLED %}
+        <p>本サイトでは、Google AdSense により広告を配信しています。</p>
+        <p>Google AdSenseを含む第三者配信事業者は、Cookieを使用してユーザーの興味に基づいた広告を配信する可能性があります。これらのCookieは、ユーザーが当サイトや他のサイトにアクセスした際の情報に基づいて、適切な広告を表示するために使用されます。</p>
+        <p>ユーザーは、ブラウザのCookie設定を通じて広告表示を制御することができます。Cookieを使用した広告配信を無効化する場合は、<a href="https://www.google.com/settings/ads" target="_blank">Googleの広告設定ページ</a>で設定を変更できます。また、<a href="https://optout.aboutads.info/" target="_blank">optout.aboutads.info</a> にアクセスすることで、第三者配信事業者のCookieを無効化することも可能です。</p>
+        <p>Google AdSenseに関する詳細は、<a href="https://policies.google.com/technologies/ads" target="_blank">Googleの広告ポリシー</a>をご確認ください。本サービスにおける広告配信の取り扱いについては、本プライバシーポリシーに従います。</p>
+        {% else %}
+        <p>現在は広告を配信していません（審査・準備中）。将来、Google AdSense 等を導入する場合があります。その際は本ポリシーを更新し、Cookieおよび第三者配信に関する説明を追記します。</p>
+        {% endif %}
+
+        <h2>9. プライバシーポリシーの変更</h2>
+        <p>本プライバシーポリシーは、法令の変更やサービスの改善に伴い、予告なく変更される場合があります。変更後のプライバシーポリシーは、本ページに掲載された時点で効力を生じます。</p>
+
+        <h2>10. お問い合わせ</h2>
+        <p>本プライバシーポリシーに関するご質問やご意見は、<a href="/contact">お問い合わせページ</a>よりご連絡ください。</p>
+
+        <a href="/" class="back-link">← トップページに戻る</a>
+    </div>
+    
+    {# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/footer.html' %}
+</body>
+</html>
+

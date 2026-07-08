@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    {% set page_title = 'よくある質問（FAQ） | しごと道具箱' %}
+    {% set page_description = 'しごと道具箱のFAQ。ファイル処理、ブラウザ内処理、PDFパスワード付与、SEO/URL確認、Amazon/A8広告表示について説明します。' %}
+    {% include 'includes/head_meta.html' %}
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            color: #FFFFFF;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #FFFFFF;
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        .faq-item {
+            margin-bottom: 35px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #4A9EFF;
+        }
+        .faq-question {
+            font-weight: 600;
+            color: #4A9EFF;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .faq-answer {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+        }
+        .faq-answer ul, .faq-answer ol {
+            margin-top: 10px;
+            padding-left: 25px;
+        }
+        .faq-answer li {
+            margin-bottom: 8px;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: #FFFFFF;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        a {
+            color: #4A9EFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .category {
+            color: #FFC107;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    {# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <div class="container">
+        <h1>❓ よくある質問（FAQ）</h1>
+        <p>しごと道具箱に関するよくある質問と回答をまとめました。PDF、CSV/Excel、画像、SEO/URL確認など、仕事でたまに必要になる軽量ツールを安心して使うための基本情報です。お探しの情報が見つからない場合は、<a href="/contact">お問い合わせページ</a>からご連絡ください。</p>
+
+        <div style="background: rgba(74, 158, 255, 0.15); border-left: 4px solid #4A9EFF; padding: 25px; margin: 30px 0; border-radius: 8px;">
+            <h2 style="margin-top: 0; color: #4A9EFF; font-size: 1.6em;">📚 まず使いたいツールを選ぶ</h2>
+            <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">用途に近いページからご利用ください：</p>
+            <ul style="margin: 15px 0; padding-left: 25px; line-height: 2.2;">
+                <li><a href="/tools/pdf" style="color: #4A9EFF; font-weight: 500;">PDFツール</a> - 結合・分割・抽出・圧縮・パスワード付与</li>
+                <li><a href="/tools/csv" style="color: #4A9EFF; font-weight: 500;">CSV/Excelツール</a> - 文字コード変換・CSV/XLSX変換・重複削除</li>
+                <li><a href="/tools/image-batch" style="color: #4A9EFF; font-weight: 500;">画像一括変換</a> - PNG/JPG/WebPなどのまとめ処理</li>
+                <li><a href="/tools/image-cleanup" style="color: #4A9EFF; font-weight: 500;">画像クリーンアップ</a> - 余白・背景・サイズ調整</li>
+                <li><a href="/tools/seo" style="color: #4A9EFF; font-weight: 500;">SEO/URL確認</a> - OGP、meta、sitemap、robotsの確認</li>
+            </ul>
+        </div>
+
+        <h2>しごと道具箱について</h2>
+        <div class="faq-item">
+            <div class="category">サービス概要</div>
+            <div class="faq-question">Q. しごと道具箱とは何ですか？</div>
+            <div class="faq-answer">A. PDF、CSV/Excel、画像、SEO/URL確認など、仕事でたまに必要になる小さな作業をブラウザで片づける軽量ツール集です。</div>
+        </div>
+        <div class="faq-item">
+            <div class="category">ファイル処理</div>
+            <div class="faq-question">Q. ファイルはサーバーにアップロードされますか？</div>
+            <div class="faq-answer">A. CSV/Excel、画像処理、PDFの多くの操作はブラウザ内で処理します。一方、PDFパスワード付与やSEO/URL確認の一部など、サーバーを使う機能があります。各ツールページの説明をご確認ください。</div>
+        </div>
+        <div class="faq-item">
+            <div class="category">PDF</div>
+            <div class="faq-question">Q. パスワード付きPDFはどう扱えますか？</div>
+            <div class="faq-answer">A. public版では、PDFに新しくパスワードを付ける機能を公開しています。閲覧制限を外す機能は公開していません。</div>
+        </div>
+        <div class="faq-item">
+            <div class="category">SEO/URL確認</div>
+            <div class="faq-question">Q. URL確認機能は安全ですか？</div>
+            <div class="faq-answer">A. URLクロール系の機能は、対象URL、件数、深さ、時間に制限を設けています。社内限定ページや認証が必要なURL、機密情報を含むURLの入力は避けてください。</div>
+        </div>
+        <div class="faq-item">
+            <div class="category">広告</div>
+            <div class="faq-question">Q. AmazonやA8のリンクは広告ですか？</div>
+            <div class="faq-answer">A. はい。一部ページではAmazon AssociatesやA8.netなどのアフィリエイト広告を表示することがあります。価格、在庫、ランキング、レビュー数の固定表示は行いません。</div>
+        </div>
+        <a href="/tools" class="nav-link">← 道具箱一覧へ</a>
+        <a href="/" class="nav-link">← トップページへ</a>
+    </div>
+        {% if false %}
+
+        <h2>Jobcan AutoFill</h2>
+
+        <div class="faq-item">
+            <div class="category">サービス概要</div>
+            <div class="faq-question">Q1. Jobcan AutoFillとは何ですか？</div>
+            <div class="faq-answer">
+                A. Jobcan AutoFillは、Jobcanへの勤怠データ入力を自動化するWebアプリケーションです。Excelファイルに勤怠データを記入し、アップロードするだけで、自動的にJobcanにログインし、データを入力します。毎月の勤怠入力の手間を大幅に削減できます。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">料金</div>
+            <div class="faq-question">Q2. 料金はかかりますか？</div>
+            <div class="faq-answer">
+                A. いいえ、本サービスは完全に無料でご利用いただけます。会員登録も不要です。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">対応環境</div>
+            <div class="faq-question">Q3. どのブラウザで使用できますか？</div>
+            <div class="faq-answer">
+                A. 以下のブラウザに対応しています：
+                <ul>
+                    <li>Google Chrome（推奨）</li>
+                    <li>Microsoft Edge</li>
+                    <li>Mozilla Firefox</li>
+                    <li>Safari</li>
+                </ul>
+                最新バージョンのブラウザを使用することを推奨します。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">アカウント</div>
+            <div class="faq-question">Q4. 会員登録は必要ですか？</div>
+            <div class="faq-answer">
+                A. いいえ、会員登録は不要です。ログイン情報とExcelファイルがあれば、すぐにご利用いただけます。
+            </div>
+        </div>
+
+        <h2>セキュリティについて</h2>
+
+        <div class="faq-item">
+            <div class="category">セキュリティ</div>
+            <div class="faq-question">Q5. ログイン情報は安全ですか？</div>
+            <div class="faq-answer">
+                A. はい、安全です。入力されたログイン情報は以下のように管理されます：
+                <ul>
+                    <li>処理中のみメモリ内に一時的に保持</li>
+                    <li>処理完了後は自動的に削除</li>
+                    <li>サーバーには一切保存されません</li>
+                    <li>HTTPS通信で暗号化</li>
+                </ul>
+                詳細は<a href="/privacy">プライバシーポリシー</a>をご確認ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">セキュリティ</div>
+            <div class="faq-question">Q6. アップロードしたExcelファイルはどうなりますか？</div>
+            <div class="faq-answer">
+                A. アップロードされたExcelファイルは、処理完了後に自動的に削除されます。サーバーには保存されませんので、ご安心ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">セキュリティ</div>
+            <div class="faq-question">Q7. 会社のセキュリティポリシーに違反しませんか？</div>
+            <div class="faq-answer">
+                A. 本サービスは個人の業務効率化を目的としたツールですが、所属企業の就業規則やセキュリティポリシーを必ず遵守してください。自動化ツールの使用が禁止されている場合は、使用を控えてください。詳細は<a href="/terms">利用規約</a>をご確認ください。
+            </div>
+        </div>
+
+        <h2>使い方について</h2>
+
+        <div class="faq-item">
+            <div class="category">使い方</div>
+            <div class="faq-question">Q8. はじめて使う場合、何から始めればいいですか？</div>
+            <div class="faq-answer">
+                A. <a href="/autofill">Jobcan AutoFillページ</a>からテンプレートをダウンロードし、Excelファイルに勤怠データを入力してから、ログイン情報とファイルをアップロードして「勤怠データを自動入力」をクリックします。詳しい操作手順は<a href="/guide/getting-started">はじめての使い方ガイド</a>をご覧ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">使い方</div>
+            <div class="faq-question">Q9. テンプレートファイルは必須ですか？</div>
+            <div class="faq-answer">
+                A. 必須ではありませんが、使用を強く推奨します。テンプレートファイルは日付が自動入力されているため、開始時刻と終了時刻を入力するだけで済みます。自作のExcelファイルを使用する場合は、<a href="/guide/excel-format">Excelファイルの作成方法ガイド</a>で正しい形式を確認してください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">使い方</div>
+            <div class="faq-question">Q10. 休日や欠勤はどう指定しますか？</div>
+            <div class="faq-answer">
+                A. 休日や欠勤の日は、B列（開始時刻）とC列（終了時刻）を空白にしてください。その日のデータは自動的にスキップされます。詳しい指定方法は<a href="/guide/excel-format">Excelファイルの作成方法ガイド</a>をご覧ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">使い方</div>
+            <div class="faq-question">Q11. 処理にどれくらい時間がかかりますか？</div>
+            <div class="faq-answer">
+                A. 処理時間は以下の通りです：
+                <ul>
+                    <li>ログイン：約30秒～1分</li>
+                    <li>データ入力：1日あたり約5秒</li>
+                    <li>合計：1ヶ月分（20日）で約2～3分</li>
+                </ul>
+                ネットワーク状況により、多少前後する場合があります。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">使い方</div>
+            <div class="faq-question">Q12. 処理中にブラウザを閉じてもいいですか？</div>
+            <div class="faq-answer">
+                A. いいえ、処理が完了するまでブラウザは閉じないでください。処理が中断される可能性があります。完了メッセージが表示されるまで待機してください。
+            </div>
+        </div>
+
+        <h2>エラーについて</h2>
+
+        <div class="faq-item">
+            <div class="category">トラブルシューティング</div>
+            <div class="faq-question">Q13. ログインに失敗する場合は？</div>
+            <div class="faq-answer">
+                A. メールアドレスとパスワードが正しいか、会社IDが必要な場合は正しく入力されているか、手動でJobcanにログインできるかを確認してください。アカウントがロックされていないかも確認が必要です。詳しい対処方法は<a href="/guide/troubleshooting">トラブルシューティングガイド</a>をご覧ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">トラブルシューティング</div>
+            <div class="faq-question">Q14. 画像認証（CAPTCHA）が表示される場合は？</div>
+            <div class="faq-answer">
+                A. 一度手動でJobcanにログインして画像認証をクリアし、30分～1時間程度待ってから再試行してください。異なるネットワークから試行することも有効です。短時間に複数回ログインすると、セキュリティ対策として画像認証が表示されることがあります。詳しい対処方法は<a href="/guide/troubleshooting">トラブルシューティングガイド</a>をご覧ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">トラブルシューティング</div>
+            <div class="faq-question">Q15. データが正しく入力されない場合は？</div>
+            <div class="faq-answer">
+                A. Excelファイルの形式を確認してください。A列は日付（YYYY/MM/DD形式）、B列は開始時刻（HH:MM形式）、C列は終了時刻（HH:MM形式）、1行目はヘッダー行（削除しない）である必要があります。詳しい形式の説明と修正方法は<a href="/guide/excel-format">Excelファイルの作成方法ガイド</a>をご覧ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">トラブルシューティング</div>
+            <div class="faq-question">Q16. 処理が途中で止まってしまいます</div>
+            <div class="faq-answer">
+                A. ネットワーク接続が安定しているか確認し、数分待ってから再試行してください。別のブラウザで試す、キャッシュとCookieをクリアすることも有効です。Jobcanのサーバーが混雑している場合は、時間を空けて再試行してください。詳しい対処方法は<a href="/guide/troubleshooting">トラブルシューティングガイド</a>をご覧ください。
+            </div>
+        </div>
+
+        <h2>ファイル形式について</h2>
+
+        <div class="faq-item">
+            <div class="category">ファイル</div>
+            <div class="faq-question">Q17. CSV形式のファイルは使えますか？</div>
+            <div class="faq-answer">
+                A. いいえ、CSV形式には対応していません。Excel形式（.xlsx または .xls）のファイルのみ対応しています。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">ファイル</div>
+            <div class="faq-question">Q18. Google スプレッドシートで作成したファイルは使えますか？</div>
+            <div class="faq-answer">
+                A. Google スプレッドシートで作成した場合は、Excel形式（.xlsx）でダウンロードしてからアップロードしてください。「ファイル」→「ダウンロード」→「Microsoft Excel (.xlsx)」を選択してください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">ファイル</div>
+            <div class="faq-question">Q19. ファイルサイズの制限はありますか？</div>
+            <div class="faq-answer">
+                A. はい、ファイルサイズは10MB以下にしてください。通常の勤怠データであれば、この制限を超えることはありません。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">ファイル</div>
+            <div class="faq-question">Q20. 複数月分のデータを一度に入力できますか？</div>
+            <div class="faq-answer">
+                A. はい、可能です。Excelファイルに複数月のデータを連続して記入すれば、一度の処理で入力できます。ただし、データ量が多い場合は処理時間が長くなります。
+            </div>
+        </div>
+
+        <h2>その他</h2>
+
+        <div class="faq-item">
+            <div class="category">その他</div>
+            <div class="faq-question">Q21. スマートフォンでも使えますか？</div>
+            <div class="faq-answer">
+                A. 技術的には可能ですが、Excelファイルの編集がしづらいため、パソコンでの使用を推奨します。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">その他</div>
+            <div class="faq-question">Q22. 入力したデータは上書きされますか？</div>
+            <div class="faq-answer">
+                A. Jobcan側にすでにデータが入力されている場合は、基本的に上書きされません。空欄の日付のみデータが入力されます。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">その他</div>
+            <div class="faq-question">Q23. 処理完了後、Jobcanで確認は必要ですか？</div>
+            <div class="faq-answer">
+                A. はい、処理完了後は必ずJobcanにログインして、データが正しく入力されているか確認してください。万が一、エラーがあった場合は手動で修正してください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">その他</div>
+            <div class="faq-question">Q24. 機能の追加要望はできますか？</div>
+            <div class="faq-answer">
+                A. はい、<a href="/contact">お問い合わせページ</a>からご連絡ください。すべての要望にお応えできるわけではありませんが、多くのユーザーに有益な機能は検討させていただきます。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">その他</div>
+            <div class="faq-question">Q25. サービスが使えなくなることはありますか？</div>
+            <div class="faq-answer">
+                A. サービスの提供は予告なく変更・終了される場合があります。Jobcanのシステム仕様変更により、一時的に使用できなくなる可能性もあります。詳細は<a href="/terms">利用規約</a>をご確認ください。
+            </div>
+        </div>
+
+        <h2>セキュリティとプライバシーについて</h2>
+
+        <div class="faq-item">
+            <div class="category">セキュリティ</div>
+            <div class="faq-question">Q31. SSL/TLSによる通信の暗号化は行われていますか？</div>
+            <div class="faq-answer">
+                A. はい、本サービスはHTTPS通信を使用しており、すべてのデータ通信はTLS暗号化によって保護されています。ブラウザのアドレスバーに鍵マークが表示されている場合は、安全な接続が確立されています。詳しくは<a href="/privacy">プライバシーポリシー</a>をご確認ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">セキュリティ</div>
+            <div class="faq-question">Q32. 第三者にログイン情報が漏洩するリスクはありますか？</div>
+            <div class="faq-answer">
+                A. 本サービスは一時的な処理のみを行い、ログイン情報の永続的な保存は一切行いません。また、監視ログやアクセスログにも、個人を特定できる情報は記録されません。詳細は<a href="/privacy">プライバシーポリシー</a>をご確認ください。
+            </div>
+        </div>
+
+        <h2>このツール特有の質問</h2>
+
+        <div class="faq-item">
+            <div class="category">Playwrightの挙動</div>
+            <div class="faq-question">Q26. Playwrightとは何ですか？どのように動作しますか？</div>
+            <div class="faq-answer">
+                A. Playwrightは、ブラウザを自動制御するためのライブラリです。本ツールでは、Playwrightを使用してJobcanのWebページを操作し、人間の操作パターンを再現します。実際のブラウザを操作するため、Jobcan側のセキュリティ機能（CAPTCHAやセッション管理）にも対応しやすくなっています。技術的な詳細は<a href="/blog/playwright-jobcan-challenges-and-solutions">「PlaywrightでJobcanを自動操作する時にハマったポイントと、その解決パターン」</a>の記事をご覧ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">処理間隔</div>
+            <div class="faq-question">Q27. 処理間隔はどのくらいですか？なぜ待機時間があるのですか？</div>
+            <div class="faq-answer">
+                A. 1〜3件目は各データ処理後に約2秒、4件目以降は約5秒待機します。この待機時間は、Jobcan側のサーバー負荷を軽減し、セキュリティチェックが発動しにくくするため、メモリ使用量を最適化するため、人間の操作パターンを再現するために設けられています。技術的な詳細は<a href="/blog/playwright-jobcan-challenges-and-solutions">「PlaywrightでJobcanを自動操作する時にハマったポイントと、その解決パターン」</a>の記事をご覧ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">ログの見方</div>
+            <div class="faq-question">Q28. ログにはどのような情報が表示されますか？</div>
+            <div class="faq-answer">
+                A. 処理中に表示されるログには、処理の開始、Excelファイルの読み込み、ログイン処理、各データの処理、処理の完了などの情報が含まれます。エラーが発生した場合は、エラーメッセージとその詳細が表示されます。ログを確認することで、処理の進捗状況や問題の原因を特定できます。詳しいログの見方は<a href="/guide/getting-started">はじめての使い方ガイド</a>の「処理中の画面について」セクションをご覧ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">CAPTCHA対応</div>
+            <div class="faq-question">Q29. CAPTCHAが表示された場合はどうなりますか？</div>
+            <div class="faq-answer">
+                A. CAPTCHAが表示された場合、本ツールは処理を中断します。一度手動でJobcanにログインしてCAPTCHAをクリアし、30分〜1時間程度待ってから再試行してください。異なるネットワークから試行することも有効です。本ツールは、CAPTCHAを自動的に解決する機能は持っていません。詳しい対処方法は<a href="/guide/troubleshooting">トラブルシューティングガイド</a>をご覧ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">ブラウザ側での注意</div>
+            <div class="faq-question">Q30. 処理中にブラウザで何か操作する必要はありますか？</div>
+            <div class="faq-answer">
+                A. いいえ、処理中はブラウザで何も操作する必要はありません。ブラウザを閉じない、他のタブを開かない、ポップアップを許可する、ネットワーク接続を維持する点に注意してください。処理が完了すると、「🎉 処理が正常に完了しました」というメッセージが表示されます。詳しい注意事項は<a href="/guide/getting-started">はじめての使い方ガイド</a>をご覧ください。
+            </div>
+        </div>
+
+        <h2>技術仕様について</h2>
+
+        <div class="faq-item">
+            <div class="category">技術</div>
+            <div class="faq-question">Q33. どのような技術を使用していますか？</div>
+            <div class="faq-answer">
+                A. 本サービスはPlaywright（ブラウザ自動化）、Python 3.x（サーバーサイド）、Flask（Webフレームワーク）、pandas（データ処理）、openpyxl（Excelファイル処理）を採用しています。これにより、高速かつ正確なデータ処理が実現されています。技術的な詳細は<a href="/about">サイトについて</a>や<a href="/blog/playwright-jobcan-challenges-and-solutions">「PlaywrightでJobcanを自動操作する時にハマったポイントと、その解決パターン」</a>の記事をご覧ください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">技術</div>
+            <div class="faq-question">Q34. 処理速度はどのくらいですか？</div>
+            <div class="faq-answer">
+                A. データ1件あたり約10-15秒程度の処理時間が必要です。人間の操作パターンを再現するため、適切な待機時間を設けており、Jobcanシステムへの負荷を最小限に抑えながら正確なデータ入力を実現しています。1ヶ月分（20営業日）のデータで約2〜3分程度かかります。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">技術</div>
+            <div class="faq-question">Q35. ブラウザの種類やバージョンに依存しますか？</div>
+            <div class="faq-answer">
+                A. いいえ、本サービスはサーバーサイドでPlaywrightを使用してブラウザを制御します。ユーザーのブラウザの種類やバージョンは一切関係なく、すべての環境で同じように動作します。ユーザー側では、標準的なWebブラウザ（Chrome、Edge、Firefox、Safariなど）でアクセスするだけで利用できます。
+            </div>
+        </div>
+
+        <h2>運用とサポートについて</h2>
+
+        <div class="faq-item">
+            <div class="category">サポート</div>
+            <div class="faq-question">Q36. 無料で利用できますか？</div>
+            <div class="faq-answer">
+                A. はい、本サービスは個人向けの無料ツールとして提供されています。ただし、サーバーリソースには限りがあるため、適度な使用をお願いします。過度な使用や悪用が疑われる場合は、サービスの提供を制限する場合があります。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">サポート</div>
+            <div class="faq-question">Q37. 商用利用は可能ですか？</div>
+            <div class="faq-answer">
+                A. 本サービスは個人向けの効率化ツールとして開発されています。商用利用については、<a href="/contact">お問い合わせ</a>から事前にご連絡ください。企業の就業規則やセキュリティポリシーを必ず遵守してください。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="category">サポート</div>
+            <div class="faq-question">Q38. エラーが発生した場合の対応方法は？</div>
+            <div class="faq-answer">
+                A. エラーが発生した場合は、<a href="/guide/troubleshooting">トラブルシューティングガイド</a>を確認し、もう一度処理を試行してください。問題が解決しない場合は<a href="/contact">お問い合わせ</a>から報告してください。エラーログを添付していただくと、迅速に対応できます。
+            </div>
+        </div>
+
+        <h2>Tools（各ツールのFAQ）</h2>
+        <p>以下は各ツールの代表的な質問です。詳細は各ガイドの「よくある質問」セクション（#faq）をご覧ください。</p>
+
+        <h3 style="color: #4A9EFF; font-size: 1.3em; margin-top: 28px;">🖼️ 画像一括変換</h3>
+        <div class="faq-item">
+            <div class="faq-question">サーバーに画像は送信されますか？</div>
+            <div class="faq-answer">いいえ。すべてブラウザ内で処理されます。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">複数サイズを同時に出力できますか？</div>
+            <div class="faq-answer">はい。バリアント機能で複数サイズを一度に生成できます。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">対応形式は？</div>
+            <div class="faq-answer">入力・出力とも PNG、JPG、WebP です。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">ファイル数・サイズの上限は？</div>
+            <div class="faq-answer">最大50ファイル、1ファイル20MBまでです。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">変換が完了しない</div>
+            <div class="faq-answer">メモリ不足の可能性があります。ファイル数や画像サイズを減らして再試行してください。</div>
+        </div>
+        <p><a href="/guide/image-batch#faq">→ 画像一括変換ガイドのFAQ（8問）</a></p>
+
+        <h3 style="color: #4A9EFF; font-size: 1.3em; margin-top: 28px;">📄 PDFユーティリティ</h3>
+        <div class="faq-item">
+            <div class="faq-question">PDFはサーバーに送信されますか？</div>
+            <div class="faq-answer">いいえ。処理はブラウザ内で完結します。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">複数PDFを結合できますか？</div>
+            <div class="faq-answer">はい。最大20ファイルまで結合できます。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">PDFを画像に変換できますか？</div>
+            <div class="faq-answer">はい。PNGまたはJPEGで全ページを画像化し、ZIPでダウンロードできます。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">パスワード付きPDFは使えますか？</div>
+            <div class="faq-answer">いいえ。事前にパスワードを解除してください。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">結合が失敗する</div>
+            <div class="faq-answer">ファイル破損やパスワード保護の可能性があります。別のビューアで開けるか確認してください。</div>
+        </div>
+        <p><a href="/guide/pdf#faq">→ PDFユーティリティガイドのFAQ（8問）</a></p>
+
+        <h3 style="color: #4A9EFF; font-size: 1.3em; margin-top: 28px;">✨ 画像ユーティリティ</h3>
+        <div class="faq-item">
+            <div class="faq-question">画像はサーバーに送信されますか？</div>
+            <div class="faq-answer">いいえ。ブラウザ内で処理されます。背景除去もブラウザ内で実行されます。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">透過PNGを白背景JPEGに変換できますか？</div>
+            <div class="faq-answer">はい。透過→白背景変換機能で変換できます。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">背景除去は自動でできますか？</div>
+            <div class="faq-answer">はい。背景除去タブでブラウザ内で自動処理されます。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">何枚まで処理できますか？</div>
+            <div class="faq-answer">通常は最大50ファイル、背景除去時は20ファイルまで（1ファイル20MB）。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">背景除去が遅い</div>
+            <div class="faq-answer">高解像度だと時間がかかります。事前にリサイズしてから処理すると高速化できます。</div>
+        </div>
+        <p><a href="/guide/image-cleanup#faq">→ 画像ユーティリティガイドのFAQ（8問）</a></p>
+
+        <h3 style="color: #4A9EFF; font-size: 1.3em; margin-top: 28px;">🔍 Web/SEOユーティリティ</h3>
+        <div class="faq-item">
+            <div class="faq-question">OGP画像はサーバーに送信されますか？</div>
+            <div class="faq-answer">いいえ。OGP・チェックリスト・sitemap/robotsはブラウザ内で完結します。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">URLクロールでデータは保存されますか？</div>
+            <div class="faq-answer">いいえ。開始URLでサーバーがリンクを収集し、結果を返すのみで保存はしません。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">メタタグ検査でCORSエラーが出る</div>
+            <div class="faq-answer">対象サイトがCORSを許可していない場合があります。HTMLを直接貼り付けて検査してください。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">クロールは何回まで？</div>
+            <div class="faq-answer">同一IPあたり1分に1回までです。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">「このURLは許可されていません」</div>
+            <div class="faq-answer">localhostやプライベートIPはSSRF対策で許可されていません。公開URLでお試しください。</div>
+        </div>
+        <p><a href="/guide/seo#faq">→ Web/SEOユーティリティガイドのFAQ（8問）</a></p>
+
+        <h2>さらに詳しく知る</h2>
+        <p>その他のリソースもご活用ください：</p>
+        <ul>
+            <li><a href="/guide/getting-started">はじめての使い方</a></li>
+            <li><a href="/guide/excel-format">Excelファイルの作成方法</a></li>
+            <li><a href="/guide/troubleshooting">トラブルシューティング</a></li>
+            <li><a href="/guide/csv">CSV/Excelユーティリティガイド</a>（CSV→XLSX変換など）</li>
+            <li><a href="/glossary">用語集</a></li>
+            <li><a href="/about">サイトについて</a></li>
+        </ul>
+
+        <a href="/autofill" class="nav-link">← Jobcan AutoFillに戻る</a>
+        <a href="/" class="nav-link">← 製品一覧へ</a>
+    </div>
+
+    {% endif %}
+
+    {# P0-3: FAQPage構造化データ（public版FAQ） #}
+    {% include 'includes/structured_data.html' %}
+    {% block extra_structured_data %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "しごと道具箱とは何ですか？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "PDF、CSV/Excel、画像、SEO/URL確認など、仕事でたまに必要になる小さな作業をブラウザで片づける軽量ツール集です。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "ファイルはサーバーにアップロードされますか？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "CSV/Excel、画像処理、PDFの多くの操作はブラウザ内で処理します。一方、PDFパスワード付与やSEO/URL確認の一部など、サーバーを使う機能があります。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "パスワード付きPDFはどう扱えますか？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "public版では、PDFに新しくパスワードを付ける機能を公開しています。閲覧制限を外す機能は公開していません。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "AmazonやA8のリンクは広告ですか？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "はい。一部ページではAmazon AssociatesやA8.netなどのアフィリエイト広告を表示することがあります。価格、在庫、ランキング、レビュー数の固定表示は行いません。"
+                }
+            }
+        ]
+    }
+    </script>
+    {% endblock %}
+
+    {% if false %}
+    {# P0-3: FAQPage構造化データ（旧Jobcan FAQ・public版では非表示） #}
+    {% include 'includes/structured_data.html' %}
+    {% block old_extra_structured_data %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "{{ "Jobcan AutoFillとは何ですか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "Jobcan AutoFillは、Jobcanへの勤怠データ入力を自動化するWebアプリケーションです。Excelファイルに勤怠データを記入し、アップロードするだけで、自動的にJobcanにログインし、データを入力します。毎月の勤怠入力の手間を大幅に削減できます。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "料金はかかりますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "いいえ、本サービスは完全に無料でご利用いただけます。会員登録も不要です。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "どのブラウザで使用できますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "Google Chrome（推奨）、Microsoft Edge、Mozilla Firefox、Safariに対応しています。最新バージョンのブラウザを使用することを推奨します。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "会員登録は必要ですか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "いいえ、会員登録は不要です。ログイン情報とExcelファイルがあれば、すぐにご利用いただけます。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "ログイン情報は安全ですか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "はい、安全です。入力されたログイン情報は処理中のみメモリ内に一時的に保持され、処理完了後は自動的に削除されます。サーバーには一切保存されません。HTTPS通信で暗号化されています。詳細はプライバシーポリシーをご確認ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "アップロードしたExcelファイルはどうなりますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "アップロードされたExcelファイルは、処理完了後に自動的に削除されます。サーバーには保存されませんので、ご安心ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "会社のセキュリティポリシーに違反しませんか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "本サービスは個人の業務効率化を目的としたツールですが、所属企業の就業規則やセキュリティポリシーを必ず遵守してください。自動化ツールの使用が禁止されている場合は、使用を控えてください。詳細は利用規約をご確認ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "はじめて使う場合、何から始めればいいですか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "Jobcan AutoFillページからテンプレートをダウンロードし、Excelファイルに勤怠データを入力してから、ログイン情報とファイルをアップロードして「勤怠データを自動入力」をクリックします。詳しい操作手順ははじめての使い方ガイドをご覧ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "テンプレートファイルは必須ですか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "必須ではありませんが、使用を強く推奨します。テンプレートファイルは日付が自動入力されているため、開始時刻と終了時刻を入力するだけで済みます。自作のExcelファイルを使用する場合は、Excelファイルの作成方法ガイドで正しい形式を確認してください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "休日や欠勤はどう指定しますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "休日や欠勤の日は、B列（開始時刻）とC列（終了時刻）を空白にしてください。その日のデータは自動的にスキップされます。詳しい指定方法はExcelファイルの作成方法ガイドをご覧ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "処理にどれくらい時間がかかりますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "ログイン：約30秒～1分、データ入力：1日あたり約5秒、合計：1ヶ月分（20日）で約2～3分です。ネットワーク状況により、多少前後する場合があります。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "処理中にブラウザを閉じてもいいですか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "いいえ、処理が完了するまでブラウザは閉じないでください。処理が中断される可能性があります。完了メッセージが表示されるまで待機してください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "ログインに失敗する場合は？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "メールアドレスとパスワードが正しいか、会社IDが必要な場合は正しく入力されているか、手動でJobcanにログインできるかを確認してください。アカウントがロックされていないかも確認が必要です。詳しい対処方法はトラブルシューティングガイドをご覧ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "画像認証（CAPTCHA）が表示される場合は？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "一度手動でJobcanにログインして画像認証をクリアし、30分～1時間程度待ってから再試行してください。異なるネットワークから試行することも有効です。短時間に複数回ログインすると、セキュリティ対策として画像認証が表示されることがあります。詳しい対処方法はトラブルシューティングガイドをご覧ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "データが正しく入力されない場合は？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "Excelファイルの形式を確認してください。A列は日付（YYYY/MM/DD形式）、B列は開始時刻（HH:MM形式）、C列は終了時刻（HH:MM形式）、1行目はヘッダー行（削除しない）である必要があります。詳しい形式の説明と修正方法はExcelファイルの作成方法ガイドをご覧ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "処理が途中で止まってしまいます"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "ネットワーク接続が安定しているか確認し、数分待ってから再試行してください。別のブラウザで試す、キャッシュとCookieをクリアすることも有効です。Jobcanのサーバーが混雑している場合は、時間を空けて再試行してください。詳しい対処方法はトラブルシューティングガイドをご覧ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "CSV形式のファイルは使えますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "いいえ、CSV形式には対応していません。Excel形式（.xlsx または .xls）のファイルのみ対応しています。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "Google スプレッドシートで作成したファイルは使えますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "Google スプレッドシートで作成した場合は、Excel形式（.xlsx）でダウンロードしてからアップロードしてください。「ファイル」→「ダウンロード」→「Microsoft Excel (.xlsx)」を選択してください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "ファイルサイズの制限はありますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "はい、ファイルサイズは10MB以下にしてください。通常の勤怠データであれば、この制限を超えることはありません。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "複数月分のデータを一度に入力できますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "はい、可能です。Excelファイルに複数月のデータを連続して記入すれば、一度の処理で入力できます。ただし、データ量が多い場合は処理時間が長くなります。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "スマートフォンでも使えますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "技術的には可能ですが、Excelファイルの編集がしづらいため、パソコンでの使用を推奨します。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "入力したデータは上書きされますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "Jobcan側にすでにデータが入力されている場合は、基本的に上書きされません。空欄の日付のみデータが入力されます。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "処理完了後、Jobcanで確認は必要ですか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "はい、処理完了後は必ずJobcanにログインして、データが正しく入力されているか確認してください。万が一、エラーがあった場合は手動で修正してください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "機能の追加要望はできますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "はい、お問い合わせページからご連絡ください。すべての要望にお応えできるわけではありませんが、多くのユーザーに有益な機能は検討させていただきます。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "サービスが使えなくなることはありますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "サービスの提供は予告なく変更・終了される場合があります。Jobcanのシステム仕様変更により、一時的に使用できなくなる可能性もあります。詳細は利用規約をご確認ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "Playwrightとは何ですか？どのように動作しますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "Playwrightは、ブラウザを自動制御するためのライブラリです。本ツールでは、Playwrightを使用してJobcanのWebページを操作し、人間の操作パターンを再現します。実際のブラウザを操作するため、Jobcan側のセキュリティ機能（CAPTCHAやセッション管理）にも対応しやすくなっています。技術的な詳細は「PlaywrightでJobcanを自動操作する時にハマったポイントと、その解決パターン」の記事をご覧ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "処理間隔はどのくらいですか？なぜ待機時間があるのですか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "1〜3件目は各データ処理後に約2秒、4件目以降は約5秒待機します。この待機時間は、Jobcan側のサーバー負荷を軽減し、セキュリティチェックが発動しにくくするため、メモリ使用量を最適化するため、人間の操作パターンを再現するために設けられています。技術的な詳細は「PlaywrightでJobcanを自動操作する時にハマったポイントと、その解決パターン」の記事をご覧ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "ログにはどのような情報が表示されますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "処理中に表示されるログには、処理の開始、Excelファイルの読み込み、ログイン処理、各データの処理、処理の完了などの情報が含まれます。エラーが発生した場合は、エラーメッセージとその詳細が表示されます。ログを確認することで、処理の進捗状況や問題の原因を特定できます。詳しいログの見方ははじめての使い方ガイドの「処理中の画面について」セクションをご覧ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "CAPTCHAが表示された場合はどうなりますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "CAPTCHAが表示された場合、本ツールは処理を中断します。一度手動でJobcanにログインしてCAPTCHAをクリアし、30分〜1時間程度待ってから再試行してください。異なるネットワークから試行することも有効です。本ツールは、CAPTCHAを自動的に解決する機能は持っていません。詳しい対処方法はトラブルシューティングガイドをご覧ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "処理中にブラウザで何か操作する必要はありますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "いいえ、処理中はブラウザで何も操作する必要はありません。ブラウザを閉じない、他のタブを開かない、ポップアップを許可する、ネットワーク接続を維持する点に注意してください。処理が完了すると、「🎉 処理が正常に完了しました」というメッセージが表示されます。詳しい注意事項ははじめての使い方ガイドをご覧ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "SSL/TLSによる通信の暗号化は行われていますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "はい、本サービスはHTTPS通信を使用しており、すべてのデータ通信はTLS暗号化によって保護されています。ブラウザのアドレスバーに鍵マークが表示されている場合は、安全な接続が確立されています。詳しくはプライバシーポリシーをご確認ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "第三者にログイン情報が漏洩するリスクはありますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "本サービスは一時的な処理のみを行い、ログイン情報の永続的な保存は一切行いません。また、監視ログやアクセスログにも、個人を特定できる情報は記録されません。詳細はプライバシーポリシーをご確認ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "どのような技術を使用していますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "本サービスはPlaywright（ブラウザ自動化）、Python 3.x（サーバーサイド）、Flask（Webフレームワーク）、pandas（データ処理）、openpyxl（Excelファイル処理）を採用しています。これにより、高速かつ正確なデータ処理が実現されています。技術的な詳細はサイトについてや「PlaywrightでJobcanを自動操作する時にハマったポイントと、その解決パターン」の記事をご覧ください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "処理速度はどのくらいですか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "データ1件あたり約10-15秒程度の処理時間が必要です。人間の操作パターンを再現するため、適切な待機時間を設けており、Jobcanシステムへの負荷を最小限に抑えながら正確なデータ入力を実現しています。1ヶ月分（20営業日）のデータで約2〜3分程度かかります。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "ブラウザの種類やバージョンに依存しますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "いいえ、本サービスはサーバーサイドでPlaywrightを使用してブラウザを制御します。ユーザーのブラウザの種類やバージョンは一切関係なく、すべての環境で同じように動作します。ユーザー側では、標準的なWebブラウザ（Chrome、Edge、Firefox、Safariなど）でアクセスするだけで利用できます。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "無料で利用できますか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "はい、本サービスは個人向けの無料ツールとして提供されています。ただし、サーバーリソースには限りがあるため、適度な使用をお願いします。過度な使用や悪用が疑われる場合は、サービスの提供を制限する場合があります。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "商用利用は可能ですか？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "本サービスは個人向けの効率化ツールとして開発されています。商用利用については、お問い合わせから事前にご連絡ください。企業の就業規則やセキュリティポリシーを必ず遵守してください。"|e }}"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "{{ "エラーが発生した場合の対応方法は？"|e }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ "エラーが発生した場合は、トラブルシューティングガイドを確認し、もう一度処理を試行してください。問題が解決しない場合はお問い合わせから報告してください。エラーログを添付していただくと、迅速に対応できます。"|e }}"
+                }
+            }
+        ]
+    }
+    </script>
+    {% endblock %}
+    {% endif %}
+    
+    {# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/footer.html' %}
+</body>
+</html>
+

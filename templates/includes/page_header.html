@@ -1,0 +1,15 @@
+{# ページヘッダーコンポーネント #}
+{# 使用例: {% include 'includes/page_header.html' with {'title': 'タイトル', 'description': '説明', 'back_link': '/autofill'} %} #}
+<div class="page-header" style="text-align: center; padding: 60px 20px 40px; margin-bottom: 40px;">
+    {% if back_link %}
+        <div style="text-align: left; margin-bottom: 20px;">
+            <a href="{{ back_link }}" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.95em; display: inline-flex; align-items: center; gap: 8px;">
+                ← 戻る
+            </a>
+        </div>
+    {% endif %}
+    <h1 style="font-size: 2.5em; margin: 0 0 20px 0; color: #FFFFFF; font-weight: 600;">{{ title }}</h1>
+    {% if description %}
+        <p style="font-size: 1.2em; color: rgba(255, 255, 255, 0.8); max-width: 700px; margin: 0 auto;">{{ description }}</p>
+    {% endif %}
+</div>

@@ -1,0 +1,9 @@
+優先度	要件イベント	現状	追加方針（候補）	変更箇所候補(file:line)	受け入れ基準	証跡
+P1	page_view	config で自動送信（ID 設定時）	変更不要	—	ID 設定時は全ページで page_view が送られる	GA デバッグまたはネットワークで gtag/js と config を確認
+P1	tool_open	なし	各ツールページで 1 回発火する script を追加	templates/tools/pdf.html（body 末尾付近）, image-batch.html, image-cleanup.html, csv.html（112 行付近 IIFE 内）, seo.html	ツール URL 表示時に tool_open が 1 回送られる	同上
+P1	tool_action_start	tool_run_start / autofill_start あり。csv はなし	csv のみ「実行」クリック時に 1 回送る	templates/tools/csv.html:353 runBtn.addEventListener 内、処理開始直後（357 行付近）	csv でも変換開始イベントが送られる	コンソールまたは GA デバッグでイベント名確認
+P2	tool_action_success	autofill_success のみ。tool-runner はなし	tool-runner の onComplete で送る	static/js/tool-runner.js（340 行付近 onComplete の直前）	pdf/image-batch/image-cleanup で成功時に 1 回送られる	同上
+P2	tool_action_fail	autofill_error のみ。tool-runner はなし	tool-runner の catch で送る	static/js/tool-runner.js:137, 337（onError 呼び出しの前後）	同上ツールで失敗時に 1 回送られる	同上
+P2	download_click	tool_download あり（pdf/image-batch/image-cleanup）。csv はなし	csv の FileUtils.downloadBlob 直前に gtag 追加	templates/tools/csv.html:420 の前、424 の前	csv でダウンロード時に 1 回送られる	同上
+P2	contact_open	なし	/contact 表示時に 1 回送る	templates/contact.html（footer 直前などに script 追加）	/contact 表示で contact_open が 1 回送られる	同上
+P2	contact_submit	なし（Form iframe）	要検討（サンキューページ or 未計測）	—	要件で方針決定後に実装	推測セクション参照（phase4_ga4_audit_report.md）

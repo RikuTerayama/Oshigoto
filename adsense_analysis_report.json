@@ -1,0 +1,374 @@
+{
+  "summary": {
+    "total_pages": 23,
+    "thin_pages_count": 3,
+    "unique_descriptions": 19,
+    "total_keyword_count": 887
+  },
+  "thin_pages": [
+    {
+      "file": "templates\\includes\\author_bio.html",
+      "length": 65,
+      "title": ""
+    },
+    {
+      "file": "templates\\includes\\head_meta.html",
+      "length": 35,
+      "title": "{% block title %}Jobcan AutoFill - 勤怠データ自動入力ツール{% endblock %}"
+    },
+    {
+      "file": "templates\\includes\\structured_data.html",
+      "length": 69,
+      "title": ""
+    }
+  ],
+  "duplicate_descriptions": {},
+  "keyword_counts": {
+    "Jobcan": 50,
+    "自動化": 96,
+    "効率化": 30,
+    "勤怠": 122,
+    "Excel": 73,
+    "データ": 102,
+    "入力": 242,
+    "ツール": 102,
+    "Playwright": 15,
+    "業務": 55
+  },
+  "indexing_issues": [
+    {
+      "file": "templates\\contact.html",
+      "issue": "インデックスすべきでないページにnoindexが設定されていません",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      }
+    }
+  ],
+  "all_results": [
+    {
+      "file_path": "templates\\about.html",
+      "text_length": 4251,
+      "meta_description": "Jobcan AutoFillについて。開発の背景、設計思想、技術スタック、セキュリティ対策を詳しく解説します。",
+      "meta_description_length": 56,
+      "title": "サイトについて | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "ℹ️ Jobcan AutoFillについて Jobcan AutoFillは、Jobcanへの勤怠データ入力を自動化し、業務効率化を支援するWebアプリケーションです。 サービス概要 毎月の勤怠入力に時間を取られていませんか？Jobcan AutoFillは、Excelファイルに勤怠データを記入するだけで、自動的にJobcanに入力を行います。手作業での入力ミスを減らし、時間を大幅に節約できます..."
+    },
+    {
+      "file_path": "templates\\best-practices.html",
+      "text_length": 4549,
+      "meta_description": "Jobcan AutoFillを効果的に活用するためのベストプラクティス。Excelファイルの準備、セキュリティ、効率的な使用方法を解説。",
+      "meta_description_length": 69,
+      "title": "ベストプラクティスガイド | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "ベストプラクティスガイド Jobcan AutoFillを効果的に活用するための、実践的なベストプラクティスをご紹介します。このガイドに従うことで、より安全かつ効率的に勤怠管理を行えます。業務効率化とDX（デジタルトランスフォーメーション）を実現するため、この自動化ツールを最大限に活用する方法を詳しく解説します。 1. データ入力の準備：ロールモデルとなる運用パターン Excelファイルの準備：具..."
+    },
+    {
+      "file_path": "templates\\blog\\automation-roadmap.html",
+      "text_length": 1581,
+      "meta_description": "Jobcan自動化を社内展開するための90日ロードマップ。準備期間、導入期間、展開期間の具体的な手順とチェックポイントを詳しく解説。",
+      "meta_description_length": 66,
+      "title": "Jobcan自動化を社内展開するための90日ロードマップ | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "ホーム ブログ Jobcan自動化を社内展開するための90日ロードマップ 2025-02-12 / 導入・運用ガイド Jobcan自動化を社内展開するための90日ロードマップ 勤怠自動化ツールを導入したいが、どこから着手すべきか分からない――。そんな声に応えるため、Jobcan AutoFillで実際に成果を出したチームのプロセスを90日スケジュールに落とし込みました。ステークホルダー別のタスク、..."
+    },
+    {
+      "file_path": "templates\\blog\\excel-attendance-limits.html",
+      "text_length": 1563,
+      "meta_description": "多くの企業で利用されるExcelでの勤怠管理。しかし、手入力によるミスやデータの整合性、セキュリティには限界があります。本記事ではExcel管理の課題と、自動化ツールを活用して業務効率化を実現する方法を解説します。",
+      "meta_description_length": 107,
+      "title": "Excelで勤怠を管理する限界と、API・自動化ツールを併用すべき理由 | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "ホーム ブログ Excel管理の限界と自動化 2025-01-10 / 業務改善・効率化 Excelで勤怠を管理する限界と、API・自動化ツールを併用すべき理由 多くの企業で利用されるExcelでの勤怠管理。しかし、手入力によるミスやデータの整合性、セキュリティには限界があります。本記事ではExcel管理の課題と、自動化ツールを活用して業務効率化を実現する方法を解説します。 表計算ソフトの代名詞で..."
+    },
+    {
+      "file_path": "templates\\blog\\implementation-checklist.html",
+      "text_length": 1237,
+      "meta_description": "Jobcan AutoFill導入チェックリスト（10項目）。稟議に役立つ項目を整理。セキュリティ、コンプライアンス、運用体制などの確認ポイントを解説。",
+      "meta_description_length": 76,
+      "title": "Jobcan AutoFill導入チェックリスト（10項目） | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "ホーム ブログ Jobcan AutoFill導入チェックリスト（10項目） 2025-02-17 / 導入・運用ガイド Jobcan AutoFill導入チェックリスト（10項目） Jobcan AutoFillを導入する前に確認すべき10のポイントを整理しました。社内ルール、セキュリティ、データ管理、運用体制まで網羅しているので、稟議資料や導入準備のセルフレビューとしてご活用ください。 1. ..."
+    },
+    {
+      "file_path": "templates\\blog\\index.html",
+      "text_length": 1283,
+      "meta_description": "Jobcan AutoFillのブログ。自動化・DXの最新ナレッジ、導入事例、ベストプラクティス、90日ロードマップなどの実践的な情報を提供。",
+      "meta_description_length": 71,
+      "title": "ブログ | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "ホーム ブログ Jobcan AutoFill ブログ 勤怠管理の自動化・DX・運用改善に関する知見を専門家の視点から発信するブログです。毎月のアップデート情報、ユーザー事例、テクノロジーの解説を通じて、より良い業務フロー構築を支援します。 カテゴリ 導入・運用ガイド Jobcan AutoFillの機能を最大限活用するためのチュートリアルやチェックリストを紹介します。 社内展開のロードマップ セ..."
+    },
+    {
+      "file_path": "templates\\blog\\playwright-security.html",
+      "text_length": 2454,
+      "meta_description": "Playwrightによるブラウザ自動化のセキュリティ対策を詳しく解説。企業が安心して利用できる自動化ツールの技術的基盤、認証の安全性、データ保護の仕組みについて、開発者の視点から説明します。",
+      "meta_description_length": 96,
+      "title": "Playwrightによるブラウザ自動化のセキュリティ：企業の安全性を守るための技術解説 | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "ホーム ブログ セキュリティと技術 2025-01-05 / セキュリティ・技術スタック Playwrightによるブラウザ自動化のセキュリティ：企業の安全性を守るための技術解説 Playwrightによるブラウザ自動化のセキュリティ対策を詳しく解説。企業が安心して利用できる自動化ツールの技術的基盤、認証の安全性、データ保護の仕組みについて、開発者の視点から説明します。 企業のデジタルトランスフォ..."
+    },
+    {
+      "file_path": "templates\\blog\\workstyle-reform-automation.html",
+      "text_length": 1743,
+      "meta_description": "働き方改革の真の鍵は、勤怠入力のような「見えない付帯業務」の削減にあります。勤怠管理の自動化がなぜ企業のDXを加速させ、コンプライアンス強化につながるのか、技術的・社会的背景から詳しく解説します。",
+      "meta_description_length": 98,
+      "title": "勤怠管理の自動化が「働き方改革」を加速させる理由と、その本質的な価値 | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "ホーム ブログ 働き方改革と自動化 2025-01-15 / 業務効率化・DX 勤怠管理の自動化が「働き方改革」を加速させる理由と、その本質的な価値 働き方改革の真の鍵は、勤怠入力のような「見えない付帯業務」の削減にあります。勤怠管理の自動化がなぜ企業のDXを加速させ、コンプライアンス強化につながるのか、技術的・社会的背景から詳しく解説します。 現代のビジネスシーンにおいて「働き方改革」は、もはや..."
+    },
+    {
+      "file_path": "templates\\case-study-contact-center.html",
+      "text_length": 977,
+      "meta_description": "コンタクトセンター部門でのJobcan AutoFill導入事例。勤怠照合を自動化し、月次締め作業を75%削減した成功事例を詳しく紹介。",
+      "meta_description_length": 68,
+      "title": "導入事例：コンタクトセンター部門の勤怠DX成功事例 | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "ホーム コンタクトセンター部門の勤怠DX成功事例 導入事例：コンタクトセンター部門の勤怠DX成功事例 300席規模のコンタクトセンターでJobcan AutoFillを導入した事例です。照合作業と差し戻し対応に追われていた労務チームが、属人化を解消しながら月間52時間の稼働削減を実現しました。 企業プロフィール 業種：アウトソーシング（BPO） 従業員数：正社員120名、派遣スタッフ180名 拠点..."
+    },
+    {
+      "file_path": "templates\\contact.html",
+      "text_length": 928,
+      "meta_description": "Jobcan AutoFillに関するご質問、不具合報告、機能要望はこちらから。GitHub Issuesでのお問い合わせも可能です。",
+      "meta_description_length": 67,
+      "title": "お問い合わせ | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "お問い合わせ Jobcan AutoFillに関するご質問、ご意見、不具合報告などは、以下の方法でお問い合わせください。通常 24時間以内（営業日） に一次返信し、関連部署と連携のうえ解決へ導きます。 💬 GitHubでのお問い合わせ 技術的な問題や機能要望は、GitHubのIssuesでご報告ください： GitHub Issues ※ 開発者コミュニティからも回答を得られる場合があります よくあ..."
+    },
+    {
+      "file_path": "templates\\error.html",
+      "text_length": 778,
+      "meta_description": "",
+      "meta_description_length": 0,
+      "title": "エラーが発生しました | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": true,
+        "has_nofollow": true,
+        "has_robots_meta": true,
+        "has_canonical": false
+      },
+      "text_sample": "⚠️ エラーが発生しました {{ error_message|default('予期しないエラーが発生しました。しばらく待ってから再試行してください。') }} よくあるエラーと対処法 404エラー（ページが見つかりません） お探しのページが見つかりませんでした。以下の点をご確認ください： URLが正しいか確認してください ページが移動または削除された可能性があります サイトマップ から目的のペー..."
+    },
+    {
+      "file_path": "templates\\faq.html",
+      "text_length": 6120,
+      "meta_description": "Jobcan AutoFillに関するよくある質問（FAQ）38件。セキュリティ、使い方、エラー対処法などを網羅的に解説。",
+      "meta_description_length": 61,
+      "title": "よくある質問（FAQ） | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "❓ よくある質問（FAQ） Jobcan AutoFillに関するよくある質問と回答をまとめました。この自動化ツールを使用することで、勤怠管理業務の効率化を実現し、データ入力の時間を大幅に削減できます。お探しの情報が見つからない場合は、 お問い合わせページ からご連絡ください。 サービス全般について サービス概要 Q1. Jobcan AutoFillとは何ですか？ A. Jobcan AutoF..."
+    },
+    {
+      "file_path": "templates\\glossary.html",
+      "text_length": 3954,
+      "meta_description": "勤怠管理とJobcan AutoFillに関連する用語集。打刻、開始時刻、終了時刻、Playwrightなどの専門用語を分かりやすく解説。",
+      "meta_description_length": 69,
+      "title": "用語集 | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "📖 勤怠管理・Jobcan用語集 勤怠管理とJobcan AutoFillに関連する用語を分かりやすく解説します。 勤怠管理の基本用語 勤怠管理（きんたいかんり） Attendance Management 従業員の出勤・退勤時刻、労働時間、休暇取得などを記録・管理することです。 本ツールでは、Jobcanへの勤怠データ入力プロセスを自動化することで、勤怠管理の効率化を支援します。 Excelファ..."
+    },
+    {
+      "file_path": "templates\\guide_excel_format.html",
+      "text_length": 3954,
+      "meta_description": "Jobcan AutoFill用のExcelファイルの作成方法。日付・時刻の形式、列の順序、よくあるエラーとその修正方法を詳しく解説。",
+      "meta_description_length": 67,
+      "title": "Excelファイルの作成方法 | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "📊 Excelファイルの作成方法 Jobcan AutoFillで使用するExcelファイルの正しい作成方法を詳しく解説します。このガイドに従えば、エラーなくスムーズにデータを入力できます。 基本的なファイル構造 Excelファイルは、以下の3列で構成されます： ファイル構造の例： A列: 日付 B列: 開始時刻 C列: 終了時刻 2025/10/01 09:00 18:00 2025/10/02..."
+    },
+    {
+      "file_path": "templates\\guide_getting_started.html",
+      "text_length": 2357,
+      "meta_description": "Jobcan AutoFillのはじめての使い方ガイド。テンプレートのダウンロードから自動入力まで、ステップバイステップで詳しく解説。",
+      "meta_description_length": 67,
+      "title": "はじめての使い方 | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "📚 はじめての使い方 Jobcan AutoFillをはじめて使う方のための詳細ガイドです。このガイドに従えば、誰でも簡単に勤怠データを自動入力できます。この自動化ツールを使用することで、業務効率化を実現し、勤怠入力の時間を大幅に削減できます。 このガイドで学べること サービスの基本的な使い方 テンプレートファイルのダウンロードと編集方法 ファイルのアップロードと処理の流れ よくあるエラーとその対..."
+    },
+    {
+      "file_path": "templates\\guide_troubleshooting.html",
+      "text_length": 2665,
+      "meta_description": "Jobcan AutoFillのトラブルシューティングガイド。よくあるエラーと解決方法、ログイン失敗、データ入力エラーなどの対処法を詳しく解説。",
+      "meta_description_length": 72,
+      "title": "トラブルシューティング | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "🔧 トラブルシューティング Jobcan AutoFillの使用中に発生する可能性のあるエラーと、その解決方法を説明します。問題が発生した場合は、該当するセクションを参照してください。 ログインに関するエラー ❌ エラー1: 「ログインに失敗しました」 エラーメッセージ例： 「メールアドレスまたはパスワードが正しくありません」 「ログイン認証に失敗しました」 「アカウント情報を確認してください」 ..."
+    },
+    {
+      "file_path": "templates\\includes\\author_bio.html",
+      "text_length": 65,
+      "meta_description": "",
+      "meta_description_length": 0,
+      "title": "",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "執筆者プロフィール 🧑‍💼 RT（Jobcan AutoFill プロダクトオーナー） 人事労務BPRとフロントエンド開発を担当。"
+    },
+    {
+      "file_path": "templates\\includes\\head_meta.html",
+      "text_length": 35,
+      "meta_description": "",
+      "meta_description_length": 0,
+      "title": "{% block title %}Jobcan AutoFill - 勤怠データ自動入力ツール{% endblock %}",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": true
+      },
+      "text_sample": "{# HEADの軽量化 - 必須メタのみ #} {% endif %}"
+    },
+    {
+      "file_path": "templates\\includes\\structured_data.html",
+      "text_length": 69,
+      "meta_description": "",
+      "meta_description_length": 0,
+      "title": "",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "{# 構造化データ（JSON-LD） #} {% block extra_structured_data %}{% endblock %}"
+    },
+    {
+      "file_path": "templates\\index.html",
+      "text_length": 7110,
+      "meta_description": "{% if page_description|length > 110 %}{{ page_description[:107] }}...{% else %}{{ page_description }}{% endif %}",
+      "meta_description_length": 112,
+      "title": "{{ page_title }}",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "Jobcan勤怠データ自動入力ツール メールアドレス 会社ID（任意） パスワード Excelファイル 勤怠データを自動入力 使用方法 Jobcanのログイン情報（メールアドレスとパスワード）を入力 勤怠データが含まれたExcelファイルをアップロード Excelファイルの形式：A列=日付、B列=開始時刻、C列=終了時刻（1行目はヘッダー） 自動でJobcanにログインし、勤怠データを入力します ..."
+    },
+    {
+      "file_path": "templates\\privacy.html",
+      "text_length": 1298,
+      "meta_description": "Jobcan AutoFillのプライバシーポリシー。個人情報の取り扱い、セキュリティ対策、Cookieの使用について詳しく説明します。",
+      "meta_description_length": 68,
+      "title": "プライバシーポリシー | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "プライバシーポリシー 最終更新日：2025年10月10日 1. はじめに Jobcan AutoFill（以下「本サービス」）は、ユーザーの皆様のプライバシーを尊重し、個人情報の保護に努めます。本プライバシーポリシーは、本サービスがどのように情報を収集、使用、保護するかを説明するものです。 2. 収集する情報 本サービスは以下の情報を収集します： ログイン情報 ：Jobcanへのログインに必要なメ..."
+    },
+    {
+      "file_path": "templates\\sitemap.html",
+      "text_length": 1141,
+      "meta_description": "Jobcan AutoFillの全ページ一覧。検索エンジンとユーザーがサイト内のコンテンツを効率的に発見できます。",
+      "meta_description_length": 57,
+      "title": "サイトマップ | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "ホーム サイトマップ サイトマップ Jobcan AutoFillの全ページ一覧です。お探しのページが見つかります。 サイトマップの使い方 このサイトマップは、Jobcan AutoFillの全ページをカテゴリ別に整理した一覧です。検索エンジンとユーザーの両方が、サイト内のコンテンツを効率的に発見できるよう設計されています。 各カテゴリには、関連するページがグループ化されており、目的の情報に素早く..."
+    },
+    {
+      "file_path": "templates\\terms.html",
+      "text_length": 1520,
+      "meta_description": "Jobcan AutoFillの利用規約。サービスの利用条件、禁止事項、免責事項、個人情報の取り扱いについて説明します。",
+      "meta_description_length": 60,
+      "title": "利用規約 | Jobcan AutoFill",
+      "indexing": {
+        "has_noindex": false,
+        "has_nofollow": false,
+        "has_robots_meta": false,
+        "has_canonical": false
+      },
+      "text_sample": "利用規約 最終更新日：2025年10月10日 第1条（適用範囲） 本利用規約（以下「本規約」）は、Jobcan AutoFill（以下「本サービス」）の利用に関する条件を定めるものです。本サービスを利用するすべてのユーザーは、本規約に同意したものとみなされます。 第2条（サービスの内容） 本サービスは、Jobcanへの勤怠データ自動入力を補助するツールです。ユーザーがアップロードしたExcelファ..."
+    }
+  ]
+}

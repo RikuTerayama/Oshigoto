@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ja" class="no-js">
+<head>
+    {% set page_title = 'しごと道具箱｜PDF・CSV・画像・URL確認の軽量ツール集' %}
+    {% set page_description = 'PDF、CSV、画像、URL確認など、仕事でたまに必要になる小さな作業をブラウザでさっと片づける無料ツール集です。' %}
+    {% include 'includes/head_meta.html' %}
+</head>
+<body>
+    {% include 'includes/header.html' %}
+    {% set starter_pages = [
+        {'eyebrow': 'PDF', 'title': 'PDFを整える', 'path': '/tools/pdf', 'description': '分割・結合・抽出・圧縮・パスワード付与', 'cta': 'PDFツールを使う', 'icon': '📄'},
+        {'eyebrow': 'CSV / Excel', 'title': '表を整える', 'path': '/tools/csv', 'description': 'CSVやExcelの確認・変換・整理', 'cta': 'CSV/Excelツールを使う', 'icon': '📊'},
+        {'eyebrow': 'Image', 'title': '画像をまとめて変換', 'path': '/tools/image-batch', 'description': 'PNG/JPG/WebPなどをまとめて処理', 'cta': '画像変換を使う', 'icon': '🖼️'},
+        {'eyebrow': 'Cleanup', 'title': '画像を見やすくする', 'path': '/tools/image-cleanup', 'description': '余白・背景・サイズを整える', 'cta': '画像を整える', 'icon': '✨'},
+        {'eyebrow': 'SEO / URL', 'title': 'ページを確認する', 'path': '/tools/seo', 'description': 'OGP、meta、URL状態を手早く確認', 'cta': 'URL/SEOを確認する', 'icon': '🔍'}
+    ] %}
+    {% set use_cases = [
+        {'eyebrow': '書類整理', 'title': 'PDFを送る前に整えたい', 'description': '複数PDFの結合、必要ページの抽出、サイズ圧縮を、仕事の合間にさっと済ませられます。'},
+        {'eyebrow': '表データ', 'title': 'CSVやExcelを扱いやすくしたい', 'description': '文字コード変換、CSV/XLSX変換、重複削除、列の整理をブラウザ上で進められます。'},
+        {'eyebrow': '画像作業', 'title': '画像をまとめて軽く、きれいにしたい', 'description': 'Web掲載や資料作成の前に、画像形式・余白・背景・サイズをまとめて整えられます。'},
+        {'eyebrow': '公開前確認', 'title': 'URLやOGPを確認してから共有したい', 'description': 'ページのmeta情報、OGP画像、sitemap、robotsの確認を一か所で進められます。'}
+    ] %}
+    <main class="landing-shell">
+        <section class="landing-hero hero">
+            <div class="landing-hero__eyebrow" data-reveal>しごと道具箱</div>
+            <h1 data-reveal data-reveal-delay="40">
+                <span class="landing-hero__headline-line">しごとの小さな面倒を、</span>
+                <span class="landing-hero__headline-line">さっと片づける。</span>
+            </h1>
+            <p class="landing-hero__lead copy-lines copy-lines--hero" data-reveal data-reveal-delay="80">
+                <span class="copy-lines__line">PDF、CSV、画像、ページ確認など、</span>
+                <span class="copy-lines__line">仕事でたまに必要になる作業をまとめた軽量ツール集です。</span>
+            </p>
+            <div class="landing-hero__actions" data-reveal data-reveal-delay="120">
+                <a href="/tools" class="btn btn-primary">道具箱を開く</a>
+                <a href="/tools/pdf" class="btn btn-secondary">PDFから使う</a>
+            </div>
+        </section>
+        {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_upper_items|default([])|length > 0) %}
+        {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=true, affiliate_section_class='affiliate-cards-section--upper', affiliate_section_tier='upper-amazon', amazon_items_override=amazon_affiliate_upper_items[:3], amazon_section_title='仕事道具を整える Amazon おすすめ' %}
+            {% include 'includes/affiliate_cards_section.html' %}
+        {% endwith %}
+        {% set affiliate_upper_amazon_rendered = true %}
+        {% set affiliate_disclosure_rendered = true %}
+        {% endif %}
+
+        <section class="landing-section" aria-labelledby="starter-pages-heading">
+            <div class="landing-section__header">
+                <p class="landing-section__eyebrow">Tools</p>
+                <h2 id="starter-pages-heading">今日使う道具を選ぶ</h2>
+            </div>
+            <div class="landing-tool-grid" data-reveal-stagger>
+                {% for item in starter_pages %}
+                <a href="{{ item.path }}" class="landing-tool-card">
+                    <span class="landing-tool-card__meta">
+                        <span class="landing-tool-card__eyebrow">{{ item.eyebrow }}</span>
+                        <span class="landing-tool-card__icon" aria-hidden="true">{{ item.icon }}</span>
+                    </span>
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.description }}</p>
+                    <span class="landing-tool-card__cta">{{ item.cta }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
+        {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='作業環境・ビジネス書の Amazon おすすめ' %}
+            {% include 'includes/affiliate_cards_section.html' %}
+        {% endwith %}
+        {% set affiliate_mid_amazon_rendered = true %}
+        {% endif %}
+
+        {% with seo_link_hub_grid_class='seo-link-hub__grid--three' %}
+            {% include 'includes/seo_link_hub.html' %}
+        {% endwith %}
+
+        <section class="landing-section" aria-labelledby="use-cases-heading">
+            <div class="landing-section__header">
+                <p class="landing-section__eyebrow">Use Cases</p>
+                <h2 id="use-cases-heading">こんな小さな作業に</h2>
+            </div>
+            <div class="landing-use-grid" data-reveal-stagger>
+                {% for item in use_cases %}
+                <article class="landing-use-card">
+                    <span class="landing-use-card__eyebrow">{{ item.eyebrow }}</span>
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.description }}</p>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% if affiliate_can_render_textlinks() %}
+        {% with affiliate_networks=['rakuten'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--mid-rakuten', affiliate_section_tier='mid-rakuten', affiliate_rakuten_variant='two-col' %}
+            {% include 'includes/affiliate_cards_section.html' %}
+        {% endwith %}
+        {% set affiliate_rakuten_rendered = true %}
+        {% endif %}
+
+        <section class="landing-section">
+            <div class="landing-trust-card" data-reveal>
+                <div class="landing-section__header landing-section__header--compact">
+                    <p class="landing-section__eyebrow">Safety</p>
+                    <h2>ファイル処理の考え方</h2>
+                </div>
+                <div class="landing-trust-grid">
+                    <div class="landing-trust-item">
+                        <strong>ブラウザ内処理が中心</strong>
+                        <span>CSV、画像、PDFの多くの操作はブラウザ内で完結します。</span>
+                    </div>
+                    <div class="landing-trust-item">
+                        <strong>サーバ送信は明示</strong>
+                        <span>PDFパスワード付与やURL確認など、サーバを使う機能は説明を分けます。</span>
+                    </div>
+                    <div class="landing-trust-item">
+                        <strong>広告は明示</strong>
+                        <span>Amazon/A8などの広告リンクは、仕事道具の補助導線として表示します。</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    {% include 'includes/footer.html' %}
+</body>
+</html>

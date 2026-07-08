@@ -1,0 +1,13 @@
+{# ガイド末尾の関連リンクブロック。tool_path, tool_name は必須。guide_path は任意（デフォルト /guide） #}
+<h2>関連リンク</h2>
+<ul>
+    <li><a href="{{ tool_path }}">{{ tool_name }}</a> - ツール本体</li>
+    <li><a href="/guide">ガイド一覧</a> - 全ガイドへの入口</li>
+    <li><a href="/tools">ツール一覧</a> - 他のツール</li>
+    {% if guide_path is defined and guide_path %}
+    <li><a href="{{ guide_path }}">このガイド</a></li>
+    {% endif %}
+    <li><a href="/faq">よくある質問（FAQ）</a></li>
+    <li><a href="/contact">お問い合わせ</a></li>
+    <li><a href="/privacy">プライバシーポリシー</a></li>
+</ul>

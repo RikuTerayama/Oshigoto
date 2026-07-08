@@ -1,0 +1,49 @@
+{% if slot_id %}
+    {% set affiliate_slot = affiliate_get_slot_config(slot_id) %}
+{% else %}
+    {% set affiliate_slot = None %}
+{% endif %}
+{% set slot_hidden = hidden_until_ready|default(false) %}
+{% set slot_show_disclosure = show_disclosure|default(true) %}
+{% set slot_render_fallback = slot_render_fallback|default(false) %}
+{% set slot_disable_widget = slot_disable_widget|default(false) %}
+{% set slot_extra_class = slot_extra_class|default('') %}
+{% set slot_cards_variant = slot_cards_variant|default('module' if ('affiliate-slot--primary-inline' in slot_extra_class or 'affiliate-slot--content-inline' in slot_extra_class) else 'inline') %}
+{% set slot_server_managed_rotation = affiliate_slot and affiliate_slot.kind == 'a8_rotation' and not slot_disable_widget and not slot_hidden %}
+{% if affiliate_slot and affiliate_can_render_slot(slot_id) %}
+<section
+    class="affiliate-slot affiliate-slot--{{ affiliate_slot.size|replace('x', '-') }} affiliate-slot--{{ affiliate_slot.breakpoint_policy }}{% if slot_extra_class %} {{ slot_extra_class }}{% endif %}"
+    data-affiliate-slot="{{ affiliate_slot.slot_id }}"
+    data-affiliate-kind="{{ affiliate_slot.kind }}"
+    data-affiliate-size="{{ affiliate_slot.size }}"
+    data-affiliate-breakpoint-policy="{{ affiliate_slot.breakpoint_policy }}"
+    data-affiliate-desktop-enabled="{{ 'true' if affiliate_slot.desktop_enabled else 'false' }}"
+    data-affiliate-tablet-enabled="{{ 'true' if affiliate_slot.tablet_enabled else 'false' }}"
+    data-affiliate-mobile-enabled="{{ 'true' if affiliate_slot.mobile_enabled else 'false' }}"
+    data-affiliate-disable-widget="{{ 'true' if slot_disable_widget else 'false' }}"
+    data-affiliate-server-managed="{{ 'true' if slot_server_managed_rotation else 'false' }}"
+    {% if slot_hidden %}data-affiliate-tool-ready="false" hidden aria-hidden="true"{% endif %}
+>
+    <div class="affiliate-feature-layout affiliate-feature-layout--single">
+        <div class="affiliate-feature-layout__main">
+            {% if slot_show_disclosure %}
+                {% with disclosure_compact=true %}{% include 'includes/affiliate_disclosure.html' %}{% endwith %}
+            {% endif %}
+            <div class="affiliate-slot__box">
+                <div class="affiliate-slot__widget" data-affiliate-mount>
+                    {% if slot_server_managed_rotation %}
+                        <script type="text/javascript" src="//rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js"></script>
+                    {% endif %}
+                </div>
+                {% if slot_render_fallback %}
+                    <div class="affiliate-slot__fallback" data-affiliate-fallback="true">
+                        {% with affiliate_cards_variant=slot_cards_variant %}
+                            {% include 'includes/affiliate_cards.html' %}
+                        {% endwith %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}

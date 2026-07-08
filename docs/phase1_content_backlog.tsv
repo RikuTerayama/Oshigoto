@@ -1,0 +1,6 @@
+優先度(P0/P1/P2)	URL	問題（事実）	影響	最小修正案	受け入れ基準	必要証跡（不足なら）
+P1	/autofill	/guide/autofill への直リンクがない（autofill.html に該当リンク 0 件・grep で確認）	ツール→ガイドのペア導線が 1 ペアだけ欠けている。ユーザー・クローラの導線不足。	autofill.html の「はじめての使い方」付近に「📚 Jobcan AutoFill の使い方ガイド」リンク（href=/guide/autofill）を 1 本追加	/autofill から /guide/autofill へ 1 クリックで到達可能。表示崩れなし	—
+P2	templates/includes/download_panel.html	「すべてをZIPでダウンロード（準備中）」の文言（21行目）	未実装機能の明示。審査で未完成と見なされる可能性	文言を「近日公開」に変更するか、該当ブロックを条件付き非表示にする	工事中感を弱める。または証跡不要で対応可
+P2	/guide	見出しが h1 と h2 が 1 つのみ（文字数は 1279 で OK）	見出し構造が薄い可能性。AdSense の品質シグナルに影響するかは不明	導入文の直後に h2「はじめての方へ」等を 1 つ追加し、サブリンクをまとめる	h2 が 2 本以上。表示崩れなし	—
+—	主要コンテンツURL	noindex 誤設定なし（テストで X-Robots-Tag なし確認済み）	—	—	—	—
+—	廃止URL	/tools/minutes, /guide/minutes, /tools/pdf/ は 301 想定どおり	—	—	—	verify_deploy_routes / smoke_test で証跡済み

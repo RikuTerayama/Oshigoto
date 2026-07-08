@@ -1,0 +1,58 @@
+{# P0-2: ツールページ用コンテンツブロック（共通include）。ツールUIの下に配置し id="about-tool" でアンカーリンク可能。長すぎる場合は後続フェーズでアコーディオン化を検討可。 #}
+{% if product and product.get('capabilities') %}
+<section id="about-tool" class="tool-kb-section" aria-labelledby="about-tool-heading">
+<div class="container" style="margin-top: 40px; margin-bottom: 40px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+        <div style="background: rgba(74, 158, 255, 0.1); border-left: 4px solid #4A9EFF; border-radius: 12px; padding: 25px;" data-reveal>
+            <h3 id="about-tool-heading" style="color: #4A9EFF; font-size: 1.3em; margin-bottom: 15px; margin-top: 0;">このツールでできること</h3>
+            <ul style="margin: 0; padding-left: 20px; color: rgba(255, 255, 255, 0.9); line-height: 1.8;">
+                {% for capability in product.capabilities %}
+                <li>{{ capability }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% if product.get('recommended_for') %}
+        <div style="background: rgba(40, 167, 69, 0.1); border-left: 4px solid #28A745; border-radius: 12px; padding: 25px;" data-reveal data-reveal-delay="50">
+            <h3 style="color: #28A745; font-size: 1.3em; margin-bottom: 15px; margin-top: 0;">こんな人におすすめ</h3>
+            <ul style="margin: 0; padding-left: 20px; color: rgba(255, 255, 255, 0.9); line-height: 1.8;">
+                {% for target in product.recommended_for %}
+                <li>{{ target }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    {% if product.get('usage_steps') %}
+    <div style="background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; border-radius: 12px; padding: 25px; margin-top: 25px;" data-reveal data-reveal-delay="100">
+        <h3 style="color: #FF9800; font-size: 1.3em; margin-bottom: 15px; margin-top: 0;">使い方</h3>
+        <ol style="margin: 0; padding-left: 20px; color: rgba(255, 255, 255, 0.9); line-height: 1.8;">
+            {% for step in product.usage_steps %}
+            <li>{{ step }}</li>
+            {% endfor %}
+        </ol>
+    </div>
+    {% endif %}
+    {% if product.get('constraints') %}
+    <div style="background: rgba(220, 53, 69, 0.1); border-left: 4px solid #DC3545; border-radius: 12px; padding: 25px; margin-top: 25px;" data-reveal data-reveal-delay="150">
+        <h3 style="color: #DC3545; font-size: 1.3em; margin-bottom: 15px; margin-top: 0;">制約・注意事項</h3>
+        <ul style="margin: 0; padding-left: 20px; color: rgba(255, 255, 255, 0.9); line-height: 1.8;">
+            {% for constraint in product.constraints %}
+            <li>{{ constraint }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% if product.get('faq') %}
+    <div style="background: rgba(255, 255, 255, 0.05); border-left: 4px solid rgba(255, 255, 255, 0.3); border-radius: 12px; padding: 25px; margin-top: 25px;" data-reveal data-reveal-delay="200">
+        <h3 style="color: #FFFFFF; font-size: 1.3em; margin-bottom: 15px; margin-top: 0;">よくある質問</h3>
+        {% for item in product.faq %}
+        <div style="margin-bottom: 20px;">
+            <p style="color: #4A9EFF; font-weight: 600; margin-bottom: 8px;">Q. {{ item.q }}</p>
+            <p style="color: rgba(255, 255, 255, 0.9); margin: 0; padding-left: 15px;">A. {{ item.a }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+</section>
+{% endif %}

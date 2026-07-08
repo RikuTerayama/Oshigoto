@@ -1,0 +1,23 @@
+{# ファイルドロップゾーンコンポーネント（見た目のみ） #}
+{# 使用例: {% include 'includes/file_dropzone.html' with {'accept': '.png,.jpg,.jpeg', 'multiple': true} %} #}
+<div class="file-dropzone" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 60px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); transition: all 0.3s; cursor: pointer;" 
+     onmouseover="this.style.borderColor='rgba(74, 158, 255, 0.8)'; this.style.background='rgba(74, 158, 255, 0.1)'"
+     onmouseout="this.style.borderColor='rgba(74, 158, 255, 0.5)'; this.style.background='rgba(74, 158, 255, 0.05)'">
+    <div style="font-size: 3em; margin-bottom: 20px;">📁</div>
+    <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.1em; margin: 0 0 10px 0; font-weight: 500;">
+        ファイルをドラッグ＆ドロップ
+    </p>
+    <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.95em; margin: 0;">
+        またはクリックしてファイルを選択
+    </p>
+    {% if accept %}
+        <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.85em; margin: 15px 0 0 0;">
+            対応形式: {{ accept }}
+        </p>
+    {% endif %}
+    <input type="file" 
+           style="display: none;" 
+           {% if accept %}accept="{{ accept }}"{% endif %}
+           {% if multiple %}multiple{% endif %}
+           id="file-input-{{ id|default('default') }}">
+</div>

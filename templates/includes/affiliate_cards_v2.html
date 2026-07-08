@@ -1,0 +1,46 @@
+{% set affiliate_cards_variant = affiliate_cards_variant|default('two-col') %}
+{% set affiliate_cards = [
+    {
+        'href': 'https://rpx.a8.net/svt/ejp?a8mat=4AX5KD+97MGQA+2HOM+656YP&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26020776127_4AX5KD_97MGQA_2HOM_656YP%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F',
+        'image': 'https://hbb.afl.rakuten.co.jp/hsb/0ec09ba3.bc2429d5.0eb4bbaa.95151395/',
+        'pixel': 'https://www18.a8.net/0.gif?a8mat=4AX5KD+97MGQA+2HOM+656YP',
+        'alt': '楽天市場のおすすめ',
+        'eyebrow': '楽天市場',
+        'label': '仕事まわりの定番アイテムをまとめてチェック',
+        'description': 'デスク周りの消耗品や日用品を、比較しながら短時間で探せます。',
+        'cta': 'おすすめを見る'
+    },
+    {
+        'href': 'https://rpx.a8.net/svt/ejp?a8mat=4AX5KD+97MGQA+2HOM+644DT&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26020776127_4AX5KD_97MGQA_2HOM_644DT%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F',
+        'image': 'https://hbb.afl.rakuten.co.jp/hsb/0ec09b9e.60f7c071.0eb4bbaa.95151395/',
+        'pixel': 'https://www15.a8.net/0.gif?a8mat=4AX5KD+97MGQA+2HOM+644DT',
+        'alt': '人気カテゴリのおすすめ',
+        'eyebrow': '人気カテゴリ',
+        'label': 'よく使うアイテムをまとめて見比べる',
+        'description': '在宅勤務や日常業務で使いやすい商品を、カテゴリ単位で効率よく確認できます。',
+        'cta': '人気商品を見る'
+    }
+] %}
+{% if affiliate_cards_variant in ['module', 'single'] %}
+    {% set display_cards = affiliate_cards[:1] %}
+{% else %}
+    {% set display_cards = affiliate_cards[:2] %}
+{% endif %}
+<div class="affiliate-link-grid affiliate-link-grid--{{ affiliate_cards_variant }}">
+    {% for card in display_cards %}
+    <article class="affiliate-link-card affiliate-link-card--{{ affiliate_cards_variant }}">
+        <a class="affiliate-link-card__anchor" href="{{ card.href }}" rel="nofollow">
+            <span class="affiliate-link-card__media">
+                <img src="{{ card.image }}" border="0" alt="{{ card.alt }}">
+            </span>
+            <span class="affiliate-link-card__content">
+                <span class="affiliate-link-card__eyebrow">{{ card.eyebrow }}</span>
+                <span class="affiliate-link-card__label">{{ card.label }}</span>
+                <span class="affiliate-link-card__desc">{{ card.description }}</span>
+                <span class="affiliate-link-card__cta">{{ card.cta }}</span>
+            </span>
+        </a>
+        <img border="0" width="1" height="1" src="{{ card.pixel }}" alt="">
+    </article>
+    {% endfor %}
+</div>

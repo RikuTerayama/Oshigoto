@@ -1,0 +1,69 @@
+# Git関連
+.git
+.gitignore
+README.md
+
+# Python関連
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# 仮想環境
+venv/
+ENV/
+env/
+.venv/
+
+# IDE関連
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS関連
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ログファイル
+*.log
+logs/
+
+# 一時ファイル
+*.tmp
+*.temp
+temp/
+tmp/
+
+# 設定ファイル（開発用）
+.env.local
+.env.development
+.env.test
+
+# その他
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log* 

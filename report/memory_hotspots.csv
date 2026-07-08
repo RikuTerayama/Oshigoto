@@ -1,0 +1,15 @@
+file_path,function_or_line,suspected_issue,why_it_may_bloat_memory,quick_fix_candidate,risk
+automation.py,1568-1979,process_jobcan_automation,ブラウザインスタンスが100-200MB消費、エラー時にクリーンアップされない可能性,finallyブロックで確実にbrowser.close()を実行,高
+automation.py,1653,browser = p.chromium.launch(),ブラウザ起動時に100-200MB消費,ブラウザ起動オプションの最適化（既に設定済み）,高
+utils.py,552,pd.read_excel(file_path),全データをメモリに読み込む（ファイルサイズ×3-5倍）,read_onlyモードまたはchunksizeパラメータでストリーミング処理,中
+utils.py,559,load_workbook(file_path),ワークブック全体をメモリに読み込む（ファイルサイズ×3-5倍）,read_only=Trueモードでストリーミング処理,中
+app.py,156-157,jobs = {},グローバル辞書にジョブが蓄積、古いジョブが削除されない可能性,prune_old_jobs()の確実な実行、保持期間の短縮,中
+app.py,797,'logs': [],ログが無制限に蓄積される（数百行で数MB）,ログ上限設定（MAX_JOB_LOGS=1000）、古いログの自動削除,中
+app.py,163-172,session_manager,セッション管理（1セッションあたり数KB、影響は小）,クリーンアップ処理の確実な実行,低
+app.py,741,file = request.files['file'],Flaskのファイルオブジェクトがメモリに保持される可能性,ストリーミング保存（既に実装済み）,低
+app.py,270-324,prune_old_jobs(),古いジョブの削除（30分保持）、エラー時に確実に実行されない可能性,保持期間の短縮（30分→10分）、定期実行の確実化,低
+automation.py,1488,load_excel_data(file_path),Excel読み込み呼び出し（30-50MB消費）,処理完了後の明示的なメモリ解放（del data_source）,中
+diagnostics/runtime_metrics.py,67-122,log_memory(),メモリ計測ログ（影響は小、計測用）,現状維持（計測用）,低
+app.py,786-791,log_memory("upload_done"),ファイルアップロード直後のメモリ計測（計測用）,現状維持（計測用）,低
+automation.py,1484-1493,log_memory("excel_before/after"),Excel読み込み前後のメモリ計測（計測用）,現状維持（計測用）,低
+automation.py,1553-1554,log_memory("browser_before"),ブラウザ起動前のメモリ計測（計測用）,現状維持（計測用）,低

@@ -1,0 +1,114 @@
+{% from 'includes/icons.html' import icon %}
+{% set _current_path = request.path|default('/') if (request is defined and request) else '/' %}
+<header class="site-header">
+    <nav class="site-nav" role="navigation" aria-label="メインナビゲーション">
+        <div class="site-nav__inner">
+            <a href="/" class="site-logo" aria-label="しごと道具箱 ホーム">
+                <span class="site-logo__badge">しごと道具箱</span>
+                <span class="site-logo__meta">小さな仕事を片づける軽量ツール集</span>
+            </a>
+            <div class="site-nav__links">
+                {% for section in nav_sections|default([]) %}
+                    {% if section.children is none or not section.children %}
+                        <a href="{{ section.path|default('/') }}"
+                           class="site-nav__link {% if _current_path == section.path or (section.path == '/' and _current_path == '/') %}site-nav__link--active{% endif %}"
+                           {% if section.id %}id="nav-{{ section.id }}"{% endif %}>
+                            {% if section.id == 'home' %}{{ icon('home', 18, 'site-nav__icon') }}{% elif section.id == 'guide' %}{{ icon('book', 18, 'site-nav__icon') }}{% elif section.id == 'tools' %}{{ icon('tools', 18, 'site-nav__icon') }}{% endif %}
+                            <span>{{ section.label }}</span>
+                        </a>
+                    {% else %}
+                        <div class="site-nav__dropdown-wrap" data-dropdown>
+                            <button type="button"
+                                    class="site-nav__link site-nav__link--trigger {% if _current_path == section.path %}site-nav__link--active{% endif %}"
+                                    aria-expanded="false"
+                                    aria-haspopup="true"
+                                    aria-controls="dropdown-{{ section.id|default(loop.index) }}"
+                                    id="nav-{{ section.id|default(loop.index) }}">
+                                {% if section.id == 'tools' %}{{ icon('tools', 18, 'site-nav__icon') }}{% elif section.id == 'guide' %}{{ icon('book', 18, 'site-nav__icon') }}{% endif %}
+                                <span>{{ section.label }}</span>
+                                <span class="site-nav__chevron" aria-hidden="true">▼</span>
+                            </button>
+                            <ul class="site-nav__dropdown" id="dropdown-{{ section.id|default(loop.index) }}" role="menu" aria-label="{{ section.label }}">
+                                {% for item in section.children %}
+                                    {% if item.get('items') %}
+                                        <li role="none" class="site-nav__group">
+                                            <span class="site-nav__group-label">{{ item.group_label|default('') }}</span>
+                                            {% for sub in item['items'] %}
+                                                <a href="{{ sub.path|default('#') }}" role="menuitem" class="site-nav__dropdown-link">
+                                                    {% if sub.icon %}<span class="site-nav__dropdown-icon">{{ sub.icon }}</span>{% endif %}
+                                                    <span>{{ sub.name|default('') }}</span>
+                                                </a>
+                                            {% endfor %}
+                                        </li>
+                                    {% else %}
+                                        <li role="none">
+                                            <a href="{{ item.path|default('#') }}" role="menuitem" class="site-nav__dropdown-link">
+                                                {% if item.icon %}<span class="site-nav__dropdown-icon">{{ item.icon }}</span>{% endif %}
+                                                <span>{{ item.name|default('') }}</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% if not nav_sections or nav_sections|length == 0 %}
+                    <a href="/" class="site-nav__link {% if _current_path == '/' %}site-nav__link--active{% endif %}"><span>ホーム</span></a>
+                    <a href="/tools" class="site-nav__link {% if _current_path == '/tools' %}site-nav__link--active{% endif %}"><span>ツール</span></a>
+                    <a href="/guide" class="site-nav__link {% if _current_path == '/guide' %}site-nav__link--active{% endif %}"><span>ガイド</span></a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+</header>
+{% if affiliate_top_slot_mode == 'header' and affiliate_top_slot_id %}
+<div class="affiliate-top-shell">
+    {% with slot_id=affiliate_top_slot_id, slot_render_fallback=true, slot_disable_widget=false, slot_extra_class='affiliate-slot--primary-inline' %}
+        {% include 'includes/affiliate_slot.html' %}
+    {% endwith %}
+</div>
+{% endif %}
+<script>
+(function() {
+    document.querySelectorAll('[data-dropdown]').forEach(function(wrap) {
+        var btn = wrap.querySelector('button');
+        var menu = wrap.querySelector('.site-nav__dropdown');
+        if (!btn || !menu) return;
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var open = wrap.getAttribute('data-open') === 'true';
+            document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(function(other) {
+                if (other !== wrap) {
+                    other.removeAttribute('data-open');
+                    var otherBtn = other.querySelector('button');
+                    if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+            if (open) {
+                wrap.removeAttribute('data-open');
+                btn.setAttribute('aria-expanded', 'false');
+            } else {
+                wrap.setAttribute('data-open', 'true');
+                btn.setAttribute('aria-expanded', 'true');
+            }
+        });
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key !== 'Escape') return;
+        document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(function(wrap) {
+            wrap.removeAttribute('data-open');
+            var btn = wrap.querySelector('button');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        });
+    });
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('[data-dropdown]')) return;
+        document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(function(wrap) {
+            wrap.removeAttribute('data-open');
+            var btn = wrap.querySelector('button');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        });
+    });
+})();
+</script>

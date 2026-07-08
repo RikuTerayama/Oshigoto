@@ -1,0 +1,26 @@
+URL	役割	想定負荷	Bot価値	優先度	備考
+/	LP	高	高	P1	app.py:802
+/autofill	AutoFillページ	高	高	P1	app.py:912
+/tools	ツール一覧	中	中	P1	app.py:1260
+/tools/pdf	PDFツール	中	中	P1	app.py:1025
+/tools/image-batch	画像一括	中	中	P1	app.py:1018
+/tools/image-cleanup	画像クリーンアップ	中	中	P1	app.py:1139
+/tools/seo	SEOツール	中	中	P1	app.py:1158
+/tools/csv	CSV/Excelツール	中	中	P1	app.py:1165
+/tools/minutes	リダイレクト→/tools	低	低	P2	app.py:1146
+/guide	ガイド一覧	中	中	P2	app.py:944
+/guide/*	各ガイド	中	低	P2	app.py:955〜1013
+/contact	お問い合わせ	中	中	P1	app.py:939
+/upload	POST アップロード	高	高	P1	app.py:1609（サーバ処理）
+/status/<job_id>	ポーリング	高	中	P1	app.py:1826
+/cancel/<job_id>	POST キャンセル	中	低	P2	app.py:1788
+/api/pdf/unlock	POST（tool-runner等）	中	中	P1	app.py:1043
+/api/pdf/lock	POST（tool-runner等）	中	中	P1	app.py:1089
+/api/minutes/format	POST	低	低	P2	app.py:1152
+/api/seo/crawl-urls	POST クロール	中	高	P1	app.py:1208（レート制限あり）
+/download-template	GET ダウンロード	中	中	P2	app.py:1559
+/download-previous-template	GET ダウンロード	中	中	P2	app.py:1584
+/sessions	管理用	低	低	P2	app.py:1932
+/cleanup-sessions	管理用	低	低	P2	app.py:1959
+/healthz,/livez,/readyz	ヘルス	高(回数)	低	P2	app.py:1389,1400,1405
+/static/*	静的	高	低	P2	Flask デフォルト

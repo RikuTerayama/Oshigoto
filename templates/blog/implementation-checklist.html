@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    {% set page_title = 'Jobcan AutoFill導入チェックリスト（10項目） | Jobcan AutoFill' %}
+    {% include 'includes/head_meta.html' %}
+</head>
+<body style="margin: 0; font-family: 'Noto Sans JP', sans-serif; background: linear-gradient(135deg, #101010 0%, #181818 50%, #0E0E0E 100%); color: #FFFFFF; line-height: 1.8;">
+    <main style="max-width: 900px; margin: 0 auto; padding: 40px 20px;">
+        <article itemscope itemtype="https://schema.org/BlogPosting" style="background: rgba(0, 0, 0, 0.35); border-radius: 18px; padding: 35px; border: 1px solid rgba(74, 158, 255, 0.25);">
+            <header style="margin-bottom: 30px;">
+                <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+                    <ol style="list-style: none; padding: 0; margin: 0; display: inline-flex; gap: 10px; font-size: 0.9em; color: rgba(255, 255, 255, 0.7);">
+                        <li><a href="/" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">ホーム</a></li>
+                        <li><a href="/blog" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">ブログ</a></li>
+                        <li aria-current="page" style="color: #FFFFFF;">Jobcan AutoFill導入チェックリスト（10項目）</li>
+                    </ol>
+                </nav>
+                {# P1-3: ブログの更新情報の明確化 #}
+                <span style="display: inline-block; font-size: 0.85em; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.6);">
+                    <time itemprop="datePublished" datetime="2025-02-17">公開日: 2025-02-17</time>
+                    {% if false %}<time itemprop="dateModified" datetime="2025-02-17"> / 更新日: 2025-02-17</time>{% endif %}
+                    / 導入・運用ガイド
+                </span>
+                <h1 itemprop="headline" style="margin: 12px 0 10px 0; font-size: 2.1em; color: #4A9EFF;">Jobcan AutoFill導入チェックリスト（10項目）</h1>
+                <p itemprop="description" style="margin: 0; color: rgba(255, 255, 255, 0.85);">
+                    Jobcan AutoFillを導入する前に確認すべき10のポイントを整理しました。社内ルール、セキュリティ、データ管理、運用体制まで網羅しているので、稟議資料や導入準備のセルフレビューとしてご活用ください。
+                </p>
+            </header>
+
+            <section itemprop="articleBody">
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">1. ルール整備</h2>
+                <ul style="padding-left: 22px;">
+                    <li><strong>就業規則・セキュリティポリシーの確認：</strong>自動ツール利用が許可されているか、情報システム部門と合意済みか。</li>
+                    <li><strong>責任者の明確化：</strong>人事・労務、情報システム、現場の代表者を定める。</li>
+                </ul>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">2. アカウントと権限</h2>
+                <ul style="padding-left: 22px;">
+                    <li><strong>Jobcanログイン情報の取り扱い手順：</strong>共有ストレージやチャットに貼り付けないルールを設定。</li>
+                    <li><strong>アクセス範囲：</strong>二要素認証やIP制限を設定している場合の運用方法を決める。</li>
+                </ul>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">3. データ管理</h2>
+                <ul style="padding-left: 22px;">
+                    <li><strong>Excelテンプレートの整備：</strong>入力形式を統一し、共有ドライブでバージョン管理する。</li>
+                    <li><strong>アップロードファイルの保管期間：</strong>処理後すぐに削除するか、暗号化して保管するかを決定。</li>
+                </ul>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">4. セキュリティ</h2>
+                <ul style="padding-left: 22px;">
+                    <li><strong>通信経路の確認：</strong>HTTPS（TLS1.2以上）で暗号化されているか、証明書の有効期限を管理。</li>
+                    <li><strong>ログの扱い：</strong>処理ログをどこに保存し、誰が閲覧できるかを定義。</li>
+                </ul>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">5. 運用フロー</h2>
+                <ul style="padding-left: 22px;">
+                    <li><strong>週次・月次の実行スケジュール：</strong>担当者が不在でも代行できるよう手順書を整備。</li>
+                    <li><strong>エラー対応フロー：</strong>CAPTCHAやJobcan側の障害発生時の連絡経路を明記。</li>
+                </ul>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">6. モニタリング</h2>
+                <ul style="padding-left: 22px;">
+                    <li><strong>進捗・結果の共有方法：</strong>SlackやTeamsで完了通知を自動化。</li>
+                    <li><strong>KPIの設定：</strong>処理時間、差し戻し件数、残業時間などをダッシュボード化。</li>
+                </ul>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">7. 教育・オンボーディング</h2>
+                <ul style="padding-left: 22px;">
+                    <li><strong>トレーニング資料：</strong>90秒の操作動画と手順書を配布。</li>
+                    <li><strong>サポート体制：</strong>初回運用日は有人サポートを配置し、QAを蓄積。</li>
+                </ul>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">8. 法令・コンプライアンス</h2>
+                <ul style="padding-left: 22px;">
+                    <li><strong>労働基準法・36協定：</strong>勤怠データの改ざん防止策と監査ログを確保。</li>
+                    <li><strong>個人情報保護法：</strong>取り扱うデータの分類と保護措置を整理。</li>
+                </ul>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">9. 稟議・承認</h2>
+                <ul style="padding-left: 22px;">
+                    <li><strong>費用対効果：</strong>削減時間の試算と、労務チームの再配分計画を提示。</li>
+                    <li><strong>リスク評価シート：</strong>発生し得るリスクと対策を一覧化。</li>
+                </ul>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">10. 継続的改善</h2>
+                <ul style="padding-left: 22px;">
+                    <li><strong>フィードバックフロー：</strong>月次で改善要望を集め、バックログ化。</li>
+                    <li><strong>バージョン管理：</strong>AutoFill側のアップデート情報と互換性を定期確認。</li>
+                </ul>
+
+                <div style="margin-top: 30px; padding: 24px; background: rgba(74, 158, 255, 0.15); border-radius: 12px; border: 1px solid rgba(74, 158, 255, 0.35);">
+                    <h2 style="margin-top: 0; font-size: 1.5em; color: #FFFFFF;">ダウンロード資料</h2>
+                    <p style="margin-bottom: 12px;">チェックリストを含めた稟議用テンプレート（PowerPoint）とリスク評価シート（Excel）を以下よりリクエストできます。</p>
+                    <a href="/contact" style="display: inline-block; padding: 12px 24px; border-radius: 10px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.3); color: #FFFFFF; text-decoration: none;">お問い合わせフォームへ</a>
+                </div>
+            </section>
+
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 50px 0;">
+
+            <section style="background: rgba(74, 158, 255, 0.1); border-radius: 12px; padding: 25px; margin-top: 40px; border: 1px solid rgba(74, 158, 255, 0.3);">
+                <h3 style="margin-top: 0; color: #4A9EFF; font-size: 1.4em;">あわせて読みたいリソース</h3>
+                <ul style="margin: 15px 0; padding-left: 25px; line-height: 2.0;">
+                    <li><a href="/guide/getting-started" style="color: #4A9EFF; text-decoration: none;">はじめての使い方ガイド：自動入力を今すぐ始める</a></li>
+                    <li><a href="/best-practices" style="color: #4A9EFF; text-decoration: none;">効率化を最大化するベストプラクティス</a></li>
+                    <li><a href="/blog/automation-roadmap" style="color: #4A9EFF; text-decoration: none;">90日ロードマップ：社内展開の具体的手順</a></li>
+                    <li><a href="/blog/playwright-security" style="color: #4A9EFF; text-decoration: none;">Playwrightによるブラウザ自動化のセキュリティ解説</a></li>
+                </ul>
+            </section>
+        </article>
+    </main>
+{# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/footer.html' %}
+</body>
+</html>

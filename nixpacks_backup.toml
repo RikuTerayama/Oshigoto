@@ -1,0 +1,16 @@
+[phases.setup]
+nixPkgs = ["python311", "gcc", "chromium", "alsa-lib", "libasound2", "curl"]
+
+[phases.install]
+cmds = [
+    "python -m venv --copies /opt/venv",
+    ". /opt/venv/bin/activate && pip install --no-cache-dir --disable-pip-version-check -r requirements.txt"
+]
+
+[phases.build]
+cmds = [
+    ". /opt/venv/bin/activate && playwright install chromium --with-deps --force"
+]
+
+[start]
+cmd = "gunicorn app:app --bind 0.0.0.0:$PORT --timeout 300 --workers 1 --preload --max-requests 1000 --keep-alive 2 --log-level debug --access-logfile - --error-logfile - --capture-output --reload" 

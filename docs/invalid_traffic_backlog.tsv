@@ -1,0 +1,9 @@
+優先度	項目	現状	追加方針（最小差分案）	変更箇所候補(file:line)	受け入れ基準
+P1	広告の緊急停止	ADSENSE_ENABLED は渡しているが script は無条件	head_meta で adsbygoogle を ADSENSE_ENABLED で囲む	templates/includes/head_meta.html:61〜63 を {% if ADSENSE_ENABLED %} で囲む	本番で ADSENSE_ENABLED=false にすると広告スクリプトが読み込まれない
+P1	アクセスログに UA/Referer	なし	req_start または after_request のログに UA と Referer を追加（長い場合は省略）	app.py:132 または 146〜148	1 リクエストあたり UA と Referer がログに残る
+P1	レート制限（/upload, /status）	なし	Flask-Limiter または slowapi で /upload, /status/* を IP あたり N 回/分に制限	app.py（before_request 付近）、requirements.txt	連打で 429 が返り、他ユーザーに影響が伝播しにくい
+P1	プロキシ越しの実 IP 統一	通常ログは remote_addr のみ。crawl のみ XFF 使用	ProxyFix 導入または before_request で request の remote_addr を XFF 左端で上書きし、ログもその値を使う	app.py 起動直後または before_request、app.py:132	Render 本番でログに実クライアント IP が残る
+P2	レート制限（/, /tools/*）	なし	同一 IP の GET を N req/min に制限（ヘルスは除外）	app.py, requirements.txt	ボット連打で 429、正常ユーザーは影響小
+P2	緊急メンテナンスモード	なし	MAINTENANCE_MODE=true で全レスポンス 503	app.py before_request の早い段階	env で true にすると全パス 503
+P2	/upload 単体遮断	なし	UPLOAD_DISABLED=true で /upload のみ 503	app.py /upload 直前または before_request	事故時に upload だけ止められる
+P2	AdSense 誤認リスク	seo に「AdSense承認」ラベル	プリセット名を「AdSense承認用」等に変更またはコメントで意図明記	templates/tools/seo.html:352	文言が広告と誤認されにくい

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    {% set page_title = 'PlaywrightでJobcanを自動操作する時にハマったポイントと、その解決パターン | Jobcan AutoFill' %}
+    {% include 'includes/head_meta.html' %}
+</head>
+<body style="margin: 0; font-family: 'Noto Sans JP', sans-serif; background: linear-gradient(135deg, #101010 0%, #181818 50%, #0E0E0E 100%); color: #FFFFFF; line-height: 1.8;">
+    <main style="max-width: 900px; margin: 0 auto; padding: 40px 20px;">
+        <article itemscope itemtype="https://schema.org/BlogPosting" style="background: rgba(0, 0, 0, 0.35); border-radius: 18px; padding: 35px; border: 1px solid rgba(74, 158, 255, 0.25);">
+            <header style="margin-bottom: 30px;">
+                <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+                    <ol style="list-style: none; padding: 0; margin: 0; display: inline-flex; gap: 10px; font-size: 0.9em; color: rgba(255, 255, 255, 0.7);">
+                        <li><a href="/" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">ホーム</a></li>
+                        <li><a href="/blog" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">ブログ</a></li>
+                        <li aria-current="page" style="color: #FFFFFF;">技術解説</li>
+                    </ol>
+                </nav>
+                {# P1-3: ブログの更新情報の明確化 #}
+                <span style="display: inline-block; font-size: 0.85em; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.6);">
+                    <time itemprop="datePublished" datetime="2025-01-12">公開日: 2025-01-12</time>
+                    {% if false %}<time itemprop="dateModified" datetime="2025-01-12"> / 更新日: 2025-01-12</time>{% endif %}
+                    / 技術スタック・Playwright
+                </span>
+                <h1 itemprop="headline" style="margin: 12px 0 10px 0; font-size: 2.2em; color: #4A9EFF; line-height: 1.4;">PlaywrightでJobcanを自動操作する時にハマったポイントと、その解決パターン</h1>
+                <p itemprop="description" style="margin: 0; color: rgba(255, 255, 255, 0.85);">
+                    PlaywrightでJobcanを自動操作する際に遭遇した技術的な課題と、その解決パターンを、開発者RTの実体験を交えて詳しく解説します。エンジニアやスクリプトを書ける情シス担当者向けの技術解説記事です。
+                </p>
+            </header>
+
+            <section itemprop="articleBody">
+                <p>2025年4月からJobcan AutoFillの開発を開始し、Playwrightというブラウザ自動化ライブラリを使用してJobcanを自動操作する機能を実装しました。開発過程で、様々な技術的な課題に遭遇し、試行錯誤を重ねながら解決してきました。</p>
+                <p>この記事では、PlaywrightでJobcanを自動操作する際に「ハマったポイント」と、その解決パターンを、実体験を交えて詳しく解説します。エンジニアやスクリプトを書ける情シス担当者の方々が、同様の課題に直面した際の参考になれば幸いです。</p>
+                <p>なお、この記事では、実装に直結しすぎないハイレベルな疑似コード程度で説明します。具体的な実装方法については、Playwrightの公式ドキュメントを参照してください。</p>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF; margin-top: 50px; margin-bottom: 25px; border-left: 5px solid #4A9EFF; padding-left: 15px;">課題1：ログイン周りの工夫（2FAやセッション・CAPTCHAっぽい挙動）</h2>
+                <p>Jobcanのログイン処理で、最初に遭遇した課題が「2FA（二要素認証）やセッション管理、CAPTCHAっぽい挙動」への対応です。Jobcanは、セキュリティ上の理由から、以下のような挙動を示すことがあります：</p>
+                <ul style="margin: 20px 0; padding-left: 25px; color: rgba(255, 255, 255, 0.9);">
+                    <li>ログイン後に、追加の認証ステップが表示される</li>
+                    <li>セッションタイムアウトが短く、処理中にログアウトされる</li>
+                    <li>CAPTCHAっぽい画像認証が表示される（実際にはCAPTCHAではないが、似た挙動）</li>
+                </ul>
+                <div style="background: rgba(74, 158, 255, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(74, 158, 255, 0.3);">
+                    <h3 style="margin-top: 0; color: #4A9EFF; font-size: 1.3em;">💡 解決パターン1：適切な待機時間の設定</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        Playwrightでは、要素が表示されるまで待機する機能（`wait_for_selector`）を使用できます。しかし、Jobcanの場合、要素が表示されるタイミングが不安定なことがあります。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>解決策：</strong> ログイン後、ダッシュボードが表示されるまで、適切な待機時間（例：3〜5秒）を設ける。また、特定の要素（例：「勤怠入力」ボタン）が表示されるまで待機する。
+                    </p>
+                </div>
+                <div style="background: rgba(76, 175, 80, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(76, 175, 80, 0.3);">
+                    <h3 style="margin-top: 0; color: #4CAF50; font-size: 1.3em;">✅ 解決パターン2：セッション管理の最適化</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        Jobcanは、セッションタイムアウトが短い場合があります。処理中にログアウトされると、エラーが発生します。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>解決策：</strong> 各処理ごとに新しいブラウザセッションを開始する。これにより、セッションタイムアウトのリスクを回避できる。また、処理時間が長い場合は、中間でセッションを再確立する。
+                    </p>
+                </div>
+                <div style="background: rgba(255, 152, 0, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(255, 152, 0, 0.3);">
+                    <h3 style="margin-top: 0; color: #FF9800; font-size: 1.3em;">⚠️ 解決パターン3：CAPTCHA検知と手動対応</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        Jobcanでは、CAPTCHAっぽい画像認証が表示されることがあります（実際にはCAPTCHAではないが、似た挙動）。この場合、自動処理が困難です。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>解決策：</strong> CAPTCHAっぽい要素が表示された場合、処理を中断し、ユーザーに通知する。ユーザーが手動で対応した後、処理を再開する。または、処理をスキップし、ログに記録する。
+                    </p>
+                </div>
+                <p>これらの解決パターンを実装することで、ログイン周りの課題を回避できます。ただし、<strong style="color: #DC3545;">CAPTCHAが実際に表示された場合は、自動処理が困難なため、手動対応が必要です</strong>。</p>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF; margin-top: 50px; margin-bottom: 25px; border-left: 5px solid #4A9EFF; padding-left: 15px;">課題2：画面要素の特定（セレクタ）の揺らぎへの対応</h2>
+                <p>PlaywrightでJobcanを自動操作する際、画面要素を特定するために「セレクタ」を使用します。しかし、Jobcanの画面は、以下のような理由でセレクタが揺らぐことがあります：</p>
+                <ul style="margin: 20px 0; padding-left: 25px; color: rgba(255, 255, 255, 0.9);">
+                    <li>画面のレイアウトが変更される（Jobcan側のアップデート）</li>
+                    <li>動的に生成される要素（JavaScriptで生成される要素）</li>
+                    <li>複数の要素が同じクラス名やIDを持つ</li>
+                </ul>
+                <div style="background: rgba(74, 158, 255, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(74, 158, 255, 0.3);">
+                    <h3 style="margin-top: 0; color: #4A9EFF; font-size: 1.3em;">💡 解決パターン1：複数のセレクタ戦略を用意する</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        単一のセレクタに依存せず、複数のセレクタ戦略を用意することで、セレクタの揺らぎに対応できます。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>解決策：</strong> 要素を特定する際、以下の優先順位でセレクタを試す：
+                    </p>
+                    <ol style="margin: 15px 0; padding-left: 25px; color: rgba(255, 255, 255, 0.9);">
+                        <li>IDセレクタ（例：`#submit-button`）</li>
+                        <li>データ属性セレクタ（例：`[data-testid="submit"]`）</li>
+                        <li>クラスセレクタ（例：`.submit-button`）</li>
+                        <li>テキストセレクタ（例：`text="送信"`）</li>
+                    </ol>
+                </div>
+                <div style="background: rgba(76, 175, 80, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(76, 175, 80, 0.3);">
+                    <h3 style="margin-top: 0; color: #4CAF50; font-size: 1.3em;">✅ 解決パターン2：要素の存在確認とフォールバック</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        要素が存在するか確認し、存在しない場合はフォールバック処理を実行します。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>解決策：</strong> 要素を探す際、`is_visible()`や`count()`を使用して、要素の存在を確認する。要素が存在しない場合、代替のセレクタを試すか、エラーログを記録して処理を中断する。
+                    </p>
+                </div>
+                <div style="background: rgba(255, 152, 0, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(255, 152, 0, 0.3);">
+                    <h3 style="margin-top: 0; color: #FF9800; font-size: 1.3em;">⚠️ 解決パターン3：定期的なセレクタの見直し</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        Jobcanの画面がアップデートされると、セレクタが無効になる可能性があります。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>解決策：</strong> 定期的にセレクタの有効性を確認し、無効になった場合は、新しいセレクタを特定する。また、エラーログを監視し、セレクタエラーが頻発する場合は、早急に対応する。
+                    </p>
+                </div>
+                <p>これらの解決パターンを実装することで、セレクタの揺らぎに対応できます。ただし、<strong style="color: #DC3545;">Jobcanの画面が大幅に変更された場合は、セレクタの見直しが必要です</strong>。</p>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF; margin-top: 50px; margin-bottom: 25px; border-left: 5px solid #4A9EFF; padding-left: 15px;">課題3：タイミング問題（ロード待ち、Timeout）の扱い</h2>
+                <p>PlaywrightでJobcanを自動操作する際、タイミング問題が発生することがあります。具体的には、以下のような問題です：</p>
+                <ul style="margin: 20px 0; padding-left: 25px; color: rgba(255, 255, 255, 0.9);">
+                    <li>ページの読み込みが完了する前に、次の操作を実行してしまう</li>
+                    <li>要素が表示される前に、クリックや入力を行ってしまう</li>
+                    <li>処理が完了する前に、タイムアウトが発生してしまう</li>
+                </ul>
+                <div style="background: rgba(74, 158, 255, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(74, 158, 255, 0.3);">
+                    <h3 style="margin-top: 0; color: #4A9EFF; font-size: 1.3em;">💡 解決パターン1：適切な待機処理の実装</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        Playwrightでは、要素が表示されるまで待機する機能（`wait_for_selector`）や、ページの読み込みが完了するまで待機する機能（`wait_for_load_state`）を使用できます。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>解決策：</strong> 各操作の前に、適切な待機処理を実装する。例えば、フォーム送信後、次のページが表示されるまで待機する。また、要素がクリック可能になるまで待機する。
+                    </p>
+                </div>
+                <div style="background: rgba(76, 175, 80, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(76, 175, 80, 0.3);">
+                    <h3 style="margin-top: 0; color: #4CAF50; font-size: 1.3em;">✅ 解決パターン2：タイムアウトの適切な設定</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        Playwrightでは、各操作にタイムアウトを設定できます。タイムアウトが短すぎると、処理が失敗します。長すぎると、エラーの検知が遅れます。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>解決策：</strong> 各操作に適切なタイムアウト（例：30秒）を設定する。また、処理が長い場合は、タイムアウトを延長する。エラーが発生した場合、タイムアウトの設定を見直す。
+                    </p>
+                </div>
+                <div style="background: rgba(255, 152, 0, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(255, 152, 0, 0.3);">
+                    <h3 style="margin-top: 0; color: #FF9800; font-size: 1.3em;">⚠️ 解決パターン3：リトライ機能の実装</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        タイミング問題により処理が失敗した場合、リトライ機能を実装することで、成功率を向上させられます。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>解決策：</strong> 処理が失敗した場合、最大3回までリトライする。リトライの間隔を設ける（例：2秒）。リトライがすべて失敗した場合、エラーログを記録して処理を中断する。
+                    </p>
+                </div>
+                <p>これらの解決パターンを実装することで、タイミング問題に対応できます。ただし、<strong style="color: #DC3545;">Jobcanのシステムが重い場合は、タイムアウトを延長するか、処理を分割する必要があります</strong>。</p>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF; margin-top: 50px; margin-bottom: 25px; border-left: 5px solid #4A9EFF; padding-left: 15px;">課題4：エラーログ設計や再実行の考え方</h2>
+                <p>PlaywrightでJobcanを自動操作する際、エラーが発生した場合のログ設計と再実行の考え方が重要です。以下のような課題があります：</p>
+                <ul style="margin: 20px 0; padding-left: 25px; color: rgba(255, 255, 255, 0.9);">
+                    <li>エラーが発生した場合、どのような情報をログに記録すべきか</li>
+                    <li>エラーが発生した場合、どのように再実行すべきか</li>
+                    <li>エラーが発生した場合、ユーザーにどのように通知すべきか</li>
+                </ul>
+                <div style="background: rgba(74, 158, 255, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(74, 158, 255, 0.3);">
+                    <h3 style="margin-top: 0; color: #4A9EFF; font-size: 1.3em;">💡 解決パターン1：詳細なエラーログの記録</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        エラーが発生した場合、以下の情報をログに記録します：
+                    </p>
+                    <ul style="margin: 15px 0; padding-left: 25px; color: rgba(255, 255, 255, 0.9);">
+                        <li>エラーの種類（タイムアウト、セレクタエラー、ネットワークエラーなど）</li>
+                        <li>エラーが発生した箇所（どの処理でエラーが発生したか）</li>
+                        <li>エラーメッセージ（Playwrightから返されたエラーメッセージ）</li>
+                        <li>スクリーンショット（エラー発生時の画面状態）</li>
+                        <li>処理中のデータ（どのデータを処理していたか）</li>
+                    </ul>
+                    <p style="margin-top: 15px; margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>解決策：</strong> これらの情報を構造化されたログ（JSON形式など）に記録する。ログをファイルに保存し、必要に応じて確認できるようにする。
+                    </p>
+                </div>
+                <div style="background: rgba(76, 175, 80, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(76, 175, 80, 0.3);">
+                    <h3 style="margin-top: 0; color: #4CAF50; font-size: 1.3em;">✅ 解決パターン2：再実行の戦略</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        エラーが発生した場合、以下の戦略で再実行します：
+                    </p>
+                    <ul style="margin: 15px 0; padding-left: 25px; color: rgba(255, 255, 255, 0.9);">
+                        <li><strong>一時的なエラー（タイムアウト、ネットワークエラーなど）：</strong> 最大3回までリトライする</li>
+                        <li><strong>永続的なエラー（セレクタエラー、データエラーなど）：</strong> リトライせず、エラーログを記録して処理を中断する</li>
+                        <li><strong>部分的なエラー（一部のデータのみエラー）：</strong> エラーが発生したデータをスキップし、次のデータを処理する</li>
+                    </ul>
+                    <p style="margin-top: 15px; margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>解決策：</strong> エラーの種類に応じて、適切な再実行戦略を選択する。リトライの間隔を設ける（例：2秒）。リトライがすべて失敗した場合、エラーログを記録して処理を中断する。
+                    </p>
+                </div>
+                <div style="background: rgba(255, 152, 0, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(255, 152, 0, 0.3);">
+                    <h3 style="margin-top: 0; color: #FF9800; font-size: 1.3em;">⚠️ 解決パターン3：ユーザーへの通知</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        エラーが発生した場合、ユーザーに適切に通知します。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>解決策：</strong> エラーが発生した場合、以下の情報をユーザーに通知する：
+                    </p>
+                    <ul style="margin: 15px 0; padding-left: 25px; color: rgba(255, 255, 255, 0.9);">
+                        <li>エラーの種類と発生箇所</li>
+                        <li>エラーログのダウンロードリンク</li>
+                        <li>再実行の方法（可能な場合）</li>
+                        <li>サポートへの連絡方法</li>
+                    </ul>
+                </div>
+                <p>これらの解決パターンを実装することで、エラーハンドリングが適切に行われ、ユーザー体験が向上します。</p>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF; margin-top: 50px; margin-bottom: 25px; border-left: 5px solid #4A9EFF; padding-left: 15px;">課題5：セキュリティ・倫理的な観点で「やらない」と決めたこと</h2>
+                <p>PlaywrightでJobcanを自動操作する際、技術的には可能でも、セキュリティ・倫理的な観点から「やらない」と決めたことがあります。以下、その理由を説明します。</p>
+                <div style="background: rgba(220, 53, 69, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(220, 53, 69, 0.3);">
+                    <h3 style="margin-top: 0; color: #DC3545; font-size: 1.3em;">❌ やらないこと1：パスワードの保存</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        技術的には、パスワードを暗号化して保存し、自動ログインを実現できます。しかし、これはセキュリティリスクが高いため、実装していません。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>理由：</strong> パスワードを保存することで、サーバーが侵害された場合、パスワードが漏洩するリスクがある。また、パスワードの変更に対応できない。そのため、Jobcan AutoFillでは、パスワードを保存せず、処理のたびにユーザーから入力を受け取る設計にしています。
+                    </p>
+                </div>
+                <div style="background: rgba(220, 53, 69, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(220, 53, 69, 0.3);">
+                    <h3 style="margin-top: 0; color: #DC3545; font-size: 1.3em;">❌ やらないこと2：CAPTCHAの自動突破</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        技術的には、OCR（光学文字認識）や機械学習を使用して、CAPTCHAを自動突破できます。しかし、これはJobcan側のセキュリティを破る行為であり、倫理的に問題があるため、実装していません。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>理由：</strong> CAPTCHAは、ボットによる自動操作を防ぐためのセキュリティ機能です。これを自動突破することは、Jobcan側のセキュリティを破る行為であり、利用規約に違反する可能性があります。そのため、Jobcan AutoFillでは、CAPTCHAが表示された場合、処理を中断し、ユーザーに手動対応を依頼する設計にしています。
+                    </p>
+                </div>
+                <div style="background: rgba(220, 53, 69, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(220, 53, 69, 0.3);">
+                    <h3 style="margin-top: 0; color: #DC3545; font-size: 1.3em;">❌ やらないこと3：処理速度の過度な最適化</h3>
+                    <p style="margin-bottom: 15px; color: rgba(255, 255, 255, 0.9);">
+                        技術的には、処理速度を過度に最適化し、短時間で大量のデータを処理できます。しかし、これはJobcan側のサーバーに負荷をかける可能性があるため、実装していません。
+                    </p>
+                    <p style="margin-bottom: 0; color: rgba(255, 255, 255, 0.9);">
+                        <strong>理由：</strong> 処理速度を過度に最適化すると、Jobcan側のサーバーに負荷をかける可能性があります。また、短時間で大量のリクエストを送信すると、DoS攻撃と誤認されるリスクがあります。そのため、Jobcan AutoFillでは、各データ処理後に適切な待機時間（例：1〜2秒）を設け、サーバーへの負荷を軽減する設計にしています。
+                    </p>
+                </div>
+                <p>これらの「やらないこと」を明確にすることで、セキュリティと倫理を両立した自動化ツールを実現しています。詳しくは<a href="/blog/playwright-security" style="color: #4A9EFF;">「Playwrightによるブラウザ自動化のセキュリティ：企業の安全性を守るための技術解説」</a>の記事も参照してください。</p>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF; margin-top: 50px; margin-bottom: 25px; border-left: 5px solid #4A9EFF; padding-left: 15px;">まとめ：技術的な課題を解決することで、安定した自動化を実現する</h2>
+                <p>この記事では、PlaywrightでJobcanを自動操作する際に「ハマったポイント」と、その解決パターンを解説しました。重要なのは、<strong style="color: #4A9EFF;">「技術的な課題を解決することで、安定した自動化を実現する」こと</strong>です。</p>
+                <p>Jobcan AutoFillでは、これらの解決パターンを実装することで、2025年8月以降、毎月の勤怠締め作業で継続利用できる安定性を実現しています。エンジニアやスクリプトを書ける情シス担当者の方々が、同様の課題に直面した際の参考になれば幸いです。</p>
+                <p>ただし、技術的な課題を解決するだけでなく、<strong style="color: #DC3545;">セキュリティと倫理を両立した設計</strong>が重要です。パスワードの保存やCAPTCHAの自動突破など、「技術的には可能でも、やらないこと」を明確にすることで、信頼できる自動化ツールを実現できます。</p>
+            </section>
+
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 50px 0;">
+
+            <section style="background: rgba(74, 158, 255, 0.1); border-radius: 12px; padding: 25px; margin-top: 40px; border: 1px solid rgba(74, 158, 255, 0.3);">
+                <h3 style="margin-top: 0; color: #4A9EFF; font-size: 1.4em;">あわせて読みたいリソース</h3>
+                <ul style="margin: 15px 0; padding-left: 25px; line-height: 2.0;">
+                    <li><a href="/blog/playwright-security" style="color: #4A9EFF; text-decoration: none;">Playwrightによるブラウザ自動化のセキュリティ：企業の安全性を守るための技術解説</a></li>
+                    <li><a href="/guide/getting-started" style="color: #4A9EFF; text-decoration: none;">はじめての使い方ガイド：技術的な詳細も含む</a></li>
+                    <li><a href="/best-practices" style="color: #4A9EFF; text-decoration: none;">ベストプラクティス：エラーハンドリングと再実行の考え方</a></li>
+                    <li><a href="/faq" style="color: #4A9EFF; text-decoration: none;">よくある質問（FAQ）：技術的な質問にも対応</a></li>
+                </ul>
+            </section>
+        </article>
+    </main>
+{# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/footer.html' %}
+</body>
+</html>
+

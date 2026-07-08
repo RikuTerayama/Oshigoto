@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    {% set page_title = 'お問い合わせ | Jobcan AutoFill' %}
+    {% include 'includes/head_meta.html' %}
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            color: #FFFFFF;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #FFFFFF;
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        p, li {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+        }
+        .info-box {
+            background: rgba(74, 158, 255, 0.1);
+            border-left: 4px solid #4A9EFF;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+        .contact-methods {
+            margin-top: 30px;
+        }
+        .contact-method {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .contact-method h3 {
+            margin-top: 0;
+            color: #4A9EFF;
+        }
+        .contact-method a {
+            color: #4A9EFF;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .contact-method a:hover {
+            text-decoration: underline;
+        }
+        .faq {
+            margin-top: 40px;
+        }
+        .faq-item {
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .faq-question {
+            font-weight: 600;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .faq-answer {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: #FFFFFF;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    {# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <div class="container">
+        <h1>お問い合わせ</h1>
+
+        <div class="info-box">
+            <p>Jobcan AutoFillに関するご質問、ご意見、不具合報告などは、以下の方法でお問い合わせください。原則として <strong>3営業日以内</strong> に返信いたします。個人情報の取り扱いについては、<a href="/privacy">プライバシーポリシー</a>に従います。</p>
+        </div>
+
+        <div class="contact-methods">
+            <div class="contact-method" style="background: rgba(74, 158, 255, 0.15); border: 2px solid rgba(74, 158, 255, 0.4);">
+                <h3>📝 お問い合わせフォーム（推奨）</h3>
+                <p>以下のような内容について、お気軽にお問い合わせください：</p>
+                <ul style="margin-top: 10px; margin-bottom: 20px;">
+                    <li>不具合報告</li>
+                    <li>機能要望</li>
+                    <li>導入に関する相談</li>
+                    <li>使い方に関する質問</li>
+                    <li>その他のご意見・ご感想</li>
+                </ul>
+                <p style="margin-bottom: 20px;">
+                    <a id="contact-form-newtab" href="https://docs.google.com/forms/d/e/1FAIpQLSfAV8D2vxo7sCIvd3z9_1PBbFf3wLpST_bA8Y-P0Ab6WRM3gQ/viewform?usp=publish-editor" target="_blank" style="display: inline-block; padding: 15px 30px; background: rgba(74, 158, 255, 0.3); border: 1px solid rgba(74, 158, 255, 0.6); border-radius: 8px; color: #FFFFFF; text-decoration: none; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='rgba(74, 158, 255, 0.4)'; this.style.borderColor='rgba(74, 158, 255, 0.8)'" onmouseout="this.style.background='rgba(74, 158, 255, 0.3)'; this.style.borderColor='rgba(74, 158, 255, 0.6)'">お問い合わせフォームを別タブで開く</a>
+                </p>
+                <p style="font-size: 0.9em; color: rgba(255, 255, 255, 0.7);">※ 下のフォームはGoogleフォームです。表示されない場合は上のリンクから別タブで開いてください。</p>
+                <div id="contact-form" style="margin-top: 20px; width: 100%; overflow: hidden;">
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfAV8D2vxo7sCIvd3z9_1PBbFf3wLpST_bA8Y-P0Ab6WRM3gQ/viewform?embedded=true" style="width:100%; min-height:900px; border:0;" loading="lazy" title="お問い合わせフォーム"></iframe>
+                </div>
+            </div>
+
+            {# P0-1: メール連絡先（環境変数が設定されている場合） #}
+            {% if OPERATOR_EMAIL %}
+            <div class="contact-method" style="background: rgba(40, 167, 69, 0.15); border: 2px solid rgba(40, 167, 69, 0.4);">
+                <h3>📧 メールでのお問い合わせ</h3>
+                <p>メールでのお問い合わせも受け付けております。以下のメールアドレスまでご連絡ください：</p>
+                <p style="margin: 20px 0;">
+                    <a href="mailto:{{ OPERATOR_EMAIL }}" style="display: inline-block; padding: 15px 30px; background: rgba(40, 167, 69, 0.3); border: 1px solid rgba(40, 167, 69, 0.6); border-radius: 8px; color: #FFFFFF; text-decoration: none; font-weight: 600; transition: all 0.3s; font-size: 1.1em;">{{ OPERATOR_EMAIL }}</a>
+                </p>
+                <p style="font-size: 0.9em; color: rgba(255, 255, 255, 0.7);">※ 原則として3営業日以内に返信いたします。</p>
+            </div>
+            {% else %}
+            {# Phase1: OPERATOR_EMAIL 未設定時 — フォームが主導線である旨を明示 #}
+            <div class="contact-method" style="background: rgba(74, 158, 255, 0.1); border: 2px solid rgba(74, 158, 255, 0.3);">
+                <h3>📬 お問い合わせの受け付けについて</h3>
+                <p>上記のフォームがお問い合わせの主な窓口です。フォーム送信時にご記入いただいたメールアドレスへ、返信いたします。表示されない場合は「お問い合わせフォームを別タブで開く」ボタンからご利用ください。</p>
+            </div>
+            {% endif %}
+
+            <div class="contact-method">
+                <h3>💻 GitHub Issues（開発者向け）</h3>
+                <p>技術的な不具合報告や改善要望、コードに関する質問は、GitHubのIssuesでご報告ください：</p>
+                <p><a href="https://github.com/RikuTerayama/jobcan_automation/issues" target="_blank">GitHub Issues</a></p>
+                <p style="font-size: 0.9em; color: rgba(255, 255, 255, 0.6);">※ 開発者コミュニティからも回答を得られる場合があります</p>
+            </div>
+        </div>
+
+        <h2>よくある質問（FAQ）</h2>
+        <div class="faq">
+            <div class="faq-item">
+                <div class="faq-question">Q1. ログイン情報は安全ですか？</div>
+                <div class="faq-answer">
+                    A. はい、安全です。ログイン情報は処理中のみメモリ内に一時的に保持され、処理完了後は自動的に削除されます。サーバーには一切保存されません。詳しくは<a href="/privacy">プライバシーポリシー</a>をご確認ください。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Q2. 処理がエラーで終了してしまいます</div>
+                <div class="faq-answer">
+                    A. 以下の点をご確認ください：
+                    <ul style="margin-top: 10px;">
+                        <li>メールアドレスとパスワードが正しいか</li>
+                        <li>Excelファイルの形式が正しいか（A列=日付、B列=開始時刻、C列=終了時刻）</li>
+                        <li>Jobcanのシステムがメンテナンス中でないか</li>
+                    </ul>
+                    問題が解決しない場合は、お問い合わせください。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Q3. テンプレートファイルの使い方がわかりません</div>
+                <div class="faq-answer">
+                    A. <a href="/autofill">Jobcan AutoFillページ</a>から「今月のテンプレートをダウンロード」ボタンをクリックし、Excelファイルをダウンロードしてください。A列に日付、B列に開始時刻、C列に終了時刻を入力してください。1行目はヘッダー行です。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Q4. 会社の就業規則で使用が禁止されている場合は？</div>
+                <div class="faq-answer">
+                    A. 本サービスは個人の業務効率化を目的としたツールですが、所属企業の就業規則やセキュリティポリシーを遵守してください。使用が禁止されている場合は、使用を控えてください。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Q5. 勤怠データが正しく入力されません</div>
+                <div class="faq-answer">
+                    A. Excelファイルのデータ形式をご確認ください。また、Jobcanのシステム仕様変更により動作しなくなる場合があります。その場合はお問い合わせください。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Q6. サービスは無料ですか？</div>
+                <div class="faq-answer">
+                    A. はい、本サービスは無料でご利用いただけます。
+                </div>
+            </div>
+        </div>
+
+        <h2>お問い合わせの前に</h2>
+        <p>以下のドキュメントもご参照ください：</p>
+        <ul>
+            <li><a href="/terms">利用規約</a></li>
+            <li><a href="/privacy">プライバシーポリシー</a></li>
+            <li><a href="https://github.com/RikuTerayama/jobcan_automation/blob/main/README.md" target="_blank">README（使い方ガイド）</a></li>
+        </ul>
+
+        <a href="/" class="back-link">← トップページに戻る</a>
+    </div>
+    
+    {# Phase 4: contact_submit_intent — iframe 内の Google Form 送信完了は同一オリジンで取れないため、別タブリンククリックを代理指標とする #}
+    <script>
+    (function() {
+        var el = document.getElementById('contact-form-newtab');
+        if (el && typeof window.gaEvent === 'function') {
+            el.addEventListener('click', function() { window.gaEvent('contact_submit_intent', { method: 'google_form_newtab' }); });
+        }
+    })();
+    </script>
+    {# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/footer.html' %}
+</body>
+</html>
+

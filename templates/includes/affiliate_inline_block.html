@@ -1,0 +1,8 @@
+<section class="affiliate-footer-block affiliate-footer-block--inline" aria-label="Affiliate Links">
+    {% include 'includes/affiliate_disclosure.html' %}
+    <div data-affiliate-inline="true">
+        {% with affiliate_cards_variant='inline' %}
+            {% include 'includes/affiliate_cards.html' %}
+        {% endwith %}
+    </div>
+</section>

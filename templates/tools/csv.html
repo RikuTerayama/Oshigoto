@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="ja" class="no-js">
+<head>
+    {% set page_title = 'CSV/Excelユーティリティ - 文字コード変換・CSV⇄XLSX・重複削除・列操作 | ブラウザ内処理でアップロード不要' %}
+    {% set page_description = 'CSVの文字コード変換（Shift-JIS/UTF-8）、CSV⇄XLSX変換、重複削除、列の抽出・並べ替え、分割。ブラウザ内で実行され、ファイルはアップロードされません。' %}
+    {% set breadcrumb_title = product.name|default('CSV/Excelユーティリティ') %}
+    {% include 'includes/head_meta.html' %}
+    {% if product %}
+    {% include 'includes/structured_data.html' %}
+    {% block extra_structured_data %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "{{ product.name|e }}",
+        "description": "{{ product.description|e }}",
+        "url": "https://jobcan-automation.onrender.com{{ product.path }}",
+        "applicationCategory": "WebApplication",
+        "operatingSystem": "Web Browser",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+        "publisher": { "@type": "Organization", "name": "しごと道具箱", "url": "https://jobcan-automation.onrender.com" }
+    }
+    </script>
+    {% endblock %}
+    {% endif %}
+    <style>
+        * { box-sizing: border-box; font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif; }
+        body { margin: 0; padding: 0; background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%); min-height: 100vh; color: #FFFFFF; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .page-header { text-align: center; padding: 40px 20px; margin-bottom: 40px; }
+        .page-header h1 { font-size: 2.5em; margin: 0 0 15px 0; color: #FFFFFF; }
+        .page-header p { font-size: 1.1em; color: rgba(255, 255, 255, 0.8); }
+        .tool-section { background: rgba(30, 30, 30, 0.5); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .tool-section h3 { color: #4A9EFF; font-size: 1.3em; margin: 0 0 20px 0; }
+    </style>
+</head>
+<body>
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <div class="container">
+        <div class="page-header">
+            <h1 data-reveal>📊 CSV/Excelユーティリティ</h1>
+            <p data-reveal data-reveal-delay="50">ローカル処理。ファイルはアップロードせず、ブラウザ内で変換します。</p>
+            <p data-reveal data-reveal-delay="60" style="font-size: 0.95em; color: rgba(255,255,255,0.75); margin-top: 8px;">ファイル内容はサーバーに送信しません。計測・広告のために外部サービス（Google等）へ通信することがあります。</p>
+        </div>
+        {% set tool_intro_what = '文字コード変換（Shift-JIS/UTF-8）、CSV⇄XLSX変換、重複削除、列の抽出・並べ替え・分割をブラウザ内で実行します。' %}
+        {% set tool_intro_steps = ['ファイルを選択（ドラッグ＆ドロップまたはボタン）', '文字コード・操作モードを選択', '実行してプレビュー確認のうえダウンロード'] %}
+        {% set tool_intro_notice = '個人情報・機密情報を含むファイルは取り扱いにお気をつけください。' %}
+        {% include 'includes/tool_intro.html' %}
+        <div class="tool-section">
+            <h3>📁 ファイル選択</h3>
+            <p style="color: rgba(255, 255, 255, 0.8);">CSV または Excel ファイルをドラッグ＆ドロップ、または下のボタンで選択してください。（対応: .csv, .xlsx）</p>
+            <div id="dropzone" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 40px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); cursor: pointer;">
+                <div style="font-size: 2.5em; margin-bottom: 15px;">📁</div>
+                <p style="margin: 0; color: rgba(255, 255, 255, 0.9);">クリックまたはドロップでファイルを選択</p>
+                <input type="file" id="file-input" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" multiple style="display: none;">
+            </div>
+            <div id="file-list" style="margin-top: 15px;"></div>
+            <div id="rejected-files" style="display: none; margin-top: 15px; padding: 15px; background: rgba(255, 152, 0, 0.2); border-radius: 8px;"></div>
+        </div>
+        <div class="tool-section" id="options-section" style="display: none;">
+            <h3>⚙️ 操作</h3>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 4px;">入力ファイルの文字コード</label>
+                <select id="input-encoding">
+                    <option value="UTF-8">UTF-8</option>
+                    <option value="SJIS">Shift-JIS</option>
+                </select>
+                <p id="encoding-hint" style="margin: 6px 0 0 0; font-size: 0.85em; color: rgba(255,255,255,0.6);">Shift-JIS は機種依存文字などで文字化けすることがあります。変換後はプレビューで確認してください。</p>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 4px;">出力CSVの文字コード（CSV出力時のみ）</label>
+                <select id="output-encoding">
+                    <option value="UTF-8-BOM">UTF-8（BOMあり）</option>
+                    <option value="UTF-8">UTF-8（BOMなし）</option>
+                    <option value="SJIS">Shift-JIS</option>
+                </select>
+            </div>
+            <label style="display: block; margin-bottom: 8px;">操作モード</label>
+            <select id="mode">
+                <option value="column_extract">列の抽出・並べ替え</option>
+                <option value="dedupe">重複削除（キー列指定）</option>
+                <option value="split">N行ごと分割</option>
+                <option value="csv2xlsx">CSV→XLSX変換</option>
+                <option value="xlsx2csv">XLSX→CSV変換</option>
+            </select>
+            <div id="mode-options" style="margin-top: 15px;"></div>
+            <button type="button" id="run-btn" style="margin-top: 20px; padding: 12px 24px; background: #4A9EFF; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 1em;">実行</button>
+        </div>
+        <div class="tool-section" id="preview-section" style="display: none;">
+            <h3>👁 プレビュー（先頭50行）</h3>
+            <div id="preview-table-wrap" style="overflow: auto; max-height: 300px;"></div>
+        </div>
+        <div class="tool-section" id="output-section" style="display: none;">
+            <h3>📤 結果</h3>
+            <div id="output-area"></div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/file-validation.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/file-utils.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="{{ url_for('static', filename='js/zip-utils.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/encoding-japanese@2.0.0/encoding.min.js"></script>
+    <script src="{{ url_for('static', filename='js/csv-ops.js') }}"></script>
+    <script>
+(function() {
+    const CSV_RULES = { maxFiles: 10, maxFileSize: 10 * 1024 * 1024, maxTotalSize: 50 * 1024 * 1024, allowedExtensions: ['.csv', '.xlsx'] };
+    let acceptedFiles = [];
+    let parsedRows = null;
+    let parsedMeta = null;
+    let isRunning = false;
+    const RUN_BTN_LABEL = '実行';
+
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('file-input');
+    const fileList = document.getElementById('file-list');
+    const rejectedEl = document.getElementById('rejected-files');
+    const optionsSection = document.getElementById('options-section');
+    const modeSelect = document.getElementById('mode');
+    const modeOptions = document.getElementById('mode-options');
+    const runBtn = document.getElementById('run-btn');
+    const previewSection = document.getElementById('preview-section');
+    const previewWrap = document.getElementById('preview-table-wrap');
+    const outputSection = document.getElementById('output-section');
+    const outputArea = document.getElementById('output-area');
+    const inputEncodingSelect = document.getElementById('input-encoding');
+    const outputEncodingSelect = document.getElementById('output-encoding');
+    function getInputEncoding() { return inputEncodingSelect ? inputEncodingSelect.value : 'UTF-8'; }
+    function getOutputEncoding() { return outputEncodingSelect ? outputEncodingSelect.value : 'UTF-8-BOM'; }
+
+    function checkDeps() {
+        const deps = [
+            ['FileValidation', typeof FileValidation],
+            ['FileUtils', typeof FileUtils],
+            ['CsvOps', typeof CsvOps],
+            ['ZipUtils', typeof ZipUtils],
+            ['Papa', typeof Papa],
+            ['XLSX', typeof XLSX],
+            ['Encoding', typeof Encoding],
+            ['JSZip', typeof JSZip]
+        ];
+        const missing = deps.filter(([, t]) => t === 'undefined').map(([n]) => n);
+        if (missing.length === 0) return true;
+        outputSection.style.display = 'block';
+        outputArea.textContent = '';
+        const p = document.createElement('p');
+        p.style.color = '#f44';
+        p.textContent = '必要なスクリプトの読み込みに失敗しました。ネットワーク設定・広告ブロッカー・ブラウザ拡張を確認するか、ページを再読み込みしてください。';
+        outputArea.appendChild(p);
+        if (runBtn) runBtn.disabled = true;
+        if (fileInput) fileInput.disabled = true;
+        if (dropzone) dropzone.style.pointerEvents = 'none';
+        return false;
+    }
+
+    function showRejected(rejected) {
+        if (!rejected.length) { rejectedEl.style.display = 'none'; return; }
+        rejectedEl.style.display = 'block';
+        rejectedEl.textContent = '';
+        const ul = document.createElement('ul');
+        ul.style.margin = '0'; ul.style.paddingLeft = '20px';
+        rejected.forEach(r => {
+            const li = document.createElement('li');
+            li.textContent = (r.file.name || '') + ' - ' + (r.reason || '');
+            li.className = 'rejected-file';
+            ul.appendChild(li);
+        });
+        rejectedEl.appendChild(ul);
+    }
+
+    function renderFileList() {
+        fileList.textContent = '';
+        const ul = document.createElement('ul');
+        ul.style.margin = '0'; ul.style.paddingLeft = '20px'; ul.style.listStyle = 'none';
+        acceptedFiles.forEach(f => {
+            const li = document.createElement('li');
+            const sizeKB = f.size ? Math.round(f.size / 1024) + ' KB' : '';
+            li.textContent = (f.name || '') + (sizeKB ? ' (' + sizeKB + ')' : '');
+            li.style.padding = '8px'; li.style.background = 'rgba(0,0,0,0.2)'; li.style.borderRadius = '6px'; li.style.marginBottom = '6px';
+            ul.appendChild(li);
+        });
+        fileList.appendChild(ul);
+    }
+
+    function buildModeOptions() {
+        if (!parsedRows || !parsedRows.length) return;
+        const header = parsedRows[0];
+        const mode = modeSelect.value;
+        modeOptions.innerHTML = '';
+        if (mode === 'column_extract') {
+            header.forEach((h, i) => {
+                const label = document.createElement('label');
+                label.style.display = 'block';
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = true;
+                cb.dataset.index = i;
+                cb.style.marginRight = '8px';
+                label.appendChild(cb);
+                label.appendChild(document.createTextNode((i + 1) + ': ' + (h || '列' + (i+1))));
+                modeOptions.appendChild(label);
+            });
+        } else if (mode === 'csv2xlsx' || mode === 'xlsx2csv') {
+            modeOptions.innerHTML = '<p style="color:rgba(255,255,255,0.7);">選択したファイルを変換してダウンロードします。</p>';
+        } else if (mode === 'dedupe') {
+            const label = document.createElement('label');
+            label.textContent = 'キー列: ';
+            const sel = document.createElement('select');
+            sel.id = 'dedupe-key';
+            header.forEach((h, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = (h || '列' + (i+1));
+                sel.appendChild(opt);
+            });
+            label.appendChild(sel);
+            modeOptions.appendChild(label);
+        } else if (mode === 'split') {
+            const label = document.createElement('label');
+            label.textContent = 'N行ごと: ';
+            const inp = document.createElement('input');
+            inp.type = 'number';
+            inp.id = 'split-n';
+            inp.min = 1;
+            inp.value = 1000;
+            inp.style.width = '100px';
+            label.appendChild(inp);
+            modeOptions.appendChild(label);
+        }
+    }
+
+    function renderPreview(rows) {
+        if (!rows || !rows.length) return;
+        previewWrap.textContent = '';
+        const table = document.createElement('table');
+        table.setAttribute('border', '1');
+        table.setAttribute('cellpadding', '6');
+        table.setAttribute('cellspacing', '0');
+        table.style.borderCollapse = 'collapse';
+        table.style.fontSize = '0.9em';
+        table.style.background = 'rgba(0,0,0,0.2)';
+        const thead = document.createElement('thead');
+        const trHead = document.createElement('tr');
+        (rows[0] || []).forEach(h => {
+            const th = document.createElement('th');
+            th.style.textAlign = 'left';
+            th.textContent = h != null ? String(h) : '';
+            trHead.appendChild(th);
+        });
+        thead.appendChild(trHead);
+        table.appendChild(thead);
+        const tbody = document.createElement('tbody');
+        rows.slice(1, 51).forEach(row => {
+            const tr = document.createElement('tr');
+            (row || []).forEach(c => {
+                const td = document.createElement('td');
+                td.textContent = c != null ? String(c) : '';
+                tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        previewWrap.appendChild(table);
+        previewSection.style.display = 'block';
+    }
+
+    function setOutput(msg, isError) {
+        outputSection.style.display = 'block';
+        outputArea.textContent = '';
+        const p = document.createElement('p');
+        p.style.color = isError ? '#f44' : 'rgba(255,255,255,0.9)';
+        p.textContent = msg || '';
+        outputArea.appendChild(p);
+    }
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.style.background = 'rgba(74,158,255,0.15)'; });
+    dropzone.addEventListener('dragleave', () => { dropzone.style.background = ''; });
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.style.background = '';
+        if (e.dataTransfer.files.length) fileInput.files = e.dataTransfer.files;
+        fileInput.dispatchEvent(new Event('change'));
+    });
+    fileInput.addEventListener('change', () => {
+        try {
+            const files = Array.from(fileInput.files || []);
+            if (typeof FileValidation === 'undefined') {
+                setOutput('ファイル検証機能の読み込みに失敗しました。ページを再読み込みしてください。', true);
+                return;
+            }
+            const result = FileValidation.validateFiles(files, CSV_RULES);
+            acceptedFiles = result.okFiles;
+            showRejected(result.rejected);
+            renderFileList();
+            optionsSection.style.display = acceptedFiles.length ? 'block' : 'none';
+            parsedRows = null;
+            parsedMeta = null;
+            previewSection.style.display = 'none';
+            outputSection.style.display = 'none';
+        } catch (err) {
+            setOutput(err.message || 'ファイルの検証に失敗しました。ページを再読み込みしてください。', true);
+            return;
+        }
+        function loadPreview(file) {
+            const ext = (file.name || '').toLowerCase();
+            if (ext.endsWith('.xlsx') || ext.endsWith('.xls')) {
+                CsvOps.readFileAsArrayBuffer(file).then(buf => {
+                    try {
+                        parsedRows = CsvOps.xlsxToRows(buf, { sheetIndex: 0 });
+                        parsedRows = parsedRows.slice(0, 51);
+                        renderPreview(parsedRows);
+                        buildModeOptions();
+                    } catch (err) {
+                        setOutput(err.message || 'Excelの読み込みに失敗しました。', true);
+                    }
+                }).catch(err => setOutput(err.message || 'ファイルの読み込みに失敗しました。', true));
+            } else {
+                CsvOps.readFileAsTextWithEncoding(file, getInputEncoding()).then(text => {
+                    try {
+                        const r = CsvOps.parseCSV(text, { preview: 50 });
+                        parsedRows = r.data;
+                        parsedMeta = r.meta;
+                        renderPreview(parsedRows);
+                        buildModeOptions();
+                    } catch (err) {
+                        setOutput(err.message || 'CSVの解析に失敗しました。', true);
+                    }
+                }).catch(err => setOutput(err.message || 'ファイルの読み込みに失敗しました。', true));
+            }
+        }
+        if (acceptedFiles.length === 1) {
+            loadPreview(acceptedFiles[0]);
+        } else if (acceptedFiles.length > 1) {
+            setOutput('複数ファイルの場合は先頭1件のみプレビューします。実行時に1件ずつ処理します。', false);
+            loadPreview(acceptedFiles[0]);
+        }
+    });
+    modeSelect.addEventListener('change', buildModeOptions);
+
+    if (!checkDeps()) { /* deps missing: runBtn/fileInput already disabled */ }
+    else {
+        runBtn.disabled = false;
+        if (fileInput) fileInput.disabled = false;
+        if (dropzone) dropzone.style.pointerEvents = '';
+    }
+
+    runBtn.addEventListener('click', () => {
+        if (isRunning) { setOutput('処理中です。完了までお待ちください。', true); return; }
+        if (!acceptedFiles.length) { setOutput('ファイルを選択してください。', true); return; }
+        if (typeof window.gaEvent === 'function') { window.gaEvent('tool_action_start', { tool_id: 'csv', file_count: acceptedFiles.length }); }
+        isRunning = true;
+        runBtn.disabled = true;
+        runBtn.textContent = '処理中...';
+        outputSection.style.display = 'block';
+        outputArea.textContent = '';
+        const runningP = document.createElement('p');
+        runningP.textContent = '処理中...';
+        outputArea.appendChild(runningP);
+        const mode = modeSelect.value;
+        const outputs = [];
+        const outEnc = getOutputEncoding();
+        const csvBlobOptions = { bom: outEnc === 'UTF-8-BOM' };
+        function makeCsvBlob(rows) {
+            if (outEnc === 'SJIS') return CsvOps.textToSJISBlob(CsvOps.toCSVString(rows));
+            return CsvOps.rowsToBlob(rows, csvBlobOptions);
+        }
+        const processOne = (file, fileIndex) => {
+            const base = FileUtils.getFilenameWithoutExtension(file.name) || 'output';
+            const ext = (file.name || '').toLowerCase();
+            const enc = getInputEncoding();
+            if (mode === 'csv2xlsx') {
+                return CsvOps.readFileAsTextWithEncoding(file, enc).then(text => {
+                    const r = CsvOps.parseCSV(text);
+                    const blob = CsvOps.rowsToXLSXBlob(r.data);
+                    outputs.push({ blob, filename: CsvOps.outputFilename(base, 'xlsx', 'xlsx') });
+                });
+            }
+            if (mode === 'xlsx2csv') {
+                return CsvOps.readFileAsArrayBuffer(file).then(buf => {
+                    const rows = CsvOps.xlsxToRows(buf, { sheetIndex: 0 });
+                    const blob = makeCsvBlob(rows);
+                    outputs.push({ blob, filename: CsvOps.outputFilename(base, 'csv', 'csv') });
+                });
+            }
+            return CsvOps.readFileAsTextWithEncoding(file, enc).then(text => {
+                const r = CsvOps.parseCSV(text);
+                let rows = r.data;
+                if (mode === 'column_extract') {
+                    const indexes = Array.from(modeOptions.querySelectorAll('input[type=checkbox]:checked')).map(cb => parseInt(cb.dataset.index, 10)).sort((a,b)=>a-b);
+                    if (!indexes.length) throw new Error('1列以上選択してください');
+                    rows = CsvOps.selectColumns(rows, indexes);
+                } else if (mode === 'dedupe') {
+                    const keyCol = parseInt(document.getElementById('dedupe-key').value, 10);
+                    rows = CsvOps.dedupeByKey(rows, keyCol);
+                } else if (mode === 'split') {
+                    const n = parseInt(document.getElementById('split-n').value, 10) || 1000;
+                    if (n < 1) throw new Error('Nは1以上を指定してください');
+                    const chunks = CsvOps.splitByNRows(rows, n);
+                    chunks.forEach((chunk, i) => {
+                        const blob = makeCsvBlob(chunk);
+                        outputs.push({ blob, filename: CsvOps.outputFilename(base, 'part' + (i+1), 'csv') });
+                    });
+                    return;
+                }
+                const blob = makeCsvBlob(rows);
+                const suffix = mode === 'column_extract' ? 'columns' : mode === 'dedupe' ? 'dedupe' : 'split';
+                outputs.push({ blob, filename: CsvOps.outputFilename(base, suffix, 'csv') });
+            });
+        };
+        let chain = Promise.resolve();
+        acceptedFiles.forEach((f, i) => { chain = chain.then(() => processOne(f, i)); });
+        chain.then(() => {
+            if (outputs.length === 0) { setOutput('出力がありません。', true); return; }
+            if (outputs.length === 1) {
+                if (typeof window.gaEvent === 'function') { window.gaEvent('download_click', { tool_id: 'csv', download_type: 'single', file_count: 1 }); }
+                FileUtils.downloadBlob(outputs[0].blob, outputs[0].filename);
+                setOutput('1件ダウンロードしました: ' + outputs[0].filename, false);
+            } else {
+                ZipUtils.createZip(outputs.map(o => ({ blob: o.blob, filename: o.filename })), 'csv_output.zip').then(zipBlob => {
+                    if (typeof window.gaEvent === 'function') { window.gaEvent('download_click', { tool_id: 'csv', download_type: 'zip', file_count: outputs.length }); }
+                    FileUtils.downloadBlob(zipBlob, 'csv_output.zip');
+                    setOutput(outputs.length + '件をZIPでダウンロードしました。', false);
+                }).catch(err => setOutput(err.message || 'ZIPの作成に失敗しました。', true));
+            }
+        }).catch(err => setOutput(err.message || '処理に失敗しました。', true)).finally(() => {
+            isRunning = false;
+            runBtn.disabled = false;
+            runBtn.textContent = RUN_BTN_LABEL;
+        });
+    });
+})();
+    </script>
+    {% include 'includes/footer.html' %}
+</body>
+</html>

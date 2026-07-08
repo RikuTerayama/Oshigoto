@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    {% set page_title = 'フルリモート環境での勤怠入力をシンプルに：小規模スタートアップの導入事例 | Jobcan AutoFill' %}
+    {% set page_description = '社員10名前後のフルリモート・フレックス勤務の小規模スタートアップでのJobcan AutoFill導入事例。Slackやスプレッドシートでの管理がカオスだった環境で、Excelベースの自動化により締め作業をスムーズにした成功事例を詳しく紹介。' %}
+    {% include 'includes/head_meta.html' %}
+</head>
+<body style="margin: 0; font-family: 'Noto Sans JP', sans-serif; background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%); color: #FFFFFF; line-height: 1.8;">
+    <main style="max-width: 960px; margin: 0 auto; padding: 40px 20px;">
+        <article itemscope itemtype="https://schema.org/Article" style="background: rgba(0, 0, 0, 0.35); border-radius: 18px; padding: 35px; border: 1px solid rgba(74, 158, 255, 0.25);">
+            <header style="margin-bottom: 30px;">
+                {% set breadcrumb_title = 'リモートスタートアップの導入事例' %}
+                {% include 'includes/breadcrumb.html' %}
+                <h1 itemprop="headline" style="margin: 12px 0 10px 0; font-size: 2.2em; color: #4CAF50;">フルリモート環境での勤怠入力をシンプルに：小規模スタートアップの導入事例</h1>
+                <p style="margin: 0; color: rgba(255, 255, 255, 0.85);">
+                    社員10名前後のフルリモート・フレックス勤務の小規模スタートアップでのJobcan AutoFill導入事例です。Slackやスプレッドシートでの管理がカオスだった環境で、Excelベースの自動化により締め作業をスムーズにし、リモートでも効率的な勤怠管理を実現しました。
+                </p>
+            </header>
+
+            <section itemprop="articleBody">
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">企業プロフィール</h2>
+                <ul style="padding-left: 22px;">
+                    <li>業種：SaaS（ソフトウェア開発・運営）</li>
+                    <li>従業員数：正社員10名</li>
+                    <li>拠点：フルリモート（全員在宅勤務）</li>
+                    <li>働き方の特徴：フレックス勤務、裁量が大きく、勤怠ルールが緩い一方で、締め作業の集計が地味に重い</li>
+                </ul>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">導入前の課題</h2>
+                <ol style="padding-left: 22px;">
+                    <li>Slackやスプレッドシートでの勤怠管理がカオスだった。メンバーが各自で記録していたが、形式がバラバラで、月末の集計作業に平均2時間かかっていた。</li>
+                    <li>フルリモート環境のため、打刻漏れや打刻修正依頼が頻発していた。月に平均20件以上の修正依頼が発生し、その対応に平均15分／件かかっていた。</li>
+                    <li>勤怠ルールが緩いため、入力ミスが発生しやすかった。月に平均5件の入力ミスが発生し、修正作業に平均10分／件かかっていた。</li>
+                    <li>リモート環境のため、メンバー同士のコミュニケーションが少なく、勤怠入力のルールが浸透しにくかった。</li>
+                </ol>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">導入の決め手</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px;">
+                    <article style="background: rgba(0, 0, 0, 0.25); border-radius: 12px; padding: 20px;">
+                        <h3 style="margin-top: 0; color: #4CAF50; font-size: 1.2em;">Excelベースで既存運用に乗れる</h3>
+                        <p style="margin: 0;">既存のExcelファイルをそのまま使用できるため、新しいシステムを導入する必要がなく、学習コストが低い。メンバーが既にExcelに慣れ親しんでいるため、導入がスムーズでした。</p>
+                    </article>
+                    <article style="background: rgba(0, 0, 0, 0.25); border-radius: 12px; padding: 20px;">
+                        <h3 style="margin-top: 0; color: #4CAF50; font-size: 1.2em;">自動ログインの安心感</h3>
+                        <p style="margin: 0;">処理のたびにログイン情報を入力する必要がなく、処理中のみメモリ内に保持される設計により、セキュリティ面でも安心して使用できました。</p>
+                    </article>
+                    <article style="background: rgba(0, 0, 0, 0.25); border-radius: 12px; padding: 20px;">
+                        <h3 style="margin-top: 0; color: #4CAF50; font-size: 1.2em;">小規模チームに最適</h3>
+                        <p style="margin: 0;">10名規模の小規模チームでも、導入コストが低く、すぐに効果を実感できる。大規模なシステム導入を待たずとも、今日から使える点が魅力的でした。</p>
+                    </article>
+                </div>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">導入プロセス</h2>
+                <ol style="padding-left: 22px;">
+                    <li><strong>ステップ1：Excelテンプレートの配布</strong> - 全メンバーにExcelテンプレートを配布し、入力ルールを統一しました。</li>
+                    <li><strong>ステップ2：説明会の実施</strong> - オンラインで説明会を実施し、Jobcan AutoFillの使用方法を説明しました。</li>
+                    <li><strong>ステップ3：PoCの実施</strong> - 3名のメンバーで2週間のPoCを実施し、効果を確認しました。</li>
+                    <li><strong>ステップ4：全社展開</strong> - PoCの結果を踏まえ、全10名に展開しました。</li>
+                </ol>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">導入後の効果</h2>
+                <table style="width: 100%; border-collapse: collapse; background: rgba(0, 0, 0, 0.35);">
+                    <thead>
+                        <tr style="background: rgba(255, 255, 255, 0.05);">
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">指標</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">導入前</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">導入後</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">改善幅</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">月末の集計作業時間</td>
+                            <td style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">平均2時間</td>
+                            <td style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">平均30分</td>
+                            <td style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">▲75%</td>
+                        </tr>
+                        <tr style="background: rgba(255, 255, 255, 0.02);">
+                            <td style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">打刻修正依頼の対応時間</td>
+                            <td style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">月5時間（20件×15分）</td>
+                            <td style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">月1.7時間（20件×5分）</td>
+                            <td style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">▲3.3時間</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">入力ミスによる差し戻し件数</td>
+                            <td style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">月5件</td>
+                            <td style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">月1件</td>
+                            <td style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">▲80%</td>
+                        </tr>
+                        <tr style="background: rgba(255, 255, 255, 0.02);">
+                            <td style="padding: 12px;">リモートでも締め作業がスムーズになった</td>
+                            <td style="padding: 12px;">-</td>
+                            <td style="padding: 12px;">✅</td>
+                            <td style="padding: 12px;">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">リモートでも締め作業がスムーズになった</h2>
+                <p>導入前は、フルリモート環境のため、メンバー同士のコミュニケーションが少なく、勤怠入力のルールが浸透しにくい課題がありました。導入後は、Excelテンプレートを配布することで、入力ルールが統一され、リモートでも締め作業がスムーズになりました。</p>
+                <p>また、処理ログが記録されるため、メンバーが「誰が、いつ、どのデータを処理したか」を確認でき、リモート環境でも透明性が確保されました。</p>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">スタートアップならではの工夫</h2>
+                <ul style="padding-left: 22px;">
+                    <li><strong>メンバーにExcelテンプレートを配布：</strong> 全メンバーにExcelテンプレートを配布し、入力ルールを統一しました。これにより、形式エラーの発生率が大幅に減少しました。</li>
+                    <li><strong>リマインド運用：</strong> 月末の締め日1週間前に、Slackでリマインドを送信し、メンバーにExcelファイルの準備を促しました。これにより、締め作業の遅れが防止されました。</li>
+                    <li><strong>月次レビューでのフィードバック収集：</strong> 月次レビューでフィードバックを収集し、問題があれば迅速に対応しました。これにより、メンバーの満足度が向上しました。</li>
+                </ul>
+
+                <div style="margin-top: 30px; padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 12px;">
+                    <h2 style="margin-top: 0; font-size: 1.5em; color: #FFFFFF;">現場からの声</h2>
+                    <blockquote style="margin: 0 0 20px 0; color: rgba(255, 255, 255, 0.8);">
+                        「リモート環境でも、Excelファイルにまとめて入力するだけで、自動で処理されるので、本当に楽になりました。月末の集計作業が2時間から30分に短縮されました。」
+                    </blockquote>
+                    <blockquote style="margin: 0 0 20px 0; color: rgba(255, 255, 255, 0.8);">
+                        「小規模チームでも、導入コストが低く、すぐに効果を実感できました。大規模なシステム導入を待たずとも、今日から使える点が魅力的でした。」
+                    </blockquote>
+                    <blockquote style="margin: 0; color: rgba(255, 255, 255, 0.8);">
+                        「入力ミスが減ったことで、差し戻し対応の時間が大幅に削減されました。リモート環境でも、締め作業がスムーズになりました。」
+                    </blockquote>
+                </div>
+
+                <h2 style="font-size: 1.8em; color: #FFFFFF;">今後のアップデートへの期待</h2>
+                <p>今後は、以下のようなアップデートへの期待があります：</p>
+                <ul style="padding-left: 22px;">
+                    <li>Slack連携機能の追加（処理完了時にSlackに通知）</li>
+                    <li>リマインド機能の自動化（月末の締め日1週間前に自動でリマインド）</li>
+                    <li>処理ログの可視化（ダッシュボードで処理状況を確認）</li>
+                </ul>
+
+                <section style="margin-top: 40px; padding: 24px; background: rgba(74, 158, 255, 0.15); border-radius: 12px; border: 1px solid rgba(74, 158, 255, 0.35);">
+                    <h2 style="margin-top: 0; font-size: 1.5em; color: #FFFFFF;">導入をご検討の方へ</h2>
+                    <p style="margin-bottom: 12px;">詳しい機能・使い方は、<a href="/guide/getting-started" style="color: #4A9EFF;">はじめての使い方ガイド</a>や<a href="/faq" style="color: #4A9EFF;">よくある質問（FAQ）</a>をご確認ください。導入を検討している方は、<a href="/contact" style="color: #4A9EFF;">お問い合わせフォーム</a>よりご連絡ください。</p>
+                    <a href="/contact" style="display: inline-block; padding: 12px 24px; border-radius: 10px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.3); color: #FFFFFF; text-decoration: none; margin-right: 10px;">お問い合わせする</a>
+                    <a href="/guide/getting-started" style="display: inline-block; padding: 12px 24px; border-radius: 10px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.3); color: #FFFFFF; text-decoration: none;">使い方ガイドを見る</a>
+                </section>
+            </section>
+
+        </article>
+    </main>
+    {# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/footer.html' %}
+</body>
+</html>

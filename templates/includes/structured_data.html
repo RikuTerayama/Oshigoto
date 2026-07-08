@@ -1,0 +1,68 @@
+{# 構造化データ（JSON-LD） #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "しごと道具箱",
+  "url": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}",
+  "logo": "{{ url_for('static', filename='JobcanAutofill.png', _external=True) }}",
+  "description": "PDF、CSV、画像、URL確認など、仕事でたまに必要になる軽量ツール集",
+  "sameAs": [],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "お問い合わせ",
+    "url": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}/contact"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "しごと道具箱",
+  "url": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}",
+  "description": "PDF、CSV、画像、URL確認など、仕事でたまに必要になる小さな作業をブラウザで片づけるWebサイト",
+  "publisher": {
+    "@type": "Organization",
+    "name": "しごと道具箱"
+  }
+}
+</script>
+
+{% if seo_web_application_schema %}
+<script type="application/ld+json">
+{{ seo_web_application_schema|tojson(indent=2) }}
+</script>
+{% endif %}
+
+{% if seo_article_schema %}
+<script type="application/ld+json">
+{{ seo_article_schema|tojson(indent=2) }}
+</script>
+{% endif %}
+
+{% block extra_structured_data %}
+{# BreadcrumbList JSON-LD（表示用短ラベルは breadcrumb_title を優先） #}
+{% set current_path = request.path|default('/') if request is defined and request else '/' %}
+{% set breadcrumb_items = build_breadcrumb_items(current_path, page_title|default(''), breadcrumb_title|default('')) %}
+{% if current_path != '/' and breadcrumb_items|length > 1 %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {% for item in breadcrumb_items %}
+        {
+            "@type": "ListItem",
+            "position": {{ loop.index }},
+            "name": "{{ item.name|e }}",
+            "item": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}{{ item.url }}"
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]
+}
+</script>
+{% endif %}
+{% endblock %}
+

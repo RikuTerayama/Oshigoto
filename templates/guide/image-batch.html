@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    {# 共通HEADメタタグ #}
+    {% set page_title = '画像一括変換ツールの使い方ガイド | Jobcan AutoFill' %}
+    {% set page_description = '画像一括変換ツールの使い方ガイド。png/jpg/webpの一括変換、リサイズ、品質圧縮、複数サイズ同時出力の方法を詳しく解説。' %}
+    {% include 'includes/head_meta.html' %}
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            color: #FFFFFF;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #FFFFFF;
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        h3 {
+            font-size: 1.4em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #4A9EFF;
+        }
+        p, li {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+        ul, ol {
+            padding-left: 30px;
+        }
+        .step-box {
+            background: rgba(74, 158, 255, 0.1);
+            border-left: 4px solid #4A9EFF;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+        .step-box h3 {
+            margin-top: 0;
+        }
+        .info-box {
+            background: rgba(40, 167, 69, 0.1);
+            border-left: 4px solid #28A745;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        .warning-box {
+            background: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid #DC3545;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        .tip-box {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #FFC107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #4A9EFF;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            flex-wrap: wrap;
+        }
+        .nav-link {
+            display: inline-block;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: #FFFFFF;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        a {
+            color: #4A9EFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <div class="container">
+        <h1>🖼️ 画像一括変換ツールガイド</h1>
+        <p><strong>できること:</strong> PNG・JPG・WebP の一括形式変換、リサイズ（縦横比維持）、品質圧縮、複数サイズの同時出力（バリアント）、ZIP一括ダウンロード。すべてブラウザ内で完結し、サーバーへ画像は送信されません。</p>
+        <p><strong>想定ユーザー:</strong> ECサイト・Webデザイナー、SNS運用、マーケターなど、画像の一括変換・複数サイズ出力が必要な方。</p>
+
+        <h2>このツールで解決できる課題</h2>
+        <ul>
+            <li>複数の画像ファイルを一度に別の形式に変換したい</li>
+            <li>Webサイト用に画像サイズを統一したい</li>
+            <li>SNS投稿用に複数サイズの画像を同時に生成したい</li>
+            <li>画像ファイルの容量を削減したい</li>
+            <li>画像処理ソフトをインストールせずに作業したい</li>
+        </ul>
+
+        <h2>主要機能</h2>
+        <ul>
+            <li><strong>形式変換</strong>: PNG、JPG、WebPの相互変換</li>
+            <li><strong>リサイズ</strong>: 幅指定によるリサイズ（縦横比維持）</li>
+            <li><strong>品質調整</strong>: JPG/WebPの圧縮品質を0-100で調整</li>
+            <li><strong>複数サイズ同時出力</strong>: 1つの画像から複数のサイズを同時生成</li>
+            <li><strong>プリセット機能</strong>: SNS用、Web用などのプリセット</li>
+            <li><strong>ZIP一括ダウンロード</strong>: 複数ファイルをZIPでまとめてダウンロード</li>
+        </ul>
+
+        <h2>使い方の流れ（4ステップ）</h2>
+
+        <div class="step-box">
+            <h3>ステップ1: 画像ファイルを選択</h3>
+            <p><a href="/tools/image-batch">画像一括変換ツール</a>にアクセスし、「ファイルを選択」ボタンをクリックして、変換したい画像ファイルを選択します。</p>
+            <ul>
+                <li>対応形式: PNG、JPG、JPEG、WebP</li>
+                <li>複数ファイルを同時に選択可能</li>
+                <li>ドラッグ&ドロップにも対応</li>
+            </ul>
+        </div>
+
+        <div class="step-box">
+            <h3>ステップ2: 変換オプションを設定</h3>
+            <p>出力形式、リサイズ幅、品質を設定します。</p>
+            <ul>
+                <li><strong>出力形式</strong>: PNG、JPG、WebPから選択</li>
+                <li><strong>リサイズ幅</strong>: 0を指定するとリサイズなし（元サイズ維持）</li>
+                <li><strong>品質</strong>: 0-100（数値が高いほど高品質、ファイルサイズも大きい）</li>
+                <li><strong>プリセット</strong>: よく使う設定をプリセットとして保存可能</li>
+            </ul>
+        </div>
+
+        <div class="step-box">
+            <h3>ステップ3: 変換を実行</h3>
+            <p>「変換を開始」ボタンをクリックすると、選択した画像が順次変換されます。進捗状況がリアルタイムで表示されます。</p>
+            <ul>
+                <li>複数ファイルは並列処理されます（最大2ファイル同時）</li>
+                <li>各ファイルの処理状況が個別に表示されます</li>
+                <li>エラーが発生した場合は、該当ファイルが表示されます</li>
+            </ul>
+        </div>
+
+        <div class="step-box">
+            <h3>ステップ4: 結果をダウンロード</h3>
+            <p>変換が完了すると、ダウンロードパネルが表示されます。</p>
+            <ul>
+                <li><strong>単一ファイル</strong>: 個別ダウンロードボタンが表示されます</li>
+                <li><strong>複数ファイル</strong>: ZIPダウンロードボタンが表示されます（推奨）</li>
+                <li>個別ダウンロードも可能です</li>
+            </ul>
+        </div>
+
+        <h2>入出力仕様</h2>
+
+        <h3>対応入力形式</h3>
+        <ul>
+            <li>PNG（.png）</li>
+            <li>JPEG（.jpg, .jpeg）</li>
+            <li>WebP（.webp）</li>
+        </ul>
+
+        <h3>出力形式</h3>
+        <ul>
+            <li>PNG、JPG、WebP（選択可能）</li>
+        </ul>
+
+        <h3>制限事項（実装に基づく）</h3>
+        <ul>
+            <li><strong>最大ファイル数</strong>: 50ファイル（<code>templates/tools/image-batch.html</code> の validateFiles）</li>
+            <li><strong>1ファイルあたり</strong>: 20MBまで。合計200MBまで（同）</li>
+            <li><strong>最大ピクセル数</strong>: 80,000,000ピクセル（幅×高さ）。<code>static/js/image-batch-convert.js</code> の MAX_PIXELS で検証</li>
+            <li><strong>同時処理</strong>: 最大2ファイル（UIの並列数）</li>
+        </ul>
+
+        <div class="warning-box">
+            <strong>⚠️ 注意事項</strong>
+            <p>非常に大きな画像や大量ファイルを一度に処理すると、ブラウザのメモリ不足で失敗することがあります。ファイル数を減らすか、画像サイズを事前に縮小してからお試しください。</p>
+        </div>
+
+        <h2 id="data-handling">データの取り扱い</h2>
+        <p>当ツールでは、画像ファイルのアップロード・サーバー保存・外部送信は行いません。</p>
+        <ul>
+            <li><strong>アップロード</strong>: 行いません。処理はすべてブラウザ内で完結します。根拠: <code>app.py</code> に <code>/tools/image-batch</code> 向けのファイル受信ルートは存在せず、<code>templates/tools/image-batch.html</code> と <code>static/js/image-batch-convert.js</code> で FileReader / createImageBitmap / Canvas API によりクライアント側のみで変換を行っています。</li>
+            <li><strong>サーバー保存</strong>: なし。画像データはサーバーに送信されません。</li>
+            <li><strong>ログ</strong>: 当ツール単体では、画像内容やファイル名をサーバーに送る処理はありません。</li>
+        </ul>
+        <p>詳細は<a href="/privacy">プライバシーポリシー</a>もご確認ください。</p>
+
+        <h2 id="faq">よくある質問（FAQ）</h2>
+        {% set faq_list = [
+            {"q": "画像一括変換ツールでサーバーに画像がアップロードされますか？", "a": "いいえ。すべてブラウザ内で処理され、画像データはサーバーに送信されません。処理は static/js/image-batch-convert.js およびブラウザの Canvas API で完結しています。"},
+            {"q": "複数サイズを同時に出力できますか？", "a": "はい。バリアント機能で複数のサイズ（幅）を追加し、1回の変換で複数サイズの画像を同時に生成できます。"},
+            {"q": "対応している画像形式は何ですか？", "a": "入力は PNG、JPEG（.jpg/.jpeg）、WebP です。出力も PNG、JPG、WebP から選択できます。"},
+            {"q": "最大何ファイルまで処理できますか？", "a": "最大50ファイルまでです（1ファイル20MBまで。static/js/file-validation.js で検証）。それ以上はエラーになるか、事前に分割してください。"},
+            {"q": "画像サイズの上限はありますか？", "a": "幅×高さが80,000,000ピクセルまでです。それを超えると「画像サイズが大きすぎます」エラーになります（image-batch-convert.js の MAX_PIXELS）。"},
+            {"q": "品質を下げたのにファイルサイズが大きいです。", "a": "PNG形式では品質スライダーは効きません。JPGまたはWebPを選択すると品質（圧縮）を調整できます。"},
+            {"q": "リサイズが効きません。", "a": "リサイズ幅に 0 を指定しているとリサイズされません。0 は「リサイズなし（元サイズ維持）」です。数値を入力してから変換してください。"},
+            {"q": "変換が途中で止まります。", "a": "ブラウザのメモリ不足の可能性があります。同時に処理するファイル数を減らすか、画像のピクセル数・ファイル数を減らして再試行してください。"}
+        ] %}
+        <div class="faq-list">
+            {% for item in faq_list %}
+            <div class="faq-item" style="margin-bottom: 24px;">
+                <h3 style="font-size: 1.1em; margin-bottom: 8px;">Q. {{ item.q }}</h3>
+                <p style="margin: 0; padding-left: 1em;">A. {{ item.a }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2>トラブルシューティング</h2>
+        <ul>
+            <li><strong>「画像サイズが大きすぎます」と表示される</strong>: 幅×高さが8,000万ピクセルを超えています。リサイズ幅を小さくするか、元画像を別ツールで縮小してから読み込んでください。</li>
+            <li><strong>「ファイル数が上限を超えています」</strong>: 50ファイルを超えています。複数回に分けて処理するか、不要なファイルを外してください。</li>
+            <li><strong>「ファイルサイズが上限を超えています」</strong>: 1ファイルが20MBを超えています。圧縮するか、解像度を下げてからお試しください。</li>
+            <li><strong>変換後の画像が真っ白・崩れる</strong>: 対応外の形式（GIF、BMP等）や破損したファイルの可能性があります。PNG/JPG/WebPの正常なファイルで再試行してください。</li>
+            <li><strong>ZIPダウンロードが始まらない</strong>: ブラウザのポップアップブロックやダウンロード設定を確認してください。個別ダウンロードで1枚ずつ取得することもできます。</li>
+        </ul>
+
+        <div class="tip-box">
+            <strong>💡 効率的な使い方</strong>
+            <ul style="margin-top: 10px;">
+                <li>プリセット機能でよく使う設定を保存すると便利です。</li>
+                <li>複数サイズが必要な場合はバリアントを活用してください。</li>
+                <li>大量ファイルは一度に50枚以内に分けて処理することをおすすめします。</li>
+            </ul>
+        </div>
+
+        {% set tool_path = '/tools/image-batch' %}
+        {% set tool_name = '画像一括変換ツール' %}
+        {% include 'guide/_partials/guide_related_links.html' %}
+
+        <div class="nav-links">
+            <a href="/tools/image-batch" class="nav-link">← 画像一括変換ツールに戻る</a>
+            <a href="/tools" class="nav-link">← ツール一覧へ</a>
+            <a href="/guide/image-cleanup" class="nav-link">次のガイド: 画像ユーティリティ →</a>
+        </div>
+    </div>
+
+    {% include 'guide/_partials/guide_faq_jsonld.html' %}
+    {% include 'includes/footer.html' %}
+</body>
+</html>

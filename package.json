@@ -1,0 +1,19 @@
+{
+  "name": "jobcan-automation",
+  "version": "1.0.0",
+  "description": "Jobcan勤怠データ自動入力ツール",
+  "scripts": {
+    "lint:html": "html-validate 'templates/**/*.html'",
+    "audit:ui": "ts-node scripts/generate-ui-audit.ts",
+    "report:content": "node scripts/generate-content-reports.mjs",
+    "report:ia": "node scripts/generate-ia-guide-resources-report.mjs",
+    "report:feature-gap": "node scripts/generate-feature-gap-report.mjs",
+    "report:status": "node scripts/generate-status-report.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.30",
+    "html-validate": "^9.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

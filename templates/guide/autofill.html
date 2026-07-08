@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    {% set page_title = 'Jobcan AutoFill ガイド | Automation Hub' %}
+    {% set page_description = 'Jobcan AutoFill の使い方をまとめたガイドです。Excel 形式、入力前の確認事項、FAQ、トラブルシューティングまでを一通り確認できます。' %}
+    {% set breadcrumb_title = 'Jobcan AutoFill ガイド' %}
+    {% include 'includes/head_meta.html' %}
+    <style>
+        body { font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%); min-height: 100vh; color: #FFFFFF; line-height: 1.8; }
+        .container { max-width: 1000px; margin: 0 auto; background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%); border-radius: 20px; padding: 50px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5); }
+        h1 { font-size: 2.5em; margin-bottom: 30px; color: #FFFFFF; }
+        h2 { font-size: 1.8em; margin-top: 40px; margin-bottom: 20px; color: #FFFFFF; border-bottom: 2px solid rgba(255, 255, 255, 0.2); padding-bottom: 10px; }
+        h3 { font-size: 1.4em; margin-top: 30px; margin-bottom: 15px; color: #4A9EFF; }
+        p, li { color: rgba(255, 255, 255, 0.9); margin-bottom: 15px; font-size: 1.05em; }
+        ul, ol { padding-left: 30px; }
+        .step-box { background: rgba(74, 158, 255, 0.1); border-left: 4px solid #4A9EFF; padding: 25px; margin: 30px 0; border-radius: 8px; }
+        .step-box h3 { margin-top: 0; }
+        .info-box { background: rgba(40, 167, 69, 0.1); border-left: 4px solid #28A745; padding: 20px; margin: 25px 0; border-radius: 8px; }
+        .warning-box { background: rgba(220, 53, 69, 0.1); border-left: 4px solid #DC3545; padding: 20px; margin: 25px 0; border-radius: 8px; }
+        .tip-box { background: rgba(255, 193, 7, 0.1); border-left: 4px solid #FFC107; padding: 20px; margin: 25px 0; border-radius: 8px; }
+        code { background: rgba(255, 255, 255, 0.1); padding: 2px 8px; border-radius: 4px; font-family: 'Courier New', monospace; color: #4A9EFF; }
+        .nav-links { display: flex; gap: 20px; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.2); flex-wrap: wrap; }
+        .nav-link { display: inline-block; padding: 15px 30px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px; color: #FFFFFF; text-decoration: none; transition: all 0.3s; }
+        .nav-link:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        a { color: #4A9EFF; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .faq-item { margin-bottom: 24px; }
+    </style>
+</head>
+<body>
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <div class="container">
+        <h1>🕒 Jobcan AutoFill ガイド</h1>
+        <p><strong>できること:</strong> Excelで用意した勤怠データを、Jobcanの打刻画面に自動で一括入力します。月次締めの手間を削減し、打ち漏れ・入力ミスを防ぎます。</p>
+        <p><strong>想定ユーザー:</strong> 毎月の勤怠入力に時間をかけている方、複数人分の打刻をまとめて行いたい方、Excelで管理している勤怠をJobcanへ移したい方。</p>
+
+        <h2>おすすめの読む順</h2>
+        <ul>
+            <li><a href="#usage">使い方の流れ</a> — 初めての方はここから</li>
+            <li><a href="#excel">Excel形式・列の指定</a> — テンプレートの書き方</li>
+            <li><a href="#constraints">制約・注意事項</a></li>
+            <li><a href="#data-handling">データの取り扱い</a> — アップロード・保存について</li>
+            <li><a href="#faq">よくある質問（FAQ）</a></li>
+            <li><a href="#troubleshooting">トラブルシューティング</a></li>
+        </ul>
+
+        <h2 id="usage">使い方の流れ（5ステップ）</h2>
+        <div class="step-box">
+            <h3>ステップ1: テンプレートをダウンロード</h3>
+            <p><a href="/autofill">Jobcan AutoFill</a>ページで、Excelテンプレートをダウンロードします。日付・出勤・退勤などの列が定義されています。</p>
+        </div>
+        <div class="step-box">
+            <h3>ステップ2: Excelに勤怠データを入力</h3>
+            <p>テンプレートの形式に従って、日付・出勤時刻・退勤時刻などを入力します。詳細は<a href="#excel">Excel形式・列の指定</a>を参照してください。</p>
+        </div>
+        <div class="step-box">
+            <h3>ステップ3: ログイン情報とファイルを準備</h3>
+            <p>Jobcanにログインするメールアドレス・パスワードと、入力済みのExcelファイルを用意します。</p>
+        </div>
+        <div class="step-box">
+            <h3>ステップ4: アップロードして実行</h3>
+            <p>ツール画面でログイン情報とExcelファイルをアップロードし、「勤怠データを自動入力」をクリックします。処理中はブラウザを閉じないでください。</p>
+        </div>
+        <div class="step-box">
+            <h3>ステップ5: 完了確認</h3>
+            <p>処理が完了すると結果が表示されます。Jobcan側で打刻が反映されているか確認してください。</p>
+        </div>
+
+        <h2 id="excel">Excel形式・列の指定</h2>
+        <p>テンプレートでは日付・出勤・退勤などの列が決まっています。形式エラーを防ぐため、<a href="/guide/excel-format">Excelファイルの作成方法</a>で日付・時刻の書式や列の順序を確認してください。</p>
+        <ul>
+            <li>日付は YYYY-MM-DD または Excelの日付形式で統一</li>
+            <li>時刻は HH:MM または HH:MM:SS</li>
+            <li>休日・欠勤は指定列または空欄で表現</li>
+        </ul>
+
+        <h2>入出力</h2>
+        <h3>入力</h3>
+        <ul>
+            <li>Jobcanのログイン情報（メールアドレス・パスワード）</li>
+            <li>勤怠データが入力されたExcelファイル（テンプレート形式）</li>
+        </ul>
+        <h3>出力</h3>
+        <ul>
+            <li>Jobcanの打刻画面への自動入力（ブラウザ操作の自動化）</li>
+            <li>処理結果の表示（成功・失敗・エラー内容）</li>
+        </ul>
+
+        <h2 id="constraints">制約・注意事項</h2>
+        <ul>
+            <li>Jobcanの画面仕様・ログイン方式が変更されると、自動入力が動作しなくなる場合があります。</li>
+            <li>処理中はブラウザを閉じず、他のタブでの操作を控えてください。ポップアップを許可してください。</li>
+            <li>Excelの形式（列・日付・時刻）がテンプレートと一致している必要があります。</li>
+            <li>利用はご自身のアカウント・所属企業の就業規則・セキュリティポリシーに従ってください。</li>
+        </ul>
+
+        <h2 id="data-handling">データの取り扱い</h2>
+        <p><strong>Jobcan AutoFill は、他ツール（画像一括変換・PDF・SEOなど）と異なり、サーバー側でデータを受け取る処理があります。</strong></p>
+        <ul>
+            <li><strong>アップロード</strong>: ログイン情報とExcelファイルはサーバーに送信され、自動入力処理のために少なくとも一時的に利用されます。</li>
+            <li><strong>保存</strong>: セキュリティ・プライバシー方針に従い、必要な範囲・期間で取り扱います。詳細は<a href="/privacy">プライバシーポリシー</a>をご確認ください。</li>
+            <li>他ツール（画像・PDF・SEOなど）はブラウザ内完結でサーバーにファイルを送りませんが、Jobcan AutoFill ではExcelとログイン情報の送信が発生します。</li>
+        </ul>
+
+        <h2 id="faq">よくある質問（FAQ）</h2>
+        {% set faq_list = [
+            {"q": "Jobcan AutoFillでサーバーにデータが送信されますか？", "a": "はい。ログイン情報とExcelファイルは自動入力処理のためサーバーに送信され、一時的に利用されます。他ツール（画像・PDF・SEOなど）はブラウザ内完結で送信しませんが、Jobcan AutoFill は仕様上サーバー処理が必要です。プライバシーポリシーをご確認ください。"},
+            {"q": "はじめて使う場合、どこから読めばよいですか？", "a": "このページの「使い方の流れ」から始め、テンプレートのダウンロード・Excel入力・アップロードの順に進めてください。詳細ははじめての使い方（サブガイド）も参照できます。"},
+            {"q": "Excelの形式エラーが出ます。", "a": "テンプレートの列順・日付形式（YYYY-MM-DDなど）・時刻形式を確認してください。Excelファイルの作成方法ガイド（/guide/excel-format）を参照し、正しい形式で保存し直してから再実行してください。"},
+            {"q": "処理が途中で止まります。", "a": "ブラウザを閉じていないか、ポップアップがブロックされていないか確認してください。ネットワークが不安定な場合も失敗することがあります。トラブルシューティング（/guide/troubleshooting）でエラー別の対処を確認できます。"},
+            {"q": "ログインに失敗します。", "a": "メールアドレス・パスワードが正しいか、Jobcanのサイトで直接ログインできるか確認してください。二要素認証などが有効な場合は、事前にポリシーをご確認ください。"},
+            {"q": "打刻が反映されません。", "a": "処理完了メッセージが出た後、Jobcanの画面で日付・打刻内容を確認してください。日付が想定と異なる・重複している場合はExcelのデータを確認し、必要に応じて再実行または手動で修正してください。"},
+            {"q": "他ツールとの違いは何ですか？", "a": "画像一括変換・PDF・Web/SEOツールはすべてブラウザ内で完結し、ファイルをサーバーに送りません。Jobcan AutoFill はログインとExcelをサーバーで処理するため、データの送信・一時保存が発生します。"},
+            {"q": "詳細な手順やトラブルはどこにありますか？", "a": "はじめての使い方（/guide/getting-started）、Excelファイルの作成方法（/guide/excel-format）、トラブルシューティング（/guide/troubleshooting）、完全ガイド（/guide/complete）など、サブガイドで詳しく解説しています。このページ下部の「関連リンク」からアクセスできます。"}
+        ] %}
+        <div class="faq-list">
+            {% for item in faq_list %}
+            <div class="faq-item">
+                <h3 style="font-size: 1.1em; margin-bottom: 8px;">Q. {{ item.q }}</h3>
+                <p style="margin: 0; padding-left: 1em;">A. {{ item.a }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2 id="troubleshooting">トラブルシューティング</h2>
+        <ul>
+            <li><strong>「形式エラー」「列が見つかりません」</strong>: Excelの列名・順序がテンプレートと一致しているか確認し、<a href="/guide/excel-format">Excelファイルの作成方法</a>に沿って修正してください。</li>
+            <li><strong>「ログインに失敗しました」</strong>: メールアドレスとパスワードを確認し、Jobcanに直接ログインできるか試してください。アカウントロックや二要素認証の影響がないかも確認してください。</li>
+            <li><strong>「処理がタイムアウトしました」</strong>: データ量が多い・ネットワークが遅い場合に発生することがあります。日付範囲を絞るか、時間をおいて再試行してください。</li>
+            <li><strong>「ブラウザを閉じないでください」と出たあと失敗する</strong>: 処理中にタブを切り替えたり閉じたりすると失敗します。完了メッセージが出るまで同じタブで待ってください。</li>
+            <li><strong>打刻が二重に入る・日付がずれる</strong>: Excelの日付形式やタイムゾーンを確認してください。既に打刻がある日は上書きされる場合があります。必要に応じてJobcan側で手動修正してください。</li>
+        </ul>
+
+        <div class="tip-box">
+            <strong>💡 おすすめの読む順</strong>
+            <ul style="margin-top: 10px;">
+                <li>初めての方は <a href="#usage">使い方の流れ</a> → <a href="/guide/getting-started">はじめての使い方</a>（サブガイド）の順がおすすめです。</li>
+                <li>Excelでエラーが出る場合は <a href="/guide/excel-format">Excelファイルの作成方法</a> を参照してください。</li>
+                <li>エラー・不具合は <a href="/guide/troubleshooting">トラブルシューティング</a> で原因別の対処を確認できます。</li>
+            </ul>
+        </div>
+
+        {% set tool_path = '/autofill' %}
+        {% set tool_name = 'Jobcan AutoFill' %}
+        {% set guide_path = '/guide/autofill' %}
+        {% include 'guide/_partials/guide_related_links.html' %}
+
+        <h2>詳細ガイド（サブガイド）</h2>
+        <p>より詳しい手順・形式説明・トラブル対処は、以下のサブガイドで解説しています。</p>
+        <ul>
+            <li><a href="/guide/getting-started">はじめての使い方</a></li>
+            <li><a href="/guide/excel-format">Excelファイルの作成方法</a></li>
+            <li><a href="/guide/troubleshooting">トラブルシューティング</a></li>
+            <li><a href="/guide/complete">完全ガイド</a></li>
+            <li><a href="/guide/comprehensive-guide">総合ガイド（勤怠管理の効率化）</a></li>
+        </ul>
+
+        <div class="nav-links">
+            <a href="/autofill" class="nav-link">← Jobcan AutoFill に戻る</a>
+            <a href="/tools" class="nav-link">← ツール一覧へ</a>
+            <a href="/guide" class="nav-link">ガイド一覧</a>
+        </div>
+    </div>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "Jobcan AutoFill の使い方",
+      "description": "Excel から Jobcan へ勤怠データをまとめて入力する手順",
+      "totalTime": "PT10M",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "テンプレートを確認する",
+          "text": "AutoFill ページからテンプレートを確認し、日付と勤務時間の入力列を整えます。",
+          "url": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}/guide/autofill#usage"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Excel ファイルを準備する",
+          "text": "日付、開始時刻、終了時刻を所定の形式で Excel にまとめ、必要に応じて形式ガイドを確認します。",
+          "url": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}/guide/autofill#excel"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "ログイン情報とファイルを指定する",
+          "text": "Jobcan のログイン情報と Excel ファイルを指定し、入力前の制約と注意事項を確認します。",
+          "url": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}/guide/autofill#constraints"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "自動入力を実行する",
+          "text": "Jobcan AutoFill を実行し、進行状況と結果を確認します。",
+          "url": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}/guide/autofill#data-handling"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "name": "結果を確認して必要なら再調整する",
+          "text": "FAQ とトラブルシューティングを参照しながら、形式不一致やエラーがあれば修正して再実行します。",
+          "url": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}/guide/autofill#faq"
+        }
+      ]
+    }
+    </script>
+    {% include 'guide/_partials/guide_faq_jsonld.html' %}
+    {% include 'includes/footer.html' %}
+</body>
+</html>

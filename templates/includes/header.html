@@ -1,0 +1,164 @@
+{# 共通ヘッダー（Home / Tools / Guide / Resource の4大項目・ドロップダウン） #}
+{% include 'includes/header_v2.html' %}
+{% if false %}
+{% from 'includes/icons.html' import icon %}
+{% set _current_path = request.path|default('/') if (request is defined and request) else '/' %}
+<header class="site-header">
+    <nav class="site-nav" role="navigation" aria-label="メインメニュー">
+        <div class="site-nav__inner">
+            <a href="/" class="site-logo">Automation Hub</a>
+            <div class="site-nav__links">
+                {% for section in nav_sections|default([]) %}
+                    {% if section.children is none or not section.children %}
+                        <a href="{{ section.path|default('/') }}"
+                           class="site-nav__link {% if _current_path == section.path or (section.path == '/' and _current_path == '/') %}site-nav__link--active{% endif %}"
+                           {% if section.id %}id="nav-{{ section.id }}"{% endif %}>
+                            {% if section.id == 'home' %}{{ icon('home', 18, 'site-nav__icon') }}{% elif section.id == 'guide' %}{{ icon('book', 18, 'site-nav__icon') }}{% elif section.id == 'tools' %}{{ icon('tools', 18, 'site-nav__icon') }}{% endif %}
+                            <span>{{ section.label }}</span>
+                        </a>
+                    {% else %}
+                        <div class="site-nav__dropdown-wrap" data-dropdown>
+                            <button type="button"
+                                    class="site-nav__link site-nav__link--trigger {% if _current_path == section.path %}site-nav__link--active{% endif %}"
+                                    aria-expanded="false"
+                                    aria-haspopup="true"
+                                    aria-controls="dropdown-{{ section.id|default(loop.index) }}"
+                                    id="nav-{{ section.id|default(loop.index) }}">
+                                <span>{{ section.label }}</span>
+                                <span class="site-nav__chevron" aria-hidden="true">▼</span>
+                            </button>
+                            <ul class="site-nav__dropdown" id="dropdown-{{ section.id|default(loop.index) }}" role="menu" aria-label="{{ section.label }}">
+                                {% for item in section.children %}
+                                {% if item.get('items') %}
+                                <li role="none" class="site-nav__group">
+                                    <span class="site-nav__group-label">{{ item.group_label|default('') }}</span>
+                                    {% for sub in item['items'] %}
+                                    <li role="none">
+                                        <a href="{{ sub.path|default('#') }}" role="menuitem" class="site-nav__dropdown-link">{{ sub.icon|default('') }}{% if sub.icon %} {% endif %}{{ sub.name|default('') }}</a>
+                                    </li>
+                                    {% endfor %}
+                                </li>
+                                {% else %}
+                                <li role="none">
+                                    <a href="{{ item.path|default('#') }}" role="menuitem" class="site-nav__dropdown-link">{{ item.icon|default('') }}{% if item.icon %} {% endif %}{{ item.name|default('') }}</a>
+                                </li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% if not nav_sections or nav_sections|length == 0 %}
+                {# nav_sections 未注入時のフォールバック #}
+                <a href="/" class="site-nav__link {% if _current_path == '/' %}site-nav__link--active{% endif %}"><span>Home</span></a>
+                <a href="/autofill" class="site-nav__link {% if _current_path == '/autofill' %}site-nav__link--active{% endif %}"><span>AutoFill</span></a>
+                <a href="/tools" class="site-nav__link {% if _current_path == '/tools' %}site-nav__link--active{% endif %}"><span>Tools</span></a>
+                <a href="/guide/getting-started" class="site-nav__link {% if _current_path == '/guide/getting-started' %}site-nav__link--active{% endif %}"><span>Guide</span></a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+</header>
+{% if affiliate_top_slot_mode == 'header' and affiliate_top_slot_id %}
+<div class="affiliate-top-shell">
+    {% with slot_id=affiliate_top_slot_id, slot_render_fallback=true, slot_disable_widget=true, slot_extra_class='affiliate-slot--primary-inline' %}
+        {% include 'includes/affiliate_slot.html' %}
+    {% endwith %}
+</div>
+{% endif %}
+
+<style>
+    .site-header {
+        background: rgba(30, 30, 30, 0.95);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 15px 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(10px);
+    }
+    .site-nav { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .site-nav__inner { display: flex; justify-content: space-between; align-items: center; }
+    .site-logo {
+        font-size: 1.3em; font-weight: 600; color: var(--color-text-primary, #FFFFFF);
+        text-decoration: none; letter-spacing: var(--letter-spacing-normal, 0.02em);
+    }
+    .site-logo:hover { color: var(--color-accent, #4A9EFF); text-decoration: none; }
+    .site-nav__links { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .site-nav__link {
+        display: inline-flex; align-items: center; gap: 8px;
+        color: rgba(255, 255, 255, 0.8); text-decoration: none; padding: 8px 12px;
+        border-radius: var(--radius-button, 4px); transition: all var(--transition-base, 0.2s);
+        background: transparent; border: none; cursor: pointer; font-size: inherit; font-family: inherit;
+    }
+    .site-nav__link:hover { background: rgba(74, 158, 255, 0.1); color: var(--color-accent, #4A9EFF); text-decoration: none; }
+    .site-nav__link--active { color: var(--color-accent, #4A9EFF); background: rgba(74, 158, 255, 0.1); }
+    .site-nav__icon { flex-shrink: 0; }
+    .site-nav__chevron { font-size: 0.6em; opacity: 0.8; margin-left: 4px; transition: transform 0.2s; }
+    .site-nav__dropdown-wrap { position: relative; }
+    .site-nav__dropdown {
+        display: none; position: absolute; top: 100%; left: 0; min-width: 220px; margin: 4px 0 0 0;
+        padding: 8px 0; list-style: none; background: rgba(30, 30, 30, 0.98);
+        border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        z-index: 200; max-height: 70vh; overflow-y: auto;
+    }
+    .site-nav__dropdown-wrap:hover .site-nav__dropdown,
+    .site-nav__dropdown-wrap[data-open="true"] .site-nav__dropdown { display: block; }
+    .site-nav__dropdown-wrap[data-open="true"] .site-nav__chevron { transform: rotate(180deg); }
+    .site-nav__dropdown-link {
+        display: block; padding: 10px 16px; color: rgba(255, 255, 255, 0.9); text-decoration: none;
+        font-size: 0.95em; transition: background 0.2s;
+    }
+    .site-nav__dropdown-link:hover { background: rgba(74, 158, 255, 0.15); color: #4A9EFF; }
+    .site-nav__group { list-style: none; padding: 0; margin: 0; }
+    .site-nav__group .site-nav__group { padding-left: 0; }
+    .site-nav__group-label {
+        display: block; padding: 8px 16px 4px; font-size: 0.75em; font-weight: 600;
+        color: rgba(255, 255, 255, 0.6); text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    @media (max-width: 768px) {
+        .site-nav__inner { flex-direction: column; gap: 16px; }
+        .site-nav__links { width: 100%; justify-content: center; }
+        .site-nav__link { font-size: 0.9em; padding: 6px 10px; }
+        .site-nav__dropdown { left: 50%; transform: translateX(-50%); min-width: 200px; }
+    }
+    .affiliate-top-shell {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px 20px 0;
+    }
+</style>
+<script>
+(function() {
+    document.querySelectorAll('[data-dropdown]').forEach(function(wrap) {
+        var btn = wrap.querySelector('button');
+        var menu = wrap.querySelector('.site-nav__dropdown');
+        if (!btn || !menu) return;
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var open = wrap.getAttribute('data-open') === 'true';
+            document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(function(w) {
+                if (w !== wrap) w.removeAttribute('data-open');
+            });
+            wrap.setAttribute('data-open', open ? 'false' : 'true');
+            btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                wrap.removeAttribute('data-open');
+                btn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('[data-dropdown]')) {
+            document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(function(w) {
+                w.removeAttribute('data-open');
+                var b = w.querySelector('button');
+                if (b) b.setAttribute('aria-expanded', 'false');
+            });
+        }
+    });
+})();
+</script>
+{% endif %}

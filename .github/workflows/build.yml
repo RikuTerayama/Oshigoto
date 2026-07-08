@@ -1,0 +1,53 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements_gui.txt
+        pip install pyinstaller
+        
+    - name: Install Playwright browsers
+      run: |
+        playwright install chromium
+        
+    - name: Create sample data
+      run: |
+        python sample_data.py
+        
+    - name: Build executable files
+      run: |
+        python build_exe.py
+        
+    - name: Create release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          dist/jobcan_bot.exe
+          dist/jobcan_gui.exe
+          dist/README.md
+          dist/sample_data.py
+          dist/sample_attendance.xlsx
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

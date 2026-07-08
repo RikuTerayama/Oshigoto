@@ -1,0 +1,74 @@
+/* ============================================
+   Scroll Reveal Animation
+   Minimal, professional scroll animations
+   Safe: Default visible, hidden only when JS is enabled
+   ============================================ */
+
+/* Base reveal styles - Default: visible (JS disabled fallback) */
+/* no-js クラスが付いている時（JS無効時）は常に表示 */
+html.no-js [data-reveal],
+html:not(.js) [data-reveal] {
+    opacity: 1;
+    transform: none;
+}
+
+/* JS enabled: Hide initially, reveal on scroll */
+html.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html.js [data-reveal].revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger effect for child elements - Default: visible */
+/* no-js クラスが付いている時（JS無効時）は常に表示 */
+html.no-js [data-reveal-stagger] > *,
+html:not(.js) [data-reveal-stagger] > * {
+    opacity: 1;
+    transform: none;
+}
+
+/* JS enabled: Hide initially, reveal on scroll */
+html.js [data-reveal-stagger] > * {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Stagger delays - Only when JS is enabled */
+html.js [data-reveal-stagger].revealed > *:nth-child(1) { transition-delay: 0ms; }
+html.js [data-reveal-stagger].revealed > *:nth-child(2) { transition-delay: 50ms; }
+html.js [data-reveal-stagger].revealed > *:nth-child(3) { transition-delay: 100ms; }
+html.js [data-reveal-stagger].revealed > *:nth-child(4) { transition-delay: 150ms; }
+html.js [data-reveal-stagger].revealed > *:nth-child(5) { transition-delay: 200ms; }
+html.js [data-reveal-stagger].revealed > *:nth-child(6) { transition-delay: 250ms; }
+html.js [data-reveal-stagger].revealed > *:nth-child(7) { transition-delay: 300ms; }
+html.js [data-reveal-stagger].revealed > *:nth-child(8) { transition-delay: 350ms; }
+html.js [data-reveal-stagger].revealed > *:nth-child(9) { transition-delay: 400ms; }
+html.js [data-reveal-stagger].revealed > *:nth-child(10) { transition-delay: 450ms; }
+
+html.js [data-reveal-stagger].revealed > * {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Custom delay support */
+html.js [data-reveal][data-reveal-delay] {
+    transition-delay: calc(var(--reveal-delay, 0ms));
+}
+
+/* Accessibility: Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    [data-reveal],
+    [data-reveal-stagger] > * {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+}

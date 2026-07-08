@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    {% set page_title = 'CSV/Excelツールの使い方ガイド | Jobcan AutoFill' %}
+    {% set page_description = 'CSV/Excelユーティリティの使い方ガイド。文字コード変換、CSV⇄XLSX変換、重複削除、列操作、分割の方法を解説。' %}
+    {% include 'includes/head_meta.html' %}
+    <style>
+        body { font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%); min-height: 100vh; color: #FFFFFF; line-height: 1.8; }
+        .container { max-width: 1000px; margin: 0 auto; background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%); border-radius: 20px; padding: 50px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5); }
+        h1 { font-size: 2.5em; margin-bottom: 30px; color: #FFFFFF; }
+        h2 { font-size: 1.8em; margin-top: 40px; margin-bottom: 20px; color: #FFFFFF; border-bottom: 2px solid rgba(255, 255, 255, 0.2); padding-bottom: 10px; }
+        h3 { font-size: 1.4em; margin-top: 30px; margin-bottom: 15px; color: #4A9EFF; }
+        p, li { color: rgba(255, 255, 255, 0.9); margin-bottom: 15px; font-size: 1.05em; }
+        ul, ol { padding-left: 30px; }
+        .step-box { background: rgba(74, 158, 255, 0.1); border-left: 4px solid #4A9EFF; padding: 25px; margin: 30px 0; border-radius: 8px; }
+        .step-box h3 { margin-top: 0; }
+        .info-box { background: rgba(40, 167, 69, 0.1); border-left: 4px solid #28A745; padding: 20px; margin: 25px 0; border-radius: 8px; }
+        .warning-box { background: rgba(220, 53, 69, 0.1); border-left: 4px solid #DC3545; padding: 20px; margin: 25px 0; border-radius: 8px; }
+        .tip-box { background: rgba(255, 193, 7, 0.1); border-left: 4px solid #FFC107; padding: 20px; margin: 25px 0; border-radius: 8px; }
+        code { background: rgba(255, 255, 255, 0.1); padding: 2px 8px; border-radius: 4px; font-family: 'Courier New', monospace; color: #4A9EFF; }
+        .nav-links { display: flex; gap: 20px; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.2); flex-wrap: wrap; }
+        .nav-link { display: inline-block; padding: 15px 30px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px; color: #FFFFFF; text-decoration: none; transition: all 0.3s; }
+        .nav-link:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        a { color: #4A9EFF; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <div class="container">
+        <h1>📊 CSV/Excelユーティリティガイド</h1>
+        <p><strong>できること:</strong> CSVの文字コード変換（Shift-JIS/UTF-8）、CSV⇄XLSX変換、キー列指定の重複削除、列の抽出・並べ替え、N行ごとの分割。すべてブラウザ内で完結し、ファイルはサーバーに送信されません。</p>
+        <p><strong>想定ユーザー:</strong> 勤怠データや名簿などのCSV/Excelを、文字コード変換・形式変換・整形したい方。</p>
+
+        <h2>このツールで解決できる課題</h2>
+        <ul>
+            <li>Shift-JISのCSVをUTF-8に変換したい</li>
+            <li>CSVをExcel形式（XLSX）で保存したい</li>
+            <li>ExcelをCSVに変換したい</li>
+            <li>重複行をキー列で削除したい</li>
+            <li>必要な列だけ抽出したり並べ替えたりしたい</li>
+            <li>大きなCSVをN行ごとに分割したい</li>
+        </ul>
+
+        <h2>主要機能</h2>
+        <ul>
+            <li><strong>文字コード変換</strong>: 入力（UTF-8/Shift-JIS）・出力（UTF-8 BOMあり/なし、Shift-JIS）を選択可能</li>
+            <li><strong>CSV→XLSX</strong>: CSVをExcel形式でダウンロード</li>
+            <li><strong>XLSX→CSV</strong>: Excelの1枚目シートをCSVに変換</li>
+            <li><strong>列の抽出・並べ替え</strong>: ヘッダーから列を選択し、順序を変えて出力</li>
+            <li><strong>重複削除</strong>: 指定したキー列で重複行を削除（先頭行を残す）</li>
+            <li><strong>N行ごと分割</strong>: 指定行数ごとに複数CSVに分割（ZIPで一括DL）</li>
+        </ul>
+
+        <h2>使い方の流れ（機能別）</h2>
+
+        <div class="step-box">
+            <h3>文字コード変換・CSV⇄XLSX</h3>
+            <ol>
+                <li><a href="/tools/csv">CSV/Excelユーティリティ</a>にアクセス</li>
+                <li>ファイルをドラッグ＆ドロップまたは選択</li>
+                <li>入力文字コード（UTF-8 / Shift-JIS）と、出力文字コード（CSV出力時）を選択</li>
+                <li>操作モードで「CSV→XLSX」または「XLSX→CSV」を選択</li>
+                <li>「実行」でダウンロード</li>
+            </ol>
+        </div>
+
+        <div class="step-box">
+            <h3>列の抽出・並べ替え</h3>
+            <ol>
+                <li>CSVまたはXLSXを選択</li>
+                <li>操作モードで「列の抽出・並べ替え」を選択</li>
+                <li>プレビュー下のチェックボックスで残す列を選択（順序がそのまま出力順になります）</li>
+                <li>「実行」で1つのCSVをダウンロード</li>
+            </ol>
+        </div>
+
+        <div class="step-box">
+            <h3>重複削除</h3>
+            <ol>
+                <li>操作モードで「重複削除（キー列指定）」を選択</li>
+                <li>キー列のドロップダウンで、重複判定に使う列を選択</li>
+                <li>「実行」で重複を除いた1つのCSVをダウンロード</li>
+            </ol>
+        </div>
+
+        <div class="step-box">
+            <h3>N行ごと分割</h3>
+            <ol>
+                <li>操作モードで「N行ごと分割」を選択</li>
+                <li>「N行ごと」に数値（例: 1000）を入力</li>
+                <li>「実行」で複数ファイルがZIPでダウンロード</li>
+            </ol>
+        </div>
+
+        <h2>入出力仕様</h2>
+        <h3>対応入力形式</h3>
+        <ul>
+            <li>CSV（.csv）— UTF-8 または Shift-JIS</li>
+            <li>Excel（.xlsx）— 1枚目シートを対象</li>
+        </ul>
+        <h3>出力形式</h3>
+        <ul>
+            <li>CSV（UTF-8 BOMあり/なし、Shift-JISから選択可能）</li>
+            <li>XLSX（CSV→XLSX時）</li>
+            <li>ZIP（複数ファイル出力時）</li>
+        </ul>
+        <h3>制限事項</h3>
+        <ul>
+            <li>最大10ファイル、1ファイル10MB、合計50MBまで</li>
+            <li>行数は約10万行まで（ブラウザのメモリ制限のため。超えるとエラー表示）</li>
+            <li>XLSXは1枚目シートのみ対象（MVP）</li>
+        </ul>
+
+        <div class="warning-box">
+            <strong>⚠️ 文字コードについて</strong>
+            <p>Shift-JISには機種依存文字や対応外文字があり、変換時に文字化けすることがあります。変換後はプレビューやダウンロード結果で内容を確認してください。</p>
+        </div>
+
+        <h2 id="data-handling">データの取り扱い</h2>
+        <p>当ツールでは、CSV・Excelのアップロード・サーバー保存・外部送信は行いません。</p>
+        <ul>
+            <li><strong>アップロード</strong>: 行いません。処理はすべてブラウザ内で完結します。</li>
+            <li><strong>サーバー保存・ログ</strong>: なし。ファイル内容はサーバーに送信されません。</li>
+        </ul>
+        <p>詳細は<a href="/privacy">プライバシーポリシー</a>をご確認ください。</p>
+
+        <h2 id="faq">よくある質問（FAQ）</h2>
+        {% set faq_list = [
+            {"q": "ファイルはサーバーに送信されますか？", "a": "いいえ。すべてブラウザ内で処理され、CSV・Excelの内容はサーバーに送信されません。"},
+            {"q": "Shift-JISのCSVを読み込めますか？", "a": "はい。入力ファイルの文字コードで「Shift-JIS」を選択してください。機種依存文字などで文字化けする場合があります。"},
+            {"q": "CSVをExcel形式で保存できますか？", "a": "はい。操作モードで「CSV→XLSX変換」を選び、実行するとXLSXでダウンロードできます。"},
+            {"q": "Excelの複数シートは対応していますか？", "a": "現在は1枚目シートのみ対象です。他シートが必要な場合はExcel側で1枚目にまとめるか、シートごとにファイルを分けてください。"},
+            {"q": "大きなファイルでエラーになります。", "a": "1ファイル10MB・合計50MB・行数約10万行までの制限があります。分割や列抽出でサイズを減らしてからお試しください。"},
+            {"q": "出力の文字コードを選べますか？", "a": "はい。CSV出力時に「UTF-8（BOMあり）」「UTF-8（BOMなし）」「Shift-JIS」から選択できます。"}
+        ] %}
+        <div class="faq-list">
+            {% for item in faq_list %}
+            <div class="faq-item" style="margin-bottom: 24px;">
+                <h3 style="font-size: 1.1em; margin-bottom: 8px;">Q. {{ item.q }}</h3>
+                <p style="margin: 0; padding-left: 1em;">A. {{ item.a }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2>トラブルシューティング</h2>
+        <ul>
+            <li><strong>「CSVの解析に失敗しました」</strong>: 入力文字コードが実際のファイルと一致しているか確認してください。UTF-8で文字化けする場合はShift-JISを選んで再試行。</li>
+            <li><strong>「ファイルの読み込みに失敗しました」</strong>: ファイルが破損していないか、対応形式（.csv / .xlsx）か確認してください。</li>
+            <li><strong>「行数が多すぎます」</strong>: 約10万行を超えています。列抽出で不要列を除くか、N行分割で小さくしてから処理してください。</li>
+            <li><strong>重複削除で期待と違う結果になる</strong>: キー列の選択が正しいか確認してください。先頭の行が残り、同じキー値の2行目以降が削除されます。</li>
+        </ul>
+
+        <div class="tip-box">
+            <strong>💡 効率的な使い方</strong>
+            <ul style="margin-top: 10px;">
+                <li>Excel形式が必要な場合は、CSVで編集してから「CSV→XLSX」で変換すると便利です。</li>
+                <li>文字化けする場合は、入力文字コードを「Shift-JIS」に変えて再度読み込んでください。</li>
+            </ul>
+        </div>
+
+        {% set tool_path = '/tools/csv' %}
+        {% set tool_name = 'CSV/Excelユーティリティ' %}
+        {% include 'guide/_partials/guide_related_links.html' %}
+
+        <div class="nav-links">
+            <a href="/tools/csv" class="nav-link">← CSV/Excelユーティリティに戻る</a>
+            <a href="/tools" class="nav-link">← ツール一覧へ</a>
+            <a href="/guide/seo" class="nav-link">次のガイド: Web/SEO →</a>
+        </div>
+    </div>
+    {% include 'includes/footer.html' %}
+</body>
+</html>

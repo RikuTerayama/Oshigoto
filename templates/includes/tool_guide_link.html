@@ -1,0 +1,4 @@
+{# ツール詳細ページ用: このツールの使い方ガイドへのリンク（product.guide_path がある場合のみ表示） #}
+{% if product and product.guide_path %}
+<a href="{{ product.guide_path }}" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: rgba(74, 158, 255, 0.2); border: 1px solid rgba(74, 158, 255, 0.5); border-radius: 8px; color: #4A9EFF; text-decoration: none; font-weight: 500; transition: all 0.3s;" data-reveal data-reveal-delay="100">📚 {{ product.name|default('このツール') }}の使い方ガイド</a>
+{% endif %}

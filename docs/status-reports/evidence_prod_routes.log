@@ -1,0 +1,40 @@
+=== deploy route verification evidence ===
+git branch: feature/add-csv-excel-utility
+git rev: 7498e7ef8515c2f73dd0aee8ba2237491859b4e0
+python: 3.14.0
+
+(live server)
+$ curl -I https://jobcan-automation.onrender.com/tools/seo
+HTTP/1.1 200 OK
+
+  -> OK
+
+$ curl -I https://jobcan-automation.onrender.com/tools/csv
+HTTP/1.1 200 OK
+
+  -> OK
+
+$ curl -I https://jobcan-automation.onrender.com/guide/csv
+HTTP/1.1 200 OK
+
+  -> OK
+
+$ curl -I https://jobcan-automation.onrender.com/tools/minutes
+HTTP/1.1 301 REDIRECT
+Location: /tools
+
+  -> OK
+
+$ curl -I https://jobcan-automation.onrender.com/guide/minutes
+HTTP/1.1 301 REDIRECT
+Location: /guide
+
+  -> OK
+
+$ curl -I https://jobcan-automation.onrender.com/tools/pdf/
+HTTP/1.1 301 REDIRECT
+Location: /tools/pdf
+
+  -> OK
+
+=== end ===

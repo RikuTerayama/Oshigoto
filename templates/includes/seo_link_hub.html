@@ -1,0 +1,109 @@
+{% set seo_link_hub_path = request.path|default('/') if request is defined and request else '/' %}
+{% if seo_link_hub_path in ['/', '/blog', '/tools', '/guide'] %}
+<section class="seo-link-hub{% if seo_link_hub_class %} {{ seo_link_hub_class }}{% endif %}" aria-labelledby="seo-link-hub-heading">
+    {% if seo_link_hub_path == '/' %}
+    <h2 id="seo-link-hub-heading">まず確認したいページ</h2>
+    <div class="seo-link-hub__grid{% if seo_link_hub_grid_class %} {{ seo_link_hub_grid_class }}{% endif %}">
+        <a class="seo-link-hub__card" href="/tools/pdf">
+            <strong>PDFを整える</strong>
+            <span>結合、分割、抽出、圧縮、パスワード付与をまとめて扱えます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/tools/csv">
+            <strong>表を整える</strong>
+            <span>CSVやExcelの変換、重複削除、列整理をブラウザで進められます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/tools/image-batch">
+            <strong>画像をまとめて変換</strong>
+            <span>PNG/JPG/WebPの形式変換やリサイズを一括で処理できます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/tools/image-cleanup">
+            <strong>画像を見やすくする</strong>
+            <span>余白、背景、縦横比を整えて、資料やWeb掲載に使いやすくします。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/tools/seo">
+            <strong>ページを確認する</strong>
+            <span>OGP、meta、sitemap、robotsなど公開前の確認を進められます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/faq">
+            <strong>FAQ</strong>
+            <span>ファイル処理、広告、サーバ送信の有無などを確認できます。</span>
+        </a>
+    </div>
+    {% elif seo_link_hub_path == '/blog' %}
+    <h2 id="seo-link-hub-heading">記事から次に進むページ</h2>
+    <p class="seo-link-hub__intro">記事とあわせて確認しやすいページをまとめています。</p>
+    <div class="seo-link-hub__grid{% if seo_link_hub_grid_class %} {{ seo_link_hub_grid_class }}{% endif %}">
+        <a class="seo-link-hub__card" href="/guide">
+            <strong>ガイド一覧</strong>
+            <span>PDF、CSV、画像、SEO確認の使い方をツール別に確認できます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/tools">
+            <strong>道具箱一覧</strong>
+            <span>仕事でたまに必要になる軽量ツールを用途別に探せます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/tools/pdf">
+            <strong>PDFツール</strong>
+            <span>送付前のPDF整理やサイズ調整に使えます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/tools/csv">
+            <strong>CSV/Excelツール</strong>
+            <span>表データの変換や整理を手早く進められます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/faq">
+            <strong>FAQ</strong>
+            <span>利用前に確認されやすい疑問を短時間で解消できます。</span>
+        </a>
+    </div>
+    {% elif seo_link_hub_path == '/tools' %}
+    <h2 id="seo-link-hub-heading">ツール活用を深めるページ</h2>
+    <p class="seo-link-hub__intro">ツールの使い方や関連情報をまとめて確認できます。</p>
+    <div class="seo-link-hub__grid{% if seo_link_hub_grid_class %} {{ seo_link_hub_grid_class }}{% endif %}">
+        <a class="seo-link-hub__card" href="/guide">
+            <strong>ガイド一覧</strong>
+            <span>各ツールの使い方や前提条件をまとめて確認できます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/glossary">
+            <strong>用語集</strong>
+            <span>CSV、PDF、画像、SEOまわりの前提知識を整理できます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/faq">
+            <strong>FAQ</strong>
+            <span>実行前に気になる制約や注意点を確認できます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/tools/seo">
+            <strong>SEO/URL確認</strong>
+            <span>共有前のページ状態やOGPを確認できます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/privacy">
+            <strong>プライバシーポリシー</strong>
+            <span>ファイル処理と広告の取り扱いを確認できます。</span>
+        </a>
+    </div>
+    {% elif seo_link_hub_path == '/guide' %}
+    <h2 id="seo-link-hub-heading">ガイドとあわせて見るページ</h2>
+    <p class="seo-link-hub__intro">手順確認のあとに、FAQ や事例まで広げて確認できます。</p>
+    <div class="seo-link-hub__grid{% if seo_link_hub_grid_class %} {{ seo_link_hub_grid_class }}{% endif %}">
+        <a class="seo-link-hub__card" href="/tools">
+            <strong>道具箱一覧</strong>
+            <span>PDF、CSV、画像、SEO確認の各ツールを選べます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/faq">
+            <strong>FAQ</strong>
+            <span>よくある質問を用途別に確認できます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/glossary">
+            <strong>用語集</strong>
+            <span>ファイル変換やWeb公開前確認の言葉を短時間で整理できます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/tools/pdf">
+            <strong>PDFツール</strong>
+            <span>ガイドを読んだあと、すぐにPDFを整えられます。</span>
+        </a>
+        <a class="seo-link-hub__card" href="/tools/seo">
+            <strong>SEO/URL確認</strong>
+            <span>公開前のページ確認に使えます。</span>
+        </a>
+    </div>
+    {% endif %}
+</section>
+{% endif %}

@@ -1,0 +1,7 @@
+優先度(P1/P2)	対象URL	問題（事実）	影響	最小修正案	受け入れ基準	必要証跡（不足なら）
+P1	/tools/csv	ファイル名を innerHTML に未エスケープで挿入（csv.html:136, 140）	ファイル名に HTML/script を含むと XSS の可能性	136・140 でファイル名を escapeHtml 等でエスケープしてから innerHTML に渡す	ファイル名に <script> を入れても実行されない	ブラウザでファイル名 XSS テストを実施
+P1	/tools/csv	FileValidation 未定義時にファイル選択で未捕捉 throw（csv.html:219 周辺）	CDN/自前 JS 失敗時、ユーザーに何も起きない	change リスナーで try/catch し catch で setOutput 表示	スクリプト失敗時も UI にメッセージが出る	CDN ブロックで再現し確認
+P1	/tools/csv	実行ボタンに二重実行ガードなし（csv.html:265-318）	連打で複数ダウンロード・結果上書き	クリック先頭で isRunning フラグ＋finally で解除、または runBtn.disabled で制御	連打しても 1 回だけ処理。処理中はボタン disabled 等	連打テストでダウンロード 1 回を確認
+P2	/tools/csv	setOutput の msg が < のみエスケープ（csv.html:206）	動的メッセージで DOM が壊れる可能性	msg をフル HTML エスケープするか textContent で表示	任意の msg でもタグが解釈されない	—
+P2	/tools/csv	プレビュー表のセルが < のみエスケープ（csv.html:194-196）	同上	セル文字列をフルエスケープ	同上	—
+P2	全ツール	「ファイルは送らない」と GA/計測の区別が伝わりにくい	誤解	ツール本文に「計測・広告のためだけに外部へアクセスすることがあります」等を 1 文追加	文言レビューで了承	—

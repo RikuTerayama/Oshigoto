@@ -1,0 +1,40 @@
+name: Syntax Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  syntax-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Check syntax
+      run: |
+        echo "Checking Python syntax..."
+        python -m py_compile app.py
+        python -m py_compile utils.py
+        python -m py_compile automation.py
+        echo "✅ All Python files have valid syntax"
+    
+    - name: Run basic tests
+      run: |
+        echo "Running basic functionality tests..."
+        python -c "import app; print('✅ app.py imports successfully')"
+        python -c "import utils; print('✅ utils.py imports successfully')"
+        python -c "import automation; print('✅ automation.py imports successfully')"
+        echo "✅ All modules import successfully" 

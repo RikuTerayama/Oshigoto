@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    {% set page_title = 'ベストプラクティスガイド | Jobcan AutoFill' %}
+    {% set page_description = 'Jobcan AutoFillを効果的に活用するためのベストプラクティス。Excelファイルの準備、セキュリティ、効率的な使用方法を解説。' %}
+    {% include 'includes/head_meta.html' %}
+    <style>
+        * { box-sizing: border-box; font-family: 'Noto Sans JP', sans-serif; }
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #FFFFFF;
+            line-height: 1.8;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { color: #4A9EFF; font-size: 2em; margin-bottom: 30px; }
+        h2 { color: #4A9EFF; font-size: 1.5em; margin-top: 40px; margin-bottom: 20px; border-bottom: 2px solid rgba(74, 158, 255, 0.3); padding-bottom: 10px; }
+        h3 { color: #FF9800; font-size: 1.3em; margin-top: 30px; margin-bottom: 15px; }
+        .nav-link { display: inline-block; margin-top: 40px; padding: 12px 24px; background: rgba(74, 158, 255, 0.2); border: 1px solid rgba(74, 158, 255, 0.5); border-radius: 8px; color: #4A9EFF; text-decoration: none; }
+        .nav-link:hover { background: rgba(74, 158, 255, 0.3); }
+        .highlight-box { background: rgba(74, 158, 255, 0.1); border-left: 4px solid #4A9EFF; padding: 20px; margin: 25px 0; border-radius: 8px; }
+        .warning-box { background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; padding: 20px; margin: 25px 0; border-radius: 8px; }
+        ul, ol { line-height: 2; }
+        li { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    {# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <div class="container">
+        <h1>ベストプラクティスガイド</h1>
+        
+        <p>Jobcan AutoFillを効果的に活用するための、実践的なベストプラクティスをご紹介します。月次締めを効率化したい担当者向けに、Excel準備、設定、エラー対処、セキュリティの要点をチェック形式でまとめています。このガイドに従うことで、より安全かつ効率的に勤怠管理を行えます。</p>
+
+        <h2>1. データ入力の準備：ロールモデルとなる運用パターン</h2>
+        
+        <h3>Excelファイルの準備：具体的な記入例</h3>
+        <div class="highlight-box">
+            <p><strong>推奨される運用パターン：</strong></p>
+            <p style="margin-bottom: 15px;">月次締め作業では、以下の手順を推奨します：</p>
+            <ol style="line-height: 1.9; padding-left: 30px;">
+                <li><strong>月初めにテンプレートをダウンロード：</strong>今月のテンプレートをダウンロードし、ファイル名を「勤怠データ_2025年11月.xlsx」のように日付を含めて保存します。</li>
+                <li><strong>日次でデータを入力：</strong>毎日の勤務終了後、その日の日付・開始時刻・終了時刻を入力します。月末にまとめて入力するよりも、日次で入力する方がミスが減ります。</li>
+                <li><strong>月末に一括処理：</strong>月末の締め作業時に、完成したExcelファイルをアップロードして一括処理します。</li>
+            </ol>
+        </div>
+        
+        <div class="highlight-box">
+            <p><strong>Excelファイルの具体的な記入例：</strong></p>
+            <p style="margin-bottom: 15px;">以下は、正しい形式のExcelファイルの例です：</p>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(0, 0, 0, 0.2);">
+                <thead>
+                    <tr style="background: rgba(74, 158, 255, 0.2);">
+                        <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2); text-align: left;">A列（日付）</th>
+                        <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2); text-align: left;">B列（開始時刻）</th>
+                        <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2); text-align: left;">C列（終了時刻）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2);">2025-11-13</td>
+                        <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2);">09:00</td>
+                        <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2);">18:00</td>
+                    </tr>
+                    <tr style="background: rgba(255, 255, 255, 0.02);">
+                        <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2);">2025-11-14</td>
+                        <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2);">0900</td>
+                        <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2);">1800</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2);">2025/11/17</td>
+                        <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2);">09:00</td>
+                        <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2);">22:30</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 15px; font-size: 0.95em; color: rgba(255, 255, 255, 0.8);">
+                💡 ヒント：日付は「2025-11-13」「2025/11/13」のどちらでもOKです。時刻は「09:00」「0900」のどちらでもOKです。ただし、1つのファイル内で形式を統一することを推奨します。
+            </p>
+        </div>
+
+        <h3>データの検証：チェックリスト形式</h3>
+        <div class="warning-box">
+            <p><strong>処理前の必須チェック項目：</strong></p>
+            <p style="margin-bottom: 15px;">以下のチェックリストを確認してから処理を開始してください：</p>
+            <ul style="line-height: 1.9;">
+                <li>✅ すべての日付が正しい形式になっているか（「2025-11-13」または「2025/11/13」）</li>
+                <li>✅ 開始時刻と終了時刻の関係が論理的に正しいか（開始時刻 < 終了時刻）</li>
+                <li>✅ 空白行や不完全なデータがないか（空白行は自動的にスキップされますが、データ行の間に大きな空白がある場合は削除してください）</li>
+                <li>✅ 勤務時間が会社の就業規則に準拠しているか（例：1日の勤務時間が8時間を超えていないか）</li>
+                <li>✅ 日付が重複していないか（同じ日付が複数行に含まれていないか）</li>
+                <li>✅ 処理するデータ数が適切か（一度に50件以上処理する場合は、複数回に分けることを推奨します）</li>
+            </ul>
+            <p style="margin-top: 15px; font-size: 0.95em; color: rgba(255, 255, 255, 0.8);">
+                💡 詳しいExcelファイルの形式については、<a href="/guide/excel-format" style="color: #FF9800;">Excelファイルの作成方法ガイド</a>を参照してください。
+            </p>
+        </div>
+
+        <h2>2. セキュリティとプライバシー</h2>
+        <p>この自動化ツールを使用する際は、セキュリティを最優先に考える必要があります。勤怠データ入力の効率化を実現しながら、データ保護とプライバシーを確保することが重要です。</p>
+
+        <h3>ログイン情報の管理</h3>
+        <div class="highlight-box">
+            <p><strong>セキュリティのベストプラクティス：</strong></p>
+            <ul>
+                <li>ログイン情報は、個人のセキュアな環境でのみ使用してください。業務効率化を実現するためにも、セキュリティ対策は欠かせません。</li>
+                <li>共有PCや公共のWi-Fi環境では使用を避けてください。この自動化ツールは、セキュリティを確保した環境での使用を推奨します。</li>
+                <li>処理完了後は、ブラウザの履歴をクリアしてください。データ入力の痕跡を残さないことで、プライバシーを保護します。</li>
+                <li>定期的にパスワードを変更してください。セキュリティを維持しながら、業務の効率化を継続できます。</li>
+            </ul>
+        </div>
+
+        <h3>データの保護</h3>
+        <p>本サービスは、一時的な処理のみを行い、個人情報の永続的な保存は一切行いません。しかし、ユーザー側でも以下の点に注意してください：</p>
+        <ul>
+            <li>Excelファイルには、勤怠データのみを含めてください（個人情報の混入を避ける）</li>
+            <li>処理後のファイルは適切に管理してください（不要になったら削除）</li>
+            <li>他のユーザーとExcelファイルを共有しないでください</li>
+        </ul>
+
+        <h2>3. 効率的な使用方法：Jobcan側設定のコツ</h2>
+
+        <h3>Jobcan側の設定確認</h3>
+        <div class="highlight-box">
+            <p><strong>処理前に確認すべきJobcan側の設定：</strong></p>
+            <ol style="line-height: 1.9; padding-left: 30px;">
+                <li><strong>打刻修正機能が有効になっているか：</strong>Jobcanの設定画面で、打刻修正機能が有効になっているか確認してください。無効になっている場合は、管理者に確認してください。</li>
+                <li><strong>特定の日付が編集不可に設定されていないか：</strong>過去の日付が編集不可に設定されている場合、処理が失敗する可能性があります。手動で打刻修正ページにアクセスして、時刻を入力できるか確認してください。</li>
+                <li><strong>管理者権限が必要でないか：</strong>一部の企業では、打刻修正に管理者権限が必要な場合があります。権限がない場合は、管理者に確認してください。</li>
+            </ol>
+        </div>
+
+        <h3>処理タイミングの最適化</h3>
+        <div class="highlight-box">
+            <p><strong>推奨される処理タイミングと理由：</strong></p>
+            <ul style="line-height: 1.9;">
+                <li><strong>月次締め後、月初めにまとめて処理する：</strong>月末の締め作業が完了した後、月初めにまとめて処理することで、データの整合性を保ちやすくなります。</li>
+                <li><strong>システム負荷の少ない時間帯を選択する（深夜・早朝など）：</strong>Jobcan側のサーバー負荷が少ない時間帯に処理することで、エラーが発生しにくくなります。また、処理速度も向上します。</li>
+                <li><strong>一度に処理するデータ数を適切に制限する（20〜30件程度が目安）：</strong>一度に大量のデータを処理すると、ネットワークタイムアウトやJobcan側のセキュリティチェックが発動する可能性があります。20〜30件程度に分けて処理することを推奨します。</li>
+                <li><strong>ネットワーク接続が安定している環境で使用する：</strong>処理中にネットワーク接続が切れると、処理が途中で停止する可能性があります。安定したネットワーク環境で使用してください。</li>
+            </ul>
+        </div>
+        
+        <h3>処理間隔の最適化</h3>
+        <div class="highlight-box">
+            <p><strong>本ツールの処理間隔について：</strong></p>
+            <p style="margin-bottom: 15px;">本ツールは、以下の処理間隔で動作します：</p>
+            <ul style="line-height: 1.9;">
+                <li><strong>1〜3件目：</strong>各データ処理後に約2秒待機します（通常の処理間隔）</li>
+                <li><strong>4件目以降：</strong>各データ処理後に約5秒待機します（メモリ最適化のため）</li>
+            </ul>
+            <p style="margin-top: 15px; font-size: 0.95em; color: rgba(255, 255, 255, 0.8);">
+                💡 この処理間隔は、Jobcan側のサーバー負荷を考慮し、セキュリティチェックが発動しにくいように設計されています。処理中は、この間隔を維持することを推奨します。
+            </p>
+        </div>
+
+        <h3>エラーハンドリング</h3>
+        <p>エラーが発生した場合の対処法：</p>
+        <ol>
+            <li>エラーメッセージを確認し、<a href="/guide/troubleshooting">トラブルシューティングガイド</a>を参照</li>
+            <li>問題が解決しない場合は、処理を一度中断し、しばらく待ってから再試行</li>
+            <li>同じエラーが繰り返し発生する場合は、Excelファイルの形式を確認</li>
+            <li>それでも解決しない場合は、<a href="/contact">お問い合わせ</a>から報告</li>
+        </ol>
+
+        <h2>4. 法的・倫理的な考慮事項</h2>
+
+        <h3>就業規則の遵守</h3>
+        <div class="warning-box">
+            <p><strong>重要な注意事項：</strong></p>
+            <ul>
+                <li>所属企業の就業規則やセキュリティポリシーを必ず遵守してください</li>
+                <li>勤怠管理システムへの不正なアクセスや改ざんは、法令違反となる可能性があります</li>
+                <li>実際の勤務実態と異なるデータの入力は、就業規則違反となる可能性があります</li>
+                <li>個人の判断と責任、そして倫理観をもって慎重にご使用ください</li>
+            </ul>
+        </div>
+
+        <h3>適切な使用範囲</h3>
+        <p>本ツールは、以下の目的での使用を想定しています：</p>
+        <ul>
+            <li>テンプレートからの勤怠データ入力</li>
+            <li>過去の勤怠データの再入力（打刻漏れの修正など）</li>
+            <li>月次締め時の一括データ入力</li>
+        </ul>
+        <p><strong>以下の目的での使用は避けてください：</strong></p>
+        <ul>
+            <li>実際の勤務時間と異なるデータの入力</li>
+            <li>勤怠改ざんや不正なアクセス</li>
+            <li>会社のセキュリティポリシーに反する行為</li>
+        </ul>
+
+        <h2>5. トラブルシューティングのヒント：このツール特有の対処法</h2>
+
+        <h3>よくある問題と対処法（実践的な解決策）</h3>
+        <div class="highlight-box">
+            <p><strong>問題：処理が途中で停止する（ログに「データ X/11」までしか表示されない）</strong></p>
+            <p style="margin-bottom: 12px;"><strong>症状の詳細：</strong>処理が開始されたが、途中で停止してしまう。ログには「データ 7/11」まで表示されているが、その後のデータが処理されていない。</p>
+            <p style="margin-bottom: 12px;"><strong>原因と対処法：</strong></p>
+            <ol style="line-height: 1.9; padding-left: 30px;">
+                <li><strong>ネットワーク接続の確認：</strong>処理中にネットワーク接続が切れると、処理が途中で停止する可能性があります。安定したネットワーク環境で使用してください。</li>
+                <li><strong>データ数の削減：</strong>一度に処理するデータ数を減らしてください（例：11件を5件と6件に分ける）。ログを確認して、どのデータで止まったかを特定し、そのデータ以降のみを再処理してください。</li>
+                <li><strong>再試行：</strong>しばらく待ってから再試行してください。Jobcan側のサーバー負荷が高い場合、処理が失敗する可能性があります。</li>
+                <li><strong>Excelファイルの確認：</strong>停止したデータの日付・時刻が正しい形式になっているか確認してください。形式が正しくない場合、処理が失敗する可能性があります。</li>
+            </ol>
+            <p style="margin-top: 15px; font-size: 0.95em; color: rgba(255, 255, 255, 0.8);">
+                💡 詳しくは<a href="/guide/troubleshooting" style="color: #4A9EFF;">トラブルシューティングガイド</a>を参照してください。
+            </p>
+        </div>
+
+        <div class="highlight-box">
+            <p><strong>問題：ログインに失敗する（「ログインに失敗しました」と表示される）</strong></p>
+            <p style="margin-bottom: 12px;"><strong>症状の詳細：</strong>メールアドレスとパスワードを入力したが、「ログインに失敗しました」というメッセージが表示される。</p>
+            <p style="margin-bottom: 12px;"><strong>原因と対処法：</strong></p>
+            <ol style="line-height: 1.9; padding-left: 30px;">
+                <li><strong>メールアドレスとパスワードの確認：</strong>コピー&ペースト時に余分なスペースが含まれていないか確認してください。手動で入力し直してみてください。</li>
+                <li><strong>会社IDの確認：</strong>会社IDが必要な場合は、必ず入力してください。会社IDが間違っている場合、ログインに失敗します。</li>
+                <li><strong>Jobcan側での直接ログイン確認：</strong>JobcanのWebサイトで直接ログインできるか確認してください。直接ログインできない場合は、Jobcan側の問題の可能性があります。</li>
+                <li><strong>CAPTCHAの確認：</strong>CAPTCHAが表示された場合は、手動でログインしてから再度試してください。本ツールは、CAPTCHAが表示された場合、処理を中断します。</li>
+                <li><strong>再試行：</strong>しばらく待ってから再試行してください。短時間に複数回ログインを試みると、Jobcan側のセキュリティチェックが発動する可能性があります。</li>
+            </ol>
+        </div>
+        
+        <div class="highlight-box">
+            <p><strong>問題：打刻修正ページで時刻が入力できない（ログインは成功するが、処理が進まない）</strong></p>
+            <p style="margin-bottom: 12px;"><strong>症状の詳細：</strong>ログインは成功するが、打刻修正ページで時刻が入力できない、または打刻ボタンがクリックできない。</p>
+            <p style="margin-bottom: 12px;"><strong>原因と対処法：</strong></p>
+            <ol style="line-height: 1.9; padding-left: 30px;">
+                <li><strong>Jobcan側の設定確認：</strong>Jobcanの設定画面で、打刻修正機能が有効になっているか確認してください。無効になっている場合は、管理者に確認してください。</li>
+                <li><strong>手動での確認：</strong>手動で打刻修正ページにアクセスして、時刻を入力できるか確認してください。手動で入力できない場合は、Jobcan側の問題の可能性があります。</li>
+                <li><strong>日付の確認：</strong>特定の日付が編集不可に設定されていないか確認してください。過去の日付が編集不可に設定されている場合、処理が失敗する可能性があります。</li>
+                <li><strong>権限の確認：</strong>管理者権限が必要な場合は、管理者に確認してください。権限がない場合、処理が失敗する可能性があります。</li>
+            </ol>
+        </div>
+
+        <h2>6. 継続的な改善</h2>
+
+        <h3>フィードバックの提供</h3>
+        <p>本サービスは継続的に改善しています。以下のフィードバックをお待ちしています：</p>
+        <ul>
+            <li>機能要望</li>
+            <li>不具合報告</li>
+            <li>使い勝手に関する意見</li>
+            <li>技術的な改善提案</li>
+        </ul>
+        <p>フィードバックは<a href="/contact">お問い合わせページ</a>から提供できます。</p>
+
+        <h3>ドキュメントの活用</h3>
+        <p>より詳しい情報は、以下のドキュメントをご参照ください：</p>
+        <ul>
+            <li><a href="/guide/getting-started">はじめての使い方</a></li>
+            <li><a href="/faq">よくある質問</a></li>
+            <li><a href="/guide/troubleshooting">トラブルシューティング</a></li>
+            <li><a href="/glossary">用語集</a></li>
+            <li><a href="/case-studies">導入事例</a></li>
+        </ul>
+
+        <a href="/" class="nav-link">← トップページに戻る</a>
+    </div>
+    
+    {# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/footer.html' %}
+</body>
+</html>
+

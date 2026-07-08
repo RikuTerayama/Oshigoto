@@ -1,0 +1,7 @@
+優先度(P0/P1/P2)	URL	問題（事実）	影響	最小修正案	必要な証跡（不足なら）
+P1	/about, /contact	運営者情報・問い合わせ先が OPERATOR_* 未設定時に非表示（about.html:309-330, contact.html:140-148）	AdSense/利用者から「運営者・連絡先が不明」と見なされる可能性	本番で OPERATOR_NAME / OPERATOR_EMAIL / OPERATOR_LOCATION を設定。未設定時は about にフォールバック文言を表示	本番 env の有無
+P1	全ページ	canonical のドメインが head_meta.html:30,36 で固定（jobcan-automation.onrender.com）	ドメイン変更時や staging で誤 canonical になる	BASE_URL を env 化し canonical/og:url を {{ BASE_URL }}{{ request.path }} に変更	現状本番固定で問題なければ P2 に繰り下げ可
+P2	/（LP）	LP 本文に「お問い合わせ」への明示リンクなし（ヘッダ・フッター経由のみ）	問い合わせ先が分かりにくいと指摘される可能性	「セキュリティとプライバシー」付近に「お問い合わせはこちら」を1行追加（/contact）	—
+P2	/guide, /tools	ガイド一覧・ツール一覧の本文が薄い（h1+リンク中心）	AdSense「薄いコンテンツ」判定の要因になりうる	各1〜2段落の導入文を追加	文字数・類似ページとの差の証跡は未取得
+P2	全ページ	GA4 は GA_MEASUREMENT_ID 未設定時は読み込まれない（head_meta.html:2-13）	本番で ID 未設定だと page_view/custom が取れない	本番 env に GA_MEASUREMENT_ID を設定	本番環境変数一覧
+P0	—	404/301/canonical/必須開示はコード上・テストで問題なし	—	—	—
