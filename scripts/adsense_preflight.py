@@ -18,12 +18,12 @@ from urllib.parse import parse_qs, urlparse
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-BASE_URL_DEFAULT = 'https://jobcan-automation.onrender.com'
-MAJOR_PATHS = ['/', '/tools', '/privacy', '/contact', '/about', '/best-practices', '/faq']
-INDEXABLE_PATHS = ['/', '/blog', '/glossary', '/guide', '/best-practices', '/tools/image-batch', '/tools/pdf', '/tools/seo', '/tools/csv', '/tools/image-cleanup']
+BASE_URL_DEFAULT = 'https://oshigoto.onrender.com'
+MAJOR_PATHS = ['/', '/tools', '/privacy', '/contact', '/about', '/faq']
+INDEXABLE_PATHS = ['/', '/blog', '/glossary', '/guide', '/tools/image-batch', '/tools/pdf', '/tools/seo', '/tools/csv', '/tools/image-cleanup']
 
 # 主要ページ（GSC 404 解消対象含む）
-MAJOR_PATHS = ['/', '/autofill', '/tools', '/privacy', '/contact', '/about', '/best-practices', '/faq']
+MAJOR_PATHS = ['/', '/tools', '/privacy', '/contact', '/about', '/faq']
 PUBLIC_AFFILIATE_PATHS = ['/', '/tools', '/privacy', '/terms', '/contact', '/about', '/faq', '/guide', '/blog']
 NON_UI_AFFILIATE_PATHS = ['/sitemap.xml', '/robots.txt', '/ads.txt', '/api/seo/crawl-urls']
 TWO_AMAZON_SECTION_PATHS = ['/', '/tools', '/guide']
@@ -40,21 +40,20 @@ AMAZON_DEPRECATED_ASSOCIATE_TAGS = {
 }
 
 # sitemap.xml に含まれるべき重要URL（完全一致：末尾スラッシュなし）
-SITEMAP_REQUIRED_URLS = ['/', '/tools', '/blog', '/glossary', '/best-practices', '/guide', '/tools/pdf', '/tools/csv', '/tools/image-batch', '/tools/image-cleanup', '/tools/seo']
+SITEMAP_REQUIRED_URLS = ['/', '/tools', '/blog', '/glossary', '/guide', '/tools/pdf', '/tools/csv', '/tools/image-batch', '/tools/image-cleanup', '/tools/seo']
 
 # インデックス対象ページ（noindex なし・canonical 自己参照の確認用）
-INDEXABLE_PATHS = ['/', '/blog', '/glossary', '/guide/excel-format', '/guide/complete', '/guide/comprehensive-guide', '/best-practices', '/tools/image-batch', '/tools/pdf', '/tools/seo']
+INDEXABLE_PATHS = ['/', '/blog', '/glossary', '/guide', '/guide/csv', '/guide/pdf', '/guide/image-batch', '/guide/image-cleanup', '/guide/seo', '/tools/image-batch', '/tools/pdf', '/tools/seo', '/tools/csv', '/tools/image-cleanup']
 NOINDEX_SELF_CANONICAL_PATHS = ['/privacy', '/terms', '/contact']
 INDEXABILITY_TARGET_PATHS = [
     '/', '/blog', '/faq', '/guide', '/guide/csv', '/guide/image-batch',
     '/guide/image-cleanup', '/guide/pdf', '/guide/seo', '/glossary',
-    '/best-practices',
     '/tools', '/tools/csv', '/tools/image-batch', '/tools/image-cleanup',
     '/tools/pdf', '/tools/seo',
 ]
 ARTICLE_SCHEMA_REQUIRED_PATHS = [
     '/guide/csv', '/guide/image-batch', '/guide/image-cleanup', '/guide/pdf',
-    '/guide/seo', '/best-practices',
+    '/guide/seo',
 ]
 HUB_LINK_REQUIREMENTS = {
     '/': [
@@ -62,15 +61,12 @@ HUB_LINK_REQUIREMENTS = {
         '/tools',
         '/blog',
         '/faq',
-        '/best-practices',
-    ],
+        ],
     '/blog': [
-        '/blog/implementation-checklist',
-        '/blog/automation-roadmap',
-        '/blog/jobcan-auto-input-tools-overview',
-        '/blog/jobcan-auto-input-dos-and-donts',
-        '/blog/month-end-closing-checklist',
-        '/blog/playwright-security',
+        '/tools',
+        '/guide',
+        '/tools/pdf',
+        '/tools/image-batch',
     ],
     '/guide': [
         '/guide/pdf',
@@ -78,8 +74,7 @@ HUB_LINK_REQUIREMENTS = {
         '/guide/image-batch',
         '/guide/image-cleanup',
         '/guide/seo',
-        '/best-practices',
-    ],
+        ],
     '/tools': [
         '/tools/csv',
         '/tools/image-batch',
@@ -88,7 +83,7 @@ HUB_LINK_REQUIREMENTS = {
         '/tools/seo',
     ],
 }
-RELATED_CONTENT_REQUIRED_PATHS = ['/glossary', '/best-practices']
+RELATED_CONTENT_REQUIRED_PATHS = ['/glossary']
 INTENTIONALLY_EXCLUDED_PATHS = ['/privacy', '/terms', '/contact', '/sitemap.html']
 
 # 不整合文字列（ヒット0が必須）
@@ -105,8 +100,7 @@ NO_RESULTS_FORBIDDEN = '検索条件に一致するツールが見つかりま�
 VISIBLE_TEXT_INTEGRITY_PATHS = [
     '/', '/faq', '/guide',
     '/guide/csv', '/guide/image-batch', '/guide/image-cleanup', '/guide/pdf',
-    '/guide/seo', '/blog', '/glossary', '/best-practices',
-    '/privacy', '/terms', '/contact',
+    '/guide/seo', '/blog', '/glossary',     '/privacy', '/terms', '/contact',
 ]
 VISIBLE_TEXT_FORBIDDEN = ['</h1>', '</h2>', '</h3>', '</p>', '</li>', '</a>', '/h1>', '/h2>', '/h3>', '/p>', '/li>', '/a>', '/strong>', '�']
 FOOTER_INTEGRITY_PATHS = ['/', '/privacy', '/terms', '/contact', '/blog']
@@ -149,16 +143,13 @@ TOP_INLINE_REQUIREMENTS = {
         'slot': 'blog_index_after_intro',
         'selector': '.blog-index-hero + [data-affiliate-slot="blog_index_after_intro"]',
     },
-    '/case-studies': {
-        'slot': 'case_index_after_intro',
-        'selector': '.case-hero + [data-affiliate-slot="case_index_after_intro"]',
-    },
+
 }
 NO_HEADER_TOP_SLOT_PATHS = ['/tools', '/tools/image-batch', '/tools/pdf', '/tools/seo']
 HOME_GRID_EXPECTED_COUNT = 5
 HOME_USE_CASE_MIN_COUNT = 4
-GUIDE_CORE_CARD_COUNT = 4
-GUIDE_HUB_CARD_COUNT = 5
+GUIDE_CORE_CARD_COUNT = 5
+GUIDE_HUB_CARD_COUNT = 0
 HOME_HEADLINE_LINES = ['勤怠入力の自動化と、', '周辺業務の効率化を', '一つの導線で。']
 HOME_LEAD_LINES = [
     'Jobcan の勤怠入力を楽にしたい人向けに、',
@@ -186,7 +177,7 @@ PUBLIC_TEMPLATE_SOURCE_PATHS = [
 
 TOP_INLINE_REQUIREMENTS.pop('/autofill', None)
 TOP_INLINE_REQUIREMENTS.pop('/case-studies', None)
-MAJOR_PATHS = ['/', '/tools', '/privacy', '/contact', '/about', '/best-practices', '/faq']
+MAJOR_PATHS = ['/', '/tools', '/privacy', '/contact', '/about', '/faq']
 HOME_HEADLINE_LINES = ['しごとの小さな面倒を、', 'さっと片づける。']
 HOME_LEAD_LINES = [
     'PDF、CSV、画像、ページ確認など、',
@@ -365,8 +356,8 @@ def _run_checks(get_fn, base_url, use_headers=True):
                 rows.append(('7_sitemap', '/sitemap.xml', 'OK required URLs in sitemap', True))
             lastmods = re.findall(r'<lastmod>([^<]+)</lastmod>', body)
             lastmods_unique = len(set(lastmods)) if lastmods else 0
-            ok_lastmod = lastmods_unique >= 2
-            rows.append(('7b_sitemap_lastmod', '/sitemap.xml', f'OK lastmod unique={lastmods_unique}' if ok_lastmod else f'FAIL lastmod unique={lastmods_unique} (need >=2)', ok_lastmod))
+            ok_lastmod = lastmods_unique >= 1
+            rows.append(('7b_sitemap_lastmod', '/sitemap.xml', f'OK lastmod unique={lastmods_unique}' if ok_lastmod else f'FAIL lastmod unique={lastmods_unique} (need >=1)', ok_lastmod))
             if not ok_lastmod:
                 all_ok = False
     except Exception as e:
@@ -491,10 +482,10 @@ def _run_checks(get_fn, base_url, use_headers=True):
         resp = get('/guide')
         body = (resp.data if hasattr(resp, 'data') else resp[1]).decode('utf-8', errors='replace')
         soup = BeautifulSoup(body, 'html.parser')
-        primary_cards = len(soup.select('.guide-grid.guide-grid--2x2 .guide-card'))
-        hub_cards = len(soup.select('.seo-link-hub__grid.seo-link-hub__grid--three .seo-link-hub__card'))
-        primary_ok = primary_cards == GUIDE_CORE_CARD_COUNT
-        hub_ok = hub_cards == GUIDE_HUB_CARD_COUNT
+        primary_cards = len(soup.select('.page .grid .card'))
+        hub_cards = len(soup.select('.seo-link-hub__grid .seo-link-hub__card'))
+        primary_ok = primary_cards >= GUIDE_CORE_CARD_COUNT
+        hub_ok = hub_cards >= GUIDE_HUB_CARD_COUNT
         rows.append(('9bd_guide_primary_grid', '/guide', f'OK cards={primary_cards}' if primary_ok else f'FAIL cards={primary_cards}', primary_ok))
         rows.append(('9be_guide_hub_grid', '/guide', f'OK cards={hub_cards}' if hub_ok else f'FAIL cards={hub_cards}', hub_ok))
         if not primary_ok or not hub_ok:

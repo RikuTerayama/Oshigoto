@@ -1,6 +1,31 @@
-# しごと道具箱 - PDF・CSV・画像・URL確認の軽量ツール集
+# しごと道具箱 - public work utility tools
 
-Phase Aでは、public版「しごと道具箱」として見える導線を切り替えています。Jobcan中核処理、Playwright/Chrome、Dockerfile、requirements.txtの物理削除は次Phaseで実施予定です。
+しごとの小さな面倒を、さっと片づける。
+
+PDF、CSV、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。
+
+## Phase 1 public surface notes
+
+- Public site name: `しごと道具箱`
+- Main copy: `しごとの小さな面倒を、さっと片づける。`
+- Public tools: PDF tool, CSV/Excel tool, image batch conversion, image cleanup, SEO/URL check
+- Jobcan AutoFill is not exposed on the public surface. Legacy `/autofill` redirects to `/tools` with 301.
+- Jobcan-specific guide, case-study, and blog URLs are treated as legacy URLs and redirect to public hub pages.
+- Amazon/A8 affiliate surfaces remain, but Jobcan context, prices, stock, reviews, stars, and fixed ranking displays are not used.
+- Jobcan core, Playwright, Chrome, queue/session code, Dockerfile, and requirements are kept physically for a later cleanup phase.
+
+## Next phases
+
+- Phase 2: Refresh the top page design for trust and clarity.
+- Phase 3: Reorganize each tool page around operation flow.
+- Phase 4: Improve Amazon/A8 placement.
+- Phase 5: Physically remove Jobcan core, Playwright, Chrome, and queue code.
+- Phase 6: Optimize Render deployment.
+- Phase 7: Prepare SEO/OGP/note/X distribution.
+- Phase 8: Production and mobile verification.
+- Phase 9: Add PDF rotate and page delete.
+- Phase 10: Add image compression and HEIC to JPG.
+- Phase 11: Add QR and character count tools.
 
 ## Phase A public migration notes
 

@@ -54,19 +54,9 @@ def url_path_to_template_rel(url_path):
 def get_sitemap_url_paths():
     """sitemap に含まれる URL パスの一覧（固定＋PRODUCTS 相当）"""
     fixed = [
-        "/", "/autofill", "/about", "/faq",
-        "/glossary", "/best-practices", "/case-studies",
-        "/guide", "/guide/autofill", "/guide/complete", "/guide/comprehensive-guide",
-        "/guide/getting-started", "/guide/excel-format", "/guide/troubleshooting",
-        "/tools", "/blog",
-        "/blog/implementation-checklist", "/blog/automation-roadmap",
-        "/blog/workstyle-reform-automation", "/blog/excel-attendance-limits",
-        "/blog/playwright-security", "/blog/month-end-closing-hell-and-automation",
-        "/blog/excel-format-mistakes-and-design", "/blog/convince-it-and-hr-for-automation",
-        "/blog/playwright-jobcan-challenges-and-solutions", "/blog/jobcan-auto-input-tools-overview",
-        "/blog/reduce-manual-work-checklist", "/blog/jobcan-month-end-tips",
-        "/blog/jobcan-auto-input-dos-and-donts", "/blog/month-end-closing-checklist",
-        "/case-study/contact-center", "/case-study/consulting-firm", "/case-study/remote-startup",
+        "/", "/about", "/faq", "/glossary",
+        "/guide", "/guide/csv", "/guide/image-batch", "/guide/image-cleanup", "/guide/pdf", "/guide/seo",
+        "/tools", "/blog", "/blog/excel-format-mistakes-and-design",
     ]
     try:
         sys.path.insert(0, REPO_ROOT)

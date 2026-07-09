@@ -74,6 +74,7 @@ def run_deploy_verification():
     for path, expect_suffix in [
         ('/tools/minutes', '/tools'),
         ('/guide/minutes', '/guide'),
+        ('/autofill', '/tools'),
     ]:
         resp = client.get(path, follow_redirects=False)
         loc = (resp.headers.get('Location') or '').strip()

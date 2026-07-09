@@ -33,7 +33,7 @@
 {% set effective_page_description = page_description|default(seo_page_description|default(fallback_page_description)) %}
 {% set effective_page_robots = page_robots|default(seo_page_robots|default('index,follow')) %}
 {% set effective_page_og_type = page_og_type|default(seo_page_defaults.og_type|default('website')) %}
-{% set effective_page_url = BASE_URL|default('https://jobcan-automation.onrender.com') ~ ((request.path if request and request.path else '/')) %}
+{% set effective_page_url = BASE_URL|default('https://oshigoto.onrender.com') ~ ((request.path if request and request.path else '/')) %}
 {% set effective_page_image = page_image|default(url_for('static', filename='JobcanAutofill.png', _external=True)) %}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">

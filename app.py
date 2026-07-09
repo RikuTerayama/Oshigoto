@@ -932,7 +932,7 @@ def inject_env_vars():
         affiliate_page_type = get_affiliate_page_type(current_path)
         recent_affiliate_history = _load_recent_affiliate_history()
         seo_defaults = get_seo_defaults(current_path)
-        base_url = os.getenv('BASE_URL', 'https://jobcan-automation.onrender.com').rstrip('/')
+        base_url = os.getenv('BASE_URL', 'https://oshigoto.onrender.com').rstrip('/')
         seo_page_description = seo_defaults.get('description', '')
         seo_page_robots = seo_defaults.get('robots', 'index,follow')
         seo_page_kind = get_page_kind(current_path)
@@ -1075,7 +1075,7 @@ def inject_env_vars():
             'products_catalog': [],
             'nav_sections': get_nav_sections_fallback(),
             'footer_columns': get_footer_columns(),
-            'BASE_URL': os.getenv('BASE_URL', 'https://jobcan-automation.onrender.com').rstrip('/'),
+            'BASE_URL': os.getenv('BASE_URL', 'https://oshigoto.onrender.com').rstrip('/'),
             'GA_MEASUREMENT_ID': '',
             'GSC_VERIFICATION_CONTENT': '',
             'OPERATOR_NAME': '',
@@ -1973,36 +1973,36 @@ def guide_index():
 
 @app.route('/guide/autofill')
 def guide_autofill():
-    """Jobcan AutoFill 統合ガイド（他ツールと同粒度の1ツール=1ガイド）"""
-    return render_template('guide/autofill.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/guide', code=301)
 
 
 @app.route('/guide/getting-started')
 def guide_getting_started():
-    """はじめての使い方ガイド"""
-    return render_template('guide/getting-started.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/guide', code=301)
 
 
 @app.route('/guide/excel-format')
 def guide_excel_format():
-    """Excelファイルの作成方法ガイド"""
-    return render_template('guide/excel-format.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/guide/csv', code=301)
 
 
 @app.route('/guide/troubleshooting')
 def guide_troubleshooting():
-    """トラブルシューティングガイド"""
-    return render_template('guide/troubleshooting.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/guide', code=301)
 
 @app.route('/guide/complete')
 def guide_complete():
-    """完全ガイド"""
-    return render_template('guide/complete-guide.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/guide', code=301)
 
 @app.route('/guide/comprehensive-guide')
 def guide_comprehensive_guide():
-    """Jobcan勤怠管理を効率化する総合ガイド"""
-    return render_template('guide/comprehensive-guide.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/guide', code=301)
 
 @app.route('/guide/image-batch')
 def guide_image_batch():
@@ -2260,18 +2260,18 @@ def about():
 
 @app.route('/best-practices')
 def best_practices():
-    """ベストプラクティス"""
-    return render_template('best-practices.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/guide', code=301)
 
 @app.route('/case-studies')
 def case_studies_index():
-    """導入事例一覧"""
-    return render_template('case-studies.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/tools', code=301)
 
 @app.route('/case-study/contact-center')
 def case_study_contact_center():
-    """導入事例：コンタクトセンター"""
-    return render_template('case-study-contact-center.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/tools', code=301)
 
 @app.route('/blog')
 def blog_index():
@@ -2280,33 +2280,33 @@ def blog_index():
 
 @app.route('/blog/implementation-checklist')
 def blog_implementation_checklist():
-    """ブログ記事：導入チェックリスト"""
-    return render_template('blog/implementation-checklist.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/blog/automation-roadmap')
 def blog_automation_roadmap():
-    """ブログ記事：90日ロードマップ"""
-    return render_template('blog/automation-roadmap.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/blog/workstyle-reform-automation')
 def blog_workstyle_reform_automation():
-    """ブログ記事：働き方改革と自動化"""
-    return render_template('blog/workstyle-reform-automation.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/blog/excel-attendance-limits')
 def blog_excel_attendance_limits():
-    """ブログ記事：Excel管理の限界と自動化ツール"""
-    return render_template('blog/excel-attendance-limits.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/blog/playwright-security')
 def blog_playwright_security():
-    """ブログ記事：Playwrightによるブラウザ自動化のセキュリティ"""
-    return render_template('blog/playwright-security.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/blog/month-end-closing-hell-and-automation')
 def blog_month_end_closing_hell_and_automation():
-    """ブログ記事：月末締めが地獄になる理由と自動化"""
-    return render_template('blog/month-end-closing-hell-and-automation.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/blog/excel-format-mistakes-and-design')
 def blog_excel_format_mistakes_and_design():
@@ -2315,48 +2315,48 @@ def blog_excel_format_mistakes_and_design():
 
 @app.route('/blog/convince-it-and-hr-for-automation')
 def blog_convince_it_and_hr_for_automation():
-    """ブログ記事：情シス・人事を説得する5ステップ"""
-    return render_template('blog/convince-it-and-hr-for-automation.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/blog/playwright-jobcan-challenges-and-solutions')
 def blog_playwright_jobcan_challenges_and_solutions():
-    """ブログ記事：Playwrightでハマったポイント"""
-    return render_template('blog/playwright-jobcan-challenges-and-solutions.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/blog/jobcan-auto-input-tools-overview')
 def blog_jobcan_auto_input_tools_overview():
-    """ブログ記事：Jobcan自動入力ツールの全体像と選び方"""
-    return render_template('blog/jobcan-auto-input-tools-overview.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/blog/reduce-manual-work-checklist')
 def blog_reduce_manual_work_checklist():
-    """ブログ記事：勤怠管理の手入力を減らすための実務チェックリスト"""
-    return render_template('blog/reduce-manual-work-checklist.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/blog/jobcan-month-end-tips')
 def blog_jobcan_month_end_tips():
-    """ブログ記事：Jobcan月末締めをラクにするための7つの実践テクニック"""
-    return render_template('blog/jobcan-month-end-tips.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/blog/jobcan-auto-input-dos-and-donts')
 def blog_jobcan_auto_input_dos_and_donts():
-    """ブログ記事：Jobcan自動入力のやり方と、やってはいけないNG自動化"""
-    return render_template('blog/jobcan-auto-input-dos-and-donts.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/blog/month-end-closing-checklist')
 def blog_month_end_closing_checklist():
-    """ブログ記事：月末の勤怠締め地獄を減らすための現実的なチェックリスト"""
-    return render_template('blog/month-end-closing-checklist.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/blog', code=301)
 
 @app.route('/case-study/consulting-firm')
 def case_study_consulting_firm():
-    """導入事例：コンサルティングファーム"""
-    return render_template('case-study-consulting-firm.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/tools', code=301)
 
 @app.route('/case-study/remote-startup')
 def case_study_remote_startup():
-    """導入事例：小規模スタートアップ"""
-    return render_template('case-study-remote-startup.html')
+    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
+    return redirect('/tools', code=301)
 
 @app.route('/sitemap.html')
 def sitemap_html():
@@ -3105,31 +3105,62 @@ def ads_txt():
 @app.route('/robots.txt')
 def robots_txt():
     """robots.txt を配信（Sitemap 行は BASE_URL から動的生成）"""
-    base_url = (os.getenv('BASE_URL') or 'https://jobcan-automation.onrender.com').rstrip('/')
+    base_url = (os.getenv('BASE_URL') or 'https://oshigoto.onrender.com').rstrip('/')
     content = f"""User-agent: *
 Allow: /
 Disallow: /status/
+Disallow: /cancel/
 Disallow: /autofill
+Disallow: /upload
 Disallow: /api/
 Disallow: /sessions
 Disallow: /download-template
 Disallow: /download-previous-template
 Disallow: /cleanup-sessions
+Disallow: /guide/autofill
+Disallow: /guide/getting-started
+Disallow: /guide/excel-format
+Disallow: /guide/troubleshooting
+Disallow: /guide/complete
+Disallow: /guide/comprehensive-guide
+Disallow: /case-studies
+Disallow: /case-study/
+Disallow: /blog/jobcan-
+Disallow: /blog/playwright-jobcan-
+Disallow: /blog/workstyle-reform-automation
+Disallow: /blog/excel-attendance-limits
+Disallow: /blog/month-end-closing-
+Disallow: /blog/convince-it-and-hr-
+Disallow: /blog/reduce-manual-work-checklist
 
 User-agent: Googlebot
 Allow: /
 Disallow: /status/
+Disallow: /cancel/
 Disallow: /autofill
+Disallow: /upload
 Disallow: /api/
 Disallow: /sessions
 Disallow: /download-template
 Disallow: /download-previous-template
 Disallow: /cleanup-sessions
+Disallow: /guide/autofill
+Disallow: /guide/getting-started
+Disallow: /guide/excel-format
+Disallow: /guide/troubleshooting
+Disallow: /guide/complete
+Disallow: /guide/comprehensive-guide
+Disallow: /case-studies
+Disallow: /case-study/
+Disallow: /blog/jobcan-
+Disallow: /blog/playwright-jobcan-
 
 User-agent: AdsBot-Google
 Allow: /
 Disallow: /status/
+Disallow: /cancel/
 Disallow: /autofill
+Disallow: /upload
 Disallow: /api/
 Disallow: /sessions
 Disallow: /download-template
@@ -3163,17 +3194,10 @@ def _sitemap_lastmod_for_path(url_path):
     path = (url_path or '').strip('/') or ''
     special = {
         '': 'landing.html',
-        'autofill': 'autofill.html',
         'guide': 'guide/index.html',
-        'guide/complete': 'guide/complete-guide.html',
-        'guide/comprehensive-guide': 'guide/comprehensive-guide.html',
         'blog': 'blog/index.html',
         'tools': 'tools/index.html',
         'sitemap.html': 'sitemap.html',
-        'case-studies': 'case-studies.html',
-        'case-study/contact-center': 'case-study-contact-center.html',
-        'case-study/consulting-firm': 'case-study-consulting-firm.html',
-        'case-study/remote-startup': 'case-study-remote-startup.html',
     }
     if path in special:
         rel = special[path]
@@ -3211,7 +3235,7 @@ def sitemap():
         PRODUCTS = []
     
     # ベースURL（環境変数があれば採用、末尾スラッシュは除去して二重スラッシュを防ぐ）
-    base_url = (os.getenv('BASE_URL') or 'https://jobcan-automation.onrender.com').rstrip('/')
+    base_url = (os.getenv('BASE_URL') or 'https://oshigoto.onrender.com').rstrip('/')
     
     # 現在日付を取得（lastmod のフォールバック）
     today = datetime.now().strftime('%Y-%m-%d')
@@ -3225,7 +3249,6 @@ def sitemap():
         ('/about', 'monthly', '0.8', today),
         ('/faq', 'weekly', '0.8', today),
         ('/glossary', 'monthly', '0.7', today),
-        ('/best-practices', 'monthly', '0.8', today),
         
         # ガイドページ（一覧＋固定）
         ('/guide', 'weekly', '0.9', today),

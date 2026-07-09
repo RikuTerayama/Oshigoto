@@ -6,7 +6,7 @@
 from lib.products_catalog import PRODUCTS
 
 # ベースURL
-BASE_URL = 'https://jobcan-automation.onrender.com'
+BASE_URL = 'https://oshigoto.onrender.com'
 
 # ナビゲーション項目
 NAV_ITEMS = [
