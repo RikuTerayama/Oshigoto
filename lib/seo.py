@@ -736,8 +736,6 @@ def get_article_schema(path, base_url, default_title='', default_description='')
     published = article.get('date_published')
     modified = article.get('date_modified', published)
     url = f'{base_url}{path}'
-    logo_url = f'{base_url}/static/JobcanAutofill.png'
-
     schema = {
         '@context': 'https://schema.org',
         '@type': 'Article',
@@ -749,7 +747,6 @@ def get_article_schema(path, base_url, default_title='', default_description='')
             '@id': url,
         },
         'url': url,
-        'image': [logo_url],
         'author': {
             '@type': 'Organization',
             'name': 'しごと道具箱',
@@ -757,10 +754,6 @@ def get_article_schema(path, base_url, default_title='', default_description='')
         'publisher': {
             '@type': 'Organization',
             'name': 'しごと道具箱',
-            'logo': {
-                '@type': 'ImageObject',
-                'url': logo_url,
-            },
         },
     }
     if published:
