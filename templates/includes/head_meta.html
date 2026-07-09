@@ -33,8 +33,8 @@
 {% set effective_page_description = page_description|default(seo_page_description|default(fallback_page_description)) %}
 {% set effective_page_robots = page_robots|default(seo_page_robots|default('index,follow')) %}
 {% set effective_page_og_type = page_og_type|default(seo_page_defaults.og_type|default('website')) %}
-{% set effective_page_url = BASE_URL|default('https://jobcan-automation.onrender.com') ~ ((request.path if request and request.path else '/')) %}
-{% set effective_page_image = page_image|default(url_for('static', filename='JobcanAutofill.png', _external=True)) %}
+{% set effective_page_url = BASE_URL|default('https://oshigoto.onrender.com') ~ ((request.path if request and request.path else '/')) %}
+{% set effective_page_image = page_image|default('') %}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 {# Scroll Reveal: no-js 竊・js 蛻・ｊ譖ｿ縺茨ｼ域怙蜆ｪ蜈医゛S縺悟虚縺乗凾縺縺鷹撼陦ｨ遉ｺ縺ｫ縺吶ｋ縺溘ａ・・#}
@@ -56,11 +56,15 @@
 <meta property="og:title" content="{{ effective_page_title }}">
 <meta property="og:description" content="{{ page_og_description|default(effective_page_description) }}">
 <meta property="og:url" content="{{ canonical_url|default(effective_page_url) }}">
+{% if effective_page_image %}
 <meta property="og:image" content="{{ effective_page_image }}">
-<meta name="twitter:card" content="summary_large_image">
+{% endif %}
+<meta name="twitter:card" content="{{ 'summary_large_image' if effective_page_image else 'summary' }}">
 <meta name="twitter:title" content="{{ effective_page_title }}">
 <meta name="twitter:description" content="{{ page_twitter_description|default(effective_page_description) }}">
+{% if effective_page_image %}
 <meta name="twitter:image" content="{{ effective_page_image }}">
+{% endif %}
 {# AdSense繧ｳ繝ｼ繝峨せ繝九・繝・ヨ - ADSENSE_ENABLED 縺・true 縺ｮ縺ｨ縺阪・縺ｿ・育ｷ頑･蛛懈ｭ｢逕ｨ・・#}
 {% if ADSENSE_ENABLED %}
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4232725615106709"

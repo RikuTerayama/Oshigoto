@@ -1,17 +1,16 @@
-{# 構造化データ（JSON-LD） #}
+{# Structured data: Organization, WebSite, BreadcrumbList #}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "しごと道具箱",
-  "url": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}",
-  "logo": "{{ url_for('static', filename='JobcanAutofill.png', _external=True) }}",
-  "description": "PDF、CSV、画像、URL確認など、仕事でたまに必要になる軽量ツール集",
+  "url": "{{ BASE_URL|default('https://oshigoto.onrender.com') }}",
+  "description": "PDF、CSV、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。",
   "sameAs": [],
   "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "お問い合わせ",
-    "url": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}/contact"
+    "url": "{{ BASE_URL|default('https://oshigoto.onrender.com') }}/contact"
   }
 }
 </script>
@@ -21,8 +20,8 @@
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "しごと道具箱",
-  "url": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}",
-  "description": "PDF、CSV、画像、URL確認など、仕事でたまに必要になる小さな作業をブラウザで片づけるWebサイト",
+  "url": "{{ BASE_URL|default('https://oshigoto.onrender.com') }}",
+  "description": "PDF、CSV、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。",
   "publisher": {
     "@type": "Organization",
     "name": "しごと道具箱"
@@ -43,7 +42,6 @@
 {% endif %}
 
 {% block extra_structured_data %}
-{# BreadcrumbList JSON-LD（表示用短ラベルは breadcrumb_title を優先） #}
 {% set current_path = request.path|default('/') if request is defined and request else '/' %}
 {% set breadcrumb_items = build_breadcrumb_items(current_path, page_title|default(''), breadcrumb_title|default('')) %}
 {% if current_path != '/' and breadcrumb_items|length > 1 %}
@@ -57,7 +55,7 @@
             "@type": "ListItem",
             "position": {{ loop.index }},
             "name": "{{ item.name|e }}",
-            "item": "{{ BASE_URL|default('https://jobcan-automation.onrender.com') }}{{ item.url }}"
+            "item": "{{ BASE_URL|default('https://oshigoto.onrender.com') }}{{ item.url }}"
         }{% if not loop.last %},{% endif %}
         {% endfor %}
     ]
@@ -65,4 +63,3 @@
 </script>
 {% endif %}
 {% endblock %}
-

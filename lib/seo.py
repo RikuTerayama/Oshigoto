@@ -200,6 +200,36 @@ SEO_DEFAULTS = {
 }
 
 
+LEGACY_JOBCAN_PUBLIC_PATHS = frozenset(('/guide/autofill', '/guide/getting-started', '/guide/excel-format', '/guide/troubleshooting', '/guide/complete', '/guide/comprehensive-guide', '/best-practices', '/case-studies', '/case-study/contact-center', '/case-study/consulting-firm', '/case-study/remote-startup', '/blog/implementation-checklist', '/blog/automation-roadmap', '/blog/workstyle-reform-automation', '/blog/excel-attendance-limits', '/blog/playwright-security', '/blog/month-end-closing-hell-and-automation', '/blog/convince-it-and-hr-for-automation', '/blog/playwright-jobcan-challenges-and-solutions', '/blog/jobcan-auto-input-tools-overview', '/blog/reduce-manual-work-checklist', '/blog/jobcan-month-end-tips', '/blog/jobcan-auto-input-dos-and-donts', '/blog/month-end-closing-checklist'))
+
+
+# Phase 1 public Oshigoto surface overrides.
+SEO_DEFAULTS.update({
+    '/about': {
+        'title': 'サイトについて | しごと道具箱',
+        'description': 'PDF、CSV、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。',
+        'og_type': 'website',
+    },
+    '/blog': {
+        'title': 'ブログ | しごと道具箱',
+        'description': 'Small notes for PDF, CSV, image, and page-check work.',
+        'og_type': 'website',
+        'breadcrumb_title': 'ブログ',
+    },
+    '/glossary': {
+        'title': 'Glossary | しごと道具箱',
+        'description': 'Glossary for PDF, CSV, image, and SEO/URL tool terms.',
+        'og_type': 'website',
+    },
+})
+for _legacy_path in LEGACY_JOBCAN_PUBLIC_PATHS:
+    SEO_DEFAULTS[_legacy_path] = {
+        'title': '道具箱一覧 | しごと道具箱',
+        'description': 'Legacy page. The public site now focuses on PDF, CSV, image, and SEO/URL tools.',
+        'og_type': 'website',
+        'robots': 'noindex,follow',
+    }
+
 NOINDEX_PATHS = frozenset(
     path for path, config in SEO_DEFAULTS.items() if config.get('robots', '').startswith('noindex')
 )
@@ -706,8 +736,6 @@ def get_article_schema(path, base_url, default_title='', default_description='')
     published = article.get('date_published')
     modified = article.get('date_modified', published)
     url = f'{base_url}{path}'
-    logo_url = f'{base_url}/static/JobcanAutofill.png'
-
     schema = {
         '@context': 'https://schema.org',
         '@type': 'Article',
@@ -719,7 +747,6 @@ def get_article_schema(path, base_url, default_title='', default_description='')
             '@id': url,
         },
         'url': url,
-        'image': [logo_url],
         'author': {
             '@type': 'Organization',
             'name': 'しごと道具箱',
@@ -727,10 +754,6 @@ def get_article_schema(path, base_url, default_title='', default_description='')
         'publisher': {
             '@type': 'Organization',
             'name': 'しごと道具箱',
-            'logo': {
-                '@type': 'ImageObject',
-                'url': logo_url,
-            },
         },
     }
     if published:
@@ -742,7 +765,25 @@ def get_article_schema(path, base_url, default_title='', default_description='')
     return schema
 
 
+PUBLIC_RELATED_CONTENT_OVERRIDES = {
+    '/glossary': {
+        'title': 'Related public pages',
+        'intro': 'After checking terms, open the public tools or guides.',
+        'links': [
+            {'path': '/tools', 'label': 'Tools', 'description': 'Open the public tool list.'},
+            {'path': '/guide', 'label': 'Guides', 'description': 'Read public tool guides.'},
+            {'path': '/faq', 'label': 'FAQ', 'description': 'Check file and ad handling.'},
+            {'path': '/privacy', 'label': 'Privacy', 'description': 'Check data handling.'},
+        ],
+    },
+}
+
+
 def get_related_content(path):
+    if path in LEGACY_JOBCAN_PUBLIC_PATHS:
+        return None
+    if path in PUBLIC_RELATED_CONTENT_OVERRIDES:
+        return deepcopy(PUBLIC_RELATED_CONTENT_OVERRIDES[path])
     section = RELATED_CONTENT.get(path)
     if section:
         return deepcopy(section)

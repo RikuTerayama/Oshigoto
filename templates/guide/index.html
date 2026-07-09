@@ -1,159 +1,45 @@
 <!doctype html>
-<html lang="ja">
+<html lang="ja" class="no-js">
 <head>
-    {% set page_title = 'ガイド一覧 | Jobcan AutoFill' %}
-    {% set page_description = 'Jobcan AutoFill と周辺ツールの使い方、Excel 形式、トラブルシューティング、導入前チェックをまとめたガイド一覧です。初回導入前に確認したいページから読めます。' %}
+    {% set page_title = 'ガイド一覧 | しごと道具箱' %}
+    {% set page_description = 'しごと道具箱 tool guides.' %}
     {% set breadcrumb_title = 'ガイド一覧' %}
     {% include 'includes/head_meta.html' %}
+
     <style>
-        body { margin: 0; font-family: 'Noto Sans JP', sans-serif; background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%); color: #FFFFFF; line-height: 1.8; }
-        .guide-shell { max-width: 1080px; margin: 0 auto; padding: 32px 20px 64px; }
-        .guide-hero { margin-bottom: 36px; }
-        .guide-hero h1 { margin: 0 0 16px; font-size: clamp(2rem, 4vw, 3rem); color: #4A9EFF; }
-        .guide-hero p { margin: 0 0 14px; max-width: 760px; color: rgba(255, 255, 255, 0.84); }
-        .guide-links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
-        .guide-links a { display: inline-flex; align-items: center; padding: 10px 14px; border-radius: 999px; border: 1px solid rgba(74, 158, 255, 0.24); background: rgba(74, 158, 255, 0.12); color: #FFFFFF; text-decoration: none; }
-        .guide-links a:hover { background: rgba(74, 158, 255, 0.18); text-decoration: none; }
-        .guide-section { margin-top: 40px; }
-        .guide-section h2 { margin: 0 0 18px; font-size: 1.7rem; }
-        .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-        .guide-card { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 22px; }
-        .guide-card:hover { border-color: rgba(74, 158, 255, 0.28); box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18); }
-        .guide-card h3 { margin: 0 0 12px; font-size: 1.2rem; }
-        .guide-card h3 a { color: #FFFFFF; text-decoration: none; }
-        .guide-card h3 a:hover { color: #4A9EFF; }
-        .guide-card p { margin: 0 0 14px; color: rgba(255, 255, 255, 0.82); }
-        .guide-card a:last-child { color: #4A9EFF; font-weight: 600; text-decoration: none; }
-        .guide-card a:last-child:hover { text-decoration: underline; }
-        .guide-support-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-        .guide-support-list a { display: block; padding: 16px 18px; border-radius: 14px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); color: #FFFFFF; text-decoration: none; }
-        .guide-support-list a strong { display: block; margin-bottom: 8px; color: #4A9EFF; }
-        .guide-support-list a span { color: rgba(255, 255, 255, 0.76); }
+        * { box-sizing: border-box; font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif; }
+        body { margin: 0; background: #121212; color: #fff; line-height: 1.8; }
+        .page { max-width: 1040px; margin: 0 auto; padding: 56px 20px; }
+        .hero { margin-bottom: 32px; }
+        .hero h1 { font-size: 2.3rem; margin: 0 0 12px; letter-spacing: 0; }
+        .hero p { color: rgba(255,255,255,.78); font-size: 1.05rem; margin: 0; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin: 28px 0; }
+        .card { border: 1px solid rgba(255,255,255,.12); border-radius: 8px; padding: 20px; background: #1e1e1e; }
+        .card h2, .card h3 { margin-top: 0; color: #8fc3ff; letter-spacing: 0; }
+        a { color: #8fc3ff; }
+        .links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+        .button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 16px; border: 1px solid rgba(143,195,255,.45); border-radius: 6px; text-decoration: none; color: #8fc3ff; }
+        ul { padding-left: 1.2rem; }
     </style>
 </head>
 <body>
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <main class="guide-shell">
-        <section class="guide-hero">
-            <h1>使い方と運用のガイド一覧</h1>
-            <p>Jobcan AutoFill の導入前チェック、Excel 形式、トラブル時の確認ポイント、周辺ツールの使い方をまとめています。</p>
-            <p>初回導入前は <a href="/guide/getting-started">はじめての使い方</a> と <a href="/guide/excel-format">Excel 形式ガイド</a> から確認すると進めやすくなります。</p>
-            <div class="guide-links">
-                <a href="/guide/getting-started">はじめての使い方</a>
-                <a href="/guide/autofill">AutoFill ガイド</a>
-                <a href="/faq">FAQ</a>
-                <a href="/glossary">用語集</a>
-            </div>
+    <main class="page">
+        <section class="hero">
+            <h1>ガイド一覧</h1>
+            <p>Guides for PDF, CSV/Excel, image, and SEO/URL tools.</p>
         </section>
-        {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_upper_items|default([])|length > 0) %}
-        {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=true, affiliate_section_class='affiliate-cards-section--upper', affiliate_section_tier='upper-amazon', amazon_items_override=amazon_affiliate_upper_items[:3], amazon_section_title='目的から選ぶ Amazon おすすめ' %}
-            {% include 'includes/affiliate_cards_section.html' %}
-        {% endwith %}
-        {% set affiliate_upper_amazon_rendered = true %}
-        {% set affiliate_disclosure_rendered = true %}
-        {% endif %}
-
-        <section class="guide-section" aria-labelledby="guide-core-heading">
-            <h2 id="guide-core-heading">まず読むガイド</h2>
-            <div class="guide-grid guide-grid--2x2">
-                <article class="guide-card">
-                    <h3><a href="/guide/getting-started">はじめての使い方</a></h3>
-                    <p>テンプレート準備から実行前チェックまで、初回利用の流れを順番に確認できます。</p>
-                    <a href="/guide/getting-started">読む</a>
-                </article>
-                <article class="guide-card">
-                    <h3><a href="/guide/autofill">AutoFill ガイド</a></h3>
-                    <p>Jobcan AutoFill の全体像、入力前の注意点、FAQ への導線をまとめています。</p>
-                    <a href="/guide/autofill">読む</a>
-                </article>
-                <article class="guide-card">
-                    <h3><a href="/guide/excel-format">Excel 形式ガイド</a></h3>
-                    <p>日付、時刻、列構成、よくある形式エラーを確認できる実務向けガイドです。</p>
-                    <a href="/guide/excel-format">読む</a>
-                </article>
-                <article class="guide-card">
-                    <h3><a href="/guide/troubleshooting">トラブルシューティング</a></h3>
-                    <p>ログインエラー、形式エラー、タイムアウト時の確認ポイントを整理しています。</p>
-                    <a href="/guide/troubleshooting">読む</a>
-                </article>
-            </div>
+        <section class="grid">
+            <div class="card"><h2><a href="/guide/pdf">PDF tool guide</a></h2><p>Merge, split, extract, and compress PDF files.</p></div>
+            <div class="card"><h2><a href="/guide/csv">CSV/Excel tool guide</a></h2><p>Encoding conversion, format conversion, duplicate removal, and column work.</p></div>
+            <div class="card"><h2><a href="/guide/image-batch">Image batch guide</a></h2><p>Batch resize, conversion, and quality adjustment.</p></div>
+            <div class="card"><h2><a href="/guide/image-cleanup">Image cleanup guide</a></h2><p>Background cleanup, trimming, and ratio alignment.</p></div>
+            <div class="card"><h2><a href="/guide/seo">SEO/URL guide</a></h2><p>Check meta, OGP, sitemap, and robots.txt.</p></div>
         </section>
-        {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
-        {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='関連キーワードから探す Amazon おすすめ' %}
-            {% include 'includes/affiliate_cards_section.html' %}
-        {% endwith %}
-        {% set affiliate_mid_amazon_rendered = true %}
-        {% endif %}
-
-        <section class="guide-section" aria-labelledby="guide-planning-heading">
-            <h2 id="guide-planning-heading">導入判断と運用設計に役立つガイド</h2>
-            <div class="guide-grid">
-                <article class="guide-card">
-                    <h3><a href="/guide/complete">完全ガイド</a></h3>
-                    <p>使い方、安全性、導入判断を 1 ページで把握したい方向けの統合ガイドです。</p>
-                    <a href="/guide/complete">読む</a>
-                </article>
-                <article class="guide-card">
-                    <h3><a href="/guide/comprehensive-guide">総合ガイド</a></h3>
-                    <p>他方式との違い、Before / After、社内規定との向き合い方を整理した判断材料です。</p>
-                    <a href="/guide/comprehensive-guide">読む</a>
-                </article>
-                <article class="guide-card">
-                    <h3><a href="/best-practices">ベストプラクティス</a></h3>
-                    <p>運用ルール、セキュリティ、月末対応の勘所をチェック形式で確認できます。</p>
-                    <a href="/best-practices">読む</a>
-                </article>
-            </div>
-        </section>
-        {% if affiliate_can_render_textlinks() %}
-        {% with affiliate_networks=['rakuten'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--mid-rakuten', affiliate_section_tier='mid-rakuten', affiliate_rakuten_variant='two-col' %}
-            {% include 'includes/affiliate_cards_section.html' %}
-        {% endwith %}
-        {% set affiliate_rakuten_rendered = true %}
-        {% endif %}
-
-        <section class="guide-section" aria-labelledby="guide-tool-heading">
-            <h2 id="guide-tool-heading">ツール別ガイド</h2>
-            <div class="guide-grid">
-                {% for product in products|default([]) %}
-                    {% if product.guide_path and product.status == 'available' %}
-                    <article class="guide-card">
-                        <h3><a href="{{ product.guide_path }}">{{ product.name }}</a></h3>
-                        <p>{{ product.description }}</p>
-                        <a href="{{ product.guide_path }}">ガイドを見る</a>
-                    </article>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </section>
-
-        <section class="guide-section" aria-labelledby="guide-support-heading">
-            <h2 id="guide-support-heading">あわせて確認したいページ</h2>
-            <div class="guide-support-list">
-                <a href="/faq">
-                    <strong>FAQ</strong>
-                    <span>利用前に確認したい質問と回答をまとめています。</span>
-                </a>
-                <a href="/blog/implementation-checklist">
-                    <strong>導入チェックリスト</strong>
-                    <span>社内合意や運用設計の論点を整理できます。</span>
-                </a>
-                <a href="/case-studies">
-                    <strong>導入事例</strong>
-                    <span>業種別の活用パターンと改善イメージを確認できます。</span>
-                </a>
-                <a href="/tools">
-                    <strong>ツール一覧</strong>
-                    <span>周辺業務まで含めた効率化の選択肢を確認できます。</span>
-                </a>
-            </div>
-        </section>
-
-        {% with seo_link_hub_grid_class='seo-link-hub__grid--three' %}
-            {% include 'includes/seo_link_hub.html' %}
-        {% endwith %}
+        <div class="links"><a class="button" href="/tools">道具箱一覧</a><a class="button" href="/faq">FAQ</a></div>
     </main>
+    {% include 'includes/seo_link_hub.html' %}
     {% include 'includes/footer.html' %}
 </body>
 </html>
