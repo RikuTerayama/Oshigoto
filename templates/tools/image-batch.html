@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="ja" class="no-js">
 <head>
-    {% set page_title = '画像一括変換ツール - PNG/JPG/WebP対応、リサイズ・品質調整・複数サイズ同時出力 | ブラウザ内処理でアップロード不要' %}
-    {% set page_description = 'PNG、JPG、WebP形式の画像を一括変換・リサイズ・品質圧縮できる無料ツール。複数サイズ同時出力、SNS/Web/EC用プリセット対応。ブラウザ内で完結し、ファイルはサーバーに保存されません。' %}
-    {% set breadcrumb_title = product.name|default('画像一括変換') %}
+    {% set page_title = '画像をまとめて変換 - PNG/JPG/WebP変換・リサイズ | しごと道具箱' %}
+    {% set page_description = '複数の画像をまとめてPNG、JPG、WebPへ変換し、サイズや品質を指定できる無料ツール。ブラウザ内で処理します。' %}
+    {% set breadcrumb_title = '画像をまとめて変換' %}
     {% include 'includes/head_meta.html' %}
     {# P1-4: SoftwareApplication構造化データ #}
     {% if product %}
@@ -386,15 +386,24 @@
     
     <div class="container">
         <div class="page-header">
-            <h1 data-reveal>🖼️ 画像一括変換ツール</h1>
-            <p data-reveal data-reveal-delay="50">png/jpg/webpの一括変換、リサイズ、品質圧縮に対応。すべてブラウザ内で処理され、ファイルは保存されません。</p>
+            <h1 data-reveal>画像をまとめて変換</h1>
+            <p data-reveal data-reveal-delay="50">複数の画像を一度に形式変換。PNG、JPG、WebPへの書き出しとサイズ調整をまとめて行えます。</p>
         </div>
-        {% set tool_intro_what = 'PNG/JPG/WebPの一括変換・リサイズ・品質圧縮、複数サイズ同時出力をブラウザ内で実行します。' %}
-        {% set tool_intro_steps = ['画像ファイルを選択', '形式・サイズ・品質を設定', '実行してダウンロード'] %}
-        {% set tool_intro_notice = '個人情報が含まれる画像は取り扱いにお気をつけください。' %}
+        {% set tool_intro_what = '画像をまとめて選び、形式・サイズ・品質を指定して一括で書き出せます。' %}
+        {% set tool_intro_steps = ['画像をまとめて選ぶ', '変換形式を選ぶ', 'サイズや品質を指定する', '一括変換してダウンロード'] %}
+        {% set tool_intro_notice = 'HEICなど未対応の形式は選択できません。PNG、JPG、WebPの画像を使ってください。' %}
         {% include 'includes/tool_intro.html' %}
-        <div class="tool-section" data-reveal data-reveal-delay="150">
-            <h3>📁 ファイル選択</h3>
+        <section class="tool-flow" aria-labelledby="image-batch-flow-heading">
+            <h2 id="image-batch-flow-heading">使う順番</h2>
+            <ol class="tool-step-list">
+                <li><strong>画像をまとめて選ぶ</strong><span>PNG、JPG、WebPを最大50ファイルまで選べます。</span></li>
+                <li><strong>変換形式を選ぶ</strong><span>PNG、JPG、WebPから出力形式を指定します。</span></li>
+                <li><strong>サイズや品質を決める</strong><span>用途に合わせてプリセットや幅、品質を調整します。</span></li>
+                <li><strong>一括変換する</strong><span>複数出力はZIPでまとめて保存できます。</span></li>
+            </ol>
+        </section>
+        <div class="tool-section tool-main-panel" data-reveal data-reveal-delay="150">
+            <h3>1. 画像をまとめて選ぶ</h3>
             <div id="dropzone" class="file-dropzone" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 60px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); transition: all 0.3s; cursor: pointer;">
                 <div style="font-size: 3em; margin-bottom: 20px;">📁</div>
                 <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.1em; margin: 0 0 10px 0; font-weight: 500;">
@@ -412,8 +421,8 @@
             <div id="rejected-files" class="rejected-files" style="display: none;"></div>
         </div>
         
-        <div class="tool-section" data-reveal data-reveal-delay="200">
-            <h3>⚙️ 変換設定</h3>
+        <div class="tool-section tool-operation-card" data-reveal data-reveal-delay="200">
+            <h3>2・3・4. 形式とサイズを決めて変換する</h3>
             
             <div class="option-group">
                 <label>プリセット（ワンクリックで設定）</label>
@@ -465,7 +474,7 @@
             
             <div id="output-count" class="output-count" style="display: none;"></div>
             
-            <button id="run-button" class="action-button" onclick="runConversion()">変換開始</button>
+            <button id="run-button" class="action-button" onclick="runConversion()">画像を一括変換する</button>
             <button id="cancel-button" class="action-button" onclick="cancelConversion()" style="display: none; background: rgba(244, 67, 54, 0.2); border-color: rgba(244, 67, 54, 0.5); color: #F44336;">キャンセル</button>
         </div>
         
@@ -483,8 +492,8 @@
             </div>
         </div>
         
-        <div id="output-section" class="tool-section" style="display: none;">
-            <h3>📥 ダウンロード</h3>
+        <div id="output-section" class="tool-section tool-result-panel" style="display: none;">
+            <h3>5. ダウンロードする</h3>
             <div id="download-panel"></div>
         </div>
         
@@ -493,6 +502,18 @@
             <div id="error-message" class="error-message"></div>
         </div>
 
+        <section class="tool-note" aria-label="画像変換時の注意">
+            <h3>確認のポイント</h3>
+            <p>画像の幅を小さくするとファイルは軽くなりますが、印刷や大きな表示には向かない場合があります。用途に合わせてサイズを選んでください。</p>
+        </section>
+        <section class="tool-affiliate-row" aria-label="画像作業に関連する仕事道具">
+            {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
+            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='画像整理・資料作成に役立つ Amazon おすすめ' %}
+                {% include 'includes/affiliate_cards_section.html' %}
+            {% endwith %}
+            {% set affiliate_mid_amazon_rendered = true %}
+            {% endif %}
+        </section>
         <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px 0;"><a href="#about-tool" style="color: #4A9EFF;">使い方・FAQを読む ↓</a></div>
         {% include 'includes/tool_content_blocks.html' %}
     </div>

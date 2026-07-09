@@ -1940,3 +1940,106 @@ img {
         width: 100%;
     }
 }
+
+/* Phase 3: public tool workflow layout */
+.tool-flow,
+.tool-note {
+    width: 100%;
+    margin: 0 0 var(--spacing-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.045);
+}
+
+.tool-flow h2,
+.tool-note h3 {
+    margin: 0 0 var(--spacing-md);
+    color: var(--color-text-primary);
+    font-size: 1.25rem;
+    line-height: 1.35;
+}
+
+.tool-step-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--spacing-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: tool-step;
+}
+
+.tool-step-list li {
+    min-width: 0;
+    padding: var(--spacing-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.18);
+    counter-increment: tool-step;
+}
+
+.tool-step-list li::before {
+    content: counter(tool-step);
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    margin-bottom: var(--spacing-sm);
+    border-radius: 50%;
+    background: rgba(74, 158, 255, 0.18);
+    color: #8fc5ff;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.tool-step-list strong,
+.tool-step-list span {
+    display: block;
+}
+
+.tool-step-list strong {
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-primary);
+    font-size: 0.98rem;
+    line-height: 1.45;
+}
+
+.tool-step-list span,
+.tool-note p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.65;
+}
+
+.tool-main-panel,
+.tool-operation-card,
+.tool-result-panel {
+    border-radius: 8px !important;
+}
+
+.tool-affiliate-row {
+    margin: var(--spacing-lg) 0;
+}
+
+.tool-affiliate-row .affiliate-footer-block {
+    margin-bottom: 0;
+}
+
+@media (max-width: 960px) {
+    .tool-step-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .tool-flow,
+    .tool-note {
+        padding: var(--spacing-md);
+    }
+
+    .tool-step-list {
+        grid-template-columns: 1fr;
+    }
+}

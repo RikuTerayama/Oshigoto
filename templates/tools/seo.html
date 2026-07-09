@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    {% set page_title = 'Web/SEOユーティリティ - OGP画像生成・PageSpeedチェック・メタタグ検査・sitemap生成 | ブラウザ内処理でアップロード不要' %}
-    {% set page_description = 'OGP画像ジェネレーター、PageSpeed改善チェックリスト、メタタグ検査、sitemap.xml/robots.txt生成をブラウザ内で実行できる無料ツール。ファイルはアップロードされません。' %}
-    {% set breadcrumb_title = 'Web/SEOユーティリティ' %}
+    {% set page_title = 'ページを確認する - title・meta・OGP・canonical・sitemap確認 | しごと道具箱' %}
+    {% set page_description = '公開前やSNS共有前に、title、meta description、OGP、canonical、robots、sitemapを確認できる無料ツール。' %}
+    {% set breadcrumb_title = 'ページを確認する' %}
     {% include 'includes/head_meta.html' %}
     <style>
         * {
@@ -229,23 +229,32 @@
     
     <div class="container">
         <div class="page-header">
-            <h1 data-reveal>🔍 Web/SEOユーティリティ</h1>
-            <p data-reveal data-reveal-delay="50">OGP画像生成、PageSpeed改善チェックリスト、メタタグ検査、sitemap.xml/robots.txt生成をローカルで実行できます。アップロード不要。</p>
+            <h1 data-reveal>ページを確認する</h1>
+            <p data-reveal data-reveal-delay="50">公開前やSNS共有前に、title、meta description、OGP、canonical、robots、sitemapを確認します。</p>
         </div>
-        {% set tool_intro_what = 'OGP画像ジェネレーター、PageSpeed改善チェック、メタタグ検査、sitemap/robots生成をブラウザ内で実行します。' %}
-        {% set tool_intro_steps = ['モードを選択（OGP/PageSpeed/メタタグ/sitemap/robots）', 'URLや設定を入力', '実行して結果を確認・ダウンロード'] %}
-        {% set tool_intro_notice = '入力したURL・テキストはサーバーに送信されません。' %}
+        {% set tool_intro_what = 'HTMLやURLをもとに、SNS共有や検索結果で見える情報を確認できます。OGP画像やsitemap/robots作成も扱えます。' %}
+        {% set tool_intro_steps = ['URLまたはHTMLを入力する', '確認したい項目を選ぶ', 'チェックする', '結果と修正ヒントを見る'] %}
+        {% set tool_intro_notice = '外部URL確認には取得制限やタイムアウトがあります。取得できない場合はHTMLを貼り付けてください。' %}
         {% include 'includes/tool_intro.html' %}
+        <section class="tool-flow" aria-labelledby="seo-flow-heading">
+            <h2 id="seo-flow-heading">使う順番</h2>
+            <ol class="tool-step-list">
+                <li><strong>URLまたはHTMLを入れる</strong><span>公開前ならHTML貼り付け、公開後ならURL確認が使えます。</span></li>
+                <li><strong>確認項目を選ぶ</strong><span>title、meta description、OGP、canonical、robots、sitemapを確認します。</span></li>
+                <li><strong>チェックする</strong><span>メタタグ、PageSpeed改善項目、sitemap/robotsを必要に応じて実行します。</span></li>
+                <li><strong>修正のヒントを見る</strong><span>結果をコピーまたはダウンロードして、修正メモとして使えます。</span></li>
+            </ol>
+        </section>
         <div class="main-layout">
             <!-- 左: 設定エリア -->
-            <div class="panel">
-                <h3>⚙️ 設定</h3>
+            <div class="panel tool-main-panel">
+                <h3>1・2・3. 入力して確認する</h3>
                 
                 <div class="mode-selector">
-                    <button class="mode-button active" onclick="switchMode('ogp')">OGP画像生成</button>
-                    <button class="mode-button" onclick="switchMode('pagespeed')">PageSpeedチェックリスト</button>
-                    <button class="mode-button" onclick="switchMode('meta')">メタタグ検査（v2）</button>
-                    <button class="mode-button" onclick="switchMode('sitemap')">sitemap/robots（v2）</button>
+                    <button class="mode-button active" onclick="switchMode('ogp')">OGP画像を作る</button>
+                    <button class="mode-button" onclick="switchMode('pagespeed')">表示速度のメモ</button>
+                    <button class="mode-button" onclick="switchMode('meta')">メタタグを確認</button>
+                    <button class="mode-button" onclick="switchMode('sitemap')">sitemap/robots</button>
                 </div>
                 
                 <!-- OGP画像生成設定 -->
@@ -320,7 +329,7 @@
                         <p class="info-text">空欄の場合は "ogp" が使用されます</p>
                     </div>
                     
-                    <button id="ogp-generate-button" class="action-button" onclick="generateOgp()">画像を生成</button>
+                    <button id="ogp-generate-button" class="action-button" onclick="generateOgp()">OGP画像を作る</button>
                 </div>
                 
                 <!-- PageSpeedチェックリスト設定 -->
@@ -423,7 +432,7 @@
                         <p class="info-text" style="color: #FF9800;">⚠️ CORS制約により取得できない場合があります。その場合はHTMLを貼り付けてください。</p>
                     </div>
                     
-                    <button class="action-button" onclick="inspectMeta()">検査する</button>
+                    <button class="action-button" onclick="inspectMeta()">ページ情報を確認する</button>
                 </div>
                 
                 <!-- v2: sitemap/robots設定 -->
@@ -509,8 +518,8 @@
             </div>
             
             <!-- 右: 出力エリア -->
-            <div class="panel">
-                <h3>📤 出力</h3>
+            <div class="panel tool-result-panel">
+                <h3>4・5. 結果と修正ヒントを見る</h3>
                 
                 <div id="ogp-output" style="display: none;">
                     <div id="ogp-preview" class="output-preview"></div>
@@ -559,6 +568,19 @@
             </div>
         </div>
 
+        <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px 0;"><a href="#about-tool" style="color: #4A9EFF;">使い方・FAQを読む ↓</a></div>
+        <section class="tool-note" aria-label="URL確認時の注意">
+            <h3>確認のポイント</h3>
+            <p>URLからHTMLを取得できない場合は、ページのHTMLを貼り付けて確認してください。社内サイトや非公開URLの入力は避けてください。</p>
+        </section>
+        <section class="tool-affiliate-row" aria-label="Web運用に関連する仕事道具">
+            {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
+            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='Web運用・マーケティングに役立つ Amazon おすすめ' %}
+                {% include 'includes/affiliate_cards_section.html' %}
+            {% endwith %}
+            {% set affiliate_mid_amazon_rendered = true %}
+            {% endif %}
+        </section>
         <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px 0;"><a href="#about-tool" style="color: #4A9EFF;">使い方・FAQを読む ↓</a></div>
         {% include 'includes/tool_content_blocks.html' %}
     </div>

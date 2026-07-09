@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="ja" class="no-js">
 <head>
-    {% set page_title = 'PDFユーティリティ - 結合・分割・抽出・圧縮・画像変換 | ブラウザ内処理でアップロード不要' %}
-    {% set page_description = 'PDFの結合・分割・ページ抽出、PDF→画像変換、圧縮、画像→PDF変換、埋め込み画像抽出に対応した無料ツール。ブラウザ内で実行され、ファイルはアップロードされません。' %}
-    {% set breadcrumb_title = product.name|default('PDFユーティリティ') %}
+    {% set page_title = 'PDFを整える - 結合・分割・抽出・圧縮・画像変換 | しごと道具箱' %}
+    {% set page_description = 'PDFの結合・分割・ページ抽出、圧縮、PDF→画像、画像→PDF、PDF保護を操作順に使える無料ツール。ブラウザ内で処理します。' %}
+    {% set breadcrumb_title = 'PDFを整える' %}
     {% include 'includes/head_meta.html' %}
     {# P1-4: SoftwareApplication構造化データ #}
     {% if product %}
@@ -300,15 +300,24 @@
     
     <div class="container">
         <div class="page-header">
-            <h1 data-reveal>📄 PDFユーティリティ</h1>
-            <p data-reveal data-reveal-delay="50">ローカル処理。ファイルはアップロードせず、ブラウザ内で変換します。</p>
+            <h1 data-reveal>PDFを整える</h1>
+            <p data-reveal data-reveal-delay="50">結合、分割、抽出、圧縮、画像変換まで。PDF作業をこのページでさっと片づけます。</p>
         </div>
-        {% set tool_intro_what = 'PDFの結合・分割・ページ抽出、PDF⇄画像変換、圧縮、画像→PDF、埋め込み画像抽出をブラウザ内で実行します。' %}
-        {% set tool_intro_steps = ['ファイルを選択（複数可）', '操作モード・オプションを設定', '実行してダウンロード'] %}
-        {% set tool_intro_notice = '個人情報・機密情報を含むPDFは取り扱いにお気をつけください。' %}
+        {% set tool_intro_what = 'PDFをまとめる、必要なページだけ取り出す、軽くする、画像にする作業をまとめて扱えます。' %}
+        {% set tool_intro_steps = ['やりたい操作を選ぶ', 'PDFまたは画像を選ぶ', '必要な設定を入れる', '実行してダウンロード'] %}
+        {% set tool_intro_notice = '大きなPDFやページ数の多いPDFは処理に時間がかかることがあります。' %}
         {% include 'includes/tool_intro.html' %}
-        <div class="tool-section">
-            <h3>📁 ファイル選択</h3>
+        <section class="tool-flow" aria-labelledby="pdf-flow-heading">
+            <h2 id="pdf-flow-heading">使う順番</h2>
+            <ol class="tool-step-list">
+                <li><strong>操作を選ぶ</strong><span>結合、分割、抽出、圧縮、PDFを保護、PDF→画像、画像→PDFから選びます。</span></li>
+                <li><strong>ファイルを選ぶ</strong><span>PDFまたは画像をドラッグ＆ドロップします。</span></li>
+                <li><strong>必要な設定だけ入れる</strong><span>ページ範囲、品質、出力形式などを必要な場合だけ指定します。</span></li>
+                <li><strong>実行して保存する</strong><span>処理後にPDF、画像、ZIPをダウンロードできます。</span></li>
+            </ol>
+        </section>
+        <div class="tool-section tool-main-panel">
+            <h3>2. ファイルを選ぶ</h3>
             <div id="dropzone" class="file-dropzone" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 60px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); transition: all 0.3s; cursor: pointer;">
                 <div style="font-size: 3em; margin-bottom: 20px;">📁</div>
                 <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.1em; margin: 0 0 10px 0; font-weight: 500;">
@@ -326,8 +335,8 @@
             <div id="rejected-files" class="rejected-files" style="display: none;"></div>
         </div>
         
-        <div class="tool-section">
-            <h3>⚙️ 操作設定</h3>
+        <div class="tool-section tool-operation-card">
+            <h3>1・3・4. 操作を選んで実行する</h3>
             <div class="option-group">
                 <label>操作モード</label>
                 <select id="mode" onchange="updateModeOptions()">
@@ -343,18 +352,14 @@
                         <option value="extract-images">埋め込み画像抽出（試験版）</option>
                     </optgroup>
                     <optgroup label="保護の付与">
-                        <option value="lock-pdf">ロック付与（暗号化して出力）</option>
+                        <option value="lock-pdf">PDFを保護する</option>
                     </optgroup>
                 </select>
             </div>
             
-            <!-- 入力PDF用パスワード（保護されている場合のみ使用。ログ・永続化しません） -->
             <div id="input-pdf-password-group" class="option-group" style="display: none;">
-                <label>入力PDFのパスワード（保護されている場合）</label>
-                <input type="password" id="input-pdf-password" placeholder="保護されていない場合は空でOK" autocomplete="off">
-                <p class="info-text">パスワードはサーバに送信後すぐ破棄され、ログには出しません。</p>
+                <input type="hidden" id="input-pdf-password" value="">
             </div>
-            <!-- 出力PDF用パスワード（ロック付与時） -->
             <div id="output-pdf-password-group" class="option-group" style="display: none;">
                 <label>出力PDFに設定するパスワード</label>
                 <input type="password" id="output-pdf-password" placeholder="8文字以上推奨" autocomplete="off">
@@ -442,7 +447,7 @@
                         <li>うまく抽出できない主なケース:
                             <ul style="margin-top: 4px; padding-left: 18px;">
                                 <li>図形や文字中心（ベクター中心）のPDF</li>
-                                <li>保護（暗号化/権限制限）されたPDF</li>
+                                <li>開けないPDFや権限制限のあるPDF</li>
                                 <li>ページ数が多いPDF（重くなるため、必要ページだけに分割すると安定します）</li>
                             </ul>
                         </li>
@@ -465,7 +470,7 @@
                 </p>
             </div>
             
-            <button id="run-button" class="action-button" onclick="runOperation()">実行</button>
+            <button id="run-button" class="action-button" onclick="runOperation()">PDFを処理する</button>
             <button id="cancel-button" class="action-button" onclick="cancelOperation()" style="display: none; background: rgba(244, 67, 54, 0.2); border-color: rgba(244, 67, 54, 0.5); color: #F44336;">キャンセル</button>
         </div>
         
@@ -483,8 +488,8 @@
             </div>
         </div>
         
-        <div id="output-section" class="tool-section" style="display: none;">
-            <h3>📥 ダウンロード</h3>
+        <div id="output-section" class="tool-section tool-result-panel" style="display: none;">
+            <h3>5. ダウンロードする</h3>
             <div id="download-panel"></div>
         </div>
         
@@ -493,6 +498,18 @@
             <div id="error-message" class="error-message"></div>
         </div>
 
+        <section class="tool-note" aria-label="PDF利用時の注意">
+            <h3>安全に使うために</h3>
+            <p>機密資料や個人情報を含むPDFは、必要な範囲だけ選んで処理してください。PDFを保護する場合は、設定したパスワードを必ず控えておいてください。</p>
+        </section>
+        <section class="tool-affiliate-row" aria-label="PDF作業に関連する仕事道具">
+            {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
+            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='PDF・書類作業に役立つ Amazon おすすめ' %}
+                {% include 'includes/affiliate_cards_section.html' %}
+            {% endwith %}
+            {% set affiliate_mid_amazon_rendered = true %}
+            {% endif %}
+        </section>
         <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px 0;"><a href="#about-tool" style="color: #4A9EFF;">使い方・FAQを読む ↓</a></div>
         {% include 'includes/tool_content_blocks.html' %}
     </div>
@@ -908,7 +925,7 @@
                     document.getElementById('run-button').style.display = 'none';
                     document.getElementById('cancel-button').style.display = 'block';
                     document.getElementById('progress-section').style.display = 'block';
-                    document.getElementById('progress-text').textContent = 'ロック付与中...';
+                    document.getElementById('progress-text').textContent = 'PDFを保護しています...';
                     pdfApiAbortController = new AbortController();
                     try {
                         const form = new FormData();
@@ -919,8 +936,8 @@
                             const data = await res.json().catch(() => ({}));
                             const code = data.error_code || data.error;
                             const rid = data.request_id ? ` (request_id: ${data.request_id})` : '';
-                            const msgMap = { missing_password: '出力用パスワードを入力してください。', file_required: 'ファイルを選択してください。', file_too_large: 'ファイルが大きすぎます（50MB以下）。', read_failed: 'ファイルの読み込みに失敗しました。', already_encrypted: 'このPDFは既にパスワード保護されています。保護されていないPDFを選択してください。', corrupt_pdf: 'PDFの構造に問題があるか、対応していない形式です。', unsupported_pdf: 'このPDFにはロック付与に対応していません。', encrypt_failed: 'ロック付与に失敗しました。PDFの形式やサイズを確認してください。', unsupported: 'ロック付与に失敗しました。' };
-                            const msg = msgMap[code] || 'ロック付与に失敗しました。';
+                            const msgMap = { missing_password: '出力用パスワードを入力してください。', file_required: 'ファイルを選択してください。', file_too_large: 'ファイルが大きすぎます（50MB以下）。', read_failed: 'ファイルの読み込みに失敗しました。', already_encrypted: 'このPDFは既にパスワード保護されています。保護されていないPDFを選択してください。', corrupt_pdf: 'PDFの構造に問題があるか、対応していない形式です。', unsupported_pdf: 'このPDFは保護の追加に対応していません。', encrypt_failed: 'PDFの保護に失敗しました。PDFの形式やサイズを確認してください。', unsupported: 'PDFの保護に失敗しました。' };
+                            const msg = msgMap[code] || 'PDFの保護に失敗しました。';
                             handleError(new Error(msg + rid));
                             return;
                         }
