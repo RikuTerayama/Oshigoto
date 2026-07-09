@@ -565,10 +565,12 @@
                     
                     <div id="sitemap-warnings" style="margin-top: 15px; padding: 15px; background: rgba(255, 152, 0, 0.2); border-radius: 8px; display: none;"></div>
                 </div>
+                <div id="output-empty-hint" class="output-preview">
+                    <p style="margin: 0; color: rgba(255,255,255,0.72);">左側で入力して実行すると、ここに結果と保存ボタンが表示されます。</p>
+                </div>
             </div>
         </div>
 
-        <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px 0;"><a href="#about-tool" style="color: #4A9EFF;">使い方・FAQを読む ↓</a></div>
         <section class="tool-note" aria-label="URL確認時の注意">
             <h3>確認のポイント</h3>
             <p>URLからHTMLを取得できない場合は、ページのHTMLを貼り付けて確認してください。社内サイトや非公開URLの入力は避けてください。</p>
@@ -633,6 +635,8 @@
             document.getElementById('pagespeed-output').style.display = mode === 'pagespeed' ? 'block' : 'none';
             document.getElementById('meta-output').style.display = mode === 'meta' ? 'block' : 'none';
             document.getElementById('sitemap-output').style.display = mode === 'sitemap' ? 'block' : 'none';
+            const emptyHint = document.getElementById('output-empty-hint');
+            if (emptyHint) emptyHint.style.display = 'block';
         }
         
         // OGPオプションを更新
@@ -659,7 +663,7 @@
 
             const title = document.getElementById('ogp-title').value.trim();
             if (!title) {
-                alert('タイトルを入力してください');
+                alert('OGP画像に入れるタイトルを入力してください。');
                 return;
             }
 
@@ -708,10 +712,12 @@
                 preview.innerHTML = '';
                 preview.appendChild(img);
                 img.onload = () => URL.revokeObjectURL(img.src);
+                const emptyHint = document.getElementById('output-empty-hint');
+                if (emptyHint) emptyHint.style.display = 'none';
             } catch (error) {
                 const errName = error && error.name ? error.name : 'Error';
                 const errMsg = error && error.message ? error.message : String(error);
-                alert('OGP画像生成エラー: ' + errMsg + '\n（開発者: ' + errName + '）');
+                alert('OGP画像を作成できませんでした。入力内容を確認して、もう一度お試しください。詳細: ' + errMsg);
             }
         }
         
@@ -763,6 +769,8 @@
             pre.textContent = markdown;
             preview.innerHTML = '';
             preview.appendChild(pre);
+            const emptyHint = document.getElementById('output-empty-hint');
+            if (emptyHint) emptyHint.style.display = 'none';
         }
         
         // チェックリストをコピー
@@ -825,9 +833,11 @@
                 }
                 const html = await response.text();
                 document.getElementById('meta-html').value = html;
+                const emptyHint = document.getElementById('output-empty-hint');
+                if (emptyHint) emptyHint.style.display = 'none';
                 ExportUtils.showToast('HTMLを取得しました', 'success');
             } catch (error) {
-                alert(`HTMLの取得に失敗しました: ${error.message}\n\nCORS制約により取得できない場合は、HTMLを直接貼り付けてください。`);
+                alert(`HTMLを取得できませんでした。URLを確認するか、HTMLを直接貼り付けてください。\n\n詳細: ${error.message}`);
             }
         }
         
@@ -835,7 +845,7 @@
         function inspectMeta() {
             const html = document.getElementById('meta-html').value.trim();
             if (!html) {
-                alert('HTMLコードを入力してください');
+                alert('確認したいHTMLを貼り付けるか、URLから取得してください。');
                 return;
             }
             
@@ -866,9 +876,11 @@
                 };
                 
                 // 結果を表示
+                const emptyHint = document.getElementById('output-empty-hint');
+                if (emptyHint) emptyHint.style.display = 'none';
                 displayMetaResult(currentMetaResult);
             } catch (error) {
-                alert(`メタタグ検査エラー: ${error.message}`);
+                alert(`ページ情報を確認できませんでした。HTMLの形式を確認してください。詳細: ${error.message}`);
             }
         }
         
@@ -1026,11 +1038,13 @@
             });
             
             // プレビューを表示
-            const preview = document.getElementById('sitemap-xml-preview');
-            const pre = document.createElement('pre');
-            pre.textContent = currentSitemapXml;
-            preview.innerHTML = '';
-            preview.appendChild(pre);
+                const preview = document.getElementById('sitemap-xml-preview');
+                const pre = document.createElement('pre');
+                pre.textContent = currentSitemapXml;
+                preview.innerHTML = '';
+                preview.appendChild(pre);
+                const emptyHint = document.getElementById('output-empty-hint');
+                if (emptyHint) emptyHint.style.display = 'none';
             
             document.getElementById('sitemap-xml-output').style.display = 'block';
             
@@ -1077,6 +1091,8 @@
             pre.textContent = currentRobotsTxt;
             preview.innerHTML = '';
             preview.appendChild(pre);
+            const emptyHint = document.getElementById('output-empty-hint');
+            if (emptyHint) emptyHint.style.display = 'none';
             
             document.getElementById('robots-txt-output').style.display = 'block';
         }

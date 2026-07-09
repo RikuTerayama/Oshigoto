@@ -471,6 +471,7 @@
             </div>
             
             <button id="run-button" class="action-button" onclick="runOperation()">PDFを処理する</button>
+            <p id="run-hint" class="info-text">操作に必要なファイルと設定を入れると実行できます。</p>
             <button id="cancel-button" class="action-button" onclick="cancelOperation()" style="display: none; background: rgba(244, 67, 54, 0.2); border-color: rgba(244, 67, 54, 0.5); color: #F44336;">キャンセル</button>
         </div>
         
@@ -777,29 +778,40 @@
             const button = document.getElementById('run-button');
             
             let disabled = false;
+            let hint = '準備できたら「PDFを処理する」を押してください。';
             
             if (mode === 'merge') {
                 disabled = files.length < 2;
+                if (disabled) hint = '結合はPDFを2件以上選ぶと実行できます。';
             } else if (mode === 'extract') {
                 const range = document.getElementById('extract-range').value.trim();
                 disabled = files.length !== 1 || !range;
+                if (disabled) hint = files.length !== 1 ? 'ページ抽出はPDFを1件選んでください。' : '取り出すページ範囲を入力してください。';
             } else if (mode === 'split') {
                 const range = document.getElementById('split-range').value.trim();
                 disabled = files.length !== 1 || !range;
+                if (disabled) hint = files.length !== 1 ? '分割はPDFを1件選んでください。' : '分割するページ範囲を入力してください。';
             } else if (mode === 'to-images') {
                 disabled = files.length < 1;
+                if (disabled) hint = '画像にしたいPDFを選んでください。';
             } else if (mode === 'compress') {
                 disabled = files.length !== 1;
+                if (disabled) hint = '圧縮はPDFを1件選んでください。';
             } else if (mode === 'images-to-pdf') {
                 disabled = files.length < 1;
+                if (disabled) hint = 'PDFにしたい画像を選んでください。';
             } else if (mode === 'extract-images') {
                 disabled = files.length < 1;
+                if (disabled) hint = '画像を取り出したいPDFを選んでください。';
             } else if (mode === 'lock-pdf') {
                 const outPw = document.getElementById('output-pdf-password').value.trim();
                 disabled = files.length !== 1 || !outPw;
+                if (disabled) hint = files.length !== 1 ? '保護したいPDFを1件選んでください。' : '出力PDFに設定するパスワードを入力してください。';
             }
             
             button.disabled = disabled || toolRunner.isRunning;
+            const hintEl = document.getElementById('run-hint');
+            if (hintEl) hintEl.textContent = toolRunner.isRunning ? '処理中です。完了までこのままお待ちください。' : hint;
         }
         
         // 範囲入力の監視
@@ -1040,12 +1052,12 @@
             panel.innerHTML = '';
             
             const totalSize = outputs.reduce((sum, o) => sum + o.blob.size, 0);
-            panel.innerHTML += `<p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 15px;">出力ファイル: ${outputs.length}件（合計: ${FileUtils.formatBytes(totalSize)}）</p>`;
+            panel.innerHTML += `<p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 15px;">処理が完了しました。下のボタンから保存してください。出力: ${outputs.length}件（合計: ${FileUtils.formatBytes(totalSize)}）</p>`;
             
             if (outputs.length === 1) {
                 const button = document.createElement('button');
                 button.className = 'action-button';
-                button.textContent = `ダウンロード: ${outputs[0].filename}`;
+                button.textContent = `結果をダウンロード: ${outputs[0].filename}`;
                 button.onclick = () => toolRunner.downloadSingle(0);
                 panel.appendChild(button);
             } else {
@@ -1057,7 +1069,7 @@
                     try {
                         await toolRunner.downloadAllZip('pdf-tools-output.zip');
                     } catch (error) {
-                        alert(`ZIP作成エラー: ${error.message}`);
+                    alert(`ZIPの作成に失敗しました。もう一度お試しください。詳細: ${error.message}`);
                     }
                 };
                 panel.appendChild(zipButton);

@@ -64,6 +64,7 @@
                 <p style="margin: 0; color: rgba(255, 255, 255, 0.9);">クリックまたはドロップでファイルを選択</p>
                 <input type="file" id="file-input" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" multiple style="display: none;">
             </div>
+            <p class="info-text">ファイルを選ぶと、プレビューと操作設定が表示されます。</p>
             <div id="file-list" style="margin-top: 15px;"></div>
             <div id="rejected-files" style="display: none; margin-top: 15px; padding: 15px; background: rgba(255, 152, 0, 0.2); border-radius: 8px;"></div>
         </div>
@@ -372,16 +373,16 @@
     }
 
     runBtn.addEventListener('click', () => {
-        if (isRunning) { setOutput('処理中です。完了までお待ちください。', true); return; }
-        if (!acceptedFiles.length) { setOutput('ファイルを選択してください。', true); return; }
+        if (isRunning) { setOutput('処理中です。完了までこのままお待ちください。', true); return; }
+        if (!acceptedFiles.length) { setOutput('先にCSVまたはExcelファイルを選んでください。', true); return; }
         if (typeof window.gaEvent === 'function') { window.gaEvent('tool_action_start', { tool_id: 'csv', file_count: acceptedFiles.length }); }
         isRunning = true;
         runBtn.disabled = true;
-        runBtn.textContent = '処理中...';
+        runBtn.textContent = '表を整えています...';
         outputSection.style.display = 'block';
         outputArea.textContent = '';
         const runningP = document.createElement('p');
-        runningP.textContent = '処理中...';
+        runningP.textContent = '処理中です。終わると自動でダウンロードが始まります。';
         outputArea.appendChild(runningP);
         const mode = modeSelect.value;
         const outputs = [];
@@ -441,15 +442,15 @@
             if (outputs.length === 1) {
                 if (typeof window.gaEvent === 'function') { window.gaEvent('download_click', { tool_id: 'csv', download_type: 'single', file_count: 1 }); }
                 FileUtils.downloadBlob(outputs[0].blob, outputs[0].filename);
-                setOutput('1件ダウンロードしました: ' + outputs[0].filename, false);
+                setOutput('完了しました。ダウンロードしたファイル: ' + outputs[0].filename, false);
             } else {
                 ZipUtils.createZip(outputs.map(o => ({ blob: o.blob, filename: o.filename })), 'csv_output.zip').then(zipBlob => {
                     if (typeof window.gaEvent === 'function') { window.gaEvent('download_click', { tool_id: 'csv', download_type: 'zip', file_count: outputs.length }); }
                     FileUtils.downloadBlob(zipBlob, 'csv_output.zip');
-                    setOutput(outputs.length + '件をZIPでダウンロードしました。', false);
-                }).catch(err => setOutput(err.message || 'ZIPの作成に失敗しました。', true));
+                    setOutput('完了しました。' + outputs.length + '件をZIPでダウンロードしました。', false);
+                }).catch(err => setOutput(err.message || 'ZIPの作成に失敗しました。もう一度お試しください。', true));
             }
-        }).catch(err => setOutput(err.message || '処理に失敗しました。', true)).finally(() => {
+        }).catch(err => setOutput(err.message || '処理に失敗しました。ファイル形式や選択した操作を確認してください。', true)).finally(() => {
             isRunning = false;
             runBtn.disabled = false;
             runBtn.textContent = RUN_BTN_LABEL;

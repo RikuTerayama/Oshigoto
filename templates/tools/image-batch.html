@@ -475,6 +475,7 @@
             <div id="output-count" class="output-count" style="display: none;"></div>
             
             <button id="run-button" class="action-button" onclick="runConversion()">画像を一括変換する</button>
+            <p id="run-hint" class="info-text">画像を選ぶと一括変換を実行できます。</p>
             <button id="cancel-button" class="action-button" onclick="cancelConversion()" style="display: none; background: rgba(244, 67, 54, 0.2); border-color: rgba(244, 67, 54, 0.5); color: #F44336;">キャンセル</button>
         </div>
         
@@ -750,6 +751,16 @@
             const fileCount = toolRunner ? toolRunner.selectedFiles.length : 0;
             const variantCount = variants.length;
             button.disabled = fileCount === 0 || variantCount === 0 || toolRunner.isRunning;
+            const hintEl = document.getElementById('run-hint');
+            if (hintEl) {
+                hintEl.textContent = toolRunner.isRunning
+                    ? '変換中です。完了までこのままお待ちください。'
+                    : fileCount === 0
+                        ? '画像を1件以上選んでください。'
+                        : variantCount === 0
+                            ? '出力サイズを1つ以上設定してください。'
+                            : '準備できました。画像を一括変換できます。';
+            }
         }
         
         // 変換実行
@@ -763,12 +774,12 @@
                 return;
             }
             if (toolRunner.selectedFiles.length === 0) {
-                alert('ファイルを選択してください');
+                alert('先に画像ファイルを選んでください。');
                 return;
             }
             
             if (variants.length === 0) {
-                alert('出力サイズを1つ以上設定してください');
+                alert('出力サイズを1つ以上設定してください。');
                 return;
             }
             
@@ -909,12 +920,12 @@
             panel.innerHTML = '';
             
             const totalSize = outputs.reduce((sum, o) => sum + o.blob.size, 0);
-            panel.innerHTML += `<p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 15px;">出力ファイル: ${outputs.length}件（合計: ${FileUtils.formatBytes(totalSize)}）</p>`;
+            panel.innerHTML += `<p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 15px;">変換が完了しました。下のボタンから保存してください。出力: ${outputs.length}件（合計: ${FileUtils.formatBytes(totalSize)}）</p>`;
             
             if (outputs.length === 1) {
                 const button = document.createElement('button');
                 button.className = 'action-button';
-                button.textContent = `ダウンロード: ${outputs[0].filename}`;
+                button.textContent = `結果をダウンロード: ${outputs[0].filename}`;
                 button.onclick = () => toolRunner.downloadSingle(0);
                 panel.appendChild(button);
             } else {
@@ -927,7 +938,7 @@
                     try {
                         await toolRunner.downloadAllZip('converted_images.zip');
                     } catch (error) {
-                        alert(`ZIP作成エラー: ${error.message}`);
+                        alert(`ZIPの作成に失敗しました。もう一度お試しください。詳細: ${error.message}`);
                     }
                 };
                 panel.appendChild(zipButton);
@@ -975,7 +986,7 @@
         // エラーハンドラ
         function handleError(error) {
             document.getElementById('error-section').style.display = 'block';
-            document.getElementById('error-message').textContent = `エラー: ${error.message}`;
+            document.getElementById('error-message').textContent = `処理できませんでした。${error.message}`;
         }
     </script>
 </body>
