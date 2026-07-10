@@ -1,65 +1,68 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    {% set page_title = '用語集 | Jobcan AutoFill' %}
+    {% set page_title = '用語集 | しごと道具箱' %}
     {% include 'includes/head_meta.html' %}
     <style>
         body {
-            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
             margin: 0;
             padding: 20px;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            background: var(--brand-bg);
             min-height: 100vh;
-            color: #FFFFFF;
+            color: var(--brand-ink);
             line-height: 1.8;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%);
+            background: var(--brand-surface);
+            border: 1px solid var(--brand-line);
             border-radius: 20px;
             padding: 50px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            box-shadow: var(--shadow-soft);
         }
         h1 {
             font-size: 2.5em;
             margin-bottom: 30px;
-            color: #FFFFFF;
+            color: var(--brand-ink);
         }
         h2 {
             font-size: 1.8em;
             margin-top: 40px;
             margin-bottom: 20px;
-            color: #FFFFFF;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            color: var(--brand-ink);
+            border-bottom: 2px solid var(--brand-line);
             padding-bottom: 10px;
         }
         .term-item {
             margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--brand-paper);
             padding: 25px;
             border-radius: 12px;
-            border-left: 4px solid #4A9EFF;
+            border-left: 4px solid var(--brand-primary);
         }
         .term-name {
             font-weight: 600;
-            color: #4A9EFF;
+            color: var(--brand-primary-strong);
             margin-bottom: 10px;
             font-size: 1.3em;
         }
         .term-reading {
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--brand-muted);
             font-size: 0.9em;
             margin-bottom: 10px;
         }
         .term-definition {
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--brand-ink);
             line-height: 1.8;
         }
         .term-example {
             margin-top: 10px;
             padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(23, 32, 42, 0.04);
             border-radius: 8px;
             font-style: italic;
         }
@@ -67,19 +70,19 @@
             display: inline-block;
             margin-top: 40px;
             padding: 15px 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: var(--brand-paper);
+            border: 1px solid var(--brand-line);
             border-radius: 10px;
-            color: #FFFFFF;
+            color: var(--brand-ink);
             text-decoration: none;
             transition: all 0.3s;
         }
         .nav-link:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--brand-teal-soft);
             transform: translateY(-2px);
         }
         a {
-            color: #4A9EFF;
+            color: var(--brand-primary-strong);
             text-decoration: none;
         }
         a:hover {
@@ -87,15 +90,15 @@
         }
     </style>
 </head>
-<body>
+<body class="landing-page">
     {# P1-1: ナビゲーションの一貫性 #}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
     <div class="container">
         <h1>📖 勤怠管理・Jobcan用語集</h1>
         <p>この用語集では、勤怠管理・Jobcan AutoFill・自動化に関連する用語を一覧で解説しています。社内説明や導入検討で頻出する用語を、このページで素早く確認できます。導入検討や社内説明の際にご利用ください。</p>
-        <p>用語の前提となる操作手順は<a href="/guide/excel-format" style="color: #4A9EFF;">Excel形式ガイド</a>、運用のポイントは<a href="/best-practices" style="color: #4A9EFF;">ベストプラクティス</a>、よくある質問は<a href="/faq" style="color: #4A9EFF;">FAQ</a>でまとめています。</p>
-        <p style="font-size: 0.95em; color: rgba(255, 255, 255, 0.8);">よく参照される項目：<a href="#basic-terms" style="color: #4A9EFF;">勤怠管理の基本用語</a>｜<a href="#jobcan-terms" style="color: #4A9EFF;">Jobcan関連用語</a>｜<a href="#autofill-terms" style="color: #4A9EFF;">Jobcan AutoFill関連用語</a>｜<a href="#it-security" style="color: #4A9EFF;">IT・セキュリティ用語</a></p>
+        <p>用語の前提となる操作手順は<a href="/guide/excel-format" style="color: var(--brand-primary-strong);">Excel形式ガイド</a>、運用のポイントは<a href="/best-practices" style="color: var(--brand-primary-strong);">ベストプラクティス</a>、よくある質問は<a href="/faq" style="color: var(--brand-primary-strong);">FAQ</a>でまとめています。</p>
+        <p style="font-size: 0.95em; color: var(--brand-muted);">よく参照される項目：<a href="#basic-terms" style="color: var(--brand-primary-strong);">勤怠管理の基本用語</a>｜<a href="#jobcan-terms" style="color: var(--brand-primary-strong);">Jobcan関連用語</a>｜<a href="#autofill-terms" style="color: var(--brand-primary-strong);">Jobcan AutoFill関連用語</a>｜<a href="#it-security" style="color: var(--brand-primary-strong);">IT・セキュリティ用語</a></p>
 
         <h2 id="basic-terms">勤怠管理の基本用語</h2>
 

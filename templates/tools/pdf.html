@@ -35,11 +35,11 @@
     <style>
         * {
             box-sizing: border-box;
-            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
         }
         
         body {
-            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
             margin: 0;
             padding: 0;
             background: var(--brand-bg);
@@ -319,6 +319,9 @@
                 <li><strong>実行して保存する</strong><span>処理後にPDF、画像、ZIPをダウンロードできます。</span></li>
             </ol>
         </section>
+        <div class="page-layout">
+        <div class="page-main">
+        <div class="tool-workspace">
         <div class="tool-section tool-main-panel">
             <h3>2. ファイルを選ぶ</h3>
             <div id="dropzone" class="file-dropzone" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 60px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); transition: all 0.3s; cursor: pointer;">
@@ -500,6 +503,20 @@
         <div id="error-section" class="tool-section" style="display: none;">
             <h3>❌ エラー</h3>
             <div id="error-message" class="error-message"></div>
+        </div>
+        </div>
+        </div>
+        <div class="page-sidebar">
+            <div class="sticky-side-box">
+                {% set side_box_links = [
+                    {'label': 'PDF作業アイテムを見る', 'description': 'PDFや書類作業の周辺アイテムを探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents'},
+                    {'label': '書類整理グッズを見る', 'description': '紙の書類やデスク周りを整理する道具を探せます。', 'href': amazon_search_url('書類整理 グッズ'), 'category': 'document-organization'}
+                ] %}
+                {% with side_box_title='PDF・書類作業を整える', side_box_lead='処理の合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='pdf-side-box', side_box_category='pdf-documents' %}
+                    {% include 'includes/affiliate_side_box.html' %}
+                {% endwith %}
+            </div>
+        </div>
         </div>
 
         <section class="tool-note" aria-label="PDF利用時の注意">

@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
-    <title>エラーが発生しました | Jobcan AutoFill</title>
+    <title>エラーが発生しました | しごと道具箱</title>
     <style>
         body {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
             margin: 0;
             padding: 40px 20px;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            color: #FFFFFF;
+            background: var(--brand-bg);
+            color: var(--brand-ink);
             line-height: 1.8;
             min-height: 100vh;
             display: flex;
@@ -20,42 +20,43 @@
         }
         .container {
             max-width: 800px;
-            background: rgba(0, 0, 0, 0.35);
+            background: var(--brand-surface);
             border-radius: 20px;
             padding: 40px;
             text-align: left;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--brand-line);
+            box-shadow: var(--shadow-soft);
         }
         h1 {
-            color: #FF9800;
+            color: #9a5b00;
             font-size: 2em;
             margin-bottom: 20px;
         }
         p {
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--brand-ink);
             margin-bottom: 30px;
         }
         a {
             display: inline-block;
             padding: 12px 24px;
-            background: rgba(74, 158, 255, 0.2);
-            border: 1px solid rgba(74, 158, 255, 0.5);
+            background: rgba(14, 124, 123, 0.1);
+            border: 1px solid rgba(14, 124, 123, 0.4);
             border-radius: 8px;
-            color: #4A9EFF;
+            color: var(--brand-primary-strong);
             text-decoration: none;
             transition: all 0.3s;
         }
         a:hover {
-            background: rgba(74, 158, 255, 0.3);
+            background: rgba(14, 124, 123, 0.18);
         }
         h2 {
-            color: #FF9800;
+            color: #9a5b00;
             font-size: 1.5em;
             margin-top: 30px;
             margin-bottom: 15px;
         }
         h3 {
-            color: #4A9EFF;
+            color: var(--brand-primary-strong);
             font-size: 1.2em;
             margin-top: 20px;
             margin-bottom: 10px;
@@ -66,18 +67,18 @@
         }
         li {
             margin-bottom: 8px;
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--brand-ink);
         }
         .error-types {
-            background: rgba(255, 152, 0, 0.1);
-            border-left: 4px solid #FF9800;
+            background: rgba(154, 91, 0, 0.1);
+            border-left: 4px solid #9a5b00;
             padding: 20px;
             margin: 25px 0;
             border-radius: 8px;
         }
         .help-links {
-            background: rgba(74, 158, 255, 0.1);
-            border-left: 4px solid #4A9EFF;
+            background: rgba(14, 124, 123, 0.1);
+            border-left: 4px solid var(--brand-primary);
             padding: 20px;
             margin: 25px 0;
             border-radius: 8px;
@@ -90,14 +91,14 @@
             margin-bottom: 10px;
         }
         .help-links a {
-            color: #4A9EFF;
+            color: var(--brand-primary-strong);
             text-decoration: underline;
             padding: 0;
             background: transparent;
             border: none;
         }
         .help-links a:hover {
-            color: #6BB6FF;
+            color: var(--brand-primary);
             background: transparent;
         }
         .back-link {
@@ -106,14 +107,14 @@
         }
     </style>
 </head>
-<body>
+<body class="landing-page">
     <div class="container">
         <h1>⚠️ エラーが発生しました</h1>
         <p>{{ error_message|default('予期しないエラーが発生しました。しばらく待ってから再試行してください。') }}</p>
         {% if error_id %}
-        <p style="background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; padding: 15px; border-radius: 8px; margin: 20px 0;">
-            <strong>エラーID:</strong> <code style="background: rgba(0, 0, 0, 0.3); padding: 4px 8px; border-radius: 4px;">{{ error_id }}</code><br>
-            <small style="color: rgba(255, 255, 255, 0.7);">お問い合わせの際は、このエラーIDをお伝えください。</small>
+        <p style="background: rgba(154, 91, 0, 0.1); border-left: 4px solid #9a5b00; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <strong>エラーID:</strong> <code style="background: rgba(23, 32, 42, 0.06); padding: 4px 8px; border-radius: 4px;">{{ error_id }}</code><br>
+            <small style="color: var(--brand-muted);">お問い合わせの際は、このエラーIDをお伝えください。</small>
         </p>
         {% endif %}
         
@@ -144,13 +145,12 @@
                 <li>システム負荷の少ない時間帯に再度お試しください</li>
             </ul>
             
-            <h3>ログインエラー</h3>
-            <p>Jobcanへのログインに失敗した場合：</p>
+            <h3>ファイル処理エラー</h3>
+            <p>PDF、CSV/Excel、画像などの処理でエラーが出た場合：</p>
             <ul>
-                <li>メールアドレスとパスワードが正しいか確認してください</li>
-                <li>会社IDが必要な場合は、正しく入力されているか確認してください</li>
-                <li>JobcanのWebサイトで直接ログインできるか確認してください</li>
-                <li>CAPTCHAが表示された場合は、手動でログインしてから再度お試しください</li>
+                <li>対応形式・サイズ・件数の上限を各ツールページでご確認ください</li>
+                <li>ファイルが破損していないか、別のファイルで試してみてください</li>
+                <li>ブラウザの拡張機能やセキュリティソフトが処理をブロックしていないかご確認ください</li>
             </ul>
         </div>
         
