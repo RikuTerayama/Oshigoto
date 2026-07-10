@@ -793,3 +793,50 @@ def get_related_content(path):
             return deepcopy(config)
 
     return None
+
+# Phase 6 public-surface cleanup overrides.
+# Keep legacy route records for redirects, but make indexable public pages generic.
+_PHASE6_PUBLIC_SEO_OVERRIDES = {
+    '/blog': {
+        'title': 'ブログ | しごと道具箱',
+        'description': 'PDF、CSV/Excel、画像、SEO/URL確認など、仕事でたまに必要になる小さな作業のヒントをまとめるブログです。',
+        'og_type': 'website',
+        'breadcrumb_title': 'ブログ',
+    },
+    '/glossary': {
+        'title': '用語集 | しごと道具箱',
+        'description': 'PDF、CSV/Excel、画像、SEO/URL確認など、しごと道具箱で扱うファイル処理とWeb確認の基本用語を短く整理した用語集です。',
+        'og_type': 'website',
+    },
+    '/blog/excel-format-mistakes-and-design': {
+        'title': 'CSV/Excelファイルを扱うときのよくあるミス | しごと道具箱',
+        'description': 'CSVやExcelファイルで起きやすい文字化け、列ずれ、空白行、日付形式の揺れなどを、作業前に見直しやすいチェックリストとして整理します。',
+        'og_type': 'article',
+    },
+}
+SEO_DEFAULTS.update(_PHASE6_PUBLIC_SEO_OVERRIDES)
+
+_PHASE6_PUBLIC_BLOG_ARTICLE = {
+    'path': '/blog/excel-format-mistakes-and-design',
+    'title': 'CSV/Excelファイルを扱うときのよくあるミス',
+    'description': 'CSVやExcelファイルで起きやすい文字化け、列ずれ、空白行、日付形式の揺れなどを、作業前に見直しやすいチェックリストとして整理します。',
+    'date_published': '2025-01-18',
+    'section': 'CSV/Excel',
+}
+for _idx, _article in enumerate(BLOG_ARTICLES):
+    if _article.get('path') == _PHASE6_PUBLIC_BLOG_ARTICLE['path']:
+        BLOG_ARTICLES[_idx] = dict(_PHASE6_PUBLIC_BLOG_ARTICLE)
+        break
+BLOG_ARTICLE_MAP[_PHASE6_PUBLIC_BLOG_ARTICLE['path']] = dict(_PHASE6_PUBLIC_BLOG_ARTICLE)
+ARTICLE_SCHEMA_PAGES[_PHASE6_PUBLIC_BLOG_ARTICLE['path']] = dict(_PHASE6_PUBLIC_BLOG_ARTICLE)
+
+PUBLIC_RELATED_CONTENT_OVERRIDES['/glossary'] = {
+    'title': '用語集の次に見る',
+    'intro': '言葉の意味を確認したら、実際のツールやガイドもあわせて開けます。',
+    'links': [
+        {'path': '/tools/pdf', 'label': 'PDFツール', 'description': '結合、分割、圧縮、ページ整理に使えます。'},
+        {'path': '/tools/csv', 'label': 'CSV/Excelツール', 'description': 'CSVやExcelの変換、重複削除、列整理に使えます。'},
+        {'path': '/tools/image-batch', 'label': '画像一括変換', 'description': '画像形式変換やリサイズをまとめて処理できます。'},
+        {'path': '/tools/seo', 'label': 'SEO/URL確認', 'description': 'OGP、meta、sitemap、robotsを確認できます。'},
+    ],
+}

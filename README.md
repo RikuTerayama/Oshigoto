@@ -612,3 +612,24 @@ MAX_ACTIVE_SESSIONS: 1                # 512MBでは1推奨。2件目以降は待
 ## 📞 サポート
 
 問題が発生した場合は、GitHubのIssuesで報告してください。 
+
+## Phase 6 production affiliate checklist
+
+Render production URL: `https://oshigoto.onrender.com`
+
+Set the following environment variables in Render Dashboard > Environment, then save and run Manual Deploy or restart the service so the worker process reloads them.
+
+```text
+AMAZON_ASSOCIATE_TAG=jobcanauto-22
+AMAZON_AFFILIATE_ENABLED=true
+ADSENSE_ENABLED=true
+PORT=10000
+WEB_CONCURRENCY=1
+WEB_THREADS=1
+MEMORY_LIMIT_MB=450
+MAX_FILE_SIZE_MB=10
+```
+
+Amazon monetization depends on `AMAZON_ASSOCIATE_TAG`. If the tag is unset, Amazon search links still render as normal links, but they are not monetized. Do not hard-code the real tag in templates or product data; code should read it from the runtime environment and append it to generated Amazon URLs.
+
+After deploy, verify Amazon links on `/`, `/tools`, `/tools/pdf`, `/tools/csv`, `/tools/image-batch`, `/tools/image-cleanup`, and `/tools/seo` include `tag=jobcanauto-22`. Also confirm `/autofill` redirects to `/tools`, `/api/pdf/unlock` stays 404, and sitemap excludes `/autofill`.
