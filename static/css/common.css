@@ -61,6 +61,18 @@
     /* Transitions */
     --transition-base: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Phase 5.5: named design tokens (aliases onto the vars above).
+       Redefined inside .landing-page to produce the light public theme. */
+    --color-bg: var(--color-bg-primary);
+    --color-surface: var(--color-bg-secondary);
+    --color-surface-soft: var(--color-bg-tertiary);
+    --color-text: var(--color-text-primary);
+    --color-muted: var(--color-text-secondary);
+    --color-primary: var(--color-accent);
+    --color-primary-soft: var(--color-accent-light);
+    --color-border: rgba(255, 255, 255, 0.1);
+    --shadow-card: var(--shadow-sm);
 }
 
 /* Reset & Base Styles */
@@ -1613,6 +1625,26 @@ img {
     text-align: center;
 }
 
+.landing-page .site-footer__summary {
+    border-top-color: var(--color-border);
+}
+
+.landing-page .site-footer__copy {
+    color: #64748b;
+}
+
+.landing-page .site-footer__copy-title {
+    color: var(--color-text-primary);
+}
+
+.landing-page .site-footer__copy-link {
+    color: var(--color-accent);
+}
+
+.landing-page .site-footer__meta {
+    color: #94a3b8;
+}
+
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -1630,10 +1662,190 @@ img {
     outline-offset: 2px;
 }
 
-/* Phase 2: public landing page refresh */
+/* Phase 2: public landing page refresh (Phase 5.5: promoted to the site's shared light theme) */
 .landing-page {
+    /* Redefine base tokens so every var(--color-*)-based rule (cards, buttons,
+       forms, affiliate components) resolves to the light palette automatically. */
+    --color-bg-primary: #f6f8fb;
+    --color-bg-secondary: #ffffff;
+    --color-bg-tertiary: #eef2f7;
+    --color-text-primary: #172033;
+    --color-text-secondary: #526071;
+    --color-text-tertiary: #7c8798;
+    --color-accent: #1c6dd0;
+    --color-accent-hover: #175aab;
+    --color-accent-light: rgba(28, 109, 208, 0.08);
+    --color-accent-border: rgba(28, 109, 208, 0.28);
+    --color-success: #2e7d32;
+    --color-warning: #b45309;
+    --color-error: #c62828;
+    --color-disabled: rgba(23, 32, 51, 0.35);
+    --color-border: #dde5ee;
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 8px 20px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 16px 32px rgba(15, 23, 42, 0.1);
+    --shadow-focus: 0 0 0 3px rgba(28, 109, 208, 0.24);
+    --radius-card: 14px;
+    --radius-button: 10px;
+    --radius-input: 8px;
     background: #f6f8fb;
     color: #172033;
+}
+
+/* Phase 5.5: shared header / nav / footer chrome, light variant */
+.landing-page .site-header {
+    background: rgba(255, 255, 255, 0.94);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.landing-page .site-logo__badge { color: var(--color-text-primary); }
+.landing-page .site-logo__meta { color: var(--color-text-tertiary); }
+
+.landing-page .site-nav__link {
+    color: #3c4a5e;
+}
+
+.landing-page .site-nav__link:hover,
+.landing-page .site-nav__link:focus-visible {
+    background: var(--color-accent-light);
+    border-color: var(--color-accent-border);
+    color: var(--color-accent);
+}
+
+.landing-page .site-nav__link--active {
+    background: var(--color-accent-light);
+    border-color: var(--color-accent-border);
+    color: var(--color-accent);
+}
+
+.landing-page .site-nav__dropdown {
+    background: #ffffff;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 20px 44px rgba(15, 23, 42, 0.14);
+}
+
+.landing-page .site-nav__dropdown-link {
+    color: #3c4a5e;
+}
+
+.landing-page .site-nav__dropdown-link:hover {
+    background: var(--color-accent-light);
+    color: var(--color-accent);
+}
+
+.landing-page .site-nav__group-label {
+    color: #94a3b8;
+}
+
+.landing-page .card {
+    border-color: var(--color-border);
+}
+
+.landing-page .btn-primary {
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.landing-page .affiliate-disclosure {
+    color: #7c8798;
+}
+
+/* Affiliate components were only ever styled for a dark background
+   (semi-transparent white tints). Give them real light-theme surfaces here. */
+.landing-page .affiliate-footer-block,
+.landing-page .affiliate-stack__row {
+    border-color: var(--color-border);
+    background: #ffffff;
+    box-shadow: var(--shadow-card);
+}
+
+.landing-page .affiliate-stack__row--amazon {
+    border-color: #dde9fb;
+    background: linear-gradient(180deg, #f5f9ff, #ffffff);
+}
+
+.landing-page .affiliate-stack__label {
+    color: #7c8798;
+}
+
+.landing-page .affiliate-stack__label--amazon {
+    color: #1c6dd0;
+}
+
+.landing-page .amazon-recommendation-card {
+    border-color: #dde5ee;
+    background: #ffffff;
+    box-shadow: var(--shadow-card);
+}
+
+.landing-page .amazon-recommendation-card:hover {
+    border-color: #b9d4ec;
+    box-shadow: var(--shadow-md);
+}
+
+.landing-page .amazon-recommendation-card__anchor {
+    color: var(--color-text-primary);
+}
+
+.landing-page .amazon-recommendation-card__media {
+    background: #f1f5f9;
+}
+
+.landing-page .amazon-recommendation-card__media--empty {
+    color: #94a3b8;
+}
+
+.landing-page .amazon-recommendation-card__category {
+    color: #175aab;
+}
+
+.landing-page .amazon-recommendation-card__title {
+    color: var(--color-text-primary);
+}
+
+.landing-page .amazon-recommendation-card__cta {
+    background: var(--color-accent-light);
+    border-color: var(--color-accent-border);
+    color: #175aab;
+}
+
+.landing-page .affiliate-link-card {
+    background: #ffffff;
+    border-color: var(--color-border);
+    box-shadow: var(--shadow-card);
+}
+
+.landing-page .affiliate-link-card:hover {
+    border-color: #b9d4ec;
+    box-shadow: var(--shadow-md);
+}
+
+.landing-page .affiliate-link-card__anchor {
+    color: var(--color-text-primary);
+}
+
+.landing-page .affiliate-link-card__eyebrow {
+    color: #175aab;
+}
+
+.landing-page .affiliate-link-card__desc {
+    color: #64748b;
+}
+
+.landing-page .affiliate-slot__box {
+    border-color: var(--color-border);
+    background: #ffffff;
+    box-shadow: var(--shadow-card);
+}
+
+.landing-page .affiliate-a8-banner {
+    background: #ffffff;
+}
+
+.landing-page .related-content,
+.landing-page .seo-link-hub {
+    border-color: var(--color-border);
+    background: #ffffff;
 }
 
 .landing-page p {
@@ -2021,6 +2233,32 @@ img {
 
 .tool-affiliate-row {
     margin: var(--spacing-lg) 0;
+}
+
+/* Phase 5.5: light-theme surfaces for the tool page flow/step/note components */
+.landing-page .tool-flow,
+.landing-page .tool-note {
+    border-color: var(--color-border);
+    background: #ffffff;
+    box-shadow: var(--shadow-card);
+}
+
+.landing-page .tool-step-list li {
+    border-color: var(--color-border);
+    background: #f7f9fc;
+}
+
+.landing-page .tool-step-list li::before {
+    background: var(--color-accent-light);
+    color: #175aab;
+}
+
+.landing-page .tool-main-panel,
+.landing-page .tool-operation-card,
+.landing-page .tool-result-panel {
+    border-color: var(--color-border) !important;
+    background: #ffffff !important;
+    box-shadow: var(--shadow-card);
 }
 
 .tool-affiliate-row .affiliate-footer-block {

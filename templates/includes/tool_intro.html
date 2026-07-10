@@ -1,7 +1,7 @@
 {# ツールページ用：できること・手順・注意点・ガイドリンク（変数は各ツールで set してから include） #}
 {% if tool_intro_what is defined and tool_intro_what %}
-<div class="tool-intro" style="background: rgba(74, 158, 255, 0.08); border: 1px solid rgba(74, 158, 255, 0.25); border-radius: 12px; padding: 24px; margin-bottom: 28px;">
-    <div style="margin: 0 0 12px 0; color: rgba(255, 255, 255, 0.95); font-size: 1.05em;">
+<div class="tool-intro" style="background: #eef5fd; border: 1px solid #bcd6f5; border-radius: 12px; padding: 24px; margin-bottom: 28px;">
+    <div style="margin: 0 0 12px 0; color: #172033; font-size: 1.05em;">
         <strong>できること：</strong>
         <div class="copy-lines" style="margin-top: 8px;">
             {% for line in split_visible_sentences(tool_intro_what) %}
@@ -10,15 +10,15 @@
         </div>
     </div>
     {% if tool_intro_steps is defined and tool_intro_steps %}
-    <p style="margin: 12px 0 6px 0; color: rgba(255, 255, 255, 0.9); font-size: 0.98em;"><strong>手順：</strong></p>
-    <ol style="margin: 0 0 12px 20px; padding: 0; color: rgba(255, 255, 255, 0.9); font-size: 0.98em;">
+    <p style="margin: 12px 0 6px 0; color: #334155; font-size: 0.98em;"><strong>手順：</strong></p>
+    <ol style="margin: 0 0 12px 20px; padding: 0; color: #334155; font-size: 0.98em;">
         {% for step in tool_intro_steps %}
         <li style="margin-bottom: 4px;">{{ step }}</li>
         {% endfor %}
     </ol>
     {% endif %}
     {% if tool_intro_notice is defined and tool_intro_notice %}
-    <div style="margin: 12px 0 0 0; font-size: 0.9em; color: rgba(255, 152, 0, 0.95);">
+    <div style="margin: 12px 0 0 0; font-size: 0.9em; color: #9a5b00;">
         <strong>注意：</strong>
         <div class="copy-lines" style="margin-top: 8px;">
             {% for line in split_visible_sentences(tool_intro_notice) %}
@@ -29,7 +29,7 @@
     {% endif %}
     {% if product and product.guide_path %}
     <p style="margin: 16px 0 0 0;">
-        <a href="{{ product.guide_path }}" style="display: inline-block; padding: 8px 16px; background: rgba(74, 158, 255, 0.2); border: 1px solid rgba(74, 158, 255, 0.5); border-radius: 8px; color: #4A9EFF; text-decoration: none; font-weight: 500;">📚 {{ product.name|default('このツール') }}の使い方ガイド</a>
+        <a href="{{ product.guide_path }}" style="display: inline-block; padding: 8px 16px; background: #eaf2fc; border: 1px solid #bcd6f5; border-radius: 8px; color: #175aab; text-decoration: none; font-weight: 500;">📚 {{ product.name|default('このツール') }}の使い方ガイド</a>
     </p>
     {% endif %}
 </div>

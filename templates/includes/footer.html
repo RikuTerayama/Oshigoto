@@ -1,4 +1,4 @@
-﻿<footer style="background: var(--color-bg-primary, #121212); padding: var(--spacing-xl, 48px) var(--spacing-md, 16px); margin-top: var(--spacing-xl, 48px); border-top: 1px solid rgba(255, 255, 255, 0.1);">
+﻿<footer style="background: var(--color-bg-primary, #121212); padding: var(--spacing-xl, 48px) var(--spacing-md, 16px); margin-top: var(--spacing-xl, 48px); border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));">
     <div style="max-width: 1200px; margin: 0 auto;">
         {% set can_render_affiliate = affiliate_can_render_textlinks() %}
         {% set footer_amazon_upper_items = amazon_affiliate_upper_items|default([]) %}
@@ -45,51 +45,51 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; text-align: left;">
             {% for col in footer_columns|default([]) %}
             <div>
-                <h4 style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px;">{{ col.title }}</h4>
+                <h4 style="color: var(--color-text-primary, #FFFFFF); font-size: 1.1em; margin-bottom: 15px;">{{ col.title }}</h4>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
                     {% for link in col.links|default([]) %}
-                    <a href="{{ link.path|default('#') }}" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">{{ link.icon|default('') }}{% if link.icon %} {% endif %}{{ link.name|default('') }}</a>
+                    <a href="{{ link.path|default('#') }}" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">{{ link.icon|default('') }}{% if link.icon %} {% endif %}{{ link.name|default('') }}</a>
                     {% endfor %}
                 </div>
             </div>
             {% else %}
             <div>
-                <h4 style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px;">ツール一覧</h4>
+                <h4 style="color: var(--color-text-primary, #FFFFFF); font-size: 1.1em; margin-bottom: 15px;">ツール一覧</h4>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <a href="/tools" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em; font-weight: 500;">すべてのツール</a>
+                    <a href="/tools" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em; font-weight: 500;">すべてのツール</a>
                     {% for product in products|default([]) %}
                         {% if product.status|default('coming-soon') == 'available' %}
-                            <a href="{{ product.path|default('#') }}" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">{{ product.icon|default('') }}{% if product.icon %} {% endif %}{{ product.name|default('ツール') }}</a>
+                            <a href="{{ product.path|default('#') }}" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">{{ product.icon|default('') }}{% if product.icon %} {% endif %}{{ product.name|default('ツール') }}</a>
                         {% endif %}
                     {% endfor %}
                 </div>
             </div>
             <div>
-                <h4 style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px;">ガイド</h4>
+                <h4 style="color: var(--color-text-primary, #FFFFFF); font-size: 1.1em; margin-bottom: 15px;">ガイド</h4>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <a href="/guide/complete" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">完全ガイド</a>
-                    <a href="/guide/getting-started" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">はじめての使い方</a>
-                    <a href="/guide/excel-format" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">Excelファイルの作成方法</a>
-                    <a href="/guide/troubleshooting" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">トラブルシューティング</a>
+                    <a href="/guide/complete" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">完全ガイド</a>
+                    <a href="/guide/getting-started" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">はじめての使い方</a>
+                    <a href="/guide/excel-format" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">Excelファイルの作成方法</a>
+                    <a href="/guide/troubleshooting" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">トラブルシューティング</a>
                 </div>
             </div>
             <div>
-                <h4 style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px;">リソース</h4>
+                <h4 style="color: var(--color-text-primary, #FFFFFF); font-size: 1.1em; margin-bottom: 15px;">リソース</h4>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <a href="/faq" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">よくある質問</a>
-                    <a href="/glossary" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">用語集</a>
-                    <a href="/best-practices" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">ベストプラクティス</a>
-                    <a href="/blog" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">ブログ</a>
-                    <a href="/about" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">サイトについて</a>
-                    <a href="/sitemap.html" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">サイトマップ</a>
+                    <a href="/faq" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">よくある質問</a>
+                    <a href="/glossary" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">用語集</a>
+                    <a href="/best-practices" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">ベストプラクティス</a>
+                    <a href="/blog" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">ブログ</a>
+                    <a href="/about" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">サイトについて</a>
+                    <a href="/sitemap.html" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">サイトマップ</a>
                 </div>
             </div>
             <div>
-                <h4 style="color: #FFFFFF; font-size: 1.1em; margin-bottom: 15px;">法務情報</h4>
+                <h4 style="color: var(--color-text-primary, #FFFFFF); font-size: 1.1em; margin-bottom: 15px;">法務情報</h4>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <a href="/privacy" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">プライバシーポリシー</a>
-                    <a href="/terms" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">利用規約</a>
-                    <a href="/contact" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.9em;">お問い合わせ</a>
+                    <a href="/privacy" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">プライバシーポリシー</a>
+                    <a href="/terms" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">利用規約</a>
+                    <a href="/contact" style="color: var(--color-text-secondary, rgba(255, 255, 255, 0.7)); text-decoration: none; font-size: 0.9em;">お問い合わせ</a>
                 </div>
             </div>
             {% endfor %}

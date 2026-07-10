@@ -9,45 +9,46 @@
             font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
             margin: 0;
             padding: 20px;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            background: #f6f8fb;
             min-height: 100vh;
-            color: #FFFFFF;
+            color: #172033;
             line-height: 1.8;
         }
         .container {
             max-width: 900px;
             margin: 0 auto;
-            background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%);
+            background: #ffffff;
             border-radius: 20px;
             padding: 50px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid #dde5ee;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
         }
         h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            color: #FFFFFF;
+            color: #172033;
         }
         .update-date {
-            color: rgba(255, 255, 255, 0.6);
+            color: #6b7280;
             margin-bottom: 30px;
         }
         h2 {
             font-size: 1.8em;
             margin-top: 40px;
             margin-bottom: 20px;
-            color: #FFFFFF;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            color: #172033;
+            border-bottom: 2px solid #e2e8f0;
             padding-bottom: 10px;
         }
         p, li {
-            color: rgba(255, 255, 255, 0.9);
+            color: #334155;
             margin-bottom: 15px;
         }
         ul {
             padding-left: 30px;
         }
         a {
-            color: #4A9EFF;
+            color: #1c6dd0;
             text-decoration: none;
         }
         a:hover {
@@ -57,27 +58,30 @@
             display: inline-block;
             margin-top: 40px;
             padding: 15px 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: #eaf2fc;
+            border: 1px solid #bcd6f5;
             border-radius: 10px;
-            color: #FFFFFF;
+            color: #175aab;
             text-decoration: none;
             transition: all 0.3s;
         }
         .back-link:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: #d9e9fb;
             transform: translateY(-2px);
         }
         .warning {
-            background: rgba(220, 53, 69, 0.1);
-            border-left: 4px solid #DC3545;
+            background: rgba(198, 40, 40, 0.06);
+            border-left: 4px solid #c62828;
             padding: 20px;
             margin: 30px 0;
             border-radius: 8px;
         }
+        .warning p {
+            color: #334155;
+        }
     </style>
 </head>
-<body>
+<body class="landing-page">
     {# P1-1: ナビゲーションの一貫性 #}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
@@ -146,7 +150,7 @@
 
         {# P0-3: AI支援コンテンツ表記 #}
         <h2>第11条（コンテンツの作成について）</h2>
-        <p style="line-height: 1.9; color: rgba(255, 255, 255, 0.9);">
+        <p style="line-height: 1.9; color: #334155;">
             本サイトの一部コンテンツは、AI（人工知能）の支援により作成・編集される場合があります。コンテンツに誤りや不適切な表現がある場合は、<a href="/contact">お問い合わせページ</a>よりご連絡ください。迅速に対応いたします。
         </p>
 
