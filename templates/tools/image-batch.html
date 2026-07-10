@@ -508,8 +508,16 @@
             <p>画像の幅を小さくするとファイルは軽くなりますが、印刷や大きな表示には向かない場合があります。用途に合わせてサイズを選んでください。</p>
         </section>
         <section class="tool-affiliate-row" aria-label="画像作業に関連する仕事道具">
+            {% set affiliate_context_links = [
+                {'label': '画像整理アイテムを見る', 'description': '画像や素材を扱う作業まわりの道具を探せます。', 'href': amazon_search_url('画像整理 アイテム'), 'category': 'image-organization', 'cta': '画像整理アイテムを見る'},
+                {'label': '資料作成に役立つ本を見る', 'description': '見やすい資料づくりに関係する本を探せます。', 'href': amazon_search_url('資料作成 本'), 'category': 'material-books', 'cta': '資料作成に役立つ本を見る'},
+                {'label': 'デスク環境を整える', 'description': '画像確認や資料作成を進めやすい作業環境を探せます。', 'href': amazon_search_url('デスク環境 整理 グッズ'), 'category': 'desk-setup', 'cta': 'デスク環境を整える'}
+            ] %}
+            {% with affiliate_context_title='画像・資料作成まわりを整える', affiliate_context_lead='画像を変換したあと、素材整理や資料作成に使う道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='image-materials', affiliate_context_placement='image-batch-post-action', affiliate_context_class='post-action-affiliate' %}
+                {% include 'includes/affiliate_context_block.html' %}
+            {% endwith %}
             {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
-            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='画像整理・資料作成に役立つ Amazon おすすめ' %}
+            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', affiliate_section_placement='image-batch-post-action', affiliate_section_category='image-materials', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='画像整理・資料作成に役立つ Amazon おすすめ' %}
                 {% include 'includes/affiliate_cards_section.html' %}
             {% endwith %}
             {% set affiliate_mid_amazon_rendered = true %}

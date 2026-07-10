@@ -472,6 +472,14 @@ def _build_search_url(settings: Dict[str, object], keyword: str) -> str:
     return _append_associate_tag(base_url, _current_associate_tag(settings))
 
 
+def build_search_url(keyword: str) -> str:
+    """Build a tagged Amazon search URL without calling external APIs."""
+    cleaned = _normalize_search_keyword(keyword)
+    if not cleaned:
+        cleaned = DEFAULT_FALLBACK_KEYWORDS[0]
+    return _build_search_url(get_settings(), cleaned)
+
+
 def _build_fallback_items(settings: Dict[str, object], keywords: List[str]) -> List[dict]:
     max_items = max(1, int(settings.get("max_items") or 6))
     items: List[dict] = []

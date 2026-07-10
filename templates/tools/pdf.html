@@ -504,8 +504,16 @@
             <p>機密資料や個人情報を含むPDFは、必要な範囲だけ選んで処理してください。PDFを保護する場合は、設定したパスワードを必ず控えておいてください。</p>
         </section>
         <section class="tool-affiliate-row" aria-label="PDF作業に関連する仕事道具">
+            {% set affiliate_context_links = [
+                {'label': 'PDF作業アイテムを見る', 'description': 'PDFや書類作業の周辺アイテムを探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents', 'cta': 'PDF作業アイテムを見る'},
+                {'label': '書類整理グッズを見る', 'description': '紙の書類やデスク周りを整理する道具を探せます。', 'href': amazon_search_url('書類整理 グッズ'), 'category': 'document-organization', 'cta': '書類整理グッズを見る'},
+                {'label': '契約・PDF作業に役立つ本を見る', 'description': '契約書やPDF作業の基礎を学べる本を探せます。', 'href': amazon_search_url('契約書 PDF 作業 本'), 'category': 'pdf-books', 'cta': 'PDF作業に役立つ本を見る'}
+            ] %}
+            {% with affiliate_context_title='PDF・書類作業を整える道具', affiliate_context_lead='処理が終わったら、次の書類作業に備える道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='pdf-documents', affiliate_context_placement='pdf-post-action', affiliate_context_class='post-action-affiliate' %}
+                {% include 'includes/affiliate_context_block.html' %}
+            {% endwith %}
             {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
-            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='PDF・書類作業に役立つ Amazon おすすめ' %}
+            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', affiliate_section_placement='pdf-post-action', affiliate_section_category='pdf-documents', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='PDF・書類作業に役立つ Amazon おすすめ' %}
                 {% include 'includes/affiliate_cards_section.html' %}
             {% endwith %}
             {% set affiliate_mid_amazon_rendered = true %}

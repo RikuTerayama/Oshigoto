@@ -110,8 +110,16 @@
             <p>Excelで開く前提ならUTF-8（BOMあり）が扱いやすいことがあります。名簿や顧客データなど、個人情報を含む表は保存先にも注意してください。</p>
         </section>
         <section class="tool-affiliate-row" aria-label="表計算作業に関連する仕事道具">
+            {% set affiliate_context_links = [
+                {'label': '表計算の本を探す', 'description': 'Excelや表計算の基礎・実務本を探せます。', 'href': amazon_search_url('Excel 表計算 本'), 'category': 'spreadsheet-books', 'cta': '表計算の本を探す'},
+                {'label': 'デスク作業アイテムを見る', 'description': '表作業や確認作業を進めやすいデスク道具を探せます。', 'href': amazon_search_url('デスク作業 効率化 アイテム'), 'category': 'desk-work', 'cta': 'デスク作業アイテムを見る'},
+                {'label': '仕事効率化の本を見る', 'description': '日々の表作業を見直すための仕事術本を探せます。', 'href': amazon_search_url('仕事効率化 本'), 'category': 'productivity-books', 'cta': '仕事効率化の本を見る'}
+            ] %}
+            {% with affiliate_context_title='表作業を少し楽にする', affiliate_context_lead='CSVやExcelを整えたあと、次の集計や確認作業に役立つ道具も探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='spreadsheet-desk', affiliate_context_placement='csv-post-action', affiliate_context_class='post-action-affiliate' %}
+                {% include 'includes/affiliate_context_block.html' %}
+            {% endwith %}
             {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
-            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='表計算・デスク作業に役立つ Amazon おすすめ' %}
+            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', affiliate_section_placement='csv-post-action', affiliate_section_category='spreadsheet-desk', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='表計算・デスク作業に役立つ Amazon おすすめ' %}
                 {% include 'includes/affiliate_cards_section.html' %}
             {% endwith %}
             {% set affiliate_mid_amazon_rendered = true %}
