@@ -1,303 +1,78 @@
-<!doctype html>
-<html lang="ja">
+﻿<!doctype html>
+<html lang="ja" class="no-js">
 <head>
-    {% set page_title = '勤怠Excelで人がよくやるミス10選と、AutoFill側で潰している工夫 | Jobcan AutoFill' %}
+    {% set page_title = 'CSV/Excelファイルを扱うときのよくあるミス | しごと道具箱' %}
+    {% set page_description = 'CSVやExcelファイルで起きやすい文字化け、列ずれ、空白行、日付形式の揺れなどを、作業前に見直しやすいチェックリストとして整理します。' %}
+    {% set page_og_type = 'article' %}
+    {% set breadcrumb_title = 'CSV/Excelファイルのよくあるミス' %}
     {% include 'includes/head_meta.html' %}
 </head>
-<body class="landing-page" style="margin: 0; font-family: 'Hiragino Sans', 'Yu Gothic', 'YuGothic', 'Noto Sans JP', system-ui, sans-serif; background: var(--brand-bg); color: var(--brand-ink); line-height: 1.8;">
+<body class="landing-page">
     {% include 'includes/header.html' %}
-    <main style="max-width: 900px; margin: 0 auto; padding: 40px 20px;">
-        <article itemscope itemtype="https://schema.org/BlogPosting" style="background: var(--brand-surface); border-radius: 18px; padding: 35px; border: 1px solid var(--brand-line); box-shadow: var(--shadow-soft);">
-            <header style="margin-bottom: 30px;">
-                <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
-                    <ol style="list-style: none; padding: 0; margin: 0; display: inline-flex; gap: 10px; font-size: 0.9em; color: var(--brand-muted);">
-                        <li><a href="/" style="color: var(--brand-muted); text-decoration: none;">ホーム</a></li>
-                        <li><a href="/blog" style="color: var(--brand-muted); text-decoration: none;">ブログ</a></li>
-                        <li aria-current="page" style="color: var(--brand-ink);">Excelフォーマットと実装</li>
-                    </ol>
-                </nav>
-                {# P1-3: ブログの更新情報の明確化 #}
-                <span style="display: inline-block; font-size: 0.85em; letter-spacing: 0.08em; color: var(--brand-muted);">
-                    <time itemprop="datePublished" datetime="2025-01-18">公開日: 2025-01-18</time>
-                    {% if false %}<time itemprop="dateModified" datetime="2025-01-18"> / 更新日: 2025-01-18</time>{% endif %}
-                    / 実務ノウハウ・技術解説
-                </span>
-                <h1 itemprop="headline" style="margin: 12px 0 10px 0; font-size: 2.2em; color: var(--brand-primary-strong); line-height: 1.4;">勤怠Excelで人がよくやるミス10選と、AutoFill側で潰している工夫</h1>
-                <p itemprop="description" style="margin: 0; color: var(--brand-ink);">
-                    日付形式、時刻形式、空白行、全角・半角など、勤怠Excelで実際によくあるミス10選と、Jobcan AutoFill側で実装している対策を、開発者RTの実体験を交えて詳しく解説します。
-                </p>
+    {% include 'includes/breadcrumb.html' %}
+    <main class="page-shell page-shell--article">
+        <article class="article-shell" itemscope itemtype="https://schema.org/BlogPosting">
+            <header class="article-hero">
+                <p class="eyebrow">CSV / Excel</p>
+                <h1 itemprop="headline">CSV/Excelファイルを扱うときのよくあるミス</h1>
+                <p itemprop="description">文字化け、列ずれ、空白行、日付形式の揺れ。小さな表データほど、あとから直す手間が大きくなりがちです。作業前に見直したいポイントをまとめます。</p>
+                <p class="article-meta"><time itemprop="datePublished" datetime="2025-01-18">2025-01-18</time></p>
             </header>
 
-            <section itemprop="articleBody">
-                <p>Jobcan AutoFillを開発・運用する中で、最も多く遭遇したのが「Excelファイルの形式エラー」です。2025年7月に社内約30名に展開した際、そして2025年8月に外部向けβ版として公開して以降、ユーザーから寄せられたフィードバックの約40%が、Excelファイルの形式に関する問題でした。</p>
-                <p>この記事では、実際によく発生した「Excelファイルのミス」を10個紹介し、Jobcan AutoFill側でどのような対策を実装しているかを、開発者の視点から詳しく解説します。この記事を読むことで、「明日からExcelの作り方を変えよう」と思える具体的なポイントが理解できるはずです。</p>
+            <section class="article-body" itemprop="articleBody">
+                <p>CSVやExcelは、ちょっとした一覧を受け渡すにはとても便利です。一方で、文字コードや列名、日付の形式が少し違うだけで、集計や変換の途中で手が止まることがあります。</p>
+                <p>ここでは、しごと道具箱のCSV/Excelツールを使う前後で確認しやすいように、実務で起きやすいミスを整理します。</p>
 
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">ミス1：日付の形式がバラバラ</h2>
-                <p>最も頻繁に発生するミスが、日付の形式の不統一です。同じExcelファイル内で、以下のような異なる形式が混在することがあります：</p>
-                <ul style="margin: 20px 0; padding-left: 25px; color: var(--brand-ink);">
-                    <li>「2025-11-13」（ハイフン区切り）</li>
-                    <li>「2025/11/13」（スラッシュ区切り）</li>
-                    <li>「2025年11月13日」（日本語形式）</li>
-                    <li>「11/13」（月日のみ）</li>
-                </ul>
-                <p>この問題がJobcan側でどう影響するかというと、日付が正しく認識されず、エラーで処理が止まったり、間違った日付に入力されてしまったりします。</p>
-                <div style="background: rgba(14, 124, 123, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(14, 124, 123, 0.3);">
-                    <h3 style="margin-top: 0; color: var(--brand-primary-strong); font-size: 1.3em;">💡 Jobcan AutoFill側の対策</h3>
-                    <p style="margin-bottom: 15px; color: var(--brand-ink);">
-                        Jobcan AutoFillでは、以下のような形式変換処理を実装しています：
-                    </p>
-                    <ul style="margin: 15px 0; padding-left: 25px; color: var(--brand-ink);">
-                        <li><strong>複数の日付形式に対応：</strong> 「2025-11-13」「2025/11/13」の両方の形式を認識し、Jobcan側で必要な形式に変換します</li>
-                        <li><strong>エラーログでの明示：</strong> 日付が正しく認識できない場合、ログに「日付形式エラー：行X」と表示し、ユーザーに問題の箇所を明確に示します</li>
-                        <li><strong>テンプレートの提供：</strong> テンプレートファイルをダウンロードすることで、正しい形式で入力できるようにしています</li>
-                    </ul>
-                </div>
-                <p>ただし、<strong style="color: #9a5b00;">「2025年11月13日」や「11/13」のような形式は、自動変換が困難なため、テンプレートに従った形式での入力をお願いしています</strong>。詳しくは<a href="/guide/excel-format" style="color: var(--brand-primary-strong);">Excelファイルの作成方法ガイド</a>をご確認ください。</p>
+                <h2>1. 文字コードが合っていない</h2>
+                <p>CSVを開いたときに文字が崩れて見える場合、UTF-8とShift_JISなどの文字コードが合っていない可能性があります。受け取ったCSVを別のツールへ渡す前に、文字化けしていないかを確認しておくと安心です。</p>
 
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">ミス2：時刻の形式がバラバラ</h2>
-                <p>時刻の形式も、日付と同様にバラバラになりがちです。以下のような形式が混在することがあります：</p>
-                <ul style="margin: 20px 0; padding-left: 25px; color: var(--brand-ink);">
-                    <li>「09:00」（コロン区切り）</li>
-                    <li>「0900」（4桁の数字）</li>
-                    <li>「9:00」（時が1桁）</li>
-                    <li>「9時00分」（日本語形式）</li>
-                </ul>
-                <p>この問題がJobcan側でどう影響するかというと、時刻が正しく認識されず、エラーで処理が止まったり、間違った時刻に入力されてしまったりします。特に、「9:00」と「09:00」の違いは、システムによってはエラーの原因となります。</p>
-                <div style="background: rgba(31, 122, 92, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(31, 122, 92, 0.3);">
-                    <h3 style="margin-top: 0; color: #1F7A5C; font-size: 1.3em;">✅ Jobcan AutoFill側の対策</h3>
-                    <ul style="margin: 15px 0; padding-left: 25px; color: var(--brand-ink);">
-                        <li><strong>時刻の正規化処理：</strong> 「09:00」「0900」「9:00」のいずれの形式でも、Jobcan側で必要な形式（「0900」）に自動変換します</li>
-                        <li><strong>ゼロパディング：</strong> 「9:00」のような1桁の時も、「09:00」に自動変換します</li>
-                        <li><strong>エラーハンドリング：</strong> 時刻が正しく認識できない場合、ログに「時刻形式エラー：行X」と表示します</li>
-                    </ul>
-                </div>
-                <p>この対策により、ユーザーが「09:00」と「0900」を混在させても、正しく処理できるようになりました。ただし、<strong style="color: #9a5b00;">「9時00分」のような日本語形式は、自動変換が困難なため、テンプレートに従った形式での入力をお願いしています</strong>。</p>
+                <h2>2. ヘッダー行が抜けている</h2>
+                <p>1行目に列名がないと、どの列が何を表しているのか分かりにくくなります。後工程で並べ替えや重複削除を行う場合も、ヘッダー行があるほうが確認しやすくなります。</p>
 
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">ミス3：空白行の扱い</h2>
-                <p>Excelファイルに空白行が含まれている場合、以下のような問題が発生することがあります：</p>
-                <ul style="margin: 20px 0; padding-left: 25px; color: var(--brand-ink);">
-                    <li>データ行の間に大きな空白がある</li>
-                    <li>休日や欠勤の日を空白行として残している</li>
-                    <li>1行目（ヘッダー行）が空白になっている</li>
-                </ul>
-                <p>この問題がJobcan側でどう影響するかというと、空白行をデータとして認識してしまい、エラーで処理が止まったり、処理時間が無駄に長くなったりします。</p>
-                <div style="background: rgba(14, 124, 123, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(14, 124, 123, 0.3);">
-                    <h3 style="margin-top: 0; color: var(--brand-primary-strong); font-size: 1.3em;">💡 Jobcan AutoFill側の対策</h3>
-                    <p style="margin-bottom: 15px; color: var(--brand-ink);">
-                        Jobcan AutoFillでは、以下のような空白行スキップ機能を実装しています：
-                    </p>
-                    <ul style="margin: 15px 0; padding-left: 25px; color: var(--brand-ink);">
-                        <li><strong>自動スキップ機能：</strong> 日付、開始時刻、終了時刻がすべて空白の行は、自動的にスキップします</li>
-                        <li><strong>ログでの明示：</strong> 空白行をスキップした場合、ログに「データ処理で空白行 X 行をスキップしました」と表示します</li>
-                        <li><strong>有効データ数の表示：</strong> 空白行を除外した後の有効データ数を表示します（例：「✅ Excelファイル読み込み完了: 9件の有効データ」）</li>
-                    </ul>
-                </div>
-                <p>この対策により、休日や欠勤の日を空白行として残しておいても、正しく処理できるようになりました。ただし、<strong style="color: #9a5b00;">データ行の間に大きな空白がある場合は、処理前に削除することをおすすめします</strong>。</p>
+                <h2>3. 列の順番が途中で変わっている</h2>
+                <p>同じ名前のファイルでも、月や担当者によって列の順番が変わることがあります。結合や比較をする前に、列名と並びが揃っているかを確認しましょう。</p>
 
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">ミス4：全角・半角の混在</h2>
-                <p>Excelファイルに全角文字と半角文字が混在している場合、以下のような問題が発生することがあります：</p>
-                <ul style="margin: 20px 0; padding-left: 25px; color: var(--brand-ink);">
-                    <li>日付が「２０２５-１１-１３」（全角数字）になっている</li>
-                    <li>時刻が「０９：００」（全角数字・全角コロン）になっている</li>
-                    <li>列名が「日付」「開始時刻」「終了時刻」（全角）になっている</li>
+                <h2>4. 空白行やメモ行が混ざっている</h2>
+                <p>表の途中に空白行、注意書き、合計行が混ざると、データ行として読み込まれてしまうことがあります。必要な行だけを残してから変換すると、作業が安定します。</p>
+
+                <h2>5. 日付や数値の形式が揺れている</h2>
+                <p>同じ列の中に「2026-07-10」「2026/7/10」「7月10日」のような表記が混ざると、並べ替えや集計で扱いにくくなります。数値に単位や余計なスペースが入っていないかも見ておきたいポイントです。</p>
+
+                <h2>6. 全角と半角が混在している</h2>
+                <p>英数字や記号が全角と半角で混ざると、同じ値に見えても別の値として扱われることがあります。ID、コード、メールアドレス、URLの列は特に注意が必要です。</p>
+
+                <h2>7. ファイル名で中身を判断しづらい</h2>
+                <p>「最新版」「最終」「修正版」だけでは、あとから見たときに判断が難しくなります。日付、用途、担当などを入れて、探しやすい名前にしておくと再利用しやすくなります。</p>
+
+                <h2>作業前チェック</h2>
+                <ul>
+                    <li>文字化けしていないか</li>
+                    <li>1行目に列名があるか</li>
+                    <li>列の順番が揃っているか</li>
+                    <li>不要な空白行やメモ行がないか</li>
+                    <li>日付、数値、IDの表記が揃っているか</li>
+                    <li>必要なファイル形式で保存されているか</li>
                 </ul>
-                <p>この問題がJobcan側でどう影響するかというと、全角文字を認識できず、エラーで処理が止まったり、間違ったデータに入力されてしまったりします。</p>
-                <div style="background: rgba(154, 91, 0, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(154, 91, 0, 0.3);">
-                    <h3 style="margin-top: 0; color: #9a5b00; font-size: 1.3em;">⚠️ Jobcan AutoFill側の対策</h3>
-                    <p style="margin-bottom: 15px; color: var(--brand-ink);">
-                        Jobcan AutoFillでは、以下のような全角・半角変換処理を実装しています：
-                    </p>
-                    <ul style="margin: 15px 0; padding-left: 25px; color: var(--brand-ink);">
-                        <li><strong>全角数字の半角変換：</strong> 「２０２５」→「2025」、「０９」→「09」のように、全角数字を半角に自動変換します</li>
-                        <li><strong>全角記号の半角変換：</strong> 「：」→「:」、「－」→「-」のように、全角記号を半角に自動変換します</li>
-                        <li><strong>エラーハンドリング：</strong> 変換が困難な場合、ログに「全角文字が検出されました：行X」と表示します</li>
-                    </ul>
-                    <p style="margin-top: 15px; margin-bottom: 0; color: var(--brand-ink);">
-                        <strong>ただし、列名（ヘッダー行）は、全角・半角に関わらず認識できるようにしています</strong>。これは、ユーザーが既存のExcelファイルを流用する場合を考慮した設計です。
-                    </p>
+
+                <p>表データは、処理を始める前の数分でかなり扱いやすくなります。CSV/Excelツールでは、変換、重複削除、列の抽出、簡単な整形をまとめて確認できます。</p>
+
+                <div class="article-action-row">
+                    <a class="button button--primary" href="/tools/csv">CSV/Excelツールを開く</a>
+                    <a class="button button--secondary" href="/guide/csv">使い方ガイドを見る</a>
                 </div>
 
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">ミス5：列の順序が異なる</h2>
-                <p>Excelファイルの列の順序が、想定と異なる場合、以下のような問題が発生することがあります：</p>
-                <ul style="margin: 20px 0; padding-left: 25px; color: var(--brand-ink);">
-                    <li>A列が「開始時刻」、B列が「日付」、C列が「終了時刻」になっている</li>
-                    <li>列が追加されている（例：D列に「備考」が追加されている）</li>
-                    <li>列が削除されている（例：B列が削除されている）</li>
-                </ul>
-                <p>この問題がJobcan側でどう影響するかというと、日付と時刻が逆に入力されてしまったり、エラーで処理が止まったりします。</p>
-                <div style="background: rgba(155, 44, 44, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(155, 44, 44, 0.3);">
-                    <h3 style="margin-top: 0; color: #9B2C2C; font-size: 1.3em;">❌ Jobcan AutoFill側の制限</h3>
-                    <p style="margin-bottom: 15px; color: var(--brand-ink);">
-                        現在のJobcan AutoFillでは、<strong>列の順序は固定（A列=日付、B列=開始時刻、C列=終了時刻）となっています</strong>。これは、以下の理由からです：
-                    </p>
-                    <ul style="margin: 15px 0; padding-left: 25px; color: var(--brand-ink);">
-                        <li>列名（ヘッダー）による自動判定は、誤認識のリスクが高い</li>
-                        <li>固定順序にすることで、処理の安定性と速度を確保できる</li>
-                        <li>テンプレートファイルを提供することで、正しい形式で入力できるようにしている</li>
-                    </ul>
-                    <p style="margin-top: 15px; margin-bottom: 0; color: var(--brand-ink);">
-                        <strong>必ずテンプレートファイルを使用するか、A列=日付、B列=開始時刻、C列=終了時刻の順序で入力してください</strong>。詳しくは<a href="/guide/excel-format" style="color: #9B2C2C;">Excelファイルの作成方法ガイド</a>をご確認ください。
-                    </p>
-                </div>
-
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">ミス6：シート名が異なる</h2>
-                <p>Excelファイルに複数のシートがある場合、以下のような問題が発生することがあります：</p>
-                <ul style="margin: 20px 0; padding-left: 25px; color: var(--brand-ink);">
-                    <li>データが「Sheet2」や「勤怠データ」などの別シートに入っている</li>
-                    <li>最初のシート（Sheet1）が空で、2番目のシートにデータがある</li>
-                </ul>
-                <p>この問題がJobcan側でどう影響するかというと、最初のシートを読み込んでデータが見つからず、エラーで処理が止まったりします。</p>
-                <div style="background: rgba(14, 124, 123, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(14, 124, 123, 0.3);">
-                    <h3 style="margin-top: 0; color: var(--brand-primary-strong); font-size: 1.3em;">💡 Jobcan AutoFill側の対策</h3>
-                    <p style="margin-bottom: 15px; color: var(--brand-ink);">
-                        Jobcan AutoFillでは、以下のようなシート検索機能を実装しています：
-                    </p>
-                    <ul style="margin: 15px 0; padding-left: 25px; color: var(--brand-ink);">
-                        <li><strong>最初のシートを優先：</strong> 最初のシート（通常は「Sheet1」）にデータがある場合、そのシートを読み込みます</li>
-                        <li><strong>エラーメッセージの改善：</strong> データが見つからない場合、「最初のシートにデータがあるか確認してください」というメッセージを表示します</li>
-                    </ul>
-                    <p style="margin-top: 15px; margin-bottom: 0; color: var(--brand-ink);">
-                        <strong>推奨：</strong> テンプレートファイルを使用するか、最初のシート（Sheet1）にデータを入力してください。
-                    </p>
-                </div>
-
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">ミス7：数式が入っている</h2>
-                <p>Excelファイルに数式が入っている場合、以下のような問題が発生することがあります：</p>
-                <ul style="margin: 20px 0; padding-left: 25px; color: var(--brand-ink);">
-                    <li>日付が「=TODAY()」などの数式になっている</li>
-                    <li>時刻が「=NOW()」などの数式になっている</li>
-                    <li>計算式が入っている（例：「=B2+C2」）</li>
-                </ul>
-                <p>この問題がJobcan側でどう影響するかというと、数式の文字列（「=TODAY()」など）がそのまま読み込まれ、エラーで処理が止まったりします。</p>
-                <div style="background: rgba(31, 122, 92, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(31, 122, 92, 0.3);">
-                    <h3 style="margin-top: 0; color: #1F7A5C; font-size: 1.3em;">✅ Jobcan AutoFill側の対策</h3>
-                    <p style="margin-bottom: 15px; color: var(--brand-ink);">
-                        Jobcan AutoFillでは、以下のような数式処理を実装しています：
-                    </p>
-                    <ul style="margin: 15px 0; padding-left: 25px; color: var(--brand-ink);">
-                        <li><strong>数式の値を取得：</strong> pandasやopenpyxlを使用して、数式の計算結果（値）を取得します</li>
-                        <li><strong>エラーハンドリング：</strong> 数式が正しく計算できない場合、ログに「数式エラー：行X」と表示します</li>
-                    </ul>
-                    <p style="margin-top: 15px; margin-bottom: 0; color: var(--brand-ink);">
-                        <strong>ただし、日付や時刻は、数式ではなく、実際の値を入力することをおすすめします</strong>。これにより、処理の安定性が向上します。
-                    </p>
-                </div>
-
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">ミス8：1行目（ヘッダー行）が不正</h2>
-                <p>Excelファイルの1行目（ヘッダー行）が、想定と異なる場合、以下のような問題が発生することがあります：</p>
-                <ul style="margin: 20px 0; padding-left: 25px; color: var(--brand-ink);">
-                    <li>1行目が空白になっている</li>
-                    <li>1行目にデータが入っている（ヘッダー行がない）</li>
-                    <li>1行目の列名が異なる（例：「日付」が「年月日」になっている）</li>
-                </ul>
-                <p>この問題がJobcan側でどう影響するかというと、1行目をデータとして認識してしまい、エラーで処理が止まったりします。</p>
-                <div style="background: rgba(14, 124, 123, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(14, 124, 123, 0.3);">
-                    <h3 style="margin-top: 0; color: var(--brand-primary-strong); font-size: 1.3em;">💡 Jobcan AutoFill側の対策</h3>
-                    <p style="margin-bottom: 15px; color: var(--brand-ink);">
-                        Jobcan AutoFillでは、以下のようなヘッダー行処理を実装しています：
-                    </p>
-                    <ul style="margin: 15px 0; padding-left: 25px; color: var(--brand-ink);">
-                        <li><strong>1行目の自動スキップ：</strong> 1行目は、内容に関わらず自動的にスキップします（ヘッダー行として扱います）</li>
-                        <li><strong>列名の柔軟な認識：</strong> 列名が「日付」「開始時刻」「終了時刻」でなくても、列の位置（A列、B列、C列）でデータを読み込みます</li>
-                        <li><strong>エラーハンドリング：</strong> 1行目にデータが入っている場合でも、2行目以降をデータとして読み込みます</li>
-                    </ul>
-                    <p style="margin-top: 15px; margin-bottom: 0; color: var(--brand-ink);">
-                        <strong>推奨：</strong> テンプレートファイルを使用することで、正しいヘッダー行が設定されます。
-                    </p>
-                </div>
-
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">ミス9：開始時刻と終了時刻の関係が論理的でない</h2>
-                <p>Excelファイルで、開始時刻と終了時刻の関係が論理的でない場合、以下のような問題が発生することがあります：</p>
-                <ul style="margin: 20px 0; padding-left: 25px; color: var(--brand-ink);">
-                    <li>開始時刻が終了時刻より後になっている（例：開始「18:00」、終了「09:00」）</li>
-                    <li>開始時刻と終了時刻が同じになっている（例：開始「09:00」、終了「09:00」）</li>
-                    <li>勤務時間が異常に長い（例：開始「09:00」、終了「30:00」）</li>
-                </ul>
-                <p>この問題がJobcan側でどう影響するかというと、Jobcan側でエラーになる可能性があります。ただし、Jobcan AutoFill側では、このような論理的なチェックは行っていません（ユーザーの責任として扱います）。</p>
-                <div style="background: rgba(154, 91, 0, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(154, 91, 0, 0.3);">
-                    <h3 style="margin-top: 0; color: #9a5b00; font-size: 1.3em;">⚠️ ユーザーに守ってほしい最低限のルール</h3>
-                    <p style="margin-bottom: 15px; color: var(--brand-ink);">
-                        Jobcan AutoFillでは、以下のルールを守っていただく必要があります：
-                    </p>
-                    <ul style="margin: 15px 0; padding-left: 25px; color: var(--brand-ink);">
-                        <li><strong>開始時刻 < 終了時刻：</strong> 開始時刻は終了時刻より前である必要があります</li>
-                        <li><strong>勤務時間の妥当性：</strong> 1日の勤務時間が会社の就業規則に準拠しているか確認してください</li>
-                        <li><strong>日付の重複チェック：</strong> 同じ日付が複数行に含まれていないか確認してください</li>
-                    </ul>
-                    <p style="margin-top: 15px; margin-bottom: 0; color: var(--brand-ink);">
-                        これらのチェックは、<a href="/best-practices" style="color: #9a5b00;">ベストプラクティス</a>でも詳しく解説しています。処理前にExcelファイルの内容を確認することをおすすめします。
-                    </p>
-                </div>
-
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">ミス10：ファイル形式が異なる</h2>
-                <p>Excelファイルの形式が、想定と異なる場合、以下のような問題が発生することがあります：</p>
-                <ul style="margin: 20px 0; padding-left: 25px; color: var(--brand-ink);">
-                    <li>CSV形式（.csv）のファイルをアップロードしている</li>
-                    <li>古いExcel形式（.xls）のファイルをアップロードしている</li>
-                    <li>Google スプレッドシートから直接エクスポートしたファイル</li>
-                </ul>
-                <p>この問題がJobcan側でどう影響するかというと、ファイルが読み込めず、エラーで処理が止まったりします。</p>
-                <div style="background: rgba(14, 124, 123, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(14, 124, 123, 0.3);">
-                    <h3 style="margin-top: 0; color: var(--brand-primary-strong); font-size: 1.3em;">💡 Jobcan AutoFill側の対応</h3>
-                    <p style="margin-bottom: 15px; color: var(--brand-ink);">
-                        Jobcan AutoFillでは、以下のファイル形式に対応しています：
-                    </p>
-                    <ul style="margin: 15px 0; padding-left: 25px; color: var(--brand-ink);">
-                        <li><strong>.xlsx形式（推奨）：</strong> 最新のExcel形式です。最も安定して動作します</li>
-                        <li><strong>.xls形式：</strong> 古いExcel形式にも対応していますが、.xlsx形式への変換を推奨します</li>
-                    </ul>
-                    <p style="margin-top: 15px; margin-bottom: 0; color: var(--brand-ink);">
-                        <strong>CSV形式には対応していません</strong>。Google スプレッドシートからエクスポートする場合は、「ファイル」→「ダウンロード」→「Microsoft Excel (.xlsx)」を選択してください。
-                    </p>
-                </div>
-
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">開発過程で学んだ「ユーザビリティ」の重要性</h2>
-                <p>Jobcan AutoFillを開発・運用する中で、最も学んだのが「ユーザビリティ」の重要性です。2025年7月に社内約30名に展開した際、ユーザーから寄せられたフィードバックの多くが、「Excelファイルの形式エラー」に関するものでした。</p>
-                <p>最初のバージョンでは、形式エラーが発生した場合、単に「エラーが発生しました」というメッセージを表示するだけでした。しかし、これではユーザーが「どこが間違っているのか」を特定できず、ストレスがたまります。</p>
-                <p>そこで、以下のような改善を実装しました：</p>
-                <ul style="margin: 20px 0; padding-left: 25px; color: var(--brand-ink);">
-                    <li><strong>詳細なエラーログ：</strong> どの行で、どのようなエラーが発生したかを明確に表示</li>
-                    <li><strong>形式変換の自動化：</strong> 可能な範囲で、異なる形式を自動的に変換</li>
-                    <li><strong>テンプレートファイルの提供：</strong> 正しい形式で入力できるように、テンプレートを提供</li>
-                    <li><strong>ガイドの充実：</strong> <a href="/guide/excel-format" style="color: var(--brand-primary-strong);">Excelファイルの作成方法ガイド</a>を充実させ、よくあるミスを事前に防ぐ</li>
-                </ul>
-                <p>これらの改善により、形式エラーの発生率が大幅に減少しました。2025年8月以降の外部向けβ版では、形式エラーの発生率が約30%減少しています。</p>
-
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">それでも「ここだけは守ってほしい」最低限のルール</h2>
-                <p>ここまで、Jobcan AutoFill側で実装している対策を紹介してきましたが、それでも「ここだけは守ってほしい」という最低限のルールがあります：</p>
-                <div style="background: rgba(155, 44, 44, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid rgba(155, 44, 44, 0.3);">
-                    <h3 style="margin-top: 0; color: #9B2C2C; font-size: 1.3em;">❌ 必ず守ってほしいルール</h3>
-                    <ol style="margin: 15px 0; padding-left: 25px; color: var(--brand-ink);">
-                        <li><strong>テンプレートファイルを使用する：</strong> 既存のExcelファイルを流用せず、必ずテンプレートファイルを使用してください</li>
-                        <li><strong>列の順序を守る：</strong> A列=日付、B列=開始時刻、C列=終了時刻の順序で入力してください</li>
-                        <li><strong>1行目はヘッダー行として残す：</strong> 1行目は編集せず、2行目以降にデータを入力してください</li>
-                        <li><strong>日付は「2025-11-13」または「2025/11/13」形式：</strong> 日本語形式（「2025年11月13日」）は使用しないでください</li>
-                        <li><strong>時刻は「09:00」または「0900」形式：</strong> 日本語形式（「9時00分」）は使用しないでください</li>
-                    </ol>
-                </div>
-                <p>これらのルールを守ることで、処理の成功率が大幅に向上します。詳しくは<a href="/guide/excel-format" style="color: var(--brand-primary-strong);">Excelファイルの作成方法ガイド</a>をご確認ください。</p>
-
-                <h2 style="font-size: 1.8em; color: var(--brand-ink); margin-top: 50px; margin-bottom: 25px; border-left: 5px solid var(--brand-primary); padding-left: 15px;">まとめ：Excelファイルの作り方を変えることで、自動化の成功率が上がる</h2>
-                <p>この記事では、勤怠Excelで実際によくあるミス10選と、Jobcan AutoFill側で実装している対策を紹介しました。重要なのは、<strong style="color: var(--brand-primary-strong);">「ユーザーがミスをしにくい設計」と「ミスが発生しても自動的に修正できる仕組み」の両立</strong>です。</p>
-                <p>Jobcan AutoFillでは、可能な範囲で形式変換やエラーハンドリングを実装していますが、それでも「ここだけは守ってほしい」という最低限のルールがあります。これらのルールを守ることで、処理の成功率が大幅に向上します。</p>
-                <p>「明日からExcelの作り方を変えよう」と思っていただけたなら、この記事の目的は達成です。ぜひ、<a href="/guide/getting-started" style="color: var(--brand-primary-strong);">はじめての使い方ガイド</a>を参照して、Jobcan AutoFillを試してみてください。</p>
-            </section>
-
-            <hr style="border: 0; border-top: 1px solid var(--brand-line); margin: 50px 0;">
-
-            <section style="background: rgba(14, 124, 123, 0.1); border-radius: 12px; padding: 25px; margin-top: 40px; border: 1px solid rgba(14, 124, 123, 0.3);">
-                <h3 style="margin-top: 0; color: var(--brand-primary-strong); font-size: 1.4em;">あわせて読みたいリソース</h3>
-                <ul style="margin: 15px 0; padding-left: 25px; line-height: 2.0;">
-                    <li><a href="/guide/excel-format" style="color: var(--brand-primary-strong); text-decoration: none;">Excelファイルの作成方法ガイド：正しい形式の詳細解説</a></li>
-                    <li><a href="/guide/getting-started" style="color: var(--brand-primary-strong); text-decoration: none;">はじめての使い方ガイド：テンプレートのダウンロードから確認まで</a></li>
-                    <li><a href="/best-practices" style="color: var(--brand-primary-strong); text-decoration: none;">ベストプラクティス：Excelファイルの準備と検証のチェックリスト</a></li>
-                    <li><a href="/faq" style="color: var(--brand-primary-strong); text-decoration: none;">よくある質問（FAQ）：Excelファイルに関するQ&A</a></li>
-                </ul>
+                {% set affiliate_context_links = [
+                    {'label': '表計算の本を探す', 'description': '表データの扱い方を見直したいときの参考書を探せます。', 'href': amazon_search_url('表計算 本'), 'category': 'spreadsheet-books', 'cta': '表計算の本を探す'},
+                    {'label': 'デスク作業アイテムを見る', 'description': '確認作業を進めやすいデスク道具を探せます。', 'href': amazon_search_url('デスク作業 効率化 アイテム'), 'category': 'desk-work', 'cta': 'デスク作業アイテムを見る'}
+                ] %}
+                {% with affiliate_context_title='表作業を少し楽にする', affiliate_context_lead='CSVやExcelを整えたあと、次の確認作業に役立つ道具も探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='spreadsheet-desk', affiliate_context_placement='blog-excel-format' %}
+                    {% include 'includes/affiliate_context_block.html' %}
+                {% endwith %}
             </section>
         </article>
+        {% include 'includes/related_content.html' %}
     </main>
-{# P1-1: ナビゲーションの一貫性 #}
+    {% include 'includes/seo_link_hub.html' %}
     {% include 'includes/footer.html' %}
 </body>
 </html>
-
