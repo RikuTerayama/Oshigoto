@@ -24,7 +24,7 @@
     {% endblock %}
     {% endif %}
     <style>
-        * { box-sizing: border-box; font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif; }
         body { margin: 0; padding: 0; background: var(--brand-bg); min-height: 100vh; color: var(--brand-ink); }
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
         .page-header { text-align: center; padding: 40px 20px; margin-bottom: 40px; }
@@ -59,6 +59,9 @@
                 <li><strong>保存する</strong><span>CSV、Excel、またはZIPでダウンロードします。</span></li>
             </ol>
         </section>
+        <div class="page-layout">
+        <div class="page-main">
+        <div class="tool-workspace">
         <div class="tool-section tool-main-panel">
             <h3>1. ファイルを選ぶ</h3>
             <p style="color: var(--brand-muted);">CSV または Excel ファイルをドラッグ＆ドロップ、または下のボタンで選択してください。（対応: .csv, .xlsx）</p>
@@ -108,6 +111,21 @@
             <h3>4. ダウンロードする</h3>
             <div id="output-area"></div>
         </div>
+        </div>
+        </div>
+        <div class="page-sidebar">
+            <div class="sticky-side-box">
+                {% set side_box_links = [
+                    {'label': '表計算の本を探す', 'description': 'Excelや表計算の基礎・実務本を探せます。', 'href': amazon_search_url('Excel 表計算 本'), 'category': 'spreadsheet-books'},
+                    {'label': 'デスク作業アイテムを見る', 'description': '表作業や確認作業を進めやすいデスク道具を探せます。', 'href': amazon_search_url('デスク作業 効率化 アイテム'), 'category': 'desk-work'}
+                ] %}
+                {% with side_box_title='表作業を少し楽にする', side_box_lead='処理の合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='csv-side-box', side_box_category='spreadsheet-desk' %}
+                    {% include 'includes/affiliate_side_box.html' %}
+                {% endwith %}
+            </div>
+        </div>
+        </div>
+
         <section class="tool-note" aria-label="CSV利用時の注意">
             <h3>確認のポイント</h3>
             <p>Excelで開く前提ならUTF-8（BOMあり）が扱いやすいことがあります。名簿や顧客データなど、個人情報を含む表は保存先にも注意してください。</p>

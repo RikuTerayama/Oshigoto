@@ -35,11 +35,11 @@
     <style>
         * {
             box-sizing: border-box;
-            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
         }
         
         body {
-            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
             margin: 0;
             padding: 0;
             background: var(--brand-bg);
@@ -333,6 +333,9 @@
                 <li><strong>画像を書き出す</strong><span>処理後の画像を個別またはZIPで保存します。</span></li>
             </ol>
         </section>
+        <div class="page-layout">
+        <div class="page-main">
+        <div class="tool-workspace">
         <div class="tool-section tool-main-panel">
             <h3>1. 画像を選ぶ</h3>
             <div id="dropzone" class="file-dropzone" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 60px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); transition: all 0.3s; cursor: pointer;">
@@ -515,6 +518,20 @@
         <div id="error-section" class="tool-section" style="display: none;">
             <h3>❌ エラー</h3>
             <div id="error-message" class="error-message"></div>
+        </div>
+        </div>
+        </div>
+        <div class="page-sidebar">
+            <div class="sticky-side-box">
+                {% set side_box_links = [
+                    {'label': '撮影小物を見る', 'description': '背景や小物など、撮影まわりの道具を探せます。', 'href': amazon_search_url('商品撮影 小物'), 'category': 'photo-props'},
+                    {'label': '商品撮影アイテムを見る', 'description': '商品画像を整えるための撮影アイテムを探せます。', 'href': amazon_search_url('商品撮影 アイテム'), 'category': 'product-photo'}
+                ] %}
+                {% with side_box_title='商品画像・資料画像を整える', side_box_lead='書き出しの合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='image-cleanup-side-box', side_box_category='image-cleanup' %}
+                    {% include 'includes/affiliate_side_box.html' %}
+                {% endwith %}
+            </div>
+        </div>
         </div>
 
         <section class="tool-note" aria-label="画像補正時の注意">

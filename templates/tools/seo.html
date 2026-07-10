@@ -8,11 +8,11 @@
     <style>
         * {
             box-sizing: border-box;
-            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
         }
         
         body {
-            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
             margin: 0;
             padding: 0;
             background: var(--brand-bg);
@@ -249,6 +249,8 @@
                 <li><strong>修正のヒントを見る</strong><span>結果をコピーまたはダウンロードして、修正メモとして使えます。</span></li>
             </ol>
         </section>
+        <div class="page-layout">
+        <div class="page-main">
         <div class="main-layout">
             <!-- 左: 設定エリア -->
             <div class="panel tool-main-panel">
@@ -573,6 +575,19 @@
                     <p style="margin: 0; color: var(--brand-muted);">左側で入力して実行すると、ここに結果と保存ボタンが表示されます。</p>
                 </div>
             </div>
+        </div>
+        </div>
+        <div class="page-sidebar">
+            <div class="sticky-side-box">
+                {% set side_box_links = [
+                    {'label': 'SEOの本を探す', 'description': 'SEOの基礎や運用を学べる本を探せます。', 'href': amazon_search_url('SEO 本'), 'category': 'seo-books'},
+                    {'label': 'Webマーケティングの本を見る', 'description': 'サイト改善や集客に関係する本を探せます。', 'href': amazon_search_url('Webマーケティング 本'), 'category': 'web-marketing-books'}
+                ] %}
+                {% with side_box_title='Web運用・マーケティングを学ぶ', side_box_lead='チェックの合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='seo-side-box', side_box_category='web-marketing' %}
+                    {% include 'includes/affiliate_side_box.html' %}
+                {% endwith %}
+            </div>
+        </div>
         </div>
 
         <section class="tool-note" aria-label="URL確認時の注意">

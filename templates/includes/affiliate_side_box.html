@@ -1,0 +1,43 @@
+{# Phase 5.7: Amazon/work-tools side box.
+   Desktop: sits in .page-sidebar as a sticky-side-box.
+   Mobile: .page-layout collapses to 1 column, so this simply becomes a
+   normal card after the main content (no separate mobile markup needed).
+   Renders nothing if affiliate text links are unavailable or no links given -
+   never an empty box. All hrefs must be built via amazon_search_url() (or
+   an equivalent already-tagged URL) by the caller so AMAZON_ASSOCIATE_TAG
+   is always applied. #}
+{% set side_box_title = side_box_title|default('作業に合わせて、仕事道具も整える') %}
+{% set side_box_lead = side_box_lead|default('PDF・書類・デスク環境など、日々の仕事を少し楽にする道具を探せます。') %}
+{% set side_box_links = side_box_links|default([]) %}
+{% set side_box_placement = side_box_placement|default('side-box') %}
+{% set side_box_category = side_box_category|default('work-tools') %}
+{% if affiliate_can_render_textlinks() and side_box_links|length > 0 %}
+<aside class="affiliate-side-box" aria-label="{{ side_box_title }}" data-affiliate-placement="{{ side_box_placement }}" data-affiliate-category="{{ side_box_category }}">
+    <p class="affiliate-side-box__eyebrow">PR / Affiliate</p>
+    <h3 class="affiliate-side-box__title">{{ side_box_title }}</h3>
+    <p class="affiliate-side-box__lead">{{ side_box_lead }}</p>
+    {# Phase 5.7: the page already carries one .affiliate-disclosure block
+       elsewhere (this site enforces exactly one per page); do not duplicate
+       it here, an external-link icon on each item plus the eyebrow label
+       already signal this is a sponsored/affiliate box. #}
+    <div class="affiliate-side-box__list" role="list">
+        {% for item in side_box_links %}
+        <a class="affiliate-side-box__item"
+           href="{{ item.href }}"
+           target="_blank"
+           rel="nofollow sponsored noopener"
+           role="listitem"
+           data-affiliate-network="{{ item.network|default('amazon') }}"
+           data-affiliate-category="{{ item.category|default(side_box_category) }}"
+           data-affiliate-placement="{{ side_box_placement }}"
+           data-affiliate-cta="{{ item.cta|default(item.label) }}"
+        >
+            <span class="affiliate-side-box__item-label">{{ item.label }}<span class="affiliate-side-box__ext-icon" aria-hidden="true">↗</span></span>
+            {% if item.description %}
+            <span class="affiliate-side-box__item-desc">{{ item.description }}</span>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+</aside>
+{% endif %}

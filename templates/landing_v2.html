@@ -97,21 +97,36 @@
         <section class="landing-section" aria-labelledby="starter-pages-heading">
             <div class="landing-section__header">
                 <p class="landing-section__eyebrow">Tools</p>
-                <h2 id="starter-pages-heading">必要な道具を選ぶ</h2>
+                <h2 id="starter-pages-heading">今日片づけたい作業は？</h2>
                 <p>よくある作業を5つに分けました。目的に近いカードから開けます。</p>
             </div>
-            <div class="tool-chooser-grid landing-tool-grid" data-reveal-stagger>
-                {% for item in starter_pages %}
-                <a href="{{ item.path }}" class="feature-card tool-choice-card landing-tool-card">
-                    <div class="feature-card__head">
-                        <span class="icon-tile icon-tile--{{ item.tint }}">{{ tool_icon(item.icon) }}</span>
-                        <span class="landing-tool-card__eyebrow">{{ item.eyebrow }}</span>
+            <div class="page-layout">
+                <div class="page-main">
+                    <div class="tool-chooser-grid landing-tool-grid" data-reveal-stagger>
+                        {% for item in starter_pages %}
+                        <a href="{{ item.path }}" class="feature-card tool-choice-card landing-tool-card">
+                            <div class="feature-card__head">
+                                <span class="icon-tile icon-tile--{{ item.tint }}">{{ tool_icon(item.icon) }}</span>
+                                <span class="landing-tool-card__eyebrow">{{ item.eyebrow }}</span>
+                            </div>
+                            <h3 class="feature-card__title">{{ item.title }}</h3>
+                            <p class="feature-card__desc">{{ item.description }}</p>
+                            <span class="feature-card__cta">{{ item.cta }} →</span>
+                        </a>
+                        {% endfor %}
                     </div>
-                    <h3 class="feature-card__title">{{ item.title }}</h3>
-                    <p class="feature-card__desc">{{ item.description }}</p>
-                    <span class="feature-card__cta">{{ item.cta }} →</span>
-                </a>
-                {% endfor %}
+                </div>
+                <div class="page-sidebar">
+                    <div class="sticky-side-box">
+                        {% set side_box_links = [
+                            {'label': '集中環境を整える', 'description': 'デスク周りや長時間作業に関係する道具を探せます。', 'href': amazon_search_url('集中力 作業環境 グッズ'), 'category': 'desk-focus'},
+                            {'label': '仕事に役立つ本を探す', 'description': 'ビジネス書や仕事術の本を作業の合間に確認できます。', 'href': amazon_search_url('ビジネス書 おすすめ'), 'category': 'business-books'}
+                        ] %}
+                        {% with side_box_title='作業に合わせて、仕事道具も', side_box_lead='選んだ作業に関連する道具を、必要なときだけのぞけます。', side_box_links=side_box_links, side_box_placement='top-side-box', side_box_category='top-work-tools' %}
+                            {% include 'includes/affiliate_side_box.html' %}
+                        {% endwith %}
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -181,6 +196,28 @@
             {% endwith %}
             {% set affiliate_a8_rendered = true %}
             {% endif %}
+        </section>
+
+        <section class="landing-section" aria-labelledby="guide-preview-heading">
+            <div class="landing-section__header landing-section__header--compact">
+                <p class="landing-section__eyebrow">Guide</p>
+                <h2 id="guide-preview-heading">迷ったらガイドを見る</h2>
+                <p>ツールの選び方や、ファイル処理の安全性についてまとめています。</p>
+            </div>
+            <div class="landing-use-grid" data-reveal-stagger>
+                <a href="/guide" class="guide-preview-card">
+                    <h3 class="guide-preview-card__title">ガイド一覧</h3>
+                    <p class="guide-preview-card__desc">PDF・表・画像・SEOツールの使い方を、目的別にまとめています。</p>
+                </a>
+                <a href="/faq" class="guide-preview-card">
+                    <h3 class="guide-preview-card__title">よくある質問</h3>
+                    <p class="guide-preview-card__desc">対応形式や処理方式など、使う前によくある疑問に答えます。</p>
+                </a>
+                <a href="#safety" class="guide-preview-card">
+                    <h3 class="guide-preview-card__title">ファイル処理の考え方</h3>
+                    <p class="guide-preview-card__desc">ブラウザ内処理とサーバー処理の違いを、このページ内で確認できます。</p>
+                </a>
+            </div>
         </section>
 
         <section class="landing-section" id="safety">

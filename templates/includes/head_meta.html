@@ -34,7 +34,8 @@
 {% set effective_page_robots = page_robots|default(seo_page_robots|default('index,follow')) %}
 {% set effective_page_og_type = page_og_type|default(seo_page_defaults.og_type|default('website')) %}
 {% set effective_page_url = BASE_URL|default('https://oshigoto.onrender.com') ~ ((request.path if request and request.path else '/')) %}
-{% set effective_page_image = page_image|default('') %}
+{% set default_og_image = (BASE_URL|default('https://oshigoto.onrender.com')) ~ url_for('static', filename='img/og-shigoto-dogubako.png') %}
+{% set effective_page_image = page_image|default(default_og_image) %}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 {# Phase 5.6: original brand mark (no external asset, no CDN) #}
@@ -73,9 +74,9 @@
      crossorigin="anonymous"></script>
 {% endif %}
 {# P1-3: 繝輔か繝ｳ繝郁ｪｭ縺ｿ霎ｼ縺ｿ譛驕ｩ蛹厄ｼ・reconnect + display=swap・・#}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+{# Phase 5.7: dropped the Google Fonts (Noto Sans JP) request in favor of a
+   system-font stack (Hiragino Sans / Yu Gothic) defined in common.css -
+   removes an external network request entirely. #}
 {# Common Design System CSS #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/scroll-reveal.css') }}">

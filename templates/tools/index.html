@@ -8,11 +8,11 @@
     <style>
         * {
             box-sizing: border-box;
-            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
         }
 
         body {
-            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
             margin: 0;
             padding: 0;
             background: var(--brand-bg);
@@ -78,6 +78,18 @@
             color: var(--brand-muted);
             font-size: 0.85em;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .category-chip:hover {
+            border-color: rgba(14, 124, 123, 0.32);
+        }
+
+        .category-chip--active {
+            background: var(--brand-primary);
+            border-color: var(--brand-primary);
+            color: #ffffff;
         }
 
         .products-grid {
@@ -261,11 +273,12 @@
                 <span class="copy-lines__line">多くの処理はブラウザ内で完結します。サーバ送信が必要な機能は各ページで明記します。</span>
                 <span class="copy-lines__line"><a href="/faq">FAQ</a>、<a href="/guide">ガイド</a>、<a href="/privacy">プライバシーポリシー</a> もあわせてご確認ください。</span>
             </p>
-            <div class="category-chips" aria-hidden="true">
-                <span class="category-chip">書類を整える</span>
-                <span class="category-chip">表を整える</span>
-                <span class="category-chip">画像を整える</span>
-                <span class="category-chip">ページを確認する</span>
+            <div class="category-chips" role="group" aria-label="作業タイプで絞り込む">
+                <button type="button" class="category-chip" data-chip-filter="PDF">書類</button>
+                <button type="button" class="category-chip" data-chip-filter="CSV">表</button>
+                <button type="button" class="category-chip" data-chip-filter="画像">画像</button>
+                <button type="button" class="category-chip" data-chip-filter="SEO">Web確認</button>
+                <button type="button" class="category-chip" data-chip-filter="">すべて表示</button>
             </div>
         </div>
         {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_upper_items|default([])|length > 0) %}
@@ -286,51 +299,66 @@
         {% set affiliate_mid_amazon_rendered = true %}
         {% endif %}
 
-        <div class="products-grid" id="products-grid" data-reveal-stagger>
-            {% for product in products %}
-                <div class="product-card"
-                     data-name="{{ product.name }}"
-                     data-description="{{ product.description }}"
-                     data-tags="{{ (product.tags or [])|join(',') }}"
-                     data-status="{{ product.status }}">
-                    <a href="{{ product.path }}" style="text-decoration: none; color: inherit; display: block;">
-                        <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
-                        <h3>{{ product.name }}</h3>
-                        <div class="pill-row">
-                            {% if product.status == 'available' and product.id != 'autofill' %}
-                                <span class="pill pill--available">Local</span>
-                            {% elif product.status != 'available' %}
-                                <span class="pill pill--pending">準備中</span>
-                            {% endif %}
-                            {% if product.tags %}
-                                {% for tag in product.tags %}
-                                    <span class="pill pill--tag">{{ tag }}</span>
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-                        <p>{{ product.description }}</p>
-                        {% if product.features %}
-                            <div class="feature-list">
-                                <p><strong>主な機能:</strong> {{ product.features|join('、') }}</p>
-                            </div>
-                        {% endif %}
-                    </a>
-                    <div class="tool-cta-row">
-                        <a href="{{ product.path }}" class="link-button" style="flex: 1; text-align: center; text-decoration: none;">
-                            {% if product.status == 'available' %}使ってみる{% else %}詳細を見る{% endif %}
-                        </a>
-                        {% if product.guide_path and product.status == 'available' %}
-                            <a href="{{ product.guide_path }}" class="guide-card">
-                                <span class="guide-text">ガイド</span>
-                                <span class="guide-arrow">→</span>
+        <div class="page-layout">
+            <div class="page-main">
+                <div class="products-grid" id="products-grid" data-reveal-stagger>
+                    {% for product in products %}
+                        <div class="product-card"
+                             data-name="{{ product.name }}"
+                             data-description="{{ product.description }}"
+                             data-tags="{{ (product.tags or [])|join(',') }}"
+                             data-status="{{ product.status }}">
+                            <a href="{{ product.path }}" style="text-decoration: none; color: inherit; display: block;">
+                                <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
+                                <h3>{{ product.name }}</h3>
+                                <div class="pill-row">
+                                    {% if product.status == 'available' and product.id != 'autofill' %}
+                                        <span class="pill pill--available">Local</span>
+                                    {% elif product.status != 'available' %}
+                                        <span class="pill pill--pending">準備中</span>
+                                    {% endif %}
+                                    {% if product.tags %}
+                                        {% for tag in product.tags %}
+                                            <span class="pill pill--tag">{{ tag }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <p>{{ product.description }}</p>
+                                {% if product.features %}
+                                    <div class="feature-list">
+                                        <p><strong>主な機能:</strong> {{ product.features|join('、') }}</p>
+                                    </div>
+                                {% endif %}
                             </a>
-                        {% endif %}
-                    </div>
+                            <div class="tool-cta-row">
+                                <a href="{{ product.path }}" class="link-button" style="flex: 1; text-align: center; text-decoration: none;">
+                                    {% if product.status == 'available' %}使ってみる{% else %}詳細を見る{% endif %}
+                                </a>
+                                {% if product.guide_path and product.status == 'available' %}
+                                    <a href="{{ product.guide_path }}" class="guide-card">
+                                        <span class="guide-text">ガイド</span>
+                                        <span class="guide-arrow">→</span>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
-        </div>
 
-        <div id="no-results" hidden style="display: none; text-align: center; padding: 40px;" aria-hidden="true"></div>
+                <div id="no-results" hidden style="display: none; text-align: center; padding: 40px;" aria-hidden="true"></div>
+            </div>
+            <div class="page-sidebar">
+                <div class="sticky-side-box">
+                    {% set side_box_links = [
+                        {'label': 'PDF・書類作業アイテムを見る', 'description': 'PDFや紙の書類を扱う作業まわりを探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents'},
+                        {'label': '画像・資料作成を見る', 'description': '画像整理や資料づくりに役立つ周辺道具を探せます。', 'href': amazon_search_url('画像整理 アイテム'), 'category': 'image-materials'}
+                    ] %}
+                    {% with side_box_title='作業に合わせて、仕事道具も', side_box_lead='使うツールに合わせて、関連する道具を探せます。', side_box_links=side_box_links, side_box_placement='tools-side-box', side_box_category='tools-index' %}
+                        {% include 'includes/affiliate_side_box.html' %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
         {% set affiliate_context_links = [
             {'label': 'PDF・書類作業', 'description': 'PDFや紙の書類を扱う作業まわりを探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents', 'cta': 'PDF・書類作業を見る'},
             {'label': '表計算・デスク作業', 'description': 'CSV、Excel、デスク作業に関係する道具や本を探せます。', 'href': amazon_search_url('Excel 表計算 本'), 'category': 'spreadsheet-desk', 'cta': '表計算・デスク作業を見る'},
@@ -348,12 +376,19 @@
         {% set affiliate_rakuten_rendered = true %}
         {% endif %}
 
-        <div class="note-card" style="margin-top: 34px;">
-            <span class="icon-tile icon-tile--sm icon-tile--teal" aria-hidden="true">{{ tool_icon('shield-check', 16) }}</span>
-            <div class="note-card__body">
-                <p class="note-card__title">迷ったときは</p>
-                <p class="note-card__text">機能や安全性について気になる場合は <a href="/faq">よくある質問</a> をご確認ください。</p>
-            </div>
+        <div class="landing-use-grid" style="margin-top: 34px;">
+            <a href="/guide" class="guide-preview-card">
+                <h3 class="guide-preview-card__title">ツールの選び方</h3>
+                <p class="guide-preview-card__desc">用途別のガイドで、どの道具を使えばよいか確認できます。</p>
+            </a>
+            <a href="/faq" class="guide-preview-card">
+                <h3 class="guide-preview-card__title">よくある質問</h3>
+                <p class="guide-preview-card__desc">対応形式や処理方式など、使う前によくある疑問に答えます。</p>
+            </a>
+            <a href="/privacy" class="guide-preview-card">
+                <h3 class="guide-preview-card__title">ファイル処理の安全性</h3>
+                <p class="guide-preview-card__desc">ブラウザ内処理とサーバー処理の違いをご確認いただけます。</p>
+            </a>
         </div>
 
         <script>
@@ -397,6 +432,16 @@
                     });
 
                     setNoResultsVisible(query !== '' && visibleCount === 0);
+                });
+
+                // Phase 5.7: work-type chips reuse the same search/filter above.
+                document.querySelectorAll('.category-chip[data-chip-filter]').forEach((chip) => {
+                    chip.addEventListener('click', () => {
+                        document.querySelectorAll('.category-chip').forEach((c) => c.classList.remove('category-chip--active'));
+                        chip.classList.add('category-chip--active');
+                        searchInput.value = chip.dataset.chipFilter || '';
+                        searchInput.dispatchEvent(new Event('input'));
+                    });
                 });
             });
         </script>

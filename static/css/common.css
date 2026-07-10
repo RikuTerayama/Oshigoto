@@ -44,19 +44,22 @@
     --spacing-xl: 48px;
     --spacing-2xl: 64px;
     
-    /* Typography */
-    --font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
+    /* Typography (Phase 5.7: system-font stack, no external font request -
+       "Hiragino Sans"/"Yu Gothic" give a calmer, more editorial Japanese
+       impression than the previous Noto-Sans-JP-first stack). */
+    --font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
+    --font-family-heading: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
     --font-size-base: 1rem;
     --font-size-sm: 0.875rem;
     --font-size-lg: 1.125rem;
     --font-size-xl: 1.25rem;
-    
-    --line-height-base: 1.6;
-    --line-height-tight: 1.2;
+
+    --line-height-base: 1.7;
+    --line-height-tight: 1.3;
     --line-height-relaxed: 1.8;
-    
-    --letter-spacing-tight: 0.01em;
-    --letter-spacing-normal: 0.02em;
+
+    --letter-spacing-tight: 0;
+    --letter-spacing-normal: 0;
     
     /* Transitions */
     --transition-base: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -96,6 +99,7 @@ body {
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
     margin: 0;
+    font-family: var(--font-family-heading);
     font-weight: 600;
     line-height: var(--line-height-tight);
     letter-spacing: var(--letter-spacing-normal);
@@ -2792,5 +2796,212 @@ img {
 
     .affiliate-context-card {
         min-height: 0;
+    }
+}
+
+/* ============================================
+   Phase 5.7: page shell / sidebar / operation-flow system
+   Scoped to .landing-page (the site's light-theme marker).
+   ============================================ */
+
+.landing-page .app-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.landing-page .page-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 300px);
+    gap: 32px;
+    align-items: start;
+}
+
+.landing-page .page-main {
+    min-width: 0;
+}
+
+.landing-page .page-sidebar {
+    min-width: 0;
+}
+
+.landing-page .sticky-side-box {
+    position: sticky;
+    top: 96px;
+}
+
+@media (max-width: 980px) {
+    .landing-page .page-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .landing-page .page-sidebar {
+        order: 3;
+    }
+
+    .landing-page .sticky-side-box {
+        position: static;
+        top: auto;
+    }
+}
+
+/* Operation flow: the top-to-bottom step UI wrapping each tool page's
+   existing operation panels. Wraps existing elements only - never
+   changes their id/class/script. */
+.landing-page .tool-workspace,
+.landing-page .operation-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.landing-page .operation-step {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.landing-page .operation-step__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--brand-primary-strong);
+}
+
+.landing-page .operation-step__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--brand-primary);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Side affiliate box (Amazon / A8 "work tools" panel) */
+.landing-page .affiliate-side-box {
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--brand-line);
+    background: var(--brand-surface);
+    box-shadow: var(--shadow-soft);
+}
+
+.landing-page .affiliate-side-box__eyebrow {
+    margin: 0 0 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--brand-muted);
+}
+
+.landing-page .affiliate-side-box__title {
+    margin: 0 0 6px;
+    font-size: 1rem;
+    color: var(--brand-ink);
+}
+
+.landing-page .affiliate-side-box__lead {
+    margin: 0 0 14px;
+    font-size: 0.84rem;
+    color: var(--brand-muted);
+    line-height: 1.6;
+}
+
+.landing-page .affiliate-side-box__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.landing-page .affiliate-side-box__item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--brand-line);
+    background: var(--brand-paper);
+    color: var(--brand-ink);
+    text-decoration: none;
+    font-size: 0.86rem;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.landing-page .affiliate-side-box__item:hover {
+    border-color: rgba(14, 124, 123, 0.3);
+    background: #ffffff;
+    text-decoration: none;
+}
+
+.landing-page .affiliate-side-box__item-label {
+    font-weight: 600;
+}
+
+.landing-page .affiliate-side-box__item-desc {
+    color: var(--brand-muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.landing-page .affiliate-side-box__ext-icon {
+    display: inline-block;
+    margin-left: 4px;
+    opacity: 0.6;
+}
+
+/* Guide / resource preview cards */
+.landing-page .resource-card,
+.landing-page .guide-preview-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--brand-line);
+    background: var(--brand-surface);
+    box-shadow: var(--shadow-soft);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.landing-page a.resource-card:hover,
+.landing-page a.guide-preview-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+    border-color: rgba(14, 124, 123, 0.28);
+    text-decoration: none;
+}
+
+.landing-page .resource-card__title,
+.landing-page .guide-preview-card__title {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--brand-ink);
+}
+
+.landing-page .resource-card__desc,
+.landing-page .guide-preview-card__desc {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--brand-muted);
+    line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+    .landing-page .affiliate-side-box,
+    .landing-page .resource-card,
+    .landing-page .guide-preview-card {
+        padding: 16px;
     }
 }
