@@ -6,18 +6,24 @@
     {% include 'includes/head_meta.html' %}
 </head>
 <body class="landing-page">
+    {% from 'includes/tool_icons.html' import tool_icon %}
     {% include 'includes/header.html' %}
     {% set starter_pages = [
-        {'eyebrow': 'PDF', 'title': 'PDFを整える', 'path': '/tools/pdf', 'description': '分割・結合・抽出・圧縮・パスワード付与を、必要なときだけすばやく。', 'cta': 'PDFツールを使う', 'icon': 'PDF'},
-        {'eyebrow': 'CSV / Excel', 'title': '表を整える', 'path': '/tools/csv', 'description': 'CSVとExcelの確認・変換・整理を、ブラウザで扱いやすく。', 'cta': 'CSV/Excelツールを使う', 'icon': 'CSV'},
-        {'eyebrow': 'Image Batch', 'title': '画像をまとめて変換', 'path': '/tools/image-batch', 'description': 'PNG、JPG、WebPなどをまとめて処理し、提出前の手間を減らします。', 'cta': '画像変換を使う', 'icon': 'IMG'},
-        {'eyebrow': 'Image Cleanup', 'title': '画像を見やすくする', 'path': '/tools/image-cleanup', 'description': '余白、背景、サイズを整えて、資料や共有に使いやすく。', 'cta': '画像を整える', 'icon': 'CLR'},
-        {'eyebrow': 'SEO / URL', 'title': 'ページを確認する', 'path': '/tools/seo', 'description': 'OGP、meta、URL状態を手早く確認して、公開前の不安を減らします。', 'cta': 'URL/SEOを確認する', 'icon': 'URL'}
+        {'eyebrow': 'PDF', 'title': 'PDFを整える', 'path': '/tools/pdf', 'description': '結合・分割・抽出・圧縮・保護を、必要なときだけすばやく。', 'cta': 'PDFツールを使う', 'icon': 'pdf', 'tint': 'teal'},
+        {'eyebrow': 'CSV / Excel', 'title': '表を整える', 'path': '/tools/csv', 'description': 'CSVとExcelの確認・変換・整理を、ブラウザで扱いやすく。', 'cta': 'CSV/Excelツールを使う', 'icon': 'table', 'tint': 'blue'},
+        {'eyebrow': 'Image Batch', 'title': '画像をまとめて変換', 'path': '/tools/image-batch', 'description': 'PNG、JPG、WebPなどをまとめて処理し、提出前の手間を減らします。', 'cta': '画像変換を使う', 'icon': 'image-batch', 'tint': 'amber'},
+        {'eyebrow': 'Image Cleanup', 'title': '画像を見やすくする', 'path': '/tools/image-cleanup', 'description': '余白、背景、サイズを整えて、資料や共有に使いやすく。', 'cta': '画像を整える', 'icon': 'image-cleanup', 'tint': 'teal'},
+        {'eyebrow': 'SEO / URL', 'title': 'ページを確認する', 'path': '/tools/seo', 'description': 'OGP、meta、URL状態を手早く確認して、公開前の不安を減らします。', 'cta': 'URL/SEOを確認する', 'icon': 'seo', 'tint': 'blue'}
     ] %}
     {% set trust_points = [
         {'title': '登録不要', 'description': '思い立ったときに開いて、すぐ作業できます。'},
-        {'title': 'ブラウザでかんたん', 'description': 'インストールなしで、日常の小さな処理を進められます。'},
-        {'title': '必要なときだけ使える', 'description': '毎日は使わないけれど、あると助かる道具をまとめました。'}
+        {'title': '必要なときだけ使える', 'description': '毎日は使わないけれど、あると助かる道具をまとめました。'},
+        {'title': 'ブラウザでかんたん', 'description': 'インストールなしで、日常の小さな処理を進められます。'}
+    ] %}
+    {% set how_it_works = [
+        {'title': '選ぶ', 'description': 'PDF、表、画像、ページ確認から、今やりたい作業を選びます。'},
+        {'title': '整える', 'description': '操作パネルでファイルを選び、必要な設定だけ入れて実行します。'},
+        {'title': '保存する', 'description': '仕上がりを確認して、そのままダウンロードします。'}
     ] %}
     {% set use_cases = [
         {'eyebrow': 'Documents', 'title': '書類を送る前に整える', 'description': 'PDFの結合、分割、圧縮など、共有前の細かな準備を短時間で済ませます。'},
@@ -26,8 +32,8 @@
         {'eyebrow': 'Web Check', 'title': '公開前のページを確認する', 'description': 'meta情報やOGP、URLの状態を確認し、共有前の見落としを減らします。'}
     ] %}
     <main class="landing-shell">
-        <section class="landing-hero" aria-labelledby="landing-hero-heading">
-            <div class="landing-hero__content">
+        <section class="hero-v2" aria-labelledby="landing-hero-heading">
+            <div class="hero-v2__copy">
                 <p class="landing-hero__eyebrow" data-reveal>しごと道具箱</p>
                 <h1 id="landing-hero-heading" data-reveal data-reveal-delay="40">
                     <span class="landing-hero__headline-line">しごとの小さな面倒を、</span>
@@ -39,31 +45,53 @@
                 </p>
                 <div class="landing-hero__actions" data-reveal data-reveal-delay="120">
                     <a href="/tools" class="btn btn-primary">ツールを選ぶ</a>
-                    <a href="/faq" class="btn btn-secondary">よくある質問を見る</a>
+                    <a href="#safety" class="btn btn-secondary">安全性を見る</a>
                 </div>
+                <ul class="hero-v2__trust" data-reveal data-reveal-delay="160" aria-label="しごと道具箱の特徴">
+                    {% for item in trust_points %}
+                    <li>
+                        <span class="hero-v2__trust-icon">{{ tool_icon('shield-check', 16) }}</span>
+                        <span>{{ item.title }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
-            <div class="landing-hero__panel" aria-label="主なツール">
-                <div class="landing-hero__panel-head">
-                    <span>Tool box</span>
-                    <strong>5 tools</strong>
-                </div>
-                <div class="landing-hero__mini-grid">
-                    <a href="/tools/pdf">PDF</a>
-                    <a href="/tools/csv">CSV</a>
-                    <a href="/tools/image-batch">画像変換</a>
-                    <a href="/tools/image-cleanup">画像整理</a>
-                    <a href="/tools/seo">URL確認</a>
-                </div>
-            </div>
-        </section>
+            <div class="hero-v2__art" aria-hidden="true">
+                <svg viewBox="0 0 480 400" xmlns="http://www.w3.org/2000/svg" class="hero-art-svg">
+                    <circle cx="88" cy="86" r="92" fill="#E8F3EF"></circle>
+                    <circle cx="404" cy="308" r="72" fill="#FFF3E2"></circle>
 
-        <section class="landing-trust-strip" aria-label="しごと道具箱の特徴" data-reveal-stagger>
-            {% for item in trust_points %}
-            <div class="landing-trust-strip__item">
-                <strong>{{ item.title }}</strong>
-                <span>{{ item.description }}</span>
+                    <g transform="translate(56,54) rotate(-7)">
+                        <rect x="0" y="0" width="122" height="150" rx="16" fill="#FFFFFF" stroke="#E4DED2" stroke-width="2"></rect>
+                        <rect x="18" y="26" width="86" height="8" rx="4" fill="#E4DED2"></rect>
+                        <rect x="18" y="46" width="86" height="8" rx="4" fill="#E4DED2"></rect>
+                        <rect x="18" y="66" width="56" height="8" rx="4" fill="#E4DED2"></rect>
+                        <circle cx="61" cy="112" r="17" fill="#E8F3EF"></circle>
+                        <path d="M53 112l6 6 13-14" stroke="#0E7C7B" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </g>
+
+                    <g transform="translate(232,26) rotate(6)">
+                        <rect x="0" y="0" width="150" height="112" rx="16" fill="#FFFFFF" stroke="#E4DED2" stroke-width="2"></rect>
+                        <line x1="0" y1="38" x2="150" y2="38" stroke="#E4DED2" stroke-width="2"></line>
+                        <line x1="0" y1="76" x2="150" y2="76" stroke="#E4DED2" stroke-width="2"></line>
+                        <line x1="50" y1="0" x2="50" y2="112" stroke="#E4DED2" stroke-width="2"></line>
+                        <line x1="100" y1="0" x2="100" y2="112" stroke="#E4DED2" stroke-width="2"></line>
+                    </g>
+
+                    <g transform="translate(246,178) rotate(-4)">
+                        <rect x="0" y="0" width="134" height="102" rx="16" fill="#FFFFFF" stroke="#E4DED2" stroke-width="2"></rect>
+                        <circle cx="30" cy="34" r="10" fill="#FFF3E2"></circle>
+                        <path d="M14 80l26-30 20 22 16-14 26 24" fill="none" stroke="#D99058" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </g>
+
+                    <g transform="translate(118,250)">
+                        <path d="M85 40V20a20 20 0 0 1 20-20h10a20 20 0 0 1 20 20v20" fill="none" stroke="#075E5D" stroke-width="9" stroke-linecap="round"></path>
+                        <path d="M10 40h200a10 10 0 0 1 10 10v70a10 10 0 0 1-10 10H10a10 10 0 0 1-10-10V50a10 10 0 0 1 10-10z" fill="#0E7C7B"></path>
+                        <rect x="0" y="66" width="220" height="14" fill="#075E5D"></rect>
+                        <rect x="95" y="65" width="30" height="18" rx="4" fill="#FFF3E2"></rect>
+                    </g>
+                </svg>
             </div>
-            {% endfor %}
         </section>
 
         <section class="landing-section" aria-labelledby="starter-pages-heading">
@@ -72,23 +100,56 @@
                 <h2 id="starter-pages-heading">必要な道具を選ぶ</h2>
                 <p>よくある作業を5つに分けました。目的に近いカードから開けます。</p>
             </div>
-            <div class="landing-tool-grid" data-reveal-stagger>
+            <div class="tool-chooser-grid landing-tool-grid" data-reveal-stagger>
                 {% for item in starter_pages %}
-                <a href="{{ item.path }}" class="landing-tool-card">
-                    <span class="landing-tool-card__meta">
+                <a href="{{ item.path }}" class="feature-card tool-choice-card landing-tool-card">
+                    <div class="feature-card__head">
+                        <span class="icon-tile icon-tile--{{ item.tint }}">{{ tool_icon(item.icon) }}</span>
                         <span class="landing-tool-card__eyebrow">{{ item.eyebrow }}</span>
-                        <span class="landing-tool-card__icon" aria-hidden="true">{{ item.icon }}</span>
-                    </span>
+                    </div>
+                    <h3 class="feature-card__title">{{ item.title }}</h3>
+                    <p class="feature-card__desc">{{ item.description }}</p>
+                    <span class="feature-card__cta">{{ item.cta }} →</span>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="landing-section" aria-labelledby="how-it-works-heading">
+            <div class="landing-section__header landing-section__header--compact">
+                <p class="landing-section__eyebrow">How it works</p>
+                <h2 id="how-it-works-heading">使い方はいつも3ステップ</h2>
+            </div>
+            <div class="step-rail" data-reveal-stagger>
+                {% for step in how_it_works %}
+                <div class="step-rail__item">
+                    <span class="step-rail__number">{{ loop.index }}</span>
+                    <h3 class="step-rail__title">{{ step.title }}</h3>
+                    <p class="step-rail__text">{{ step.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="landing-section" aria-labelledby="use-cases-heading">
+            <div class="landing-section__header landing-section__header--compact">
+                <p class="landing-section__eyebrow">Use Cases</p>
+                <h2 id="use-cases-heading">こんな小さな作業に</h2>
+            </div>
+            <div class="landing-use-grid" data-reveal-stagger>
+                {% for item in use_cases %}
+                <article class="landing-use-card">
+                    <span class="landing-use-card__eyebrow">{{ item.eyebrow }}</span>
                     <h3>{{ item.title }}</h3>
                     <p>{{ item.description }}</p>
-                    <span class="landing-tool-card__cta">{{ item.cta }}</span>
-                </a>
+                </article>
                 {% endfor %}
             </div>
         </section>
 
         <section class="landing-section landing-affiliate-intro" aria-labelledby="affiliate-heading">
             <div class="landing-section__header landing-section__header--compact">
+                <span class="icon-tile icon-tile--amber icon-tile--sm" aria-hidden="true">{{ tool_icon('affiliate', 17) }}</span>
                 <p class="landing-section__eyebrow">Work Picks</p>
                 <h2 id="affiliate-heading">作業ついでに、仕事道具も見直す</h2>
                 <p>PDF・ファイル作業、デスク環境、ビジネス書など、日々の仕事を少し楽にする道具を探せます。</p>
@@ -122,25 +183,10 @@
             {% endif %}
         </section>
 
-        <section class="landing-section" aria-labelledby="use-cases-heading">
-            <div class="landing-section__header">
-                <p class="landing-section__eyebrow">Use Cases</p>
-                <h2 id="use-cases-heading">こんな小さな作業に</h2>
-            </div>
-            <div class="landing-use-grid" data-reveal-stagger>
-                {% for item in use_cases %}
-                <article class="landing-use-card">
-                    <span class="landing-use-card__eyebrow">{{ item.eyebrow }}</span>
-                    <h3>{{ item.title }}</h3>
-                    <p>{{ item.description }}</p>
-                </article>
-                {% endfor %}
-            </div>
-        </section>
-
-        <section class="landing-section">
+        <section class="landing-section" id="safety">
             <div class="landing-trust-card" data-reveal>
                 <div class="landing-section__header landing-section__header--compact">
+                    <span class="icon-tile icon-tile--teal" aria-hidden="true">{{ tool_icon('privacy', 22) }}</span>
                     <p class="landing-section__eyebrow">Safety</p>
                     <h2>ファイル処理の考え方</h2>
                     <p>ファイル処理は機能ごとにブラウザ内処理・サーバー処理が異なります。詳しくはFAQをご確認ください。</p>

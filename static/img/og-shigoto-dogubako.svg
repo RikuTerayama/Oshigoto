@@ -1,0 +1,51 @@
+<!--
+  しごと道具箱 OGP artwork — original artwork authored for this repository (Phase 5.6).
+  No external assets, fonts, or photos used. Free to reuse within this project.
+  Note: many social platforms (X/Twitter, Facebook, LINE, Slack) do not reliably
+  render SVG for og:image / twitter:image. This file is provided as the source
+  artwork; export it to a 1200x630 PNG before wiring it into head_meta.html's
+  og:image / twitter:image tags. Left as a residual item for the next phase.
+-->
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ogTitle ogDesc">
+    <title id="ogTitle">しごと道具箱</title>
+    <desc id="ogDesc">しごとの小さな面倒を、さっと片づける。PDF・表・画像・ページ確認の軽量ツール集。</desc>
+    <rect width="1200" height="630" fill="#F7F3EA"/>
+    <circle cx="1040" cy="120" r="180" fill="#E8F3EF"/>
+    <circle cx="120" cy="560" r="140" fill="#FFF3E2"/>
+
+    <g transform="translate(96,150) rotate(-6)">
+        <rect x="0" y="0" width="180" height="220" rx="20" fill="#FFFDF8" stroke="#E4DED2" stroke-width="3"/>
+        <rect x="26" y="40" width="128" height="12" rx="6" fill="#E4DED2"/>
+        <rect x="26" y="70" width="128" height="12" rx="6" fill="#E4DED2"/>
+        <rect x="26" y="100" width="84" height="12" rx="6" fill="#E4DED2"/>
+        <circle cx="90" cy="165" r="26" fill="#E8F3EF"/>
+        <path d="M78 165l9 9 19-21" stroke="#0E7C7B" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <g transform="translate(340,110) rotate(5)">
+        <rect x="0" y="0" width="220" height="165" rx="20" fill="#FFFDF8" stroke="#E4DED2" stroke-width="3"/>
+        <line x1="0" y1="55" x2="220" y2="55" stroke="#E4DED2" stroke-width="3"/>
+        <line x1="0" y1="110" x2="220" y2="110" stroke="#E4DED2" stroke-width="3"/>
+        <line x1="73" y1="0" x2="73" y2="165" stroke="#E4DED2" stroke-width="3"/>
+        <line x1="146" y1="0" x2="146" y2="165" stroke="#E4DED2" stroke-width="3"/>
+    </g>
+
+    <g transform="translate(360,300) rotate(-3)">
+        <rect x="0" y="0" width="196" height="150" rx="20" fill="#FFFDF8" stroke="#E4DED2" stroke-width="3"/>
+        <circle cx="44" cy="50" r="15" fill="#FFF3E2"/>
+        <path d="M20 118l38-44 29 32 24-20 38 35" fill="none" stroke="#D99058" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <g transform="translate(150,370)">
+        <path d="M125 60V30a30 30 0 0 1 30-30h15a30 30 0 0 1 30 30v30" fill="none" stroke="#075E5D" stroke-width="13" stroke-linecap="round"/>
+        <path d="M15 60h300a15 15 0 0 1 15 15v105a15 15 0 0 1-15 15H15a15 15 0 0 1-15-15V75a15 15 0 0 1 15-15z" fill="#0E7C7B"/>
+        <rect x="0" y="99" width="330" height="21" fill="#075E5D"/>
+        <rect x="142" y="97" width="46" height="27" rx="6" fill="#FFF3E2"/>
+    </g>
+
+    <g transform="translate(620,220)">
+        <text x="0" y="0" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="64" font-weight="700" fill="#17202A">しごと道具箱</text>
+        <text x="0" y="66" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="30" fill="#667085">しごとの小さな面倒を、さっと片づける。</text>
+        <text x="0" y="112" font-family="'Hiragino Sans', 'Noto Sans JP', sans-serif" font-size="24" fill="#0E7C7B">PDF ・ 表 ・ 画像 ・ ページ確認</text>
+    </g>
+</svg>

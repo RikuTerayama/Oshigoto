@@ -8,9 +8,9 @@
             font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
             margin: 0;
             padding: 20px;
-            background: #f6f8fb;
+            background: var(--brand-bg);
             min-height: 100vh;
-            color: #172033;
+            color: var(--brand-ink);
             line-height: 1.8;
         }
         .container {
@@ -19,29 +19,29 @@
             background: #ffffff;
             border-radius: 20px;
             padding: 50px;
-            border: 1px solid #dde5ee;
+            border: 1px solid var(--brand-line);
             box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
         }
         h1 {
             font-size: 2.5em;
             margin-bottom: 30px;
-            color: #172033;
+            color: var(--brand-ink);
         }
         h2 {
             font-size: 1.8em;
             margin-top: 40px;
             margin-bottom: 20px;
-            color: #172033;
-            border-bottom: 2px solid #e2e8f0;
+            color: var(--brand-ink);
+            border-bottom: 2px solid var(--brand-line);
             padding-bottom: 10px;
         }
         p, li {
-            color: #334155;
+            color: #3A342B;
             margin-bottom: 15px;
         }
         .info-box {
-            background: #eaf2fc;
-            border-left: 4px solid #1c6dd0;
+            background: var(--brand-teal-soft);
+            border-left: 4px solid var(--brand-primary);
             padding: 20px;
             margin: 30px 0;
             border-radius: 8px;
@@ -50,18 +50,18 @@
             margin-top: 30px;
         }
         .contact-method {
-            background: #f7f9fc;
-            border: 1px solid #dde5ee;
+            background: var(--brand-paper);
+            border: 1px solid var(--brand-line);
             border-radius: 12px;
             padding: 25px;
             margin-bottom: 20px;
         }
         .contact-method h3 {
             margin-top: 0;
-            color: #175aab;
+            color: var(--brand-primary-strong);
         }
         .contact-method a {
-            color: #175aab;
+            color: var(--brand-primary-strong);
             text-decoration: none;
             font-weight: 500;
         }
@@ -73,41 +73,43 @@
         }
         .faq-item {
             margin-bottom: 30px;
-            background: #f7f9fc;
+            background: var(--brand-paper);
             padding: 20px;
             border-radius: 8px;
         }
         .faq-question {
             font-weight: 600;
-            color: #172033;
+            color: var(--brand-ink);
             margin-bottom: 10px;
             font-size: 1.1em;
         }
         .faq-answer {
-            color: #475569;
+            color: var(--brand-muted);
         }
         .back-link {
             display: inline-block;
             margin-top: 40px;
             padding: 15px 30px;
-            background: #eaf2fc;
-            border: 1px solid #bcd6f5;
+            background: var(--brand-teal-soft);
+            border: 1px solid rgba(14, 124, 123, 0.32);
             border-radius: 10px;
-            color: #175aab;
+            color: var(--brand-primary-strong);
             text-decoration: none;
             transition: all 0.3s;
         }
         .back-link:hover {
-            background: #d9e9fb;
+            background: rgba(14, 124, 123, 0.16);
             transform: translateY(-2px);
         }
     </style>
 </head>
 <body class="landing-page">
+    {% from 'includes/tool_icons.html' import tool_icon %}
     {# P1-1: ナビゲーションの一貫性 #}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
     <div class="container">
+        <span class="icon-tile icon-tile--teal" aria-hidden="true" style="margin-bottom: 14px;">{{ tool_icon('contact', 22) }}</span>
         <h1>お問い合わせ</h1>
 
         <div class="info-box">
@@ -115,7 +117,7 @@
         </div>
 
         <div class="contact-methods">
-            <div class="contact-method" style="background: #eaf2fc; border: 2px solid #bcd6f5;">
+            <div class="contact-method" style="background: var(--brand-teal-soft); border: 2px solid rgba(14, 124, 123, 0.32);">
                 <h3>📝 お問い合わせフォーム（推奨）</h3>
                 <p>以下のような内容について、お気軽にお問い合わせください：</p>
                 <ul style="margin-top: 10px; margin-bottom: 20px;">
@@ -126,9 +128,9 @@
                     <li>その他のご意見・ご感想</li>
                 </ul>
                 <p style="margin-bottom: 20px;">
-                    <a id="contact-form-newtab" href="https://docs.google.com/forms/d/e/1FAIpQLSfAV8D2vxo7sCIvd3z9_1PBbFf3wLpST_bA8Y-P0Ab6WRM3gQ/viewform?usp=publish-editor" target="_blank" style="display: inline-block; padding: 15px 30px; background: #1c6dd0; border: 1px solid #1c6dd0; border-radius: 8px; color: #ffffff; text-decoration: none; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='#175aab'" onmouseout="this.style.background='#1c6dd0'">お問い合わせフォームを別タブで開く</a>
+                    <a id="contact-form-newtab" href="https://docs.google.com/forms/d/e/1FAIpQLSfAV8D2vxo7sCIvd3z9_1PBbFf3wLpST_bA8Y-P0Ab6WRM3gQ/viewform?usp=publish-editor" target="_blank" style="display: inline-block; padding: 15px 30px; background: var(--brand-primary); border: 1px solid var(--brand-primary); border-radius: 8px; color: #ffffff; text-decoration: none; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='var(--brand-primary-strong)'" onmouseout="this.style.background='var(--brand-primary)'">お問い合わせフォームを別タブで開く</a>
                 </p>
-                <p style="font-size: 0.9em; color: #64748b;">※ 下のフォームはGoogleフォームです。表示されない場合は上のリンクから別タブで開いてください。</p>
+                <p style="font-size: 0.9em; color: var(--brand-muted);">※ 下のフォームはGoogleフォームです。表示されない場合は上のリンクから別タブで開いてください。</p>
                 <div id="contact-form" style="margin-top: 20px; width: 100%; overflow: hidden;">
                     <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfAV8D2vxo7sCIvd3z9_1PBbFf3wLpST_bA8Y-P0Ab6WRM3gQ/viewform?embedded=true" style="width:100%; min-height:900px; border:0;" loading="lazy" title="お問い合わせフォーム"></iframe>
                 </div>
@@ -140,13 +142,13 @@
                 <h3>📧 メールでのお問い合わせ</h3>
                 <p>メールでのお問い合わせも受け付けております。以下のメールアドレスまでご連絡ください：</p>
                 <p style="margin: 20px 0;">
-                    <a href="mailto:{{ OPERATOR_EMAIL }}" style="display: inline-block; padding: 15px 30px; background: #2e7d32; border: 1px solid #2e7d32; border-radius: 8px; color: #ffffff; text-decoration: none; font-weight: 600; transition: all 0.3s; font-size: 1.1em;">{{ OPERATOR_EMAIL }}</a>
+                    <a href="mailto:{{ OPERATOR_EMAIL }}" style="display: inline-block; padding: 15px 30px; background: #1F7A5C; border: 1px solid #1F7A5C; border-radius: 8px; color: #ffffff; text-decoration: none; font-weight: 600; transition: all 0.3s; font-size: 1.1em;">{{ OPERATOR_EMAIL }}</a>
                 </p>
-                <p style="font-size: 0.9em; color: #64748b;">※ 原則として3営業日以内に返信いたします。</p>
+                <p style="font-size: 0.9em; color: var(--brand-muted);">※ 原則として3営業日以内に返信いたします。</p>
             </div>
             {% else %}
             {# Phase1: OPERATOR_EMAIL 未設定時 — フォームが主導線である旨を明示 #}
-            <div class="contact-method" style="background: #f0f6fd; border: 2px solid #cfe1f7;">
+            <div class="contact-method" style="background: var(--brand-teal-soft); border: 2px solid rgba(14, 124, 123, 0.32);">
                 <h3>📬 お問い合わせの受け付けについて</h3>
                 <p>上記のフォームがお問い合わせの主な窓口です。フォーム送信時にご記入いただいたメールアドレスへ、返信いたします。表示されない場合は「お問い合わせフォームを別タブで開く」ボタンからご利用ください。</p>
             </div>
@@ -156,7 +158,7 @@
                 <h3>💻 GitHub Issues（開発者向け）</h3>
                 <p>技術的な不具合報告や改善要望、コードに関する質問は、GitHubのIssuesでご報告ください：</p>
                 <p><a href="https://github.com/RikuTerayama/Oshigoto/issues" target="_blank">GitHub Issues</a></p>
-                <p style="font-size: 0.9em; color: #6b7280;">※ 開発者コミュニティからも回答を得られる場合があります</p>
+                <p style="font-size: 0.9em; color: var(--brand-muted);">※ 開発者コミュニティからも回答を得られる場合があります</p>
             </div>
         </div>
 

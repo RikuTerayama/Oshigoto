@@ -9,9 +9,9 @@
             font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
             margin: 0;
             padding: 20px;
-            background: #f6f8fb;
+            background: var(--brand-bg);
             min-height: 100vh;
-            color: #172033;
+            color: var(--brand-ink);
             line-height: 1.8;
         }
         .container {
@@ -20,35 +20,35 @@
             background: #ffffff;
             border-radius: 20px;
             padding: 50px;
-            border: 1px solid #dde5ee;
+            border: 1px solid var(--brand-line);
             box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
         }
         h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            color: #172033;
+            color: var(--brand-ink);
         }
         .update-date {
-            color: #6b7280;
+            color: var(--brand-muted);
             margin-bottom: 30px;
         }
         h2 {
             font-size: 1.8em;
             margin-top: 40px;
             margin-bottom: 20px;
-            color: #172033;
-            border-bottom: 2px solid #e2e8f0;
+            color: var(--brand-ink);
+            border-bottom: 2px solid var(--brand-line);
             padding-bottom: 10px;
         }
         p, li {
-            color: #334155;
+            color: #3A342B;
             margin-bottom: 15px;
         }
         ul {
             padding-left: 30px;
         }
         a {
-            color: #1c6dd0;
+            color: var(--brand-primary);
             text-decoration: none;
         }
         a:hover {
@@ -58,24 +58,26 @@
             display: inline-block;
             margin-top: 40px;
             padding: 15px 30px;
-            background: #eaf2fc;
-            border: 1px solid #bcd6f5;
+            background: var(--brand-teal-soft);
+            border: 1px solid rgba(14, 124, 123, 0.32);
             border-radius: 10px;
-            color: #175aab;
+            color: var(--brand-primary-strong);
             text-decoration: none;
             transition: all 0.3s;
         }
         .back-link:hover {
-            background: #d9e9fb;
+            background: rgba(14, 124, 123, 0.16);
             transform: translateY(-2px);
         }
     </style>
 </head>
 <body class="landing-page">
+    {% from 'includes/tool_icons.html' import tool_icon %}
     {# P1-1: ナビゲーションの一貫性 #}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
     <div class="container">
+        <span class="icon-tile icon-tile--teal" aria-hidden="true" style="margin-bottom: 14px;">{{ tool_icon('privacy', 22) }}</span>
         <h1>プライバシーポリシー</h1>
         <p class="update-date">最終更新日：2025年10月10日</p>
 

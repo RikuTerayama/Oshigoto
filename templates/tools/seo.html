@@ -15,9 +15,9 @@
             font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
             margin: 0;
             padding: 0;
-            background: #f6f8fb;
+            background: var(--brand-bg);
             min-height: 100vh;
-            color: #172033;
+            color: var(--brand-ink);
             letter-spacing: 0.02em;
             line-height: 1.6;
         }
@@ -37,13 +37,13 @@
         .page-header h1 {
             font-size: 2.5em;
             margin: 0 0 15px 0;
-            color: #172033;
+            color: var(--brand-ink);
             font-weight: 600;
         }
 
         .page-header p {
             font-size: 1.1em;
-            color: #526071;
+            color: var(--brand-muted);
             max-width: 700px;
             margin: 0 auto;
         }
@@ -59,12 +59,12 @@
             background: #ffffff;
             border-radius: 12px;
             padding: 25px;
-            border: 1px solid #dde5ee;
+            border: 1px solid var(--brand-line);
             box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
         }
 
         .panel h3 {
-            color: #1c6dd0;
+            color: var(--brand-primary);
             font-size: 1.2em;
             margin: 0 0 20px 0;
         }
@@ -73,7 +73,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
-            background: #f1f5f9;
+            background: var(--brand-paper);
             padding: 5px;
             border-radius: 8px;
         }
@@ -84,7 +84,7 @@
             background: transparent;
             border: 1px solid transparent;
             border-radius: 6px;
-            color: #64748b;
+            color: var(--brand-muted);
             cursor: pointer;
             transition: all 0.3s;
             font-size: 0.95em;
@@ -92,8 +92,8 @@
 
         .mode-button.active {
             background: #ffffff;
-            border-color: #bcd6f5;
-            color: #1c6dd0;
+            border-color: rgba(14, 124, 123, 0.32);
+            color: var(--brand-primary);
             box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
         }
 
@@ -103,7 +103,7 @@
 
         .option-group label {
             display: block;
-            color: #1f2937;
+            color: var(--brand-ink);
             margin-bottom: 8px;
             font-size: 0.95em;
         }
@@ -114,9 +114,9 @@
             width: 100%;
             padding: 10px;
             background: #ffffff;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--brand-line);
             border-radius: 6px;
-            color: #172033;
+            color: var(--brand-ink);
             font-size: 0.95em;
             font-family: inherit;
         }
@@ -148,10 +148,10 @@
 
         .action-button {
             padding: 12px 24px;
-            background: #eaf2fc;
-            border: 1px solid #bcd6f5;
+            background: var(--brand-teal-soft);
+            border: 1px solid rgba(14, 124, 123, 0.32);
             border-radius: 8px;
-            color: #175aab;
+            color: var(--brand-primary-strong);
             font-size: 1em;
             font-weight: 500;
             cursor: pointer;
@@ -161,7 +161,7 @@
         }
 
         .action-button:hover:not(:disabled) {
-            background: #d9e9fb;
+            background: rgba(14, 124, 123, 0.16);
         }
 
         .action-button:disabled {
@@ -180,7 +180,7 @@
         }
 
         .output-preview {
-            background: #f1f5f9;
+            background: var(--brand-paper);
             border-radius: 8px;
             padding: 15px;
             max-height: 500px;
@@ -199,7 +199,7 @@
             font-size: 0.9em;
             white-space: pre-wrap;
             word-wrap: break-word;
-            color: #1f2937;
+            color: var(--brand-ink);
             margin: 0;
         }
 
@@ -213,7 +213,7 @@
         }
 
         .info-text {
-            color: #6b7280;
+            color: var(--brand-muted);
             font-size: 0.85em;
             margin-top: 5px;
         }
@@ -226,11 +226,13 @@
     </style>
 </head>
 <body class="landing-page">
+    {% from 'includes/tool_icons.html' import tool_icon %}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
 
     <div class="container">
         <div class="page-header">
+            <span class="icon-tile icon-tile--lg icon-tile--blue" aria-hidden="true">{{ tool_icon('seo', 28) }}</span>
             <h1 data-reveal>ページを確認する</h1>
             <p data-reveal data-reveal-delay="50">公開前やSNS共有前に、title、meta description、OGP、canonical、robots、sitemapを確認します。</p>
         </div>
@@ -272,7 +274,7 @@
                     </div>
                     
                     <div class="option-group">
-                        <label>タイトル <span style="color: #c62828;">*</span></label>
+                        <label>タイトル <span style="color: #9B2C2C;">*</span></label>
                         <input type="text" id="ogp-title" placeholder="OGP画像のタイトル">
                     </div>
                     
@@ -443,7 +445,7 @@
                         入力したURLへサーバからアクセスしてリンクを収集します。機密サイトや社内サイトでは使用しないでください。
                     </div>
                     <div class="option-group">
-                        <label>ベースURL <span style="color: #c62828;">*</span></label>
+                        <label>ベースURL <span style="color: #9B2C2C;">*</span></label>
                         <input type="text" id="sitemap-base-url" placeholder="https://example.com">
                     </div>
                     <div class="option-group">
@@ -492,9 +494,9 @@
                     
                     <button class="action-button" onclick="generateSitemap()">sitemap.xmlを生成</button>
                     
-                    <hr style="margin: 30px 0; border-color: #dde5ee;">
+                    <hr style="margin: 30px 0; border-color: var(--brand-line);">
 
-                    <h4 style="color: #175aab; margin-bottom: 15px;">robots.txt生成</h4>
+                    <h4 style="color: var(--brand-primary-strong); margin-bottom: 15px;">robots.txt生成</h4>
                     
                     <div class="option-group">
                         <div class="checkbox-group">
@@ -542,7 +544,7 @@
                 
                 <!-- v2: メタタグ検査出力 -->
                 <div id="meta-output" style="display: none;">
-                    <div id="meta-summary" style="margin-bottom: 15px; padding: 15px; background: #f1f5f9; border-radius: 8px;"></div>
+                    <div id="meta-summary" style="margin-bottom: 15px; padding: 15px; background: var(--brand-paper); border-radius: 8px;"></div>
                     <div id="meta-results" class="output-preview" style="max-height: 300px;"></div>
                     <div id="meta-markdown-preview" class="output-preview" style="max-height: 400px; margin-top: 15px;"></div>
                     <div class="output-actions">
@@ -554,13 +556,13 @@
                 <!-- v2: sitemap/robots出力 -->
                 <div id="sitemap-output" style="display: none;">
                     <div id="sitemap-xml-output" style="display: none;">
-                        <h4 style="color: #175aab; margin-bottom: 10px;">sitemap.xml</h4>
+                        <h4 style="color: var(--brand-primary-strong); margin-bottom: 10px;">sitemap.xml</h4>
                         <div id="sitemap-xml-preview" class="output-preview"></div>
                         <button class="action-button" onclick="downloadSitemapXml()" style="margin-top: 10px;">sitemap.xmlをダウンロード</button>
                     </div>
                     
                     <div id="robots-txt-output" style="display: none; margin-top: 30px;">
-                        <h4 style="color: #175aab; margin-bottom: 10px;">robots.txt</h4>
+                        <h4 style="color: var(--brand-primary-strong); margin-bottom: 10px;">robots.txt</h4>
                         <div id="robots-txt-preview" class="output-preview"></div>
                         <button class="action-button" onclick="downloadRobotsTxt()" style="margin-top: 10px;">robots.txtをダウンロード</button>
                     </div>
@@ -568,7 +570,7 @@
                     <div id="sitemap-warnings" style="margin-top: 15px; padding: 15px; background: rgba(255, 152, 0, 0.2); border-radius: 8px; display: none;"></div>
                 </div>
                 <div id="output-empty-hint" class="output-preview">
-                    <p style="margin: 0; color: #64748b;">左側で入力して実行すると、ここに結果と保存ボタンが表示されます。</p>
+                    <p style="margin: 0; color: var(--brand-muted);">左側で入力して実行すると、ここに結果と保存ボタンが表示されます。</p>
                 </div>
             </div>
         </div>
@@ -593,7 +595,7 @@
             {% set affiliate_mid_amazon_rendered = true %}
             {% endif %}
         </section>
-        <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px 0;"><a href="#about-tool" style="color: #175aab;">使い方・FAQを読む ↓</a></div>
+        <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px 0;"><a href="#about-tool" style="color: var(--brand-primary-strong);">使い方・FAQを読む ↓</a></div>
         {% include 'includes/tool_content_blocks.html' %}
     </div>
 
@@ -913,10 +915,10 @@
                 const levelIcon = item.level === 'ok' ? '✅' : item.level === 'warn' ? '⚠️' : '❌';
                 const levelColor = item.level === 'ok' ? '#4CAF50' : item.level === 'warn' ? '#FF9800' : '#F44336';
                 resultsEl.innerHTML += `
-                    <div style="margin-bottom: 10px; padding: 10px; background: #f1f5f9; border-radius: 6px; border-left: 3px solid ${levelColor};">
+                    <div style="margin-bottom: 10px; padding: 10px; background: var(--brand-paper); border-radius: 6px; border-left: 3px solid ${levelColor};">
                         <strong>${levelIcon} ${item.label}</strong><br>
                         ${item.message}<br>
-                        ${item.value ? `<span style="color: #64748b; font-size: 0.9em;">値: ${item.value.length > 100 ? item.value.substring(0, 100) + '...' : item.value}</span>` : ''}
+                        ${item.value ? `<span style="color: var(--brand-muted); font-size: 0.9em;">値: ${item.value.length > 100 ? item.value.substring(0, 100) + '...' : item.value}</span>` : ''}
                     </div>
                 `;
             });

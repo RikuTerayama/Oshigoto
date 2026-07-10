@@ -1087,8 +1087,8 @@ img {
 
 .site-logo {
     display: inline-flex;
-    flex-direction: column;
-    gap: 2px;
+    align-items: center;
+    gap: 10px;
     color: var(--color-text-primary);
     text-decoration: none;
 }
@@ -1096,6 +1096,24 @@ img {
 .site-logo:hover {
     color: var(--color-text-primary);
     text-decoration: none;
+}
+
+.site-logo__mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-accent);
+}
+
+.site-logo__text {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .site-logo__badge {
@@ -1109,6 +1127,11 @@ img {
     color: var(--color-text-tertiary);
     font-size: 0.76rem;
     letter-spacing: 0.08em;
+}
+
+.landing-page .site-logo__mark {
+    background: var(--brand-teal-soft);
+    color: var(--brand-primary-strong);
 }
 
 .site-nav__links {
@@ -1630,7 +1653,7 @@ img {
 }
 
 .landing-page .site-footer__copy {
-    color: #64748b;
+    color: var(--brand-muted);
 }
 
 .landing-page .site-footer__copy-title {
@@ -1642,7 +1665,7 @@ img {
 }
 
 .landing-page .site-footer__meta {
-    color: #94a3b8;
+    color: #8B8577;
 }
 
 /* Accessibility */
@@ -1662,34 +1685,301 @@ img {
     outline-offset: 2px;
 }
 
-/* Phase 2: public landing page refresh (Phase 5.5: promoted to the site's shared light theme) */
+/* Phase 5.6: brand design system — warm paper + ink + teal/amber accents.
+   This replaces the Phase 5.5 blue-on-white palette with a calmer, more
+   editorial "toolbox" identity. Still scoped to .landing-page so dark,
+   out-of-scope pages (blog/guide/case-studies) are unaffected. */
 .landing-page {
-    /* Redefine base tokens so every var(--color-*)-based rule (cards, buttons,
-       forms, affiliate components) resolves to the light palette automatically. */
-    --color-bg-primary: #f6f8fb;
-    --color-bg-secondary: #ffffff;
-    --color-bg-tertiary: #eef2f7;
-    --color-text-primary: #172033;
-    --color-text-secondary: #526071;
-    --color-text-tertiary: #7c8798;
-    --color-accent: #1c6dd0;
-    --color-accent-hover: #175aab;
-    --color-accent-light: rgba(28, 109, 208, 0.08);
-    --color-accent-border: rgba(28, 109, 208, 0.28);
-    --color-success: #2e7d32;
-    --color-warning: #b45309;
-    --color-error: #c62828;
-    --color-disabled: rgba(23, 32, 51, 0.35);
-    --color-border: #dde5ee;
-    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-    --shadow-md: 0 8px 20px rgba(15, 23, 42, 0.08);
-    --shadow-lg: 0 16px 32px rgba(15, 23, 42, 0.1);
-    --shadow-focus: 0 0 0 3px rgba(28, 109, 208, 0.24);
-    --radius-card: 14px;
+    /* Named brand tokens (use these directly in new markup) */
+    --brand-bg: #F7F3EA;
+    --brand-paper: #FFFDF8;
+    --brand-surface: #FFFFFF;
+    --brand-ink: #17202A;
+    --brand-muted: #5C6673;
+    --brand-line: #E4DED2;
+    --brand-primary: #0E7C7B;
+    --brand-primary-strong: #075E5D;
+    --brand-accent: #D99058;
+    --brand-accent-strong: #B96E3A;
+    --brand-teal-soft: #E8F3EF;
+    --brand-amber-soft: #FFF3E2;
+    --brand-blue-soft: #EAF2F6;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --shadow-soft: 0 2px 12px rgba(23, 32, 42, 0.06);
+    --shadow-lift: 0 16px 32px rgba(23, 32, 42, 0.1);
+
+    /* Redefine the Phase 5.5 tokens onto the same palette so every existing
+       var(--color-*)-based rule (cards, buttons, forms, affiliate
+       components, footer) re-skins automatically without further edits. */
+    --color-bg-primary: var(--brand-bg);
+    --color-bg-secondary: var(--brand-surface);
+    --color-bg-tertiary: var(--brand-paper);
+    --color-text-primary: var(--brand-ink);
+    --color-text-secondary: #4B5563;
+    --color-text-tertiary: var(--brand-muted);
+    --color-accent: var(--brand-primary);
+    --color-accent-hover: var(--brand-primary-strong);
+    --color-accent-light: rgba(14, 124, 123, 0.08);
+    --color-accent-border: rgba(14, 124, 123, 0.26);
+    --color-success: #1F7A5C;
+    --color-warning: #92400E;
+    --color-error: #9B2C2C;
+    --color-disabled: rgba(23, 32, 42, 0.35);
+    --color-border: var(--brand-line);
+    --shadow-sm: 0 1px 2px rgba(23, 32, 42, 0.05);
+    --shadow-md: var(--shadow-soft);
+    --shadow-lg: var(--shadow-lift);
+    --shadow-focus: 0 0 0 3px rgba(14, 124, 123, 0.26);
+    --radius-card: var(--radius-lg);
     --radius-button: 10px;
     --radius-input: 8px;
-    background: #f6f8fb;
-    color: #172033;
+    background: var(--brand-bg);
+    color: var(--brand-ink);
+}
+
+/* Phase 5.6: shared brand components (icon tiles, feature/tool cards,
+   step rail, note cards, page shell) available to any .landing-page page */
+.landing-page .icon-tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--brand-teal-soft);
+    color: var(--brand-primary-strong);
+}
+
+.landing-page .icon-tile svg { width: 22px; height: 22px; }
+
+.landing-page .icon-tile--amber { background: var(--brand-amber-soft); color: var(--brand-accent-strong); }
+.landing-page .icon-tile--blue { background: var(--brand-blue-soft); color: #2B6E8F; }
+.landing-page .icon-tile--lg { width: 56px; height: 56px; border-radius: 16px; }
+.landing-page .icon-tile--lg svg { width: 28px; height: 28px; }
+.landing-page .icon-tile--sm { width: 32px; height: 32px; border-radius: 9px; }
+.landing-page .icon-tile--sm svg { width: 17px; height: 17px; }
+
+.landing-page .note-card {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 18px 20px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--brand-line);
+    background: var(--brand-amber-soft);
+}
+
+.landing-page .note-card__body { min-width: 0; }
+
+.landing-page .note-card__title {
+    margin: 0 0 4px;
+    font-weight: 700;
+    color: var(--brand-ink);
+    font-size: 0.95rem;
+}
+
+.landing-page .note-card__text {
+    margin: 0;
+    color: #5B4636;
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.landing-page .step-rail {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    counter-reset: step-rail;
+}
+
+.landing-page .step-rail__item {
+    position: relative;
+    padding: 22px 20px 20px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--brand-line);
+    background: var(--brand-surface);
+    box-shadow: var(--shadow-soft);
+}
+
+.landing-page .step-rail__number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    margin-bottom: 12px;
+    border-radius: 50%;
+    background: var(--brand-primary);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.landing-page .step-rail__title {
+    margin: 0 0 6px;
+    color: var(--brand-ink);
+    font-size: 1.02rem;
+    font-weight: 700;
+}
+
+.landing-page .step-rail__text {
+    margin: 0;
+    color: var(--brand-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.landing-page .feature-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 26px;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--brand-line);
+    background: var(--brand-surface);
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.landing-page a.feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+    border-color: rgba(14, 124, 123, 0.28);
+    text-decoration: none;
+}
+
+.landing-page .feature-card__head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.landing-page .feature-card__title {
+    margin: 0;
+    color: var(--brand-ink);
+    font-size: 1.14rem;
+    font-weight: 700;
+}
+
+.landing-page .feature-card__desc {
+    margin: 0;
+    color: var(--brand-muted);
+    font-size: 0.92rem;
+    line-height: 1.7;
+}
+
+.landing-page .feature-card__cta {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--brand-primary-strong);
+    font-weight: 700;
+    font-size: 0.88rem;
+}
+
+@media (max-width: 900px) {
+    .landing-page .step-rail { grid-template-columns: 1fr; }
+}
+
+/* Phase 5.6: hero-v2 (two column hero with abstract SVG illustration) */
+.landing-page .hero-v2 {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+    gap: 40px;
+    align-items: center;
+    padding: 46px 0 30px;
+}
+
+.landing-page .hero-v2__copy { min-width: 0; }
+
+.landing-page .hero-v2__art {
+    display: flex;
+    justify-content: center;
+}
+
+.landing-page .hero-art-svg {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+}
+
+.landing-page .hero-v2__trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    list-style: none;
+    margin: 22px 0 0;
+    padding: 0;
+}
+
+.landing-page .hero-v2__trust li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--brand-ink);
+}
+
+.landing-page .hero-v2__trust-icon {
+    display: inline-flex;
+    color: var(--brand-primary);
+}
+
+/* Phase 5.6: tool chooser grid (feature-card based) */
+.landing-page .tool-chooser-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.landing-page .tool-choice-card {
+    text-decoration: none;
+}
+
+.landing-page .tool-choice-card .landing-tool-card__eyebrow {
+    color: var(--brand-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.landing-page .landing-section__header .icon-tile,
+.landing-page .page-header .icon-tile {
+    margin-bottom: 14px;
+}
+
+@media (max-width: 920px) {
+    .landing-page .hero-v2 {
+        grid-template-columns: 1fr;
+        padding-top: 30px;
+    }
+
+    .landing-page .hero-v2__art {
+        order: -1;
+        max-width: 320px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 860px) {
+    .landing-page .tool-chooser-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .landing-page .tool-chooser-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .landing-page .hero-v2__art {
+        max-width: 260px;
+    }
 }
 
 /* Phase 5.5: shared header / nav / footer chrome, light variant */
@@ -1703,7 +1993,7 @@ img {
 .landing-page .site-logo__meta { color: var(--color-text-tertiary); }
 
 .landing-page .site-nav__link {
-    color: #3c4a5e;
+    color: #3F4B45;
 }
 
 .landing-page .site-nav__link:hover,
@@ -1726,7 +2016,7 @@ img {
 }
 
 .landing-page .site-nav__dropdown-link {
-    color: #3c4a5e;
+    color: #3F4B45;
 }
 
 .landing-page .site-nav__dropdown-link:hover {
@@ -1735,7 +2025,7 @@ img {
 }
 
 .landing-page .site-nav__group-label {
-    color: #94a3b8;
+    color: #8B8577;
 }
 
 .landing-page .card {
@@ -1747,7 +2037,7 @@ img {
 }
 
 .landing-page .affiliate-disclosure {
-    color: #7c8798;
+    color: var(--brand-muted);
 }
 
 /* Affiliate components were only ever styled for a dark background
@@ -1760,26 +2050,26 @@ img {
 }
 
 .landing-page .affiliate-stack__row--amazon {
-    border-color: #dde9fb;
-    background: linear-gradient(180deg, #f5f9ff, #ffffff);
+    border-color: rgba(14, 124, 123, 0.16);
+    background: linear-gradient(180deg, var(--brand-teal-soft), #ffffff);
 }
 
 .landing-page .affiliate-stack__label {
-    color: #7c8798;
+    color: var(--brand-muted);
 }
 
 .landing-page .affiliate-stack__label--amazon {
-    color: #1c6dd0;
+    color: var(--brand-primary-strong);
 }
 
 .landing-page .amazon-recommendation-card {
-    border-color: #dde5ee;
+    border-color: var(--brand-line);
     background: #ffffff;
     box-shadow: var(--shadow-card);
 }
 
 .landing-page .amazon-recommendation-card:hover {
-    border-color: #b9d4ec;
+    border-color: rgba(14, 124, 123, 0.3);
     box-shadow: var(--shadow-md);
 }
 
@@ -1788,15 +2078,15 @@ img {
 }
 
 .landing-page .amazon-recommendation-card__media {
-    background: #f1f5f9;
+    background: var(--brand-paper);
 }
 
 .landing-page .amazon-recommendation-card__media--empty {
-    color: #94a3b8;
+    color: #8B8577;
 }
 
 .landing-page .amazon-recommendation-card__category {
-    color: #175aab;
+    color: var(--brand-primary-strong);
 }
 
 .landing-page .amazon-recommendation-card__title {
@@ -1806,7 +2096,7 @@ img {
 .landing-page .amazon-recommendation-card__cta {
     background: var(--color-accent-light);
     border-color: var(--color-accent-border);
-    color: #175aab;
+    color: var(--brand-primary-strong);
 }
 
 .landing-page .affiliate-link-card {
@@ -1816,7 +2106,7 @@ img {
 }
 
 .landing-page .affiliate-link-card:hover {
-    border-color: #b9d4ec;
+    border-color: rgba(14, 124, 123, 0.3);
     box-shadow: var(--shadow-md);
 }
 
@@ -1825,11 +2115,11 @@ img {
 }
 
 .landing-page .affiliate-link-card__eyebrow {
-    color: #175aab;
+    color: var(--brand-primary-strong);
 }
 
 .landing-page .affiliate-link-card__desc {
-    color: #64748b;
+    color: var(--brand-muted);
 }
 
 .landing-page .affiliate-slot__box {
@@ -1849,7 +2139,7 @@ img {
 }
 
 .landing-page p {
-    color: #526071;
+    color: var(--color-text-secondary);
 }
 
 .landing-page .landing-shell {
@@ -1872,48 +2162,48 @@ img {
 
 .landing-page .landing-hero__eyebrow,
 .landing-page .landing-section__eyebrow {
-    color: #25636f;
+    color: var(--brand-primary-strong);
     letter-spacing: 0.08em;
 }
 
 .landing-page .landing-hero h1 {
     max-width: 780px;
-    color: #111827;
+    color: var(--brand-ink);
     font-size: clamp(2.4rem, 4.8vw, 4.4rem);
     line-height: 1.08;
     letter-spacing: 0;
 }
 
 .landing-page .landing-hero p {
-    color: #405064;
+    color: var(--color-text-secondary);
 }
 
 .landing-page .btn-primary {
-    background: #176b75;
+    background: var(--brand-primary);
     color: #ffffff;
 }
 
 .landing-page .btn-primary:hover {
-    background: #125862;
+    background: var(--brand-primary-strong);
 }
 
 .landing-page .btn-secondary {
-    color: #172033;
+    color: var(--brand-ink);
     background: #ffffff;
-    border-color: #ccd6e2;
+    border-color: var(--brand-line);
 }
 
 .landing-page .btn-secondary:hover {
-    background: #eef5f6;
-    border-color: #9ec5cb;
+    background: var(--brand-teal-soft);
+    border-color: rgba(14, 124, 123, 0.35);
 }
 
 .landing-hero__panel {
     padding: 22px;
-    border: 1px solid #d5dee8;
+    border: 1px solid var(--brand-line, #d5dee8);
     border-radius: 8px;
     background: #ffffff;
-    box-shadow: 0 18px 38px rgba(27, 39, 60, 0.1);
+    box-shadow: 0 18px 38px rgba(23, 32, 42, 0.1);
 }
 
 .landing-hero__panel-head {
@@ -1922,12 +2212,12 @@ img {
     justify-content: space-between;
     gap: 14px;
     margin-bottom: 16px;
-    color: #59677a;
+    color: var(--brand-muted, #59677a);
     font-size: 0.86rem;
 }
 
 .landing-hero__panel-head strong {
-    color: #176b75;
+    color: var(--brand-primary-strong, #176b75);
 }
 
 .landing-hero__mini-grid {
@@ -1942,17 +2232,17 @@ img {
     align-items: center;
     justify-content: center;
     padding: 12px;
-    border: 1px solid #d8e2ec;
+    border: 1px solid var(--brand-line, #d8e2ec);
     border-radius: 8px;
-    background: #f8fbfd;
-    color: #172033;
+    background: var(--brand-paper, #f8fbfd);
+    color: var(--brand-ink, #172033);
     font-weight: 700;
     text-align: center;
 }
 
 .landing-hero__mini-grid a:hover {
-    border-color: #8fbfc5;
-    background: #eef8f9;
+    border-color: rgba(14, 124, 123, 0.35);
+    background: var(--brand-teal-soft, #eef8f9);
     text-decoration: none;
 }
 
@@ -2051,6 +2341,35 @@ img {
     color: #176b75;
 }
 
+/* Phase 5.6: .tool-choice-card also carries the legacy .landing-tool-card class
+   (kept for adsense_preflight.py's structural check) — re-assert the new
+   feature-card look here since it must win over the rules above. */
+.landing-page .tool-choice-card {
+    padding: 26px;
+    border-radius: var(--radius-xl);
+    border-color: var(--brand-line);
+    background: var(--brand-surface);
+    box-shadow: var(--shadow-soft);
+}
+
+.landing-page .tool-choice-card:hover {
+    border-color: rgba(14, 124, 123, 0.28);
+    background: var(--brand-surface);
+    box-shadow: var(--shadow-lift);
+}
+
+.landing-page .tool-choice-card .feature-card__title {
+    color: var(--brand-ink);
+}
+
+.landing-page .tool-choice-card .feature-card__desc {
+    color: var(--brand-muted);
+}
+
+.landing-page .tool-choice-card .feature-card__cta {
+    color: var(--brand-primary-strong);
+}
+
 .landing-affiliate-intro {
     padding: 26px 0 4px;
 }
@@ -2065,7 +2384,7 @@ img {
 }
 
 .landing-page .affiliate-disclosure {
-    color: #667386;
+    color: var(--brand-muted);
 }
 
 .landing-page .landing-trust-card {
@@ -2097,26 +2416,32 @@ img {
 }
 
 .landing-page .seo-link-hub {
-    border-color: #d9e3ec;
+    border-color: var(--brand-line);
     background: #ffffff;
+    box-shadow: var(--shadow-soft);
 }
 
 .landing-page .seo-link-hub h2 {
-    color: #111827;
+    color: var(--brand-ink);
 }
 
 .landing-page .seo-link-hub__card {
-    border-color: #dce6ef;
-    background: #f8fbfd;
-    color: #172033;
+    border-color: var(--brand-line);
+    background: var(--brand-paper);
+    color: var(--brand-ink);
 }
 
 .landing-page .seo-link-hub__card strong {
-    color: #176b75;
+    color: var(--brand-primary-strong);
 }
 
 .landing-page .seo-link-hub__card span {
-    color: #526071;
+    color: var(--brand-muted);
+}
+
+.landing-page .seo-link-hub__card:hover {
+    border-color: rgba(14, 124, 123, 0.3);
+    background: #ffffff;
 }
 
 @media (max-width: 920px) {
@@ -2310,21 +2635,21 @@ img {
 }
 
 .landing-page .affiliate-context-block {
-    border-color: #d7e6ee;
-    background: #f8fbfd;
-    box-shadow: 0 16px 34px rgba(27, 39, 60, 0.08);
+    border-color: var(--brand-line);
+    background: var(--brand-paper);
+    box-shadow: var(--shadow-soft);
 }
 
 .landing-page .affiliate-context-block__eyebrow {
-    color: #25636f;
+    color: var(--brand-primary-strong);
 }
 
 .landing-page .affiliate-context-block__header h2 {
-    color: #111827;
+    color: var(--brand-ink);
 }
 
 .landing-page .affiliate-context-block__header > p:not(.affiliate-context-block__eyebrow):not(.affiliate-disclosure) {
-    color: #526071;
+    color: var(--brand-muted);
 }
 
 .affiliate-context-grid {
@@ -2357,14 +2682,14 @@ img {
 }
 
 .landing-page .affiliate-context-card {
-    border-color: #d7e6ee;
+    border-color: var(--brand-line);
     background: #ffffff;
-    color: #172033;
+    color: var(--brand-ink);
 }
 
 .landing-page .affiliate-context-card:hover {
-    border-color: #b9d4dc;
-    background: #fbfefe;
+    border-color: rgba(14, 124, 123, 0.3);
+    background: var(--brand-paper);
 }
 
 .affiliate-context-card__label,
@@ -2388,7 +2713,7 @@ img {
 }
 
 .landing-page .affiliate-context-card__desc {
-    color: #526071;
+    color: var(--brand-muted);
 }
 
 .affiliate-context-card__cta {
@@ -2405,9 +2730,9 @@ img {
 }
 
 .landing-page .affiliate-context-card__cta {
-    border-color: #b9d4dc;
-    background: #eef7f8;
-    color: #176b75;
+    border-color: rgba(14, 124, 123, 0.28);
+    background: var(--brand-teal-soft);
+    color: var(--brand-primary-strong);
 }
 
 .affiliate-context-a8 {
