@@ -15,141 +15,143 @@
             font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            background: #f6f8fb;
             min-height: 100vh;
-            color: #FFFFFF;
-            letter-spacing: 0.05em;
+            color: #172033;
+            letter-spacing: 0.02em;
             line-height: 1.6;
         }
-        
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 40px 20px;
         }
-        
+
         .page-header {
             text-align: center;
             padding: 40px 20px;
             margin-bottom: 40px;
         }
-        
+
         .page-header h1 {
             font-size: 2.5em;
             margin: 0 0 15px 0;
-            color: #FFFFFF;
+            color: #172033;
             font-weight: 600;
         }
-        
+
         .page-header p {
             font-size: 1.1em;
-            color: rgba(255, 255, 255, 0.8);
+            color: #526071;
             max-width: 700px;
             margin: 0 auto;
         }
-        
+
         .main-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
             margin-bottom: 30px;
         }
-        
+
         .panel {
-            background: rgba(30, 30, 30, 0.5);
+            background: #ffffff;
             border-radius: 12px;
             padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid #dde5ee;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
         }
-        
+
         .panel h3 {
-            color: #4A9EFF;
+            color: #1c6dd0;
             font-size: 1.2em;
             margin: 0 0 20px 0;
         }
-        
+
         .mode-selector {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.3);
+            background: #f1f5f9;
             padding: 5px;
             border-radius: 8px;
         }
-        
+
         .mode-button {
             flex: 1;
             padding: 10px;
             background: transparent;
             border: 1px solid transparent;
             border-radius: 6px;
-            color: rgba(255, 255, 255, 0.7);
+            color: #64748b;
             cursor: pointer;
             transition: all 0.3s;
             font-size: 0.95em;
         }
-        
+
         .mode-button.active {
-            background: rgba(74, 158, 255, 0.2);
-            border-color: rgba(74, 158, 255, 0.5);
-            color: #4A9EFF;
+            background: #ffffff;
+            border-color: #bcd6f5;
+            color: #1c6dd0;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
         }
-        
+
         .option-group {
             margin-bottom: 15px;
         }
-        
+
         .option-group label {
             display: block;
-            color: rgba(255, 255, 255, 0.9);
+            color: #1f2937;
             margin-bottom: 8px;
             font-size: 0.95em;
         }
-        
+
         .option-group input,
         .option-group select,
         .option-group textarea {
             width: 100%;
             padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
             border-radius: 6px;
-            color: #FFFFFF;
+            color: #172033;
             font-size: 0.95em;
             font-family: inherit;
         }
-        
+
         .option-group textarea {
             resize: vertical;
             min-height: 100px;
         }
-        
+
         .option-group input[type="range"] {
             padding: 0;
         }
-        
+
         .option-group input[type="checkbox"] {
             width: auto;
             margin-right: 8px;
         }
-        
+
         .checkbox-group {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
         }
-        
+
         .checkbox-group label {
             margin: 0;
             cursor: pointer;
         }
-        
+
         .action-button {
             padding: 12px 24px;
-            background: rgba(74, 158, 255, 0.2);
-            border: 1px solid rgba(74, 158, 255, 0.5);
+            background: #eaf2fc;
+            border: 1px solid #bcd6f5;
             border-radius: 8px;
-            color: #4A9EFF;
+            color: #175aab;
             font-size: 1em;
             font-weight: 500;
             cursor: pointer;
@@ -157,65 +159,65 @@
             width: 100%;
             margin-top: 10px;
         }
-        
+
         .action-button:hover:not(:disabled) {
-            background: rgba(74, 158, 255, 0.3);
+            background: #d9e9fb;
         }
-        
+
         .action-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        
+
         .action-button.secondary {
-            background: rgba(255, 152, 0, 0.2);
-            border-color: rgba(255, 152, 0, 0.5);
-            color: #FF9800;
+            background: rgba(180, 83, 9, 0.1);
+            border-color: rgba(180, 83, 9, 0.35);
+            color: #9a5b00;
         }
-        
+
         .action-button.secondary:hover:not(:disabled) {
-            background: rgba(255, 152, 0, 0.3);
+            background: rgba(180, 83, 9, 0.18);
         }
-        
+
         .output-preview {
-            background: rgba(0, 0, 0, 0.5);
+            background: #f1f5f9;
             border-radius: 8px;
             padding: 15px;
             max-height: 500px;
             overflow-y: auto;
             margin-bottom: 15px;
         }
-        
+
         .output-preview img {
             max-width: 100%;
             height: auto;
             border-radius: 8px;
         }
-        
+
         .output-preview pre {
             font-family: 'Courier New', monospace;
             font-size: 0.9em;
             white-space: pre-wrap;
             word-wrap: break-word;
-            color: rgba(255, 255, 255, 0.9);
+            color: #1f2937;
             margin: 0;
         }
-        
+
         .output-actions {
             display: flex;
             gap: 10px;
         }
-        
+
         .output-actions button {
             flex: 1;
         }
-        
+
         .info-text {
-            color: rgba(255, 255, 255, 0.6);
+            color: #6b7280;
             font-size: 0.85em;
             margin-top: 5px;
         }
-        
+
         @media (max-width: 1200px) {
             .main-layout {
                 grid-template-columns: 1fr;
@@ -223,10 +225,10 @@
         }
     </style>
 </head>
-<body>
+<body class="landing-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    
+
     <div class="container">
         <div class="page-header">
             <h1 data-reveal>ページを確認する</h1>
@@ -270,7 +272,7 @@
                     </div>
                     
                     <div class="option-group">
-                        <label>タイトル <span style="color: #F44336;">*</span></label>
+                        <label>タイトル <span style="color: #c62828;">*</span></label>
                         <input type="text" id="ogp-title" placeholder="OGP画像のタイトル">
                     </div>
                     
@@ -429,7 +431,7 @@
                         <label>URL</label>
                         <input type="text" id="meta-url-input" placeholder="https://example.com">
                         <button class="action-button" onclick="fetchMetaFromUrl()" style="margin-top: 10px;">HTMLを取得</button>
-                        <p class="info-text" style="color: #FF9800;">⚠️ CORS制約により取得できない場合があります。その場合はHTMLを貼り付けてください。</p>
+                        <p class="info-text" style="color: #9a5b00;">⚠️ CORS制約により取得できない場合があります。その場合はHTMLを貼り付けてください。</p>
                     </div>
                     
                     <button class="action-button" onclick="inspectMeta()">ページ情報を確認する</button>
@@ -441,7 +443,7 @@
                         入力したURLへサーバからアクセスしてリンクを収集します。機密サイトや社内サイトでは使用しないでください。
                     </div>
                     <div class="option-group">
-                        <label>ベースURL <span style="color: #F44336;">*</span></label>
+                        <label>ベースURL <span style="color: #c62828;">*</span></label>
                         <input type="text" id="sitemap-base-url" placeholder="https://example.com">
                     </div>
                     <div class="option-group">
@@ -490,9 +492,9 @@
                     
                     <button class="action-button" onclick="generateSitemap()">sitemap.xmlを生成</button>
                     
-                    <hr style="margin: 30px 0; border-color: rgba(255, 255, 255, 0.2);">
-                    
-                    <h4 style="color: #4A9EFF; margin-bottom: 15px;">robots.txt生成</h4>
+                    <hr style="margin: 30px 0; border-color: #dde5ee;">
+
+                    <h4 style="color: #175aab; margin-bottom: 15px;">robots.txt生成</h4>
                     
                     <div class="option-group">
                         <div class="checkbox-group">
@@ -540,7 +542,7 @@
                 
                 <!-- v2: メタタグ検査出力 -->
                 <div id="meta-output" style="display: none;">
-                    <div id="meta-summary" style="margin-bottom: 15px; padding: 15px; background: rgba(0, 0, 0, 0.3); border-radius: 8px;"></div>
+                    <div id="meta-summary" style="margin-bottom: 15px; padding: 15px; background: #f1f5f9; border-radius: 8px;"></div>
                     <div id="meta-results" class="output-preview" style="max-height: 300px;"></div>
                     <div id="meta-markdown-preview" class="output-preview" style="max-height: 400px; margin-top: 15px;"></div>
                     <div class="output-actions">
@@ -552,13 +554,13 @@
                 <!-- v2: sitemap/robots出力 -->
                 <div id="sitemap-output" style="display: none;">
                     <div id="sitemap-xml-output" style="display: none;">
-                        <h4 style="color: #4A9EFF; margin-bottom: 10px;">sitemap.xml</h4>
+                        <h4 style="color: #175aab; margin-bottom: 10px;">sitemap.xml</h4>
                         <div id="sitemap-xml-preview" class="output-preview"></div>
                         <button class="action-button" onclick="downloadSitemapXml()" style="margin-top: 10px;">sitemap.xmlをダウンロード</button>
                     </div>
                     
                     <div id="robots-txt-output" style="display: none; margin-top: 30px;">
-                        <h4 style="color: #4A9EFF; margin-bottom: 10px;">robots.txt</h4>
+                        <h4 style="color: #175aab; margin-bottom: 10px;">robots.txt</h4>
                         <div id="robots-txt-preview" class="output-preview"></div>
                         <button class="action-button" onclick="downloadRobotsTxt()" style="margin-top: 10px;">robots.txtをダウンロード</button>
                     </div>
@@ -566,7 +568,7 @@
                     <div id="sitemap-warnings" style="margin-top: 15px; padding: 15px; background: rgba(255, 152, 0, 0.2); border-radius: 8px; display: none;"></div>
                 </div>
                 <div id="output-empty-hint" class="output-preview">
-                    <p style="margin: 0; color: rgba(255,255,255,0.72);">左側で入力して実行すると、ここに結果と保存ボタンが表示されます。</p>
+                    <p style="margin: 0; color: #64748b;">左側で入力して実行すると、ここに結果と保存ボタンが表示されます。</p>
                 </div>
             </div>
         </div>
@@ -591,7 +593,7 @@
             {% set affiliate_mid_amazon_rendered = true %}
             {% endif %}
         </section>
-        <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px 0;"><a href="#about-tool" style="color: #4A9EFF;">使い方・FAQを読む ↓</a></div>
+        <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px 0;"><a href="#about-tool" style="color: #175aab;">使い方・FAQを読む ↓</a></div>
         {% include 'includes/tool_content_blocks.html' %}
     </div>
 
@@ -911,10 +913,10 @@
                 const levelIcon = item.level === 'ok' ? '✅' : item.level === 'warn' ? '⚠️' : '❌';
                 const levelColor = item.level === 'ok' ? '#4CAF50' : item.level === 'warn' ? '#FF9800' : '#F44336';
                 resultsEl.innerHTML += `
-                    <div style="margin-bottom: 10px; padding: 10px; background: rgba(0, 0, 0, 0.3); border-radius: 6px; border-left: 3px solid ${levelColor};">
+                    <div style="margin-bottom: 10px; padding: 10px; background: #f1f5f9; border-radius: 6px; border-left: 3px solid ${levelColor};">
                         <strong>${levelIcon} ${item.label}</strong><br>
                         ${item.message}<br>
-                        ${item.value ? `<span style="color: rgba(255, 255, 255, 0.7); font-size: 0.9em;">値: ${item.value.length > 100 ? item.value.substring(0, 100) + '...' : item.value}</span>` : ''}
+                        ${item.value ? `<span style="color: #64748b; font-size: 0.9em;">値: ${item.value.length > 100 ? item.value.substring(0, 100) + '...' : item.value}</span>` : ''}
                     </div>
                 `;
             });

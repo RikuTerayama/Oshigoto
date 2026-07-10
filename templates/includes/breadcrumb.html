@@ -5,14 +5,14 @@
 {# パンくずリストUI（LPは非表示） #}
 {% if request and request.path and request.path != '/' and breadcrumb_items|length > 1 %}
 <nav aria-label="breadcrumb" class="breadcrumb-nav" style="margin-bottom: 20px; padding: 0 20px;">
-    <ol class="breadcrumb-list" style="list-style: none; padding: 0; margin: 0; display: inline-flex; gap: 8px; font-size: 0.9em; color: rgba(255, 255, 255, 0.7); flex-wrap: wrap; align-items: center;">
+    <ol class="breadcrumb-list" style="list-style: none; padding: 0; margin: 0; display: inline-flex; gap: 8px; font-size: 0.9em; flex-wrap: wrap; align-items: center;">
         {% for item in breadcrumb_items %}
             {% if loop.last %}
-                <li aria-current="page" style="color: #FFFFFF; font-weight: 500;">{{ item.name }}</li>
+                <li aria-current="page" class="breadcrumb-list__current">{{ item.name }}</li>
             {% else %}
                 <li>
-                    <a href="{{ item.url }}" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; transition: color 0.2s;">{{ item.name }}</a>
-                    <span style="margin: 0 4px; color: rgba(255, 255, 255, 0.5);">›</span>
+                    <a href="{{ item.url }}" class="breadcrumb-list__link">{{ item.name }}</a>
+                    <span class="breadcrumb-list__sep">›</span>
                 </li>
             {% endif %}
         {% endfor %}
@@ -27,12 +27,41 @@
         max-width: 1200px;
         margin: 0 auto;
     }
-    
+
+    .breadcrumb-list__link,
+    .breadcrumb-list__sep {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .breadcrumb-list__current {
+        color: #FFFFFF;
+        font-weight: 500;
+    }
+
+    .breadcrumb-list__sep {
+        margin: 0 4px;
+    }
+
     .breadcrumb-list a:hover {
         color: #4A9EFF;
         text-decoration: underline;
     }
-    
+
+    .landing-page .breadcrumb-list__link,
+    .landing-page .breadcrumb-list__sep {
+        color: #64748b;
+    }
+
+    .landing-page .breadcrumb-list__current {
+        color: #172033;
+    }
+
+    .landing-page .breadcrumb-list a:hover {
+        color: #1c6dd0;
+    }
+
     @media (max-width: 768px) {
         .breadcrumb-list {
             font-size: 0.85em;

@@ -15,85 +15,86 @@
             font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            background: #f6f8fb;
             min-height: 100vh;
-            color: #FFFFFF;
-            letter-spacing: 0.05em;
+            color: #172033;
+            letter-spacing: 0.02em;
             line-height: 1.6;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 40px 20px;
         }
-        
+
         .page-header {
             text-align: center;
             padding: 60px 20px 40px;
             margin-bottom: 40px;
         }
-        
+
         .page-header h1 {
             font-size: 2.5em;
             margin: 0 0 20px 0;
-            color: #FFFFFF;
+            color: #172033;
             font-weight: 600;
         }
-        
+
         .page-header p {
             font-size: 1.2em;
-            color: rgba(255, 255, 255, 0.8);
+            color: #526071;
             max-width: 700px;
             margin: 0 auto;
         }
-        
+
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 30px;
             margin-top: 40px;
         }
-        
+
         .product-card {
-            background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%);
+            background: #ffffff;
             border-radius: 16px;
             padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid #dde5ee;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
             transition: all 0.3s;
             color: inherit;
             display: block;
         }
-        
+
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-            border-color: rgba(74, 158, 255, 0.5);
+            box-shadow: 0 15px 30px rgba(15, 23, 42, 0.1);
+            border-color: #b9d4ec;
         }
-        
+
         .product-card > a {
             text-decoration: none;
             color: inherit;
             display: block;
         }
-        
+
         .product-card .icon {
             font-size: 2.5em;
             margin-bottom: 15px;
         }
-        
+
         .product-card h3 {
             font-size: 1.5em;
             margin: 0 0 15px 0;
-            color: #4A9EFF;
+            color: #1c6dd0;
         }
-        
+
         .product-card p {
-            color: rgba(255, 255, 255, 0.8);
+            color: #526071;
             line-height: 1.7;
             margin: 0 0 15px 0;
         }
-        
+
         .product-card .status {
             display: inline-block;
             padding: 5px 12px;
@@ -102,33 +103,33 @@
             font-weight: 500;
             margin-bottom: 15px;
         }
-        
+
         .status.available {
-            background: rgba(76, 175, 80, 0.2);
-            color: #4CAF50;
+            background: rgba(46, 125, 50, 0.12);
+            color: #2e7d32;
         }
-        
+
         .status.coming-soon {
-            background: rgba(255, 152, 0, 0.2);
-            color: #FF9800;
+            background: rgba(180, 83, 9, 0.12);
+            color: #9a5b00;
         }
-        
+
         .product-card .link-button {
             display: inline-block;
             padding: 10px 20px;
-            background: rgba(74, 158, 255, 0.2);
-            border: 1px solid rgba(74, 158, 255, 0.5);
+            background: #eaf2fc;
+            border: 1px solid #bcd6f5;
             border-radius: 8px;
-            color: #4A9EFF;
+            color: #175aab;
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s;
         }
-        
+
         .product-card .link-button:hover {
-            background: rgba(74, 158, 255, 0.3);
+            background: #d9e9fb;
         }
-        
+
         /* CTA行（使ってみる + ガイド） */
         .tool-cta-row {
             display: flex;
@@ -137,24 +138,24 @@
             justify-content: space-between;
             margin-top: 15px;
         }
-        
+
         .tool-cta-row .link-button {
             flex: 1;
             text-align: center;
             text-decoration: none;
             margin: 0;
         }
-        
+
         /* ガイドカード */
         .guide-card {
             display: flex;
             align-items: center;
             gap: 8px;
             padding: 10px 16px;
-            background: rgba(74, 158, 255, 0.1);
-            border: 1px solid rgba(74, 158, 255, 0.3);
+            background: #eaf2fc;
+            border: 1px solid #bcd6f5;
             border-radius: 8px;
-            color: #4A9EFF;
+            color: #175aab;
             text-decoration: none;
             font-size: 0.9em;
             font-weight: 500;
@@ -162,10 +163,10 @@
             white-space: nowrap;
             min-width: fit-content;
         }
-        
+
         .guide-card:hover {
-            background: rgba(74, 158, 255, 0.2);
-            border-color: rgba(74, 158, 255, 0.5);
+            background: #d9e9fb;
+            border-color: #8fbfe6;
             transform: translateY(-1px);
         }
         
@@ -212,10 +213,10 @@
         }
     </style>
 </head>
-<body>
+<body class="landing-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    
+
     <div class="container">
         <div class="page-header">
             <h1 data-reveal>道具箱一覧</h1>
@@ -223,9 +224,9 @@
                 <span class="copy-lines__line">しごとの小さな面倒を、さっと片づけるための軽量ツール集です。</span>
                 <span class="copy-lines__line">PDF、表、画像、ページ確認から必要な道具を選んでください。</span>
             </p>
-            <p class="copy-lines page-header__description page-header__description--compact" data-reveal data-reveal-delay="80" style="margin-top: 12px; font-size: 1em; color: rgba(255, 255, 255, 0.75);">
+            <p class="copy-lines page-header__description page-header__description--compact" data-reveal data-reveal-delay="80" style="margin-top: 12px; font-size: 1em; color: #64748b;">
                 <span class="copy-lines__line">多くの処理はブラウザ内で完結します。サーバ送信が必要な機能は各ページで明記します。</span>
-                <span class="copy-lines__line"><a href="/faq" style="color: #4A9EFF;">FAQ</a>、<a href="/guide" style="color: #4A9EFF;">ガイド</a>、<a href="/privacy" style="color: #4A9EFF;">プライバシーポリシー</a> もあわせてご確認ください。</span>
+                <span class="copy-lines__line"><a href="/faq" style="color: #1c6dd0;">FAQ</a>、<a href="/guide" style="color: #1c6dd0;">ガイド</a>、<a href="/privacy" style="color: #1c6dd0;">プライバシーポリシー</a> もあわせてご確認ください。</span>
             </p>
         </div>
         {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_upper_items|default([])|length > 0) %}
@@ -237,8 +238,8 @@
         {% endif %}
         
         <div style="max-width: 800px; margin: 0 auto 30px;" data-reveal data-reveal-delay="100">
-            <input type="text" id="search-input" placeholder="🔍 ツール名や説明で検索..." 
-                   style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #FFFFFF; font-size: 1em;">
+            <input type="text" id="search-input" placeholder="🔍 ツール名や説明で検索..."
+                   style="width: 100%; padding: 12px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; color: #172033; font-size: 1em;">
         </div>
         {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
         {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', affiliate_section_placement='tools-index', affiliate_section_category='work-tools-index', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='作業環境・ビジネス書の Amazon おすすめ' %}
@@ -260,21 +261,21 @@
                         <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
                             <span class="status {{ product.status }}">
                                 {% if product.status == 'available' and product.id != 'autofill' %}
-                                    <span style="background: rgba(76, 175, 80, 0.2); color: #4CAF50; padding: 3px 8px; border-radius: 6px; font-size: 0.8em;">Local</span>
+                                    <span style="background: rgba(46, 125, 50, 0.12); color: #2e7d32; padding: 3px 8px; border-radius: 6px; font-size: 0.8em;">Local</span>
                                 {% elif product.status != 'available' %}
                                     準備中
                                 {% endif %}
                             </span>
                             {% if product.tags %}
                                 {% for tag in product.tags %}
-                                    <span style="background: rgba(74, 158, 255, 0.2); color: #4A9EFF; padding: 3px 8px; border-radius: 6px; font-size: 0.75em;">{{ tag }}</span>
+                                    <span style="background: #eaf2fc; color: #175aab; padding: 3px 8px; border-radius: 6px; font-size: 0.75em;">{{ tag }}</span>
                                 {% endfor %}
                             {% endif %}
                         </div>
                         <p>{{ product.description }}</p>
                         {% if product.features %}
-                            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-                                <p style="font-size: 0.85em; color: rgba(255, 255, 255, 0.7); margin: 0;">
+                            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e2e8f0;">
+                                <p style="font-size: 0.85em; color: #64748b; margin: 0;">
                                     <strong>主な機能:</strong> {{ product.features|join('、') }}
                                 </p>
                             </div>
@@ -296,7 +297,7 @@
             {% endfor %}
         </div>
         
-        <div id="no-results" hidden style="display: none; text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.6);" aria-hidden="true"></div>
+        <div id="no-results" hidden style="display: none; text-align: center; padding: 40px; color: #64748b;" aria-hidden="true"></div>
         {% set affiliate_context_links = [
             {'label': 'PDF・書類作業', 'description': 'PDFや紙の書類を扱う作業まわりを探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents', 'cta': 'PDF・書類作業を見る'},
             {'label': '表計算・デスク作業', 'description': 'CSV、Excel、デスク作業に関係する道具や本を探せます。', 'href': amazon_search_url('Excel 表計算 本'), 'category': 'spreadsheet-desk', 'cta': '表計算・デスク作業を見る'},

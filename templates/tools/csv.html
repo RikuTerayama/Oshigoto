@@ -25,23 +25,24 @@
     {% endif %}
     <style>
         * { box-sizing: border-box; font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif; }
-        body { margin: 0; padding: 0; background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%); min-height: 100vh; color: #FFFFFF; }
+        body { margin: 0; padding: 0; background: #f6f8fb; min-height: 100vh; color: #172033; }
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
         .page-header { text-align: center; padding: 40px 20px; margin-bottom: 40px; }
-        .page-header h1 { font-size: 2.5em; margin: 0 0 15px 0; color: #FFFFFF; }
-        .page-header p { font-size: 1.1em; color: rgba(255, 255, 255, 0.8); }
-        .tool-section { background: rgba(30, 30, 30, 0.5); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .tool-section h3 { color: #4A9EFF; font-size: 1.3em; margin: 0 0 20px 0; }
+        .page-header h1 { font-size: 2.5em; margin: 0 0 15px 0; color: #172033; }
+        .page-header p { font-size: 1.1em; color: #526071; }
+        .tool-section { background: #ffffff; border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid #dde5ee; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05); }
+        .tool-section h3 { color: #1c6dd0; font-size: 1.3em; margin: 0 0 20px 0; }
+        .info-text { color: #6b7280; font-size: 0.85em; margin-top: 5px; }
     </style>
 </head>
-<body>
+<body class="landing-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
     <div class="container">
         <div class="page-header">
             <h1 data-reveal>表を整える</h1>
             <p data-reveal data-reveal-delay="50">CSVやExcelを、文字化け確認・変換・重複削除・列整理までまとめて処理します。</p>
-            <p data-reveal data-reveal-delay="60" style="font-size: 0.95em; color: rgba(255,255,255,0.75); margin-top: 8px;">ファイル内容はサーバーに送信しません。計測・広告のために外部サービスへ通信することがあります。</p>
+            <p data-reveal data-reveal-delay="60" style="font-size: 0.95em; color: #64748b; margin-top: 8px;">ファイル内容はサーバーに送信しません。計測・広告のために外部サービスへ通信することがあります。</p>
         </div>
         {% set tool_intro_what = '表データの文字化け確認、CSVとExcelの変換、重複削除、列の整理をまとめて行えます。' %}
         {% set tool_intro_steps = ['CSVまたはExcelを選ぶ', 'やりたい操作を選ぶ', 'プレビューで確認する', '結果をダウンロードする'] %}
@@ -58,15 +59,15 @@
         </section>
         <div class="tool-section tool-main-panel">
             <h3>1. ファイルを選ぶ</h3>
-            <p style="color: rgba(255, 255, 255, 0.8);">CSV または Excel ファイルをドラッグ＆ドロップ、または下のボタンで選択してください。（対応: .csv, .xlsx）</p>
+            <p style="color: #475569;">CSV または Excel ファイルをドラッグ＆ドロップ、または下のボタンで選択してください。（対応: .csv, .xlsx）</p>
             <div id="dropzone" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 40px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); cursor: pointer;">
                 <div style="font-size: 2.5em; margin-bottom: 15px;">📁</div>
-                <p style="margin: 0; color: rgba(255, 255, 255, 0.9);">クリックまたはドロップでファイルを選択</p>
+                <p style="margin: 0; color: #1f2937;">クリックまたはドロップでファイルを選択</p>
                 <input type="file" id="file-input" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" multiple style="display: none;">
             </div>
             <p class="info-text">ファイルを選ぶと、プレビューと操作設定が表示されます。</p>
             <div id="file-list" style="margin-top: 15px;"></div>
-            <div id="rejected-files" style="display: none; margin-top: 15px; padding: 15px; background: rgba(255, 152, 0, 0.2); border-radius: 8px;"></div>
+            <div id="rejected-files" style="display: none; margin-top: 15px; padding: 15px; background: rgba(180, 83, 9, 0.08); border: 1px solid rgba(180, 83, 9, 0.3); border-radius: 8px;"></div>
         </div>
         <div class="tool-section tool-operation-card" id="options-section" style="display: none;">
             <h3>2. 操作を選ぶ</h3>
@@ -76,7 +77,7 @@
                     <option value="UTF-8">UTF-8</option>
                     <option value="SJIS">Shift-JIS</option>
                 </select>
-                <p id="encoding-hint" style="margin: 6px 0 0 0; font-size: 0.85em; color: rgba(255,255,255,0.6);">Shift-JIS は機種依存文字などで文字化けすることがあります。変換後はプレビューで確認してください。</p>
+                <p id="encoding-hint" style="margin: 6px 0 0 0; font-size: 0.85em; color: #6b7280;">Shift-JIS は機種依存文字などで文字化けすることがあります。変換後はプレビューで確認してください。</p>
             </div>
             <div style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 4px;">出力CSVの文字コード（CSV出力時のみ）</label>
@@ -179,7 +180,7 @@
         outputSection.style.display = 'block';
         outputArea.textContent = '';
         const p = document.createElement('p');
-        p.style.color = '#f44';
+        p.style.color = '#c62828';
         p.textContent = '必要なスクリプトの読み込みに失敗しました。ネットワーク設定・広告ブロッカー・ブラウザ拡張を確認するか、ページを再読み込みしてください。';
         outputArea.appendChild(p);
         if (runBtn) runBtn.disabled = true;
@@ -211,7 +212,7 @@
             const li = document.createElement('li');
             const sizeKB = f.size ? Math.round(f.size / 1024) + ' KB' : '';
             li.textContent = (f.name || '') + (sizeKB ? ' (' + sizeKB + ')' : '');
-            li.style.padding = '8px'; li.style.background = 'rgba(0,0,0,0.2)'; li.style.borderRadius = '6px'; li.style.marginBottom = '6px';
+            li.style.padding = '8px'; li.style.background = '#f1f5f9'; li.style.borderRadius = '6px'; li.style.marginBottom = '6px';
             ul.appendChild(li);
         });
         fileList.appendChild(ul);
@@ -236,7 +237,7 @@
                 modeOptions.appendChild(label);
             });
         } else if (mode === 'csv2xlsx' || mode === 'xlsx2csv') {
-            modeOptions.innerHTML = '<p style="color:rgba(255,255,255,0.7);">選択したファイルを変換してダウンロードします。</p>';
+            modeOptions.innerHTML = '<p style="color:#64748b;">選択したファイルを変換してダウンロードします。</p>';
         } else if (mode === 'dedupe') {
             const label = document.createElement('label');
             label.textContent = 'キー列: ';
@@ -273,7 +274,7 @@
         table.setAttribute('cellspacing', '0');
         table.style.borderCollapse = 'collapse';
         table.style.fontSize = '0.9em';
-        table.style.background = 'rgba(0,0,0,0.2)';
+        table.style.background = '#f8fafc';
         const thead = document.createElement('thead');
         const trHead = document.createElement('tr');
         (rows[0] || []).forEach(h => {
@@ -303,7 +304,7 @@
         outputSection.style.display = 'block';
         outputArea.textContent = '';
         const p = document.createElement('p');
-        p.style.color = isError ? '#f44' : 'rgba(255,255,255,0.9)';
+        p.style.color = isError ? '#c62828' : '#1f2937';
         p.textContent = msg || '';
         outputArea.appendChild(p);
     }
