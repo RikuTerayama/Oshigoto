@@ -37,6 +37,8 @@
 {% set effective_page_image = page_image|default('') %}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+{# Phase 5.6: original brand mark (no external asset, no CDN) #}
+<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/brand-toolbox.svg') }}">
 {# Scroll Reveal: no-js 竊・js 蛻・ｊ譖ｿ縺茨ｼ域怙蜆ｪ蜈医゛S縺悟虚縺乗凾縺縺鷹撼陦ｨ遉ｺ縺ｫ縺吶ｋ縺溘ａ・・#}
 <script>
     (function() {

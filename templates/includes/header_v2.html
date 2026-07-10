@@ -1,11 +1,15 @@
 {% from 'includes/icons.html' import icon %}
+{% from 'includes/tool_icons.html' import tool_icon %}
 {% set _current_path = request.path|default('/') if (request is defined and request) else '/' %}
 <header class="site-header">
     <nav class="site-nav" role="navigation" aria-label="メインナビゲーション">
         <div class="site-nav__inner">
             <a href="/" class="site-logo" aria-label="しごと道具箱 ホーム">
-                <span class="site-logo__badge">しごと道具箱</span>
-                <span class="site-logo__meta">小さな仕事を片づける軽量ツール集</span>
+                <span class="site-logo__mark" aria-hidden="true">{{ tool_icon('toolbox', 20) }}</span>
+                <span class="site-logo__text">
+                    <span class="site-logo__badge">しごと道具箱</span>
+                    <span class="site-logo__meta">小さな仕事を片づける軽量ツール集</span>
+                </span>
             </a>
             <div class="site-nav__links">
                 {% for section in nav_sections|default([]) %}
