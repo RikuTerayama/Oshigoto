@@ -91,10 +91,19 @@
             <div class="landing-section__header landing-section__header--compact">
                 <p class="landing-section__eyebrow">Work Picks</p>
                 <h2 id="affiliate-heading">作業ついでに、仕事道具も見直す</h2>
-                <p>PDF・ファイル作業、デスク環境、ビジネス書などをまとめて探せます。広告・アフィリエイトリンクを含みます。</p>
+                <p>PDF・ファイル作業、デスク環境、ビジネス書など、日々の仕事を少し楽にする道具を探せます。</p>
             </div>
+            {% set affiliate_context_links = [
+                {'label': 'PDF・書類作業アイテムを見る', 'description': '紙とPDFを行き来する作業の周辺道具を探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents', 'cta': '書類作業アイテムを見る'},
+                {'label': '集中環境を整える', 'description': 'デスク周りや長時間作業に関係する道具を探せます。', 'href': amazon_search_url('集中力 作業環境 グッズ'), 'category': 'desk-focus', 'cta': '集中環境を整える'},
+                {'label': '仕事に役立つ本を探す', 'description': 'ビジネス書や仕事術の本を作業の合間に確認できます。', 'href': amazon_search_url('ビジネス書 おすすめ'), 'category': 'business-books', 'cta': '仕事に役立つ本を探す'}
+            ] %}
+            {% with affiliate_context_title='作業ついでに、仕事道具も見直す', affiliate_context_lead='PDF・ファイル作業、デスク環境、ビジネス書など、日々の仕事を少し楽にする道具を探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='top-work-tools', affiliate_context_placement='top-inline', affiliate_context_class='affiliate-context-block--landing' %}
+                {% include 'includes/affiliate_context_block.html' %}
+            {% endwith %}
+            {% set affiliate_disclosure_rendered = true %}
             {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_upper_items|default([])|length > 0) %}
-            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=true, affiliate_section_class='affiliate-cards-section--upper landing-affiliate-block', affiliate_section_tier='upper-amazon', amazon_items_override=amazon_affiliate_upper_items[:3], amazon_section_title='仕事道具を整える Amazon おすすめ' %}
+            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper landing-affiliate-block', affiliate_section_tier='upper-amazon', affiliate_section_placement='top-inline', affiliate_section_category='top-work-tools', amazon_items_override=amazon_affiliate_upper_items[:3], amazon_section_title='仕事道具を整える Amazon おすすめ' %}
                 {% include 'includes/affiliate_cards_section.html' %}
             {% endwith %}
             {% set affiliate_upper_amazon_rendered = true %}

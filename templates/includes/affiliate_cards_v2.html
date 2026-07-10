@@ -29,7 +29,15 @@
 <div class="affiliate-link-grid affiliate-link-grid--{{ affiliate_cards_variant }}">
     {% for card in display_cards %}
     <article class="affiliate-link-card affiliate-link-card--{{ affiliate_cards_variant }}">
-        <a class="affiliate-link-card__anchor" href="{{ card.href }}" rel="nofollow">
+        <a
+            class="affiliate-link-card__anchor"
+            href="{{ card.href }}"
+            rel="nofollow sponsored noopener"
+            data-affiliate-network="rakuten"
+            data-affiliate-category="{{ affiliate_section_category|default('work-tools') }}"
+            data-affiliate-placement="{{ affiliate_section_placement|default(affiliate_section_tier|default('rakuten-card')) }}"
+            data-affiliate-cta="{{ card.cta }}"
+        >
             <span class="affiliate-link-card__media">
                 <img src="{{ card.image }}" border="0" alt="{{ card.alt }}">
             </span>

@@ -2,6 +2,12 @@
 {% set affiliate_section_show_disclosure = affiliate_section_show_disclosure|default(true) %}
 {% set affiliate_networks = affiliate_networks|default(['amazon', 'rakuten', 'a8']) %}
 {% set affiliate_section_tier = affiliate_section_tier|default('') %}
+{% set affiliate_section_placement = affiliate_section_placement|default(affiliate_section_tier or 'affiliate-stack') %}
+{% set affiliate_section_category = affiliate_section_category|default('work-tools') %}
+{% set affiliate_section_cta = affiliate_section_cta|default('affiliate-card') %}
+{% set affiliate_section_heading = affiliate_section_heading|default('') %}
+{% set affiliate_section_lead = affiliate_section_lead|default('') %}
+{% set affiliate_section_kicker = affiliate_section_kicker|default('PR / Affiliate') %}
 {% set show_amazon_network = 'amazon' in affiliate_networks %}
 {% set show_rakuten_network = 'rakuten' in affiliate_networks %}
 {% set show_a8_network = 'a8' in affiliate_networks %}
@@ -29,20 +35,30 @@
     class="affiliate-footer-block affiliate-footer-block--quiet affiliate-cards-section affiliate-stack{% if affiliate_section_class %} {{ affiliate_section_class }}{% endif %}"
     aria-label="Affiliate Links"
     {% if affiliate_section_tier %}data-affiliate-tier="{{ affiliate_section_tier }}"{% endif %}
+    data-affiliate-placement="{{ affiliate_section_placement }}"
+    data-affiliate-category="{{ affiliate_section_category }}"
+    data-affiliate-cta="{{ affiliate_section_cta }}"
 >
+    {% if affiliate_section_heading or affiliate_section_lead %}
+    <div class="affiliate-spotlight__header">
+        <p class="affiliate-spotlight__kicker">{{ affiliate_section_kicker }}</p>
+        {% if affiliate_section_heading %}<h2>{{ affiliate_section_heading }}</h2>{% endif %}
+        {% if affiliate_section_lead %}<p>{{ affiliate_section_lead }}</p>{% endif %}
+    </div>
+    {% endif %}
     {% if affiliate_section_show_disclosure %}
         {% include 'includes/affiliate_disclosure.html' %}
     {% endif %}
     <div class="affiliate-stack__rows">
         {% if has_amazon_items %}
-        <div class="affiliate-stack__row affiliate-stack__row--amazon" data-affiliate-network="amazon">
+        <div class="affiliate-stack__row affiliate-stack__row--amazon" data-affiliate-network="amazon" data-affiliate-placement="{{ affiliate_section_placement }}" data-affiliate-category="{{ affiliate_section_category }}">
             <div class="affiliate-stack__head">
                 <p class="affiliate-stack__label affiliate-stack__label--amazon">{{ amazon_section_title }}</p>
             </div>
             <div class="amazon-recommendation-grid" role="list" aria-label="Amazon Recommendations">
                 {% for item in amazon_items %}
                 <article class="amazon-recommendation-card" role="listitem">
-                    <a href="{{ item.url|default('#') }}" target="_blank" rel="nofollow sponsored noopener" class="amazon-recommendation-card__anchor">
+                    <a href="{{ item.url|default('#') }}" target="_blank" rel="nofollow sponsored noopener" class="amazon-recommendation-card__anchor" data-affiliate-network="amazon" data-affiliate-category="{{ item.category_label|default(affiliate_section_category) }}" data-affiliate-placement="{{ affiliate_section_placement }}" data-affiliate-cta="{{ item.cta|default('Amazonで見る') }}">
                         {% if item.image_url %}
                         <span class="amazon-recommendation-card__media">
                             <img src="{{ item.image_url }}" alt="{{ item.title|default('Amazon おすすめ商品') }}" loading="lazy">
@@ -61,7 +77,7 @@
         {% endif %}
 
         {% if show_rakuten_network %}
-        <div class="affiliate-stack__row affiliate-stack__row--rakuten" data-affiliate-network="rakuten">
+        <div class="affiliate-stack__row affiliate-stack__row--rakuten" data-affiliate-network="rakuten" data-affiliate-placement="{{ affiliate_section_placement }}" data-affiliate-category="{{ affiliate_section_category }}">
             <p class="affiliate-stack__label">楽天</p>
             <div class="affiliate-cards-section__inner">
                 {% with affiliate_cards_variant=rakuten_variant %}
@@ -72,7 +88,7 @@
         {% endif %}
 
         {% if show_a8_network %}
-        <div class="affiliate-stack__row affiliate-stack__row--a8" data-affiliate-network="a8">
+        <div class="affiliate-stack__row affiliate-stack__row--a8" data-affiliate-network="a8" data-affiliate-placement="{{ affiliate_section_placement }}" data-affiliate-category="{{ affiliate_section_category }}">
             <div class="affiliate-a8-banner" aria-label="A8.net Banner">
                 <script type="text/javascript" src="//rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js"></script>
             </div>

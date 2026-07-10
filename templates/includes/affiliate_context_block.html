@@ -1,0 +1,62 @@
+{% set affiliate_context_title = affiliate_context_title|default('仕事道具を探す') %}
+{% set affiliate_context_lead = affiliate_context_lead|default('作業に合わせて、関連する道具や本を探せます。') %}
+{% set affiliate_context_links = affiliate_context_links|default([]) %}
+{% set affiliate_context_category = affiliate_context_category|default('work-tools') %}
+{% set affiliate_context_placement = affiliate_context_placement|default('context') %}
+{% set affiliate_context_class = affiliate_context_class|default('') %}
+{% set affiliate_context_show_disclosure = affiliate_context_show_disclosure|default(true) %}
+{% set affiliate_context_show_a8 = affiliate_context_show_a8|default(false) %}
+{% set affiliate_context_a8_title = affiliate_context_a8_title|default('関連サービス') %}
+{% set affiliate_context_a8_lead = affiliate_context_a8_lead|default('作業内容に近いサービスがある場合だけ表示しています。') %}
+{% set has_context_links = affiliate_context_links|length > 0 %}
+{% set can_render_context = affiliate_can_render_textlinks() and has_context_links %}
+{% if can_render_context %}
+<section
+    class="affiliate-context-block{% if affiliate_context_class %} {{ affiliate_context_class }}{% endif %}"
+    aria-label="{{ affiliate_context_title }}"
+    data-affiliate-placement="{{ affiliate_context_placement }}"
+    data-affiliate-category="{{ affiliate_context_category }}"
+>
+    <div class="affiliate-context-block__header">
+        <p class="affiliate-context-block__eyebrow">PR / Affiliate</p>
+        <h2>{{ affiliate_context_title }}</h2>
+        <p>{{ affiliate_context_lead }}</p>
+        {% if affiliate_context_show_disclosure %}
+            {% with disclosure_compact=true %}{% include 'includes/affiliate_disclosure.html' %}{% endwith %}
+        {% endif %}
+    </div>
+    <div class="affiliate-context-grid" role="list">
+        {% for item in affiliate_context_links %}
+        <a
+            class="affiliate-context-card"
+            href="{{ item.href }}"
+            target="_blank"
+            rel="nofollow sponsored noopener"
+            role="listitem"
+            data-affiliate-network="{{ item.network|default('amazon') }}"
+            data-affiliate-category="{{ item.category|default(affiliate_context_category) }}"
+            data-affiliate-placement="{{ affiliate_context_placement }}"
+            data-affiliate-cta="{{ item.cta|default(item.label) }}"
+        >
+            <span class="affiliate-context-card__label">{{ item.label }}</span>
+            {% if item.description %}
+            <span class="affiliate-context-card__desc">{{ item.description }}</span>
+            {% endif %}
+            <span class="affiliate-context-card__cta">{{ item.cta|default('詳しく見る') }}</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% if affiliate_context_show_a8 %}
+    <div class="affiliate-context-a8">
+        <div class="affiliate-context-a8__copy">
+            <strong>{{ affiliate_context_a8_title }}</strong>
+            <span>{{ affiliate_context_a8_lead }}</span>
+        </div>
+        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--bottom-a8 affiliate-cards-section--context-a8', affiliate_section_tier='lower-a8' %}
+            {% include 'includes/affiliate_cards_section.html' %}
+        {% endwith %}
+        {% set affiliate_a8_rendered = true %}
+    </div>
+    {% endif %}
+</section>
+{% endif %}

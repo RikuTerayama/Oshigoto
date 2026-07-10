@@ -30,6 +30,7 @@ from lib.seo import (
     is_noindex_path,
 )
 from lib.amazon_creators import (
+    build_search_url as build_amazon_search_url,
     build_rotating_theme_cards as build_amazon_rotating_theme_cards,
     get_recommendations as get_amazon_recommendations,
 )
@@ -1049,6 +1050,7 @@ def inject_env_vars():
             'amazon_affiliate_purpose_items': amazon_affiliate_upper_items,
             'amazon_affiliate_upper_items': amazon_affiliate_upper_items,
             'amazon_affiliate_mid_items': amazon_affiliate_mid_items,
+            'amazon_search_url': build_amazon_search_url,
             'affiliate_page_type': affiliate_page_type,
             'affiliate_path_excluded': affiliate_is_path_excluded(current_path),
             'affiliate_top_slot_id': affiliate_top_slot_id(current_path),
@@ -1110,6 +1112,7 @@ def inject_env_vars():
             'amazon_affiliate_purpose_items': [],
             'amazon_affiliate_upper_items': [],
             'amazon_affiliate_mid_items': [],
+            'amazon_search_url': build_amazon_search_url,
             'affiliate_page_type': get_affiliate_page_type(current_path),
             'affiliate_path_excluded': affiliate_is_path_excluded(current_path),
             'affiliate_top_slot_id': affiliate_top_slot_id(current_path),

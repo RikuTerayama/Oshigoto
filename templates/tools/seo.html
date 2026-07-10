@@ -576,8 +576,16 @@
             <p>URLからHTMLを取得できない場合は、ページのHTMLを貼り付けて確認してください。社内サイトや非公開URLの入力は避けてください。</p>
         </section>
         <section class="tool-affiliate-row" aria-label="Web運用に関連する仕事道具">
+            {% set affiliate_context_links = [
+                {'label': 'SEOの本を探す', 'description': 'SEOの基礎や運用を学べる本を探せます。', 'href': amazon_search_url('SEO 本'), 'category': 'seo-books', 'cta': 'SEOの本を探す'},
+                {'label': 'Webマーケティングの本を見る', 'description': 'サイト改善や集客に関係する本を探せます。', 'href': amazon_search_url('Webマーケティング 本'), 'category': 'web-marketing-books', 'cta': 'Webマーケティングの本を見る'},
+                {'label': 'SNS運用の本を見る', 'description': 'SNS投稿や運用設計に関係する本を探せます。', 'href': amazon_search_url('SNS運用 本'), 'category': 'sns-books', 'cta': 'SNS運用の本を見る'}
+            ] %}
+            {% with affiliate_context_title='Web運用・マーケティングを学ぶ', affiliate_context_lead='OGPやmetaを確認したあと、Web運用の学びにつながる本も探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='web-marketing', affiliate_context_placement='seo-post-action', affiliate_context_class='post-action-affiliate' %}
+                {% include 'includes/affiliate_context_block.html' %}
+            {% endwith %}
             {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
-            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='Web運用・マーケティングに役立つ Amazon おすすめ' %}
+            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', affiliate_section_placement='seo-post-action', affiliate_section_category='web-marketing', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='Web運用・マーケティングに役立つ Amazon おすすめ' %}
                 {% include 'includes/affiliate_cards_section.html' %}
             {% endwith %}
             {% set affiliate_mid_amazon_rendered = true %}
