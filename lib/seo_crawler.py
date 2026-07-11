@@ -31,7 +31,7 @@ EXCLUDED_EXTENSIONS = (
 )
 
 # User-Agent（robots.txt 取得・ページ取得で使用）
-USER_AGENT = 'JobcanAutomationBot/1.0 (+contact)'
+USER_AGENT = 'OshigotoBot/1.0 (+contact)'
 
 # HTML として解析する Content-Type（メイン部分のみ一致）
 ALLOWED_HTML_CONTENT_TYPES = frozenset({'text/html', 'application/xhtml+xml'})

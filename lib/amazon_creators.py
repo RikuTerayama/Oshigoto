@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 _CACHE_LOCK = threading.Lock()
 _TOKEN_CACHE: Dict[str, object] = {"token": None, "expires_at": 0.0}
 _SEARCH_CACHE: Dict[str, Dict[str, object]] = {}
-_FORBIDDEN_QUERY_FRAGMENTS = ("jobcan autofill |", "jobcan autofill")
+_FORBIDDEN_QUERY_FRAGMENTS = ()
 _MAX_SEARCH_QUERY_LEN = 48
 DEFAULT_FALLBACK_KEYWORDS: List[str] = ["デスク収納", "ノートPCスタンド", "ケーブル整理", "タイマー"]
 
