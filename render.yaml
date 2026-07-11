@@ -1,47 +1,43 @@
 services:
   - type: web
-    name: jobcan-automation
+    name: oshigoto
     env: docker
-    # plan: free で 512MB RAM → Playwright使用時はOOM risk高
-    # 推奨: plan: starter (512MB→1GB+) で安定化
-    # 503エラー対策のため、より保守的な設定に変更
     plan: free
-    buildCommand: docker build -t jobcan-automation .
-    startCommand: docker run -p $PORT:$PORT jobcan-automation
-    # 超軽量ヘルスチェック（/healthz = <10ms）
+    buildCommand: docker build -t oshigoto .
+    startCommand: docker run -p $PORT:$PORT oshigoto
     healthCheckPath: /healthz
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: PORT
         value: 10000
+      - key: BASE_URL
+        value: https://oshigoto.onrender.com
       - key: ADSENSE_ENABLED
         value: true
-      # === Gunicorn 最適化設定（503エラー対策）===
+      - key: AMAZON_AFFILIATE_ENABLED
+        value: true
+      - key: AMAZON_ASSOCIATE_TAG
+        value: jobcanauto-22
       - key: WEB_CONCURRENCY
-        value: "1"  # workers数（free plan 512MBで安定化）
+        value: "1"
       - key: WEB_THREADS
-        value: "1"  # スレッド数（メモリ節約）
+        value: "1"
       - key: WEB_TIMEOUT
-        value: "180"  # タイムアウト3分（Jobcan処理用）
+        value: "180"
       - key: WEB_GRACEFUL_TIMEOUT
         value: "30"
       - key: WEB_KEEPALIVE
         value: "5"
       - key: WEB_MAX_REQUESTS
-        value: "500"  # メモリリーク対策（300-500の範囲で調整可能、OOM頻度次第で300-400に下げる）
+        value: "500"
       - key: WEB_MAX_REQUESTS_JITTER
-        value: "50"  # max-requestsの10%程度が目安（30-50の範囲で調整可能）  # max-requestsの10%程度が目安
+        value: "50"
       - key: WEB_LOG_LEVEL
-        value: "warning"  # P0-P1: メモリ最適化のためwarningに変更（infoはノイズが多い）
-      # === メモリ制限（OOM防止）===
-      # P0-4: 閾値の整合性を修正（WARNING < LIMIT）
+        value: warning
       - key: MEMORY_LIMIT_MB
-        value: "450"  # OOM前に警告
+        value: "450"
       - key: MEMORY_WARNING_MB
-        value: "400"  # LIMITより小さい値に設定
-      # === 同時実行制限（503エラー対策）===
-      - key: MAX_ACTIVE_SESSIONS
-        value: "1"  # 同時接続数制限（free plan 512MB）
+        value: "400"
       - key: MAX_FILE_SIZE_MB
-        value: "10" 
+        value: "10"

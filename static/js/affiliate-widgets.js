@@ -1,5 +1,5 @@
 (function() {
-  if (window.JobcanAffiliate) {
+  if (window.OshigotoAffiliate) {
     return;
   }
 
@@ -248,7 +248,7 @@
     slot.setAttribute('aria-hidden', 'true');
   }
 
-  window.JobcanAffiliate = {
+  window.OshigotoAffiliate = {
     init: init,
     markToolResultReady: markToolResultReady,
     resetToolSlot: resetToolSlot

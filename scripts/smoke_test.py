@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-スモークテスト: /, /autofill, /about, /tools を複数回アクセスし、
-全て 200 かつエラーページ表示がないことを確認する。
-使用例: python scripts/smoke_test.py
-        BASE_URL=http://localhost:5000 python scripts/smoke_test.py
-"""
+"""Smoke tests for the public Oshigoto routes."""
 import os
 import sys
 
-# プロジェクトルートをパスに追加
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+
+def _looks_like_error_page(body):
+    lowered = body.lower()
+    return (
+        '<title>error' in lowered
+        or '<h1>error' in lowered
+        or 'internal server error' in lowered
+        or 'traceback (most recent call last)' in lowered
+    )
+
+
 def run_with_test_client():
-    """Flask test client で実行（サーバー不要）"""
     from app import app
     app.config['TESTING'] = True
     client = app.test_client()
@@ -27,84 +31,64 @@ def run_with_test_client():
         '/tools/image-batch': 200,
         '/tools/image-cleanup': 200,
         '/tools/seo': 200,
+        '/guide': 200,
+        '/blog': 200,
+        '/glossary': 200,
         '/healthz': 200,
     }
-    error_phrase = '⚠️ エラーが発生しました'
-    n_per_path = 10
     failed = []
-
     for path, expected_status in expected.items():
-        for i in range(n_per_path):
+        for i in range(10):
             response = client.get(path, follow_redirects=False)
-            body = response.data.decode('utf-8')
+            body = response.data.decode('utf-8', errors='replace')
             if response.status_code != expected_status:
                 failed.append(f"path={path} run={i+1} expected={expected_status} status={response.status_code}")
-            elif path != '/healthz' and error_phrase in body:
+            elif path != '/healthz' and _looks_like_error_page(body):
                 failed.append(f"path={path} run={i+1} body contains error page")
-
     if failed:
-        for f in failed:
-            print(f"FAIL: {f}")
+        for item in failed:
+            print(f"FAIL: {item}")
         print(f"Total failures: {len(failed)}")
         return 1
-    print(f"OK: {len(expected)} paths x {n_per_path} requests = expected statuses, no error page")
+    print(f"OK: {len(expected)} paths x 10 requests = expected statuses, no error page")
     return 0
 
+
 def run_deploy_verification():
-    """
-    本番デプロイ前検証: minutes 301 / CSV・SEO ツール 200 / 末尾スラッシュ 301 を確認。
-    使用例: python scripts/smoke_test.py --deploy
-    """
     from app import app
     app.config['TESTING'] = True
     client = app.test_client()
-    error_phrase = '⚠️ エラーが発生しました'
     failed = []
-
-    # 200 期待: エラー表示なし
-    for path in ['/tools/seo', '/tools/csv', '/guide/csv']:
+    for path in ['/', '/tools', '/tools/seo', '/tools/csv', '/tools/pdf', '/tools/image-batch', '/tools/image-cleanup', '/guide/csv']:
         resp = client.get(path, follow_redirects=False)
-        body = resp.data.decode('utf-8')
+        body = resp.data.decode('utf-8', errors='replace')
         if resp.status_code != 200:
             failed.append(f"path={path} expected 200 got {resp.status_code}")
-        elif error_phrase in body:
+        elif _looks_like_error_page(body):
             failed.append(f"path={path} body contains error page")
-
-    # 301 期待: /tools/minutes -> /tools, /guide/minutes -> /guide (Location はパスまたは絶対URL)
-    for path, expect_suffix in [
-        ('/tools/minutes', '/tools'),
-        ('/guide/minutes', '/guide'),
-        ('/autofill', '/tools'),
-    ]:
-        resp = client.get(path, follow_redirects=False)
-        loc = (resp.headers.get('Location') or '').strip()
-        if resp.status_code != 301:
-            failed.append(f"path={path} expected 301 got {resp.status_code}")
-        elif not loc.endswith(expect_suffix) and expect_suffix not in loc:
-            failed.append(f"path={path} expected Location...{expect_suffix} got {loc}")
-
-    # 末尾スラッシュ: /tools/pdf/ -> 301 -> /tools/pdf
+    resp = client.get('/autofill', follow_redirects=False)
+    loc = (resp.headers.get('Location') or '').strip()
+    if resp.status_code != 301 or not loc.endswith('/tools'):
+        failed.append(f"path=/autofill expected 301 to /tools got {resp.status_code} {loc}")
+    resp = client.get('/api/pdf/unlock', follow_redirects=False)
+    if resp.status_code != 404:
+        failed.append(f"path=/api/pdf/unlock expected 404 got {resp.status_code}")
     resp = client.get('/tools/pdf/', follow_redirects=False)
     loc = (resp.headers.get('Location') or '').strip()
-    if resp.status_code != 301:
-        failed.append(f"path=/tools/pdf/ expected 301 got {resp.status_code}")
-    elif '/tools/pdf' not in loc:
-        failed.append(f"path=/tools/pdf/ expected Location .../tools/pdf got {loc}")
-
+    if resp.status_code != 301 or '/tools/pdf' not in loc:
+        failed.append(f"path=/tools/pdf/ expected 301 to /tools/pdf got {resp.status_code} {loc}")
     if failed:
-        for f in failed:
-            print(f"FAIL: {f}")
+        for item in failed:
+            print(f"FAIL: {item}")
         print(f"Total: {len(failed)}")
         return 1
-    print("OK: deploy verification (tools/seo, tools/csv, guide/csv=200; minutes 301; /tools/pdf/ 301)")
+    print("OK: deploy verification public routes, /autofill 301, /api/pdf/unlock 404")
     return 0
 
 
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--deploy', action='store_true', help='Run deploy verification (301/200 checks)')
+    parser.add_argument('--deploy', action='store_true')
     args = parser.parse_args()
-    if args.deploy:
-        sys.exit(run_deploy_verification())
-    sys.exit(run_with_test_client())
+    sys.exit(run_deploy_verification() if args.deploy else run_with_test_client())

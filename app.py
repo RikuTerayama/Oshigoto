@@ -1,24 +1,21 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
-import uuid
-import threading
-import tempfile
-import shutil
-import psutil
-import time
-import logging
-import hashlib
-import re
 import json
+import logging
+import os
+import re
+import threading
+import time
+import uuid
 from datetime import datetime
-from flask import Flask, request, jsonify, render_template, send_file, Response, redirect, g, has_request_context
-from werkzeug.exceptions import NotFound, MethodNotAllowed
+from collections import deque as _deque
+
+from werkzeug.exceptions import HTTPException, MethodNotAllowed, NotFound
+from flask import Flask, Response, g, has_request_context, jsonify, redirect, render_template, request
+from werkzeug.exceptions import MethodNotAllowed, NotFound
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from utils import allowed_file, create_template_excel, create_previous_month_template_excel
-from automation import process_jobcan_automation
 from lib.seo import (
     build_breadcrumb_items,
     get_article_schema,
@@ -35,115 +32,40 @@ from lib.amazon_creators import (
     get_recommendations as get_amazon_recommendations,
 )
 
-# P1-1: 計測ログユーティリティ（循環import回避）
-try:
-    from diagnostics.runtime_metrics import log_memory
-    metrics_available = True
-except ImportError:
-    metrics_available = False
-    def log_memory(tag, job_id=None, session_id=None, extra=None):
-        pass
 
-# ロギング設定
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    datefmt='%Y-%m-%d %H:%M:%S',
 )
 logger = logging.getLogger(__name__)
 
-# メモリ制限設定（環境変数から取得、デフォルト値付き）
-# P0-4: 閾値の整合性を修正（WARNING < LIMIT）
 MEMORY_LIMIT_MB = int(os.getenv("MEMORY_LIMIT_MB", "450"))
 MEMORY_WARNING_MB = int(os.getenv("MEMORY_WARNING_MB", "400"))
-
-# P0-4: 起動時に閾値矛盾を検知して警告
 if MEMORY_WARNING_MB >= MEMORY_LIMIT_MB:
-    logger.warning(f"memory_threshold_mismatch WARNING_MB={MEMORY_WARNING_MB} >= LIMIT_MB={MEMORY_LIMIT_MB} - auto_correcting")
-    # 自動補正: WARNINGをLIMITの90%に設定
     MEMORY_WARNING_MB = int(MEMORY_LIMIT_MB * 0.9)
-    logger.warning(f"memory_threshold_auto_corrected WARNING_MB={MEMORY_WARNING_MB} LIMIT_MB={MEMORY_LIMIT_MB}")
 MAX_FILE_SIZE_MB = int(os.getenv("MAX_FILE_SIZE_MB", "10"))
-# Render本番では同時実行を直列化（512MB/0.5CPUで複数Playwrightは高リスク）。未設定時はRENDER検知で1に寄せる
-_default_sessions = "1" if os.getenv("RENDER") else "20"
-MAX_ACTIVE_SESSIONS = int(os.getenv("MAX_ACTIVE_SESSIONS", _default_sessions))
-# ジョブ全体のハードタイムアウト（秒）。超過でstatus=timeoutに遷移
-JOB_TIMEOUT_SEC = int(os.getenv("JOB_TIMEOUT_SEC", "300"))  # 5分
 
 app = Flask(__name__)
-# Phase 5: Render 等プロキシ配下で実クライアント IP を request.remote_addr に反映（単段プロキシ前提）
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
-# 起動時の検証（恒久対策：テンプレートとモジュールの存在確認）
-def validate_startup():
-    """アプリケーション起動時に主要リソースの存在を確認"""
-    errors = []
-    
-    # 主要テンプレートの存在確認
-    required_templates = [
-        'landing.html',
-        'error.html',
-        'includes/header.html',
-        'includes/footer.html',
-        'includes/head_meta.html',
-        'includes/structured_data.html',
-        'includes/affiliate_disclosure.html',
-        'includes/affiliate_slot.html',
-        'includes/affiliate_text_links.html'
-    ]
-    for template in required_templates:
-        try:
-            app.jinja_env.get_template(template)
-        except Exception as e:
-            errors.append(f"Template not found or invalid: {template} - {str(e)}")
-    
-    # 製品カタログ（products_catalog）のインポート確認（LP/500 根本対策）
-    try:
-        from lib.products_catalog import PRODUCTS, get_public_products
-        if not isinstance(PRODUCTS, list):
-            errors.append("products_catalog.PRODUCTS is not a list")
-        elif len(PRODUCTS) == 0:
-            errors.append("products_catalog.PRODUCTS is empty")
-    except Exception as e:
-        errors.append(f"Failed to import products_catalog.PRODUCTS: {type(e).__name__}: {str(e)}")
-    
-    if errors:
-        logger.error(f"startup_validation_failed errors={errors}")
-        # エラーがあっても起動は続行（本番環境で起動できないのを防ぐ）
-    else:
-        logger.info("startup_validation_passed all checks OK")
-
-# 起動時に検証を実行
-validate_startup()
-
-# アップロードフォルダの設定
-UPLOAD_FOLDER = 'uploads'
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# === Phase 5: インメモリレート制限（固定窓） ===
+# === In-memory rate limiting ===
 from collections import deque as _deque
 
 def _rate_limit_path_group(path, method):
-    """path と method からレート制限グループを返す。除外なら None。"""
+    """Return the rate-limit group for a request path, or None when exempt."""
     if path.startswith(('/healthz', '/livez', '/readyz', '/ping', '/health', '/ready', '/static/')):
         return None
     if path in ('/robots.txt', '/sitemap.xml', '/ads.txt'):
         return None
-    if path == '/upload' and method == 'POST':
-        return 'upload'
-    if path.startswith('/status/'):
-        return 'status'
     if path.startswith('/api/'):
         if path.startswith('/api/seo/crawl-urls'):
-            return None  # 既存の 1/min 制限に任せる
+            return None  # SEO crawler has its own validation and timeout policy.
         return 'api'
     return None
 
 class RateLimiter:
-    """固定窓: (key -> deque of timestamps)。窓秒を超えた古いものを捨ててから件数判定。"""
+    """Fixed-window-ish in-memory rate limiter keyed by client and group."""
     def __init__(self, window_sec=60):
         self.window_sec = window_sec
         self._data = {}
@@ -162,13 +84,13 @@ class RateLimiter:
             q.append(now)
             return True, self.window_sec
 
-# 制限値（弱めから）: upload 10/min, status 120/min, api 60/min
-_RATE_LIMITS = {'upload': 10, 'status': 120, 'api': 60}
+# Keep only the generic API bucket now that legacy upload/status routes are removed.
+_RATE_LIMITS = {'api': 60}
 _rate_limiter = RateLimiter(window_sec=60)
 
 @app.before_request
 def rate_limit_check():
-    """Phase 5: レート制限。超過時は 429 + Retry-After。"""
+    """Return 429 + Retry-After when a request exceeds the per-minute API limit."""
     path = request.path
     method = request.method
     group = _rate_limit_path_group(path, method)
@@ -180,7 +102,7 @@ def rate_limit_check():
     allowed, window_sec = _rate_limiter.is_allowed(key, max_per)
     if not allowed:
         resp = jsonify(
-            error='リクエストが多すぎます。しばらく待ってからお試しください。',
+            error='Too many requests. Please wait a moment and try again.',
             error_code='RATE_LIMIT_EXCEEDED',
             retry_after_sec=window_sec
         )
@@ -189,35 +111,16 @@ def rate_limit_check():
         return resp
     return None
 
-# === リクエストロギングミドルウェア ===
-# P1: prune_jobs実行頻度制御（メモリ最適化）
-_last_prune_time = 0
-PRUNE_INTERVAL_SECONDS = 300  # 5分ごとにprune_jobsを実行
-# get_status 内での prune 間引き（ポーリング負荷軽減）
-_last_status_prune_time = 0
-STATUS_PRUNE_INTERVAL_SEC = 30  # 30秒に1回まで
 
 @app.before_request
 def before_request():
-    """リクエスト開始時の処理"""
-    global _last_prune_time
+    """Attach request metadata and log public requests."""
     
     g.start_time = time.time()
     g.request_id = request.headers.get('X-Request-ID', str(uuid.uuid4())[:8])
     
-    # P1: 定期的にprune_jobsを実行（メモリ最適化）
-    # ヘルスチェックや静的ファイルリクエストは除外
-    if not request.path.startswith(('/healthz', '/livez', '/readyz', '/static')):
-        current_time = time.time()
-        if current_time - _last_prune_time >= PRUNE_INTERVAL_SECONDS:
-            try:
-                prune_jobs(current_time=current_time)
-                _last_prune_time = current_time
-            except Exception as prune_error:
-                # prune_jobsのエラーはログに記録するが、リクエスト処理は続行
-                logger.warning(f"prune_jobs_error in before_request: {prune_error}")
     
-    # ヘルスチェック以外のリクエストをログ（Phase 5: ua/ref 追加、200文字で切る）
+    # Log non-health requests with a short request id for production diagnostics.
     if not request.path.startswith(('/healthz', '/livez', '/readyz')):
         ua = (request.headers.get('User-Agent') or '')[:200]
         ref = (request.headers.get('Referer') or '')[:200]
@@ -228,7 +131,7 @@ def before_request():
 
 @app.after_request
 def after_request(response):
-    """リクエスト終了時の処理"""
+    """Add response headers and request logging."""
     if hasattr(g, 'start_time') and hasattr(g, 'request_id'):
         duration_ms = (time.time() - g.start_time) * 1000
         response.headers['X-Request-ID'] = g.request_id
@@ -236,7 +139,7 @@ def after_request(response):
         if deploy_commit:
             response.headers['X-Deploy-Commit'] = deploy_commit[:12]
         
-        # ヘルスチェック以外のリクエストをログ
+        # 繝倥Ν繧ｹ繝√ぉ繝・け莉･螟悶・繝ｪ繧ｯ繧ｨ繧ｹ繝医ｒ繝ｭ繧ｰ
         if not request.path.startswith(('/healthz', '/livez', '/readyz')):
             level = logging.WARNING if duration_ms > 1000 else logging.INFO
             logger.log(
@@ -245,11 +148,11 @@ def after_request(response):
                 f"status={response.status_code} ms={duration_ms:.1f}"
             )
             
-            # 遅延警告
+            # 驕・ｻｶ隴ｦ蜻・
             if duration_ms > 5000:
                 logger.warning(f"SLOW_REQUEST rid={g.request_id} path={request.path} ms={duration_ms:.1f}")
     
-    # キャッシュ対策: text/html のみ no-store（静的ファイルには適用しない）
+    # 繧ｭ繝｣繝・す繝･蟇ｾ遲・ text/html 縺ｮ縺ｿ no-store・磯撕逧・ヵ繧｡繧､繝ｫ縺ｫ縺ｯ驕ｩ逕ｨ縺励↑縺・ｼ・
     if not request.path.startswith('/static/'):
         ct = response.content_type or ''
         if 'text/html' in ct:
@@ -257,155 +160,101 @@ def after_request(response):
     
     return response
 
-# グローバルエラーハンドラー
+# 繧ｰ繝ｭ繝ｼ繝舌Ν繧ｨ繝ｩ繝ｼ繝上Φ繝峨Λ繝ｼ
+# Shared error handlers
 def _generate_error_id():
-    """エラーIDを生成（短いUUID）"""
+    """Generate a short error id for diagnostics."""
     return str(uuid.uuid4())[:8]
 
+
 def _render_error_page(status_code, error_message, error_id=None):
-    """エラーページをレンダリング（共通関数）"""
-    if error_id is None:
-        error_id = _generate_error_id()
-    
+    """Render a shared error page."""
+    error_id = error_id or _generate_error_id()
     try:
-        response = render_template(
+        return render_template(
             'error.html',
             error_message=error_message,
             error_id=error_id,
-            status_code=status_code
+            status_code=status_code,
         ), status_code
-        # レスポンスヘッダにX-Error-Idを付与（恒久対策：エラーIDの追跡強化）
-        from flask import make_response
-        resp = make_response(response)
-        resp.headers['X-Error-Id'] = error_id
-        return resp
     except Exception as render_error:
-        # エラーテンプレートもレンダリングできない場合はシンプルなHTMLを返す
-        import traceback
-        logger.exception(f"error_page_render_failed error_id={error_id} render_error={str(render_error)}")
-        from flask import make_response
-        html_content = f'''<html><head><meta charset="utf-8"><title>エラー {status_code}</title></head>
-<body><h1>エラーが発生しました</h1>
-<p>{error_message}</p>
-<p>エラーID: {error_id}</p>
-<p>お問い合わせの際は、このエラーIDをお伝えください。</p>
-</body></html>'''
-        resp = make_response((html_content, status_code))
-        resp.headers['X-Error-Id'] = error_id
-        return resp
+        logger.exception("error_page_render_failed error_id=%s render_error=%s", error_id, render_error)
+        html_content = (
+            '<html><head><meta charset="utf-8"><title>Error</title></head>'
+            f'<body><h1>Error {status_code}</h1><p>{error_message}</p>'
+            f'<p>Error ID: {error_id}</p></body></html>'
+        )
+        return Response(html_content, status=status_code, mimetype='text/html')
+
 
 @app.errorhandler(404)
 def not_found(error):
-    """404エラーのハンドリング"""
+    """Handle 404 responses."""
     error_id = _generate_error_id()
     request_id = getattr(g, 'request_id', 'unknown')
     logger.warning(
-        f"not_found error_id={error_id} rid={request_id} "
-        f"path={request.path} method={request.method} "
-        f"user_agent={request.headers.get('User-Agent', 'Unknown')} error={str(error)}"
+        "not_found error_id=%s rid=%s path=%s method=%s user_agent=%s error=%s",
+        error_id,
+        request_id,
+        request.path,
+        request.method,
+        request.headers.get('User-Agent', 'Unknown'),
+        error,
     )
-    return _render_error_page(
-        404,
-        'お探しのページが見つかりませんでした。URLを確認してください。',
-        error_id
-    )
+    return _render_error_page(404, 'The requested page was not found.', error_id)
+
 
 @app.errorhandler(500)
 def internal_error(error):
-    """500エラーのハンドリング"""
+    """Handle 500 responses."""
     error_id = _generate_error_id()
     request_id = getattr(g, 'request_id', 'unknown')
-    
-    # スタックトレースをログに記録（恒久対策：例外ログの強化）
-    # logger.exception()を使用してスタックトレースを確実に記録
-    # user-agent、remote_addr、例外型も含める
-    try:
-        path = request.path if request else 'unknown'
-        method = request.method if request else 'unknown'
-        user_agent = request.headers.get('User-Agent', 'Unknown') if request else 'Unknown'
-        remote_addr = request.remote_addr if request else 'unknown'
-    except Exception:
-        path = 'unknown'
-        method = 'unknown'
-        user_agent = 'Unknown'
-        remote_addr = 'unknown'
-    
     logger.exception(
-        f"internal_server_error error_id={error_id} rid={request_id} "
-        f"path={path} method={method} "
-        f"user_agent={user_agent} remote_addr={remote_addr} "
-        f"exception_type={type(error).__name__} error={str(error)}"
+        "internal_server_error error_id=%s rid=%s path=%s method=%s user_agent=%s error=%s",
+        error_id,
+        request_id,
+        request.path if request else 'unknown',
+        request.method if request else 'unknown',
+        request.headers.get('User-Agent', 'Unknown') if request else 'Unknown',
+        error,
     )
-    
-    return _render_error_page(
-        500,
-        'サーバー側でエラーが発生しました。しばらく待ってから再試行してください。',
-        error_id
-    )
+    return _render_error_page(500, 'An unexpected server error occurred. Please try again later.', error_id)
+
 
 @app.errorhandler(503)
 def service_unavailable(error):
-    """503エラーのハンドリング"""
+    """Handle 503 responses."""
     error_id = _generate_error_id()
     request_id = getattr(g, 'request_id', 'unknown')
-    try:
-        path = request.path if request else 'unknown'
-        method = request.method if request else 'unknown'
-    except Exception:
-        path, method = 'unknown', 'unknown'
     logger.exception(
-        f"service_unavailable error_id={error_id} rid={request_id} path={path} method={method} error={str(error)}"
+        "service_unavailable error_id=%s rid=%s path=%s method=%s error=%s",
+        error_id,
+        request_id,
+        request.path if request else 'unknown',
+        request.method if request else 'unknown',
+        error,
     )
-    return _render_error_page(
-        503,
-        'サービスが一時的に利用できません。しばらく待ってから再試行してください。',
-        error_id
-    )
+    return _render_error_page(503, 'The service is temporarily unavailable. Please try again later.', error_id)
+
 
 @app.errorhandler(Exception)
-def handle_exception(e):
-    """未処理例外のハンドリング（404以外）"""
-    from werkzeug.exceptions import HTTPException
-    
-    # HTTPException（404, 500等）は適切なハンドラーに委譲
-    if isinstance(e, HTTPException):
-        # FlaskのHTTPExceptionはそのまま通す（適切なハンドラーが処理する）
-        return e
-    
-    # 404エラーは上記のハンドラーで処理されるため、ここでは処理しない
-    if hasattr(e, 'code') and e.code == 404:
-        raise e  # 404エラーハンドラーに委譲
-    
+def handle_exception(error):
+    """Handle unexpected exceptions as 500 responses."""
+    if isinstance(error, HTTPException):
+        return error
     error_id = _generate_error_id()
     request_id = getattr(g, 'request_id', 'unknown')
-    
-    # 詳細なエラー情報をログに記録（恒久対策：例外ログの強化）
-    # logger.exception()を使用してスタックトレースを確実に記録
-    # user-agent、remote_addr、例外型も含める
-    try:
-        path = request.path if request else 'unknown'
-        method = request.method if request else 'unknown'
-        user_agent = request.headers.get('User-Agent', 'Unknown') if request else 'Unknown'
-        remote_addr = request.remote_addr if request else 'unknown'
-    except Exception:
-        path = 'unknown'
-        method = 'unknown'
-        user_agent = 'Unknown'
-        remote_addr = 'unknown'
-    
     logger.exception(
-        f"unhandled_exception error_id={error_id} rid={request_id} "
-        f"path={path} method={method} "
-        f"user_agent={user_agent} remote_addr={remote_addr} "
-        f"exception_type={type(e).__name__} error={str(e)}"
+        "unhandled_exception error_id=%s rid=%s path=%s method=%s user_agent=%s remote_addr=%s error=%s",
+        error_id,
+        request_id,
+        request.path if request else 'unknown',
+        request.method if request else 'unknown',
+        request.headers.get('User-Agent', 'Unknown') if request else 'Unknown',
+        request.remote_addr if request else 'unknown',
+        error,
     )
-    
-    # HTMLエラーページを返す（APIエンドポイントでもHTMLを返す）
-    return _render_error_page(
-        500,
-        '予期しないエラーが発生しました。しばらく待ってから再試行してください。',
-        error_id
-    )
+    return _render_error_page(500, 'An unexpected server error occurred. Please try again later.', error_id)
 
 def _env_flag(name, default=False):
     value = os.getenv(name)
@@ -516,12 +365,8 @@ PUBLIC_AFFILIATE_PAGE_TYPES = frozenset((
     'generic',
 ))
 
-NON_UI_AFFILIATE_PATH_PREFIXES = ('/api/', '/status/', '/admin/', '/static/')
+NON_UI_AFFILIATE_PATH_PREFIXES = ('/api/', '/admin/', '/static/')
 NON_UI_AFFILIATE_PATHS = frozenset((
-    '/sessions',
-    '/cleanup-sessions',
-    '/download-template',
-    '/download-previous-template',
 ))
 
 
@@ -702,7 +547,7 @@ def affiliate_top_slot_mode(path=None):
     return 'header'
 
 
-AMAZON_RECENT_HISTORY_COOKIE = 'jobcan_recent_affiliate_context'
+AMAZON_RECENT_HISTORY_COOKIE = 'oshigoto_recent_affiliate_context'
 AMAZON_RECENT_HISTORY_LIMIT = 8
 
 
@@ -778,13 +623,13 @@ def _build_affiliate_page_tags(path, seo_defaults, products):
         tags.append(str(category))
 
     if normalized_path == '/autofill':
-        tags.extend(['勤怠', '自動入力', '業務効率化'])
+        tags.extend(['PDF', 'CSV', '画像', 'SEO'])
     elif normalized_path.startswith('/guide'):
-        tags.extend(['ガイド', '運用', '手順'])
+        tags.extend(['ガイド', '使い方', '手順'])
     elif normalized_path.startswith('/blog'):
         tags.extend(['ブログ', '解説', 'ノウハウ'])
     elif normalized_path.startswith('/case'):
-        tags.extend(['導入事例', '業務改善'])
+        tags.extend(['事例', '業務改善'])
     elif normalized_path.startswith('/tools'):
         tags.extend(['ツール', '効率化'])
 
@@ -912,10 +757,10 @@ def persist_affiliate_history_cookie(response):
     return response
 
 
-# 環境変数をテンプレートコンテキストに注入（AdSense / Affiliate 設定用）
+# 迺ｰ蠅・､画焚繧偵ユ繝ｳ繝励Ξ繝ｼ繝医さ繝ｳ繝・く繧ｹ繝医↓豕ｨ蜈･・・dSense / Affiliate 險ｭ螳夂畑・・
 @app.context_processor
 def inject_env_vars():
-    """環境変数をテンプレートで使えるようにする。製品一覧は products_catalog から取得（外部依存なし）。"""
+    """Expose template variables for public tool and affiliate navigation."""
     try:
         import json
         from lib.products_catalog import PRODUCTS, get_public_products
@@ -1088,7 +933,7 @@ def inject_env_vars():
             'seo_page_description': '',
             'seo_page_robots': 'index,follow',
             'seo_page_kind': 'page',
-            'seo_breadcrumb_items': [{'name': 'ホーム', 'url': '/'}],
+            'seo_breadcrumb_items': [{'name': '繝帙・繝', 'url': '/'}],
             'seo_web_application_schema': None,
             'seo_article_schema': None,
             'build_breadcrumb_items': build_breadcrumb_items,
@@ -1125,7 +970,7 @@ def inject_env_vars():
         }
 
 
-# P0-1 SEO: 末尾スラッシュ正規化（重複URL対策）。存在するルートのみ 301 で canonical へ。存在しない URL はリダイレクトしない。
+# P0-1 SEO: 譛ｫ蟆ｾ繧ｹ繝ｩ繝・す繝･豁｣隕丞喧・磯㍾隍ⅡRL蟇ｾ遲厄ｼ峨ょｭ伜惠縺吶ｋ繝ｫ繝ｼ繝医・縺ｿ 301 縺ｧ canonical 縺ｸ縲ょｭ伜惠縺励↑縺・URL 縺ｯ繝ｪ繝繧､繝ｬ繧ｯ繝医＠縺ｪ縺・・
 @app.before_request
 def normalize_trailing_slash():
     path = request.path
@@ -1140,20 +985,18 @@ def normalize_trailing_slash():
         adapter = app.url_map.bind_to_environ(request.environ)
         adapter.match(new_path, method=request.method)
     except (NotFound, MethodNotAllowed):
-        return None  # 存在しないルートにはリダイレクトしない（404のまま）
+        return None  # 蟄伜惠縺励↑縺・Ν繝ｼ繝医↓縺ｯ繝ｪ繝繧､繝ｬ繧ｯ繝医＠縺ｪ縺・ｼ・04縺ｮ縺ｾ縺ｾ・・
     location = new_path + ('?' + request.query_string.decode() if request.query_string else '')
     return redirect(location, code=301)
 
 
-# P0-2 SEO: 動的・一時的URLのインデックス制御（X-Robots-Tag）
-_NOINDEX_PATHS = frozenset((
-    '/download-template', '/download-previous-template', '/sessions', '/cleanup-sessions'
-))
+# P0-2 SEO: 蜍慕噪繝ｻ荳譎ら噪URL縺ｮ繧､繝ｳ繝・ャ繧ｯ繧ｹ蛻ｶ蠕｡・・-Robots-Tag・・
+_NOINDEX_PATHS = frozenset()
 
 @app.after_request
 def add_noindex_for_dynamic(response):
     path = request.path
-    if path.startswith('/status/') or path.startswith('/api/'):
+    if path.startswith('/api/'):
         response.headers['X-Robots-Tag'] = 'noindex, nofollow'
     elif path in _NOINDEX_PATHS:
         response.headers['X-Robots-Tag'] = 'noindex, nofollow'
@@ -1162,684 +1005,39 @@ def add_noindex_for_dynamic(response):
     return response
 
 
-# ジョブの状態を管理（スレッドセーフな辞書）
-jobs = {}
-jobs_lock = threading.Lock()
-
-# 直列実行＋待機キュー（インメモリFIFO）。サーバ再起動でキューは消える
-from collections import deque
-job_queue = deque()
-# queued ジョブの実行用パラメータ（start時にpopして使用。資格情報はstart後即参照しない）
-queued_job_params = {}
-# queued の最大待機時間（超過でtimeout扱い・ファイル削除）
-QUEUED_MAX_WAIT_SEC = int(os.getenv("QUEUED_MAX_WAIT_SEC", "1800"))  # 30分
-MAX_QUEUE_SIZE = int(os.getenv("MAX_QUEUE_SIZE", "50"))  # キュー上限（メモリ保護）
-QUEUE_HEARTBEAT_TIMEOUT_SEC = int(os.getenv("QUEUE_HEARTBEAT_TIMEOUT_SEC", "90"))
-QUEUE_DISCONNECT_GRACE_SEC = int(os.getenv("QUEUE_DISCONNECT_GRACE_SEC", "15"))
-ACTIVE_CLIENT_STALE_WARNING_SEC = int(os.getenv("ACTIVE_CLIENT_STALE_WARNING_SEC", "180"))
-
-# P0-3: 完了ジョブの保持期間（秒）
-JOB_RETENTION_SECONDS = 1800  # 30分
-
-# P1: ジョブログの上限設定（メモリ最適化）。utils.MAX_JOB_LOGSと同期（500）
-MAX_JOB_LOGS = 500  # 1ジョブあたりの最大ログ件数
-TERMINAL_JOB_STATUSES = frozenset(('completed', 'error', 'timeout', 'cancelled', 'expired', 'failed'))
-QUEUE_LIVE_STATUSES = frozenset(('queued', 'running'))
-queue_identity_index = {}
-
-# セッション管理とリソース監視
-session_manager = {
-    'active_sessions': {},
-    'session_lock': threading.Lock(),
-    'resource_monitor': {
-        'last_check': time.time(),
-        'memory_usage': 0,
-        'cpu_usage': 0,
-        'active_browsers': 0
-    }
-}
 
 def get_system_resources():
-    """システムリソースの使用状況を取得（強化版）"""
+    """Return lightweight process resource usage for health endpoints."""
     try:
-        import psutil
         process = psutil.Process()
         memory_info = process.memory_info()
         memory_mb = memory_info.rss / 1024 / 1024
         cpu_percent = process.cpu_percent()
-        
-        # メモリ使用量が危険域の場合はログに記録
         if memory_mb > MEMORY_WARNING_MB:
-            logger.warning(f"high_memory_usage memory_mb={memory_mb:.1f} warning_threshold={MEMORY_WARNING_MB}")
+            logger.warning(
+                "high_memory_usage memory_mb=%.1f warning_threshold=%s",
+                memory_mb,
+                MEMORY_WARNING_MB,
+            )
         if memory_mb > MEMORY_LIMIT_MB:
-            logger.error(f"memory_limit_exceeded memory_mb={memory_mb:.1f} limit={MEMORY_LIMIT_MB}")
-        
-        return {
-            'memory_mb': memory_mb,
-            'cpu_percent': cpu_percent,
-            'active_sessions': len(session_manager['active_sessions'])
-        }
-    except ImportError:
-        logger.warning("psutil_not_available resource_monitoring_disabled")
-        return {'memory_mb': 0, 'cpu_percent': 0, 'active_sessions': len(session_manager['active_sessions'])}
-    except Exception as e:
-        logger.error(f"resource_monitoring_error error={str(e)}")
-        return {'memory_mb': 0, 'cpu_percent': 0, 'active_sessions': len(session_manager['active_sessions'])}
-
-def get_elapsed_sec(job):
-    """ジョブの経過秒数を返す。start_time が無い/不正なら None。"""
-    if not job:
-        return None
-    st = job.get('start_time')
-    if not st:
-        return None
-    try:
-        return int(time.time() - st)
-    except Exception:
-        return None
-
-
-def normalize_queue_identity(email, company_id):
-    """同一ユーザー判定用の安定キーを生成する。"""
-    normalized_email = (email or '').strip().lower()
-    normalized_company = (company_id or '').strip().lower()
-    raw_key = f"{normalized_email}|{normalized_company}"
-    return hashlib.sha256(raw_key.encode('utf-8')).hexdigest()
-
-
-def compact_job_queue_locked():
-    """キュー内の欠損・重複・非queuedを取り除く。jobs_lock前提。"""
-    global job_queue
-
-    new_queue = deque()
-    seen_job_ids = set()
-    mutated = False
-
-    for queued_job_id in list(job_queue):
-        if queued_job_id in seen_job_ids:
-            mutated = True
-            continue
-
-        queued_job = jobs.get(queued_job_id)
-        if not queued_job or queued_job.get('status') != 'queued':
-            queued_job_params.pop(queued_job_id, None)
-            mutated = True
-            continue
-
-        seen_job_ids.add(queued_job_id)
-        new_queue.append(queued_job_id)
-
-    if mutated:
-        job_queue = new_queue
-
-    return list(job_queue)
-
-
-def get_queue_position_locked(job_id):
-    qlist = compact_job_queue_locked()
-    if job_id in qlist:
-        return 1 + qlist.index(job_id)
-    return None
-
-
-def find_live_job_for_queue_key_locked(queue_key):
-    """同一待機キーの queued / running ジョブを返す。jobs_lock前提。"""
-    if not queue_key:
-        return None, None
-
-    indexed_job_id = queue_identity_index.get(queue_key)
-    if indexed_job_id:
-        indexed_job = jobs.get(indexed_job_id)
-        if indexed_job and indexed_job.get('status') in QUEUE_LIVE_STATUSES:
-            return indexed_job_id, indexed_job
-        queue_identity_index.pop(queue_key, None)
-
-    matches = []
-    for existing_job_id, job_info in jobs.items():
-        if job_info.get('queue_key') != queue_key:
-            continue
-        if job_info.get('status') not in QUEUE_LIVE_STATUSES:
-            continue
-        status_rank = 0 if job_info.get('status') == 'running' else 1
-        created_at = job_info.get('queued_at') or job_info.get('start_time') or 0
-        matches.append((status_rank, created_at, existing_job_id, job_info))
-
-    if not matches:
-        return None, None
-
-    matches.sort(key=lambda item: (item[0], item[1]))
-    _, _, job_id, job_info = matches[0]
-    queue_identity_index[queue_key] = job_id
-    return job_id, job_info
-
-
-def release_queue_identity_locked(job_id, job_info=None):
-    """ジョブ終了時に待機キーの参照を外す。jobs_lock前提。"""
-    job_info = job_info or jobs.get(job_id) or {}
-    queue_key = job_info.get('queue_key')
-    if not queue_key:
-        return
-
-    if queue_identity_index.get(queue_key) == job_id:
-        queue_identity_index.pop(queue_key, None)
-        replacement_job_id, _ = find_live_job_for_queue_key_locked(queue_key)
-        if replacement_job_id:
-            queue_identity_index[queue_key] = replacement_job_id
-
-
-def touch_job_lease_locked(job_info, current_time=None):
-    """queued / running ジョブの heartbeat を更新する。jobs_lock前提。"""
-    if not job_info or job_info.get('status') not in QUEUE_LIVE_STATUSES:
-        return
-
-    current_time = current_time or time.time()
-    job_info['last_heartbeat_at'] = current_time
-    job_info['lease_expires_at'] = current_time + QUEUE_HEARTBEAT_TIMEOUT_SEC
-    job_info['disconnect_hint_at'] = None
-    job_info['client_attached'] = True
-    job_info['last_updated'] = current_time
-
-
-def build_existing_job_response_locked(job_id, job_info):
-    """同一ユーザーの既存ジョブを再利用するときのレスポンスを組み立てる。"""
-    status = job_info.get('status') or 'queued'
-    payload = {
-        'job_id': job_id,
-        'session_id': job_info.get('session_id', ''),
-        'status': status,
-        'existing_job': True,
-        'status_url': f'/status/{job_id}',
-        'message': '既存の順番待ちを再利用しています。'
-        if status == 'queued'
-        else '既存の処理状態を再利用しています。'
-    }
-    if status == 'queued':
-        payload['queue_position'] = get_queue_position_locked(job_id)
-    return payload
-
-
-def expire_queued_job_locked(job_id, current_time, cleanup_targets, reason):
-    """queued ジョブを expired に遷移させてキューから除外する。jobs_lock前提。"""
-    global job_queue
-
-    job_info = jobs.get(job_id)
-    if not job_info or job_info.get('status') != 'queued':
-        return None
-
-    messages = {
-        'duplicate_wait': '同一ユーザーの重複待機を整理したため、この順番待ちは自動的に終了しました。',
-        'disconnect': 'タブを閉じたか通信が途切れたため、順番待ちは自動的に終了しました。',
-        'heartbeat_timeout': '一定時間操作が確認できなかったため、順番待ちは自動的に終了しました。',
-    }
-
-    job_queue = deque([queued_job_id for queued_job_id in job_queue if queued_job_id != job_id])
-    queued_job_params.pop(job_id, None)
-    job_info['status'] = 'expired'
-    job_info['login_status'] = 'expired'
-    job_info['login_message'] = messages.get(reason, messages['heartbeat_timeout'])
-    job_info['end_time'] = current_time
-    job_info['last_updated'] = current_time
-    job_info['expired_reason'] = reason
-    job_info['client_attached'] = False
-    release_queue_identity_locked(job_id, job_info)
-
-    cleanup_targets.append((job_info.get('file_path'), job_info.get('session_id')))
-    return {
-        'job_id': job_id,
-        'reason': reason,
-        'elapsed_sec': get_elapsed_sec(job_info),
-    }
-
-
-def get_queue_position(job_id):
-    """queued 時のキュー内位置（1-based）。見つからなければ None。jobs_lock で保護。"""
-    with jobs_lock:
-        qlist = compact_job_queue_locked()
-        if job_id in qlist:
-            return 1 + qlist.index(job_id)
-    return None
-
-
-def log_job_event(event, job_id, status=None, queue_position=None, elapsed_sec=None, queue_length=None, running_count=None, extra=None):
-    """AutoFill ジョブのライフサイクルイベントを構造化ログに出力。秘匿情報は絶対に含めない。"""
-    payload = {
-        "event": event,
-        "job_id": job_id,
-        "status": status,
-        "queue_position": queue_position,
-        "elapsed_sec": elapsed_sec,
-    }
-    if queue_length is not None:
-        payload["queue_length"] = queue_length
-    if running_count is not None:
-        payload["running_count"] = running_count
-    if extra:
-        payload.update(extra)
-    logger.info("autofill_event %s", payload)
-
-
-def count_running_jobs():
-    """statusがrunningのジョブ数（同時実行数）を返す。"""
-    with jobs_lock:
-        return sum(1 for j in jobs.values() if j.get('status') == 'running')
-
-def check_resource_limits():
-    """リソース制限のチェック（readyz/sessions 等の健全性用）。上限超過時は RuntimeError を投げる。"""
-    resources = get_system_resources()
-    running_count = count_running_jobs()
-    session_count = resources['active_sessions']
-    warnings = []
-    
-    if resources['memory_mb'] > MEMORY_LIMIT_MB:
-        raise RuntimeError(f"メモリ制限を超過しました: {resources['memory_mb']:.1f}MB > {MEMORY_LIMIT_MB}MB")
-    elif resources['memory_mb'] > MEMORY_WARNING_MB:
-        warnings.append(f"メモリ使用量が高いです: {resources['memory_mb']:.1f}MB")
-    
-    if running_count >= MAX_ACTIVE_SESSIONS:
-        raise RuntimeError(
-            f"同時処理数の上限に達しています（実行中: {running_count}/{MAX_ACTIVE_SESSIONS}）。"
-            f"しばらく待ってから再試行してください。"
-        )
-    elif running_count > MAX_ACTIVE_SESSIONS * 0.8:
-        warnings.append(f"実行中ジョブが多いです: {running_count}/{MAX_ACTIVE_SESSIONS}件")
-    if session_count != running_count:
-        logger.warning(f"jobs_session_mismatch running_jobs={running_count} active_sessions={session_count}")
-    
-    return warnings
-
-
-def get_resource_warnings():
-    """例外を投げずに警告のみ返す。 /upload の即時開始パスで使用し、成功を阻害しない。"""
-    warnings = []
-    try:
-        resources = get_system_resources()
-        running_count = count_running_jobs()
-        if resources['memory_mb'] > MEMORY_WARNING_MB:
-            warnings.append(f"メモリ使用量が高いです: {resources['memory_mb']:.1f}MB")
-        if running_count > MAX_ACTIVE_SESSIONS * 0.8:
-            warnings.append(f"実行中ジョブが多いです: {running_count}/{MAX_ACTIVE_SESSIONS}件")
-    except Exception as e:
-        logger.warning(f"get_resource_warnings error: {e}")
-    return warnings
-
-def create_unique_session_id():
-    """ユニークなセッションIDを生成"""
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')
-    session_id = f"session_{uuid.uuid4().hex}_{timestamp}"
-    return session_id
-
-def get_user_session_dir(session_id):
-    """ユーザーごとの一時ディレクトリを取得（完全分離）"""
-    session_dir = os.path.join(tempfile.gettempdir(), f'jobcan_session_{session_id}')
-    if not os.path.exists(session_dir):
-        os.makedirs(session_dir)
-    return session_dir
-
-def cleanup_user_session(session_id):
-    """ユーザーセッションのクリーンアップ（完全削除）"""
-    try:
-        session_dir = get_user_session_dir(session_id)
-        if os.path.exists(session_dir):
-            shutil.rmtree(session_dir)
-            print(f"セッションクリーンアップ完了: {session_id}")
-    except Exception as e:
-        print(f"セッションクリーンアップエラー {session_id}: {e}")
-
-def register_session(session_id, job_id):
-    """セッションを登録"""
-    with session_manager['session_lock']:
-        session_manager['active_sessions'][session_id] = {
-            'job_id': job_id,
-            'start_time': time.time(),
-            'status': 'active'
-        }
-        print(f"セッション登録: {session_id} (ジョブ: {job_id})")
-
-def unregister_session(session_id):
-    """セッションを登録解除"""
-    with session_manager['session_lock']:
-        if session_id in session_manager['active_sessions']:
-            del session_manager['active_sessions'][session_id]
-            print(f"セッション解除: {session_id}")
-
-
-def maybe_start_next_job():
-    """running が 0 のときキュー先頭を running にしてスレッド起動。jobs_lock は内部で取得。"""
-    with jobs_lock:
-        compact_job_queue_locked()
-        running_count = sum(1 for j in jobs.values() if j.get('status') == 'running')
-        if running_count >= MAX_ACTIVE_SESSIONS:
-            return
-        if not job_queue:
-            return
-        queue_position = 1  # 先頭を開始する
-        job_id = None
-        params = None
-        session_id = None
-        session_dir = None
-        email = None
-        password = None
-        file_path = None
-        company_id = ''
-        file_size = 0
-        elapsed = None
-
-        while job_queue:
-            next_job_id = job_queue.popleft()
-            next_params = queued_job_params.pop(next_job_id, None)
-            next_job = jobs.get(next_job_id)
-            if not next_params or not next_job or next_job.get('status') != 'queued':
-                release_queue_identity_locked(next_job_id, next_job)
-                continue
-
-            queue_key = next_job.get('queue_key')
-            existing_job_id, _ = find_live_job_for_queue_key_locked(queue_key)
-            if existing_job_id and existing_job_id != next_job_id:
-                # 同一ユーザーの duplicate waiting が残っていても開始しない。
-                cleanup_targets = []
-                expired_meta = expire_queued_job_locked(next_job_id, time.time(), cleanup_targets, reason='duplicate_wait')
-                for fp, sid in cleanup_targets:
-                    try:
-                        if fp and os.path.exists(fp):
-                            os.remove(fp)
-                        if sid:
-                            cleanup_user_session(sid)
-                    except Exception as cleanup_error:
-                        logger.warning(f"duplicate_wait_cleanup_error job_id={next_job_id} error={cleanup_error}")
-                if expired_meta:
-                    log_job_event("job_expired", next_job_id, status="expired", elapsed_sec=expired_meta.get('elapsed_sec'), extra={'reason': 'duplicate_wait'})
-                continue
-
-            job_id = next_job_id
-            params = next_params
-            jobs[job_id]['status'] = 'running'
-            jobs[job_id]['step_name'] = 'initializing'
-            jobs[job_id]['login_status'] = 'initializing'
-            jobs[job_id]['login_message'] = '🔄 処理を初期化中...'
-            jobs[job_id]['start_time'] = time.time()
-            touch_job_lease_locked(jobs[job_id], current_time=time.time())
-            elapsed = get_elapsed_sec(jobs[job_id])
-            email = params['email']
-            password = params['password']
-            file_path = params['file_path']
-            session_dir = params['session_dir']
-            session_id = params['session_id']
-            company_id = params.get('company_id', '')
-            file_size = params.get('file_size', 0)
-            queue_identity_index[queue_key] = job_id
-            break
-
-        if not job_id:
-            return
-
-        jobs[job_id]['status'] = 'running'
-        jobs[job_id]['last_updated'] = time.time()
-    register_session(session_id, job_id)
-    log_job_event("job_started", job_id, status="running", queue_position=queue_position, elapsed_sec=elapsed, extra={"source": "queue"})
-    # ロック外でスレッド起動（run_automation_impl 内で process が重い）
-    thread = threading.Thread(
-        target=run_automation_impl,
-        args=(job_id, email, password, file_path, session_dir, session_id, company_id, file_size)
-    )
-    thread.daemon = True
-    thread.start()
-
-
-def run_automation_impl(job_id, email, password, file_path, session_dir, session_id, company_id, file_size):
-    """1ジョブ分の自動化実行。完了後 maybe_start_next_job で次を起動。"""
-    from automation import process_jobcan_automation
-    bg_start_time = time.time()
-    logger.info(f"bg_job_start job_id={job_id} session_id={session_id} file_size={file_size}")
-    try:
-        process_jobcan_automation(
-            job_id, email, password, file_path, jobs, session_dir, session_id, company_id,
-            job_timeout_sec=JOB_TIMEOUT_SEC
-        )
-        duration = time.time() - bg_start_time
-        logger.info(f"bg_job_success job_id={job_id} duration_sec={duration:.1f}")
-        with jobs_lock:
-            job = jobs.get(job_id)
-            st = job.get('status') if job else None
-            elapsed = get_elapsed_sec(job)
-        if st == 'completed':
-            log_job_event("job_completed", job_id, status="completed", elapsed_sec=elapsed)
-        elif st == 'timeout':
-            log_job_event("job_timeout", job_id, status="timeout", elapsed_sec=elapsed)
-        else:
-            log_job_event("job_completed", job_id, status=st or "completed", elapsed_sec=elapsed)
-    except Exception as e:
-        error_message = f'処理中にエラーが発生しました: {str(e)}'
-        duration = time.time() - bg_start_time
-        logger.error(f"bg_job_error job_id={job_id} duration_sec={duration:.1f} error={str(e)}")
-        with jobs_lock:
-            if job_id in jobs:
-                jobs[job_id]['status'] = 'error'
-                jobs[job_id]['login_status'] = 'error'
-                jobs[job_id]['login_message'] = error_message
-                from utils import add_job_log
-                add_job_log(job_id, f"❌ {error_message}", jobs)
-                jobs[job_id]['last_updated'] = time.time()
-                jobs[job_id]['end_time'] = time.time()
-            err_elapsed = get_elapsed_sec(jobs.get(job_id))
-        log_job_event("job_error", job_id, status="error", elapsed_sec=err_elapsed, extra={"error": str(e)[:200]})
-    finally:
-        with jobs_lock:
-            j = jobs.get(job_id, {})
-            st = j.get('status')
-            if st in TERMINAL_JOB_STATUSES:
-                release_queue_identity_locked(job_id, j)
-            el = get_elapsed_sec(j)
-            rcount = sum(1 for x in jobs.values() if x.get('status') == 'running')
-            qlen = len(compact_job_queue_locked())
-        log_job_event("cleanup_started", job_id, status=st, elapsed_sec=el, running_count=rcount, queue_length=qlen)
-        try:
-            if os.path.exists(file_path):
-                os.remove(file_path)
-                logger.info(f"cleanup_file job_id={job_id} path={file_path}")
-            cleanup_user_session(session_id)
-            unregister_session(session_id)
-            prune_jobs()
-        except Exception as cleanup_error:
-            logger.error(f"cleanup_error job_id={job_id} session_id={session_id} error={str(cleanup_error)}")
-            try:
-                prune_jobs()
-            except Exception:
-                pass
-        log_job_event("cleanup_finished", job_id, status=st, elapsed_sec=get_elapsed_sec(jobs.get(job_id)))
-        maybe_start_next_job()
-
-
-def prune_jobs(current_time=None, retention_sec=JOB_RETENTION_SECONDS):
-    """完了済み・失効済みジョブを掃除し、stale waiting を queue から除外する。"""
-    global job_queue
-    if current_time is None:
-        current_time = time.time()
-
-    cleanup_targets = []
-    expired_events = []
-    stale_active_job_ids = []
-
-    with jobs_lock:
-        compact_job_queue_locked()
-
-        # running 中の同一待機キーを優先し、queued の重複は stale 扱いで掃除する。
-        running_queue_keys = {
-            job_info.get('queue_key')
-            for job_info in jobs.values()
-            if job_info.get('status') == 'running' and job_info.get('queue_key')
-        }
-        seen_waiting_keys = set()
-
-        for queued_job_id in list(job_queue):
-            queued_job = jobs.get(queued_job_id)
-            if not queued_job or queued_job.get('status') != 'queued':
-                continue
-
-            queue_key = queued_job.get('queue_key')
-            if not queue_key:
-                continue
-
-            if queue_key in running_queue_keys or queue_key in seen_waiting_keys:
-                expired_meta = expire_queued_job_locked(queued_job_id, current_time, cleanup_targets, reason='duplicate_wait')
-                if expired_meta:
-                    expired_events.append(expired_meta)
-                continue
-
-            seen_waiting_keys.add(queue_key)
-            queue_identity_index[queue_key] = queued_job_id
-
-        compact_job_queue_locked()
-
-        # queued の最大待機時間 / heartbeat 切れ / disconnect hint を整理
-        for job_id, job_info in list(jobs.items()):
-            status = job_info.get('status')
-            if status == 'queued':
-                queued_at = job_info.get('queued_at') or job_info.get('start_time') or 0
-                last_heartbeat_at = job_info.get('last_heartbeat_at') or queued_at
-                lease_expires_at = job_info.get('lease_expires_at') or (last_heartbeat_at + QUEUE_HEARTBEAT_TIMEOUT_SEC)
-                disconnect_hint_at = job_info.get('disconnect_hint_at')
-
-                if disconnect_hint_at and last_heartbeat_at <= disconnect_hint_at and current_time - disconnect_hint_at > QUEUE_DISCONNECT_GRACE_SEC:
-                    expired_meta = expire_queued_job_locked(job_id, current_time, cleanup_targets, reason='disconnect')
-                    if expired_meta:
-                        expired_events.append(expired_meta)
-                    continue
-
-                if current_time > lease_expires_at:
-                    expired_meta = expire_queued_job_locked(job_id, current_time, cleanup_targets, reason='heartbeat_timeout')
-                    if expired_meta:
-                        expired_events.append(expired_meta)
-                    continue
-
-                if current_time - queued_at > QUEUED_MAX_WAIT_SEC:
-                    job_queue = deque([queued_job_id for queued_job_id in job_queue if queued_job_id != job_id])
-                    queued_job_params.pop(job_id, None)
-                    jobs[job_id]['status'] = 'timeout'
-                    jobs[job_id]['login_status'] = 'timeout'
-                    jobs[job_id]['login_message'] = '待機時間が上限を超えたためキャンセルされました。'
-                    jobs[job_id]['end_time'] = current_time
-                    jobs[job_id]['last_updated'] = current_time
-                    release_queue_identity_locked(job_id, jobs[job_id])
-                    cleanup_targets.append((job_info.get('file_path'), job_info.get('session_id')))
-                    expired_events.append({
-                        'job_id': job_id,
-                        'reason': 'queued_timeout',
-                        'elapsed_sec': get_elapsed_sec(job_info),
-                    })
-                    continue
-
-                if queue_key:
-                    queue_identity_index[queue_key] = job_id
-
-            elif status == 'running':
-                last_heartbeat_at = job_info.get('last_heartbeat_at') or job_info.get('start_time') or current_time
-                if current_time - last_heartbeat_at > ACTIVE_CLIENT_STALE_WARNING_SEC and not job_info.get('client_stale_warned'):
-                    jobs[job_id]['client_stale_warned'] = True
-                    jobs[job_id]['client_attached'] = False
-                    stale_active_job_ids.append(job_id)
-
-    removed_count = 0
-    removed_job_ids = []
-
-    with jobs_lock:
-        jobs_to_remove = []
-
-        for job_id, job_info in list(jobs.items()):
-            # completed / error / timeout / cancelled / expired を削除対象
-            if job_info.get('status') not in TERMINAL_JOB_STATUSES:
-                continue
-
-            # タイムスタンプを取得
-            end_time = job_info.get('end_time')
-            if end_time is None:
-                # end_timeがない場合はstart_timeから推定（処理時間が長い場合のフォールバック）
-                start_time = job_info.get('start_time', 0)
-                if start_time > 0:
-                    # 開始から30分以上経過していれば削除対象
-                    if current_time - start_time > retention_sec:
-                        jobs_to_remove.append(job_id)
-                continue
-            
-            # 完了/エラーから一定時間経過したジョブを削除対象に
-            if current_time - end_time > retention_sec:
-                jobs_to_remove.append(job_id)
-        
-            # 削除実行
-        for job_id in jobs_to_remove:
-            job_info = jobs.get(job_id, {})
-            log_count = len(job_info.get('logs', []))
-            age_sec = current_time - job_info.get('end_time', current_time)
-            release_queue_identity_locked(job_id, job_info)
-            del jobs[job_id]
-            removed_count += 1
-            removed_job_ids.append(job_id)
-
-            logger.info(f"job_prune removed job_id={job_id} status={job_info.get('status')} log_count={log_count} age_sec={age_sec:.1f}")
-
-    for fp, sid in cleanup_targets:
-        try:
-            if fp and os.path.exists(fp):
-                os.remove(fp)
-            if sid:
-                cleanup_user_session(sid)
-                unregister_session(sid)
-        except Exception as cleanup_error:
-            logger.error(f"prune_queued_cleanup_error error={cleanup_error}")
-
-    for expired_meta in expired_events:
-        reason = expired_meta.get('reason')
-        status = 'timeout' if reason == 'queued_timeout' else 'expired'
-        log_job_event("job_expired", expired_meta['job_id'], status=status, elapsed_sec=expired_meta.get('elapsed_sec'), extra={'reason': reason})
-
-    for stale_active_job_id in stale_active_job_ids:
-        logger.warning(f"active_client_stale job_id={stale_active_job_id} threshold_sec={ACTIVE_CLIENT_STALE_WARNING_SEC}")
-
-    if removed_count > 0:
-        logger.info(f"job_prune summary removed={removed_count} remaining={len(jobs)}")
-
-        # P1-1: prune_jobs実行前後のメモリ計測（削除があった場合のみ）
-        if metrics_available:
-            jobs_count_before = len(jobs) + removed_count
-            log_memory("prune_jobs_before", extra={
-                'jobs_count': jobs_count_before,
-                'sessions_count': len(session_manager['active_sessions']),
-                'removed_count': removed_count
-            })
-            log_memory("prune_jobs_after", extra={
-                'jobs_count': len(jobs),
-                'sessions_count': len(session_manager['active_sessions']),
-                'removed_count': removed_count
-            })
-
-    return removed_count
-
-def validate_input_data(email, password, file):
-    """入力データの検証"""
-    errors = []
-    
-    # メールアドレスの検証
-    if not email or '@' not in email or '.' not in email:
-        errors.append("有効なメールアドレスを入力してください")
-    
-    # パスワードの検証
-    if not password or len(password) < 1:
-        errors.append("パスワードを入力してください")
-    
-    # ファイルサイズの検証（10MB制限）
-    if file and hasattr(file, 'content_length'):
-        if file.content_length > 10 * 1024 * 1024:  # 10MB
-            errors.append("ファイルサイズが大きすぎます（10MB以下にしてください）")
-    
-    return errors
+            logger.error(
+                "memory_limit_exceeded memory_mb=%.1f limit=%s",
+                memory_mb,
+                MEMORY_LIMIT_MB,
+            )
+        return {'memory_mb': memory_mb, 'cpu_percent': cpu_percent}
+    except Exception as exc:
+        logger.error("resource_monitoring_error error=%s", exc)
+        return {'memory_mb': 0, 'cpu_percent': 0}
 
 @app.route('/')
 def index():
-    """ランディングページ（製品ハブ）"""
-    # 恒久対策：トップページを絶対に落とさない（依存データが取れない場合でも劣化表示で耐える）
-    # context_processorで既にproductsが注入されているため、明示的に渡す必要はない
-    # ただし、テンプレートでproductsが未定義の場合に備えて、明示的に渡す
+    """Render the public landing page."""
+    # 諱剃ｹ・ｯｾ遲厄ｼ壹ヨ繝・・繝壹・繧ｸ繧堤ｵｶ蟇ｾ縺ｫ關ｽ縺ｨ縺輔↑縺・ｼ井ｾ晏ｭ倥ョ繝ｼ繧ｿ縺悟叙繧後↑縺・ｴ蜷医〒繧ょ乾蛹冶｡ｨ遉ｺ縺ｧ閠舌∴繧具ｼ・
+    # context_processor縺ｧ譌｢縺ｫproducts縺梧ｳｨ蜈･縺輔ｌ縺ｦ縺・ｋ縺溘ａ縲∵・遉ｺ逧・↓貂｡縺吝ｿ・ｦ√・縺ｪ縺・
+    # 縺溘□縺励√ユ繝ｳ繝励Ξ繝ｼ繝医〒products縺梧悴螳夂ｾｩ縺ｮ蝣ｴ蜷医↓蛯吶∴縺ｦ縲∵・遉ｺ逧・↓貂｡縺・
     
-    # ステップ1: 製品一覧は products_catalog から取得（外部依存なし・落ちない）
+    # 繧ｹ繝・ャ繝・: 陬ｽ蜩∽ｸ隕ｧ縺ｯ products_catalog 縺九ｉ蜿門ｾ暦ｼ亥､夜Κ萓晏ｭ倥↑縺励・關ｽ縺｡縺ｪ縺・ｼ・
     products = []
     try:
         from lib.products_catalog import PRODUCTS
@@ -1851,28 +1049,28 @@ def index():
             f"exception={type(import_error).__name__} error={str(import_error)}"
         )
     
-    # ステップ2: テンプレートレンダリング（失敗しても劣化表示を返す）
+    # 繧ｹ繝・ャ繝・: 繝・Φ繝励Ξ繝ｼ繝医Ξ繝ｳ繝繝ｪ繝ｳ繧ｰ・亥､ｱ謨励＠縺ｦ繧ょ乾蛹冶｡ｨ遉ｺ繧定ｿ斐☆・・
     try:
-        # テンプレートに明示的に渡す（context_processorのフォールバック）
-        # productsが空のリストでも、テンプレートで安全に処理される
+        # 繝・Φ繝励Ξ繝ｼ繝医↓譏守､ｺ逧・↓貂｡縺呻ｼ・ontext_processor縺ｮ繝輔か繝ｼ繝ｫ繝舌ャ繧ｯ・・
+        # products縺檎ｩｺ縺ｮ繝ｪ繧ｹ繝医〒繧ゅ√ユ繝ｳ繝励Ξ繝ｼ繝医〒螳牙・縺ｫ蜃ｦ逅・＆繧後ｋ
         return render_template('landing.html', products=products)
     except Exception as render_error:
-        # テンプレートレンダリング時の例外をログに記録
+        # 繝・Φ繝励Ξ繝ｼ繝医Ξ繝ｳ繝繝ｪ繝ｳ繧ｰ譎ゅ・萓句､悶ｒ繝ｭ繧ｰ縺ｫ險倬鹸
         request_id = getattr(g, 'request_id', 'unknown')
         logger.exception(
             f"landing_page_render_failed rid={request_id} path={request.path if request else 'unknown'} "
             f"error={str(render_error)} exception_type={type(render_error).__name__}"
         )
         
-        # 恒久対策：エラーページではなく、劣化表示のHTMLを直接返す
-        # これにより、トップページは常に200を返す
+        # 諱剃ｹ・ｯｾ遲厄ｼ壹お繝ｩ繝ｼ繝壹・繧ｸ縺ｧ縺ｯ縺ｪ縺上∝乾蛹冶｡ｨ遉ｺ縺ｮHTML繧堤峩謗･霑斐☆
+        # 縺薙ｌ縺ｫ繧医ｊ縲√ヨ繝・・繝壹・繧ｸ縺ｯ蟶ｸ縺ｫ200繧定ｿ斐☆
         from flask import make_response
         degraded_html = f'''<!doctype html>
 <html lang="ja">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>しごと道具箱</title>
+    <title>縺励＃縺ｨ驕灘・邂ｱ</title>
     <style>
         body {{
             font-family: 'Noto Sans JP', sans-serif;
@@ -1918,23 +1116,23 @@ def index():
 </head>
 <body>
     <div class="container">
-        <h1>しごと道具箱</h1>
-        <p>しごとの小さな面倒を、さっと片づける軽量ツール集です。</p>
+        <h1>縺励＃縺ｨ驕灘・邂ｱ</h1>
+        <p>縺励＃縺ｨ縺ｮ蟆上＆縺ｪ髱｢蛟偵ｒ縲√＆縺｣縺ｨ迚・▼縺代ｋ霆ｽ驥上ヤ繝ｼ繝ｫ髮・〒縺吶・/p>
         
         <div class="warning">
-            <p><strong>⚠️ 一時的な表示の問題</strong></p>
-            <p>現在、製品情報の読み込みに問題が発生しています。しばらく待ってから再度お試しください。</p>
-            <p>以下のリンクから直接アクセスできます：</p>
+            <p><strong>笞・・荳譎ら噪縺ｪ陦ｨ遉ｺ縺ｮ蝠城｡・/strong></p>
+            <p>迴ｾ蝨ｨ縲∬｣ｽ蜩∵ュ蝣ｱ縺ｮ隱ｭ縺ｿ霎ｼ縺ｿ縺ｫ蝠城｡後′逋ｺ逕溘＠縺ｦ縺・∪縺吶ゅ＠縺ｰ繧峨￥蠕・▲縺ｦ縺九ｉ蜀榊ｺｦ縺願ｩｦ縺励￥縺縺輔＞縲・/p>
+            <p>莉･荳九・繝ｪ繝ｳ繧ｯ縺九ｉ逶ｴ謗･繧｢繧ｯ繧ｻ繧ｹ縺ｧ縺阪∪縺呻ｼ・/p>
             <ul>
-                <li><a href="/tools">道具箱一覧</a></li>
-                <li><a href="/tools/pdf">PDFツール</a></li>
-                <li><a href="/tools/csv">CSV/Excelツール</a></li>
-                <li><a href="/about">サイトについて</a></li>
+                <li><a href="/tools">驕灘・邂ｱ荳隕ｧ</a></li>
+                <li><a href="/tools/pdf">PDF繝・・繝ｫ</a></li>
+                <li><a href="/tools/csv">CSV/Excel繝・・繝ｫ</a></li>
+                <li><a href="/about">繧ｵ繧､繝医↓縺､縺・※</a></li>
             </ul>
         </div>
         
         <p style="margin-top: 40px; font-size: 0.9em; color: rgba(255, 255, 255, 0.7);">
-            問題が解決しない場合は、<a href="/contact">お問い合わせ</a>からご連絡ください。
+            蝠城｡後′隗｣豎ｺ縺励↑縺・ｴ蜷医・縲・a href="/contact">縺雁撫縺・粋繧上○</a>縺九ｉ縺秘｣邨｡縺上□縺輔＞縲・
         </p>
     </div>
 </body>
@@ -1945,27 +1143,27 @@ def index():
 
 @app.route('/autofill')
 def autofill():
-    """旧Jobcan導線: public版では道具箱一覧へ集約する。"""
+    """Legacy public URL: redirect to the tools hub."""
     return redirect('/tools', code=301)
 
 @app.route('/privacy')
 def privacy():
-    """プライバシーポリシーページ"""
+    """Render the privacy policy page."""
     return render_template('privacy.html')
 
 @app.route('/terms')
 def terms():
-    """利用規約ページ"""
+    """Render the terms page."""
     return render_template('terms.html')
 
 @app.route('/contact')
 def contact():
-    """お問い合わせページ"""
+    """Render the contact page."""
     return render_template('contact.html')
 
 @app.route('/guide')
 def guide_index():
-    """ガイド一覧ページ（public版は汎用ツール中心）"""
+    """Render the public guide index."""
     try:
         from lib.products_catalog import get_public_products
         products = get_public_products()
@@ -1974,87 +1172,56 @@ def guide_index():
     return render_template('guide/index.html', products=products)
 
 
-@app.route('/guide/autofill')
-def guide_autofill():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/guide', code=301)
 
 
-@app.route('/guide/getting-started')
-def guide_getting_started():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/guide', code=301)
 
 
-@app.route('/guide/excel-format')
-def guide_excel_format():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/guide/csv', code=301)
 
-
-@app.route('/guide/troubleshooting')
-def guide_troubleshooting():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/guide', code=301)
-
-@app.route('/guide/complete')
-def guide_complete():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/guide', code=301)
-
-@app.route('/guide/comprehensive-guide')
-def guide_comprehensive_guide():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/guide', code=301)
 
 @app.route('/guide/image-batch')
 def guide_image_batch():
-    """画像一括変換ツールガイド"""
+    """Render the image batch conversion guide."""
     return render_template('guide/image-batch.html')
 
 @app.route('/guide/pdf')
 def guide_pdf():
-    """PDFユーティリティガイド"""
+    """Render the PDF utility guide."""
     return render_template('guide/pdf.html')
 
 @app.route('/guide/image-cleanup')
 def guide_image_cleanup():
-    """画像ユーティリティガイド"""
+    """Render the image cleanup guide."""
     return render_template('guide/image-cleanup.html')
 
-@app.route('/guide/minutes')
-def guide_minutes():
-    """旧議事録ガイドURL: 301で /guide へ"""
-    return redirect('/guide', code=301)
 
 @app.route('/guide/seo')
 def guide_seo():
-    """Web/SEOユーティリティガイド"""
+    """Render the SEO utility guide."""
     return render_template('guide/seo.html')
 
 @app.route('/guide/csv')
 def guide_csv():
-    """CSV/Excelユーティリティガイド"""
+    """Render the CSV and Excel guide."""
     return render_template('guide/csv.html')
 
 @app.route('/tools/image-batch')
 def tools_image_batch():
-    """画像一括変換ツール"""
+    """Render the image batch conversion tool."""
     from lib.routes import get_product_by_path
     product = get_product_by_path('/tools/image-batch')
     return render_template('tools/image-batch.html', product=product)
 
 @app.route('/tools/pdf')
 def tools_pdf():
-    """PDFユーティリティ"""
+    """Render the PDF utility tool."""
     from lib.routes import get_product_by_path
     product = get_product_by_path('/tools/pdf')
     return render_template('tools/pdf.html', product=product)
 
 
-# PDF ロック付与 API（案B: サーバ併用）
-# パスワードはログ・永続化しない。
-# エラー時は error_code と request_id を返す（message は返さない。パスワードは絶対に出さない）。
+# PDF 繝ｭ繝・け莉倅ｸ・API・域｡・: 繧ｵ繝ｼ繝蝉ｽｵ逕ｨ・・
+# 繝代せ繝ｯ繝ｼ繝峨・繝ｭ繧ｰ繝ｻ豌ｸ邯壼喧縺励↑縺・・
+# 繧ｨ繝ｩ繝ｼ譎ゅ・ error_code 縺ｨ request_id 繧定ｿ斐☆・・essage 縺ｯ霑斐＆縺ｪ縺・ゅヱ繧ｹ繝ｯ繝ｼ繝峨・邨ｶ蟇ｾ縺ｫ蜃ｺ縺輔↑縺・ｼ峨・
 PDF_API_MAX_BYTES = 50 * 1024 * 1024  # 50MB
 
 def _pdf_api_error(error_code, status=400):
@@ -2064,7 +1231,7 @@ def _pdf_api_error(error_code, status=400):
 
 @app.route('/api/pdf/lock', methods=['POST'])
 def api_pdf_lock():
-    """PDFにパスワードを付与して暗号化して返す。password は form で受け取り、ログに出さない。"""
+    """Encrypt an uploaded PDF with the supplied password."""
     try:
         file = request.files.get('file')
         password = (request.form.get('password') or '').strip()
@@ -2079,7 +1246,7 @@ def api_pdf_lock():
         if len(pdf_bytes) > PDF_API_MAX_BYTES:
             return _pdf_api_error('file_too_large')
         try:
-            from lib.pdf_lock_unlock import encrypt_pdf
+            from lib.pdf_lock import encrypt_pdf
             out_bytes = encrypt_pdf(pdf_bytes, password)
         except ValueError as e:
             err = str(e)
@@ -2114,46 +1281,36 @@ def api_pdf_lock():
 
 @app.route('/tools/image-cleanup')
 def tools_image_cleanup():
-    """画像ユーティリティ"""
+    """Render the image cleanup tool."""
     from lib.routes import get_product_by_path
     product = get_product_by_path('/tools/image-cleanup')
     return render_template('tools/image-cleanup.html', product=product)
 
-@app.route('/tools/minutes')
-def tools_minutes():
-    """旧議事録ツールURL: 301で /tools へ"""
-    return redirect('/tools', code=301)
-
-
-@app.route('/api/minutes/format', methods=['POST'])
-def api_minutes_format():
-    """旧議事録API: 410 Gone"""
-    return jsonify(error_code='gone'), 410
 
 
 @app.route('/tools/seo')
 def tools_seo():
-    """Web/SEOユーティリティ"""
+    """Render the SEO utility tool."""
     from lib.routes import get_product_by_path
     product = get_product_by_path('/tools/seo')
     return render_template('tools/seo.html', product=product)
 
 @app.route('/tools/csv')
 def tools_csv():
-    """CSV/Excelユーティリティ"""
+    """Render the CSV and Excel utility tool."""
     from lib.routes import get_product_by_path
     product = get_product_by_path('/tools/csv')
     return render_template('tools/csv.html', product=product)
 
 
-# 簡易レート制限: /api/seo/crawl-urls を IP ごとに 60 秒に 1 回まで
+# 邁｡譏薙Ξ繝ｼ繝亥宛髯・ /api/seo/crawl-urls 繧・IP 縺斐→縺ｫ 60 遘偵↓ 1 蝗槭∪縺ｧ
 _crawl_rate_by_ip = {}
 _crawl_rate_lock = threading.Lock()
 _CRAWL_RATE_SEC = 60
 
 
 def _is_valid_ip(s):
-    """妥当な IPv4/IPv6 形式なら True。"""
+    """Return True when the supplied value is a valid IP address."""
     if not s or not isinstance(s, str):
         return False
     s = s.strip()
@@ -2166,7 +1323,7 @@ def _is_valid_ip(s):
 
 
 def _get_client_ip_for_crawl():
-    """request.access_route / X-Forwarded-For から妥当なIPを採用し、なければ remote_addr。"""
+    """Resolve a client IP from forwarded headers, falling back to remote_addr."""
     candidates = []
     if getattr(request, 'access_route', None):
         candidates.extend(request.access_route)
@@ -2183,7 +1340,7 @@ def _get_client_ip_for_crawl():
 
 @app.route('/api/seo/crawl-urls', methods=['POST'])
 def api_seo_crawl_urls():
-    """同一ホスト内でURLをクロールし、URL一覧を返す。sitemap用。SSRF対策・レート制限あり。"""
+    """Crawl URLs from the same host and return discovered URLs for sitemap checks."""
     client_ip = _get_client_ip_for_crawl()
     now = time.time()
     with _crawl_rate_lock:
@@ -2191,7 +1348,7 @@ def api_seo_crawl_urls():
         if now - last < _CRAWL_RATE_SEC:
             resp = jsonify(
                 success=False,
-                error='しばらく待ってから再度お試しください（1分に1回まで）',
+                error='Please wait a moment before crawling URLs again.',
                 retry_after_sec=_CRAWL_RATE_SEC
             )
             resp.status_code = 429
@@ -2205,12 +1362,12 @@ def api_seo_crawl_urls():
         data = {}
     start_url = (data.get('start_url') or '').strip()
     if not start_url:
-        return jsonify(success=False, error='start_url を指定してください'), 400
+        return jsonify(success=False, error='start_url is required'), 400
 
     from lib.seo_crawler import crawl, is_url_safe_for_crawl
     safe, err_msg = is_url_safe_for_crawl(start_url)
     if not safe:
-        return jsonify(success=False, error=err_msg or 'このURLは許可されていません'), 400
+        return jsonify(success=False, error=err_msg or '縺薙・URL縺ｯ險ｱ蜿ｯ縺輔ｌ縺ｦ縺・∪縺帙ｓ'), 400
 
     max_urls = data.get('max_urls', 300)
     max_depth = data.get('max_depth', 3)
@@ -2235,7 +1392,7 @@ def api_seo_crawl_urls():
 
 @app.route('/tools')
 def tools_index():
-    """道具箱一覧ページ"""
+    """Render the tools index page."""
     try:
         from lib.products_catalog import get_public_products
         products = get_public_products()
@@ -2248,953 +1405,184 @@ def tools_index():
 
 @app.route('/faq')
 def faq():
-    """よくある質問（FAQ）"""
+    """Render the FAQ page."""
     return render_template('faq.html')
 
 @app.route('/glossary')
 def glossary():
-    """用語集"""
+    """Render the glossary page."""
     return render_template('glossary.html')
 
 @app.route('/about')
 def about():
-    """サイトについて"""
+    """Render the about page."""
     return render_template('about.html')
 
-@app.route('/best-practices')
-def best_practices():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/guide', code=301)
 
-@app.route('/case-studies')
-def case_studies_index():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/tools', code=301)
 
-@app.route('/case-study/contact-center')
-def case_study_contact_center():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/tools', code=301)
 
 @app.route('/blog')
 def blog_index():
-    """ブログ一覧"""
+    """Render the blog index."""
     return render_template('blog/index.html')
 
-@app.route('/blog/implementation-checklist')
-def blog_implementation_checklist():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
 
-@app.route('/blog/automation-roadmap')
-def blog_automation_roadmap():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
 
-@app.route('/blog/workstyle-reform-automation')
-def blog_workstyle_reform_automation():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
 
-@app.route('/blog/excel-attendance-limits')
-def blog_excel_attendance_limits():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
 
-@app.route('/blog/playwright-security')
-def blog_playwright_security():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
 
-@app.route('/blog/month-end-closing-hell-and-automation')
-def blog_month_end_closing_hell_and_automation():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
 
 @app.route('/blog/excel-format-mistakes-and-design')
 def blog_excel_format_mistakes_and_design():
-    """ブログ記事：Excelフォーマットのミス10選"""
+    """Render the Excel formatting article."""
     return render_template('blog/excel-format-mistakes-and-design.html')
 
-@app.route('/blog/convince-it-and-hr-for-automation')
-def blog_convince_it_and_hr_for_automation():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
 
-@app.route('/blog/playwright-jobcan-challenges-and-solutions')
-def blog_playwright_jobcan_challenges_and_solutions():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
 
-@app.route('/blog/jobcan-auto-input-tools-overview')
-def blog_jobcan_auto_input_tools_overview():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
 
-@app.route('/blog/reduce-manual-work-checklist')
-def blog_reduce_manual_work_checklist():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
 
-@app.route('/blog/jobcan-month-end-tips')
-def blog_jobcan_month_end_tips():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
 
-@app.route('/blog/jobcan-auto-input-dos-and-donts')
-def blog_jobcan_auto_input_dos_and_donts():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
 
-@app.route('/blog/month-end-closing-checklist')
-def blog_month_end_closing_checklist():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/blog', code=301)
-
-@app.route('/case-study/consulting-firm')
-def case_study_consulting_firm():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/tools', code=301)
-
-@app.route('/case-study/remote-startup')
-def case_study_remote_startup():
-    """Legacy Jobcan public page: redirect to the public Oshigoto surface."""
-    return redirect('/tools', code=301)
 
 @app.route('/sitemap.html')
 def sitemap_html():
-    """HTMLサイトマップ"""
+    """Render the HTML sitemap page."""
     return render_template('sitemap.html')
 
-# === ヘルスチェックエンドポイント（Render用・超軽量） ===
+# === 繝倥Ν繧ｹ繝√ぉ繝・け繧ｨ繝ｳ繝峨・繧､繝ｳ繝茨ｼ・ender逕ｨ繝ｻ雜・ｻｽ驥擾ｼ・===
 @app.route('/healthz')
 def healthz():
-    """超軽量ヘルスチェック - Render Health Check用（堅牢化）"""
+    """Lightweight health check for Render."""
     try:
-        # 最小限のチェック：アプリケーションが応答可能か
+        # 譛蟆城剞縺ｮ繝√ぉ繝・け・壹い繝励Μ繧ｱ繝ｼ繧ｷ繝ｧ繝ｳ縺悟ｿ懃ｭ泌庄閭ｽ縺・
         return Response('ok', mimetype='text/plain', headers={'Cache-Control': 'no-store'})
     except Exception as e:
-        # ログに記録してから503を返す
+        # 繝ｭ繧ｰ縺ｫ險倬鹸縺励※縺九ｉ503繧定ｿ斐☆
         logger.error(f"healthz_check_failed error={str(e)}")
         return Response(f'health check failed: {str(e)}', status=503, mimetype='text/plain')
 
 @app.route('/livez')
 def livez():
-    """プロセス生存確認 - 即座にOK"""
+    """Liveness check for process monitoring."""
     return Response('ok', mimetype='text/plain', headers={'Cache-Control': 'no-store'})
 
 @app.route('/readyz')
 def readyz():
-    """準備完了確認 - 軽量チェックのみ（堅牢化）"""
+    """Readiness check for Render and uptime monitors."""
     try:
-        # 最小限のチェック：jobsディクショナリが存在するか
-        _ = len(jobs)
-        # 追加チェック：メモリ使用量が安全範囲内か
         resources = get_system_resources()
         if resources['memory_mb'] > MEMORY_LIMIT_MB:
-            logger.error(f"memory_limit_exceeded current={resources['memory_mb']:.1f}MB limit={MEMORY_LIMIT_MB}MB")
-            return Response(f'memory limit exceeded: {resources["memory_mb"]:.1f}MB', status=503, mimetype='text/plain')
-        
-        # 同時実行数チェック（runningジョブ数で判定）
-        running_count = count_running_jobs()
-        if running_count > MAX_ACTIVE_SESSIONS:
-            logger.error(f"max_sessions_exceeded running={running_count} limit={MAX_ACTIVE_SESSIONS}")
-            return Response(f'max sessions exceeded: {running_count}/{MAX_ACTIVE_SESSIONS}', status=503, mimetype='text/plain')
-        
-        # リソース使用率をログに記録（詳細版）
-        memory_usage_percent = (resources['memory_mb'] / MEMORY_LIMIT_MB) * 100
-        logger.info(f"system_resources memory={resources['memory_mb']:.1f}MB/{MEMORY_LIMIT_MB}MB ({memory_usage_percent:.1f}%) cpu={resources['cpu_percent']:.1f}% running_jobs={running_count}/{MAX_ACTIVE_SESSIONS}")
-        
-        # メモリ使用率が高い場合は警告
-        if memory_usage_percent > 80:
-            logger.warning(f"high_memory_usage memory={resources['memory_mb']:.1f}MB ({memory_usage_percent:.1f}%) - approaching limit")
-        
+            logger.error(
+                "memory_limit_exceeded current=%.1fMB limit=%sMB",
+                resources['memory_mb'],
+                MEMORY_LIMIT_MB,
+            )
+            return Response(
+                f'memory limit exceeded: {resources["memory_mb"]:.1f}MB',
+                status=503,
+                mimetype='text/plain',
+            )
         return Response('ok', mimetype='text/plain', headers={'Cache-Control': 'no-store'})
-    except Exception as e:
-        # ログに記録してから503を返す
-        logger.error(f"readyz_check_failed error={str(e)}")
-        return Response(f'not ready: {str(e)}', status=503, mimetype='text/plain')
+    except Exception as exc:
+        logger.error("readyz_check_failed error=%s", exc)
+        return Response(f'not ready: {exc}', status=503, mimetype='text/plain')
 
-# === 後方互換性のため既存エンドポイントを維持（ただし軽量化） ===
 @app.route('/ping')
 def ping():
-    """後方互換 - UptimeRobot用"""
+    """Simple ping endpoint for uptime monitors."""
     return jsonify({'status': 'ok', 'message': 'pong', 'timestamp': datetime.now().isoformat()})
 
 @app.route('/health')
 def health():
-    """詳細ヘルスチェック - デバッグ用（重いので監視には使わない）"""
+    """Detailed health check for diagnostics."""
     try:
-        from utils import pandas_available, openpyxl_available, playwright_available
         resources = get_system_resources()
-        
         return jsonify({
             'status': 'healthy',
             'timestamp': datetime.now().isoformat(),
-            'dependencies': {
-                'pandas': pandas_available,
-                'openpyxl': openpyxl_available,
-                'playwright': playwright_available
-            },
+            'dependencies': {'openpyxl': True},
             'resources': resources,
-            'active_sessions': len(session_manager['active_sessions'])
         })
-    except Exception as e:
-        return jsonify({'status': 'unhealthy', 'error': str(e)}), 500
+    except Exception as exc:
+        return jsonify({'status': 'unhealthy', 'error': str(exc)}), 500
 
 @app.route('/ready')
 def ready():
-    """後方互換 - 既存依存関係チェック"""
-    from utils import pandas_available, openpyxl_available, playwright_available
+    """Compatibility readiness endpoint."""
     return jsonify({
         'status': 'ready',
         'timestamp': datetime.now().isoformat(),
-        'dependencies': {
-            'pandas': pandas_available,
-            'openpyxl': openpyxl_available,
-            'playwright': playwright_available
-        }
+        'dependencies': {'openpyxl': True},
     })
 
 @app.route('/health/memory', methods=['GET'])
 def health_memory():
-    """
-    メモリ計測用エンドポイント（DEBUG時のみ有効、本番影響なし）
-    ローカル/ステージング環境でメモリ使用状況を確認するためのエンドポイント
-    """
+    """Process memory diagnostics without browser/session counters."""
     try:
-        import psutil
         process = psutil.Process()
         memory_info = process.memory_info()
-        rss_mb = memory_info.rss / 1024 / 1024
-        vms_mb = memory_info.vms / 1024 / 1024
-        
-        # システム全体のメモリ情報も取得
         system_memory = psutil.virtual_memory()
-        
-        # ジョブとセッションの統計
-        with jobs_lock:
-            jobs_count = len(jobs)
-            jobs_status = {}
-            for job_id, job_info in jobs.items():
-                status = job_info.get('status', 'unknown')
-                jobs_status[status] = jobs_status.get(status, 0) + 1
-        
-        with session_manager['session_lock']:
-            sessions_count = len(session_manager['active_sessions'])
-        
-        from diagnostics.runtime_metrics import get_browser_count
-        browser_count = get_browser_count()
-        
         return jsonify({
             'status': 'ok',
             'timestamp': datetime.now().isoformat(),
             'process_memory': {
-                'rss_mb': round(rss_mb, 2),
-                'vms_mb': round(vms_mb, 2),
-                'percent': round(process.memory_percent(), 2)
+                'rss_mb': round(memory_info.rss / 1024 / 1024, 2),
+                'vms_mb': round(memory_info.vms / 1024 / 1024, 2),
+                'percent': round(process.memory_percent(), 2),
             },
             'system_memory': {
                 'total_mb': round(system_memory.total / 1024 / 1024, 2),
                 'available_mb': round(system_memory.available / 1024 / 1024, 2),
                 'used_mb': round(system_memory.used / 1024 / 1024, 2),
-                'percent': round(system_memory.percent, 2)
+                'percent': round(system_memory.percent, 2),
             },
             'limits': {
                 'memory_limit_mb': MEMORY_LIMIT_MB,
                 'memory_warning_mb': MEMORY_WARNING_MB,
                 'max_file_size_mb': MAX_FILE_SIZE_MB,
-                'max_active_sessions': MAX_ACTIVE_SESSIONS
-            },
-            'resources': {
-                'jobs_count': jobs_count,
-                'jobs_by_status': jobs_status,
-                'sessions_count': sessions_count,
-                'browser_count': browser_count
             },
             'config': {
                 'web_concurrency': os.getenv('WEB_CONCURRENCY', 'unknown'),
                 'web_threads': os.getenv('WEB_THREADS', 'unknown'),
-                'web_timeout': os.getenv('WEB_TIMEOUT', 'unknown')
-            }
-        })
-    except ImportError:
-        return jsonify({
-            'status': 'error',
-            'error': 'psutil not available'
-        }), 500
-    except Exception as e:
-        return jsonify({
-            'status': 'error',
-            'error': str(e)
-        }), 500
-
-@app.route('/test')
-def test():
-    return jsonify({
-        'status': 'ok',
-        'message': 'Test endpoint working',
-        'timestamp': datetime.now().isoformat()
-    })
-
-@app.route('/download-template')
-def download_template():
-    try:
-        print("テンプレートダウンロード開始")
-        template_file, error_message = create_template_excel()
-        
-        if error_message:
-            print(f"テンプレート作成エラー: {error_message}")
-            return jsonify({'error': f'テンプレートファイルの作成に失敗しました: {error_message}'}), 500
-        
-        if not template_file or not os.path.exists(template_file):
-            print(f"テンプレートファイルが存在しません: {template_file}")
-            return jsonify({'error': 'テンプレートファイルの生成に失敗しました'}), 500
-        
-        print(f"テンプレートファイル作成成功: {template_file}")
-        return send_file(
-            template_file,
-            as_attachment=True,
-            download_name='jobcan_template.xlsx',
-            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
-    except Exception as e:
-        print(f"テンプレートダウンロード例外: {str(e)}")
-        return jsonify({'error': f'テンプレートファイルの作成に失敗しました: {str(e)}'}), 500
-
-@app.route('/download-previous-template')
-def download_previous_template():
-    try:
-        print("先月テンプレートダウンロード開始")
-        template_file, error_message = create_previous_month_template_excel()
-        
-        if error_message:
-            print(f"先月テンプレート作成エラー: {error_message}")
-            return jsonify({'error': f'先月テンプレートファイルの作成に失敗しました: {error_message}'}), 500
-        
-        if not template_file or not os.path.exists(template_file):
-            print(f"先月テンプレートファイルが存在しません: {template_file}")
-            return jsonify({'error': '先月テンプレートファイルの生成に失敗しました'}), 500
-        
-        print(f"先月テンプレートファイル作成成功: {template_file}")
-        return send_file(
-            template_file,
-            as_attachment=True,
-            download_name='jobcan_previous_month_template.xlsx',
-            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
-    except Exception as e:
-        print(f"先月テンプレートダウンロード例外: {str(e)}")
-        return jsonify({'error': f'先月テンプレートファイルの作成に失敗しました: {str(e)}'}), 500
-
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    session_id = None
-    file_path = None
-    try:
-        # 入力データの検証
-        if 'file' not in request.files:
-            return jsonify({'error': 'ファイルが選択されていません'})
-        
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({'error': 'ファイルが選択されていません'})
-        
-        if not allowed_file(file.filename):
-            return jsonify({'error': 'Excelファイル（.xlsx, .xls）のみアップロード可能です'})
-        
-        # ファイルサイズ制限（環境変数で設定可能）
-        file.seek(0, 2)  # ファイルの末尾に移動
-        file_size = file.tell()  # ファイルサイズを取得
-        file.seek(0)  # ファイルの先頭に戻す
-        
-        if file_size > MAX_FILE_SIZE_MB * 1024 * 1024:
-            return jsonify({'error': f'ファイルサイズが{MAX_FILE_SIZE_MB}MBを超えています。より小さいファイルを使用してください。'})
-        
-        email = request.form.get('email', '').strip()
-        password = request.form.get('password', '').strip()
-        company_id = request.form.get('company_id', '').strip()
-        
-        # 入力データの詳細検証
-        validation_errors = validate_input_data(email, password, file)
-        if validation_errors:
-            return jsonify({'error': '入力エラー: ' + '; '.join(validation_errors)})
-        queue_key = normalize_queue_identity(email, company_id)
-        prune_jobs(current_time=time.time())
-
-        with jobs_lock:
-            existing_job_id, existing_job = find_live_job_for_queue_key_locked(queue_key)
-            if existing_job_id and existing_job:
-                touch_job_lease_locked(existing_job, current_time=time.time())
-                existing_payload = build_existing_job_response_locked(existing_job_id, existing_job)
-                log_job_event(
-                    "job_reused",
-                    existing_job_id,
-                    status=existing_job.get('status'),
-                    queue_position=existing_payload.get('queue_position'),
-                    elapsed_sec=get_elapsed_sec(existing_job),
-                    extra={'reason': 'same_user_reuse'}
-                )
-                status_code = 202 if existing_job.get('status') == 'queued' else 200
-                return jsonify(existing_payload), status_code
-
-        # 直列実行＋キュー: running が上限でも 503 にせず、後続で queued に積む（キュー満杯時のみ 503 QUEUE_FULL）
-
-        # P0-P1: メモリガード（新規ジョブ開始前チェック）。job_idは未生成のためログには含めない
-        try:
-            resources = get_system_resources()
-            if resources['memory_mb'] > MEMORY_WARNING_MB:
-                logger.warning(f"memory_guard_blocked memory_mb={resources['memory_mb']:.1f} warning_threshold={MEMORY_WARNING_MB}")
-                return jsonify({
-                    'error': f'メモリ使用量が高いため、現在新しい処理を開始できません。',
-                    'message': f'現在のメモリ使用量: {resources["memory_mb"]:.1f}MB（警告閾値: {MEMORY_WARNING_MB}MB）',
-                    'retry_after': 60,  # 60秒後にリトライを推奨
-                    'status_code': 503
-                }), 503
-        except Exception as memory_check_error:
-            # メモリチェックのエラーはログに記録するが、処理は続行（安全側に倒す）
-            logger.error(f"memory_guard_check_error: {memory_check_error}")
-            # エラー時は警告のみ（処理は継続）
-        
-        # ユニークなセッションIDを生成
-        session_id = create_unique_session_id()
-        job_id = str(uuid.uuid4())
-        
-        # 完全分離されたセッションディレクトリを作成
-        session_dir = get_user_session_dir(session_id)
-        
-        # ファイルを保存（セッションID付きで一意性を確保）
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')
-        filename = f"{session_id}_{timestamp}.xlsx"
-        file_path = os.path.join(session_dir, filename)
-        file.save(file_path)
-        
-        # P0-P1: ファイルアップロード直後のメモリ計測（重要イベント）
-        if metrics_available:
-            log_memory("upload_done", job_id=job_id, session_id=session_id, extra={
-                'jobs_count': len(jobs),
-                'sessions_count': len(session_manager['active_sessions'])
-            })
-        
-        # 直列実行＋キュー: running が上限なら queued に積み、そうでなければ即 running で開始
-        with jobs_lock:
-            existing_job_id, existing_job = find_live_job_for_queue_key_locked(queue_key)
-            if existing_job_id and existing_job:
-                touch_job_lease_locked(existing_job, current_time=time.time())
-                existing_payload = build_existing_job_response_locked(existing_job_id, existing_job)
-                log_job_event(
-                    "job_reused",
-                    existing_job_id,
-                    status=existing_job.get('status'),
-                    queue_position=existing_payload.get('queue_position'),
-                    elapsed_sec=get_elapsed_sec(existing_job),
-                    extra={'reason': 'same_user_race_reuse'}
-                )
-                if file_path and os.path.exists(file_path):
-                    try:
-                        os.remove(file_path)
-                    except Exception:
-                        pass
-                cleanup_user_session(session_id)
-                status_code = 202 if existing_job.get('status') == 'queued' else 200
-                return jsonify(existing_payload), status_code
-
-            compact_job_queue_locked()
-            running_count = sum(1 for j in jobs.values() if j.get('status') == 'running')
-            if running_count >= MAX_ACTIVE_SESSIONS:
-                if len(job_queue) >= MAX_QUEUE_SIZE:
-                    cleanup_user_session(session_id)
-                    if os.path.exists(file_path):
-                        try:
-                            os.remove(file_path)
-                        except Exception:
-                            pass
-                    return jsonify({
-                        'error': '現在混雑しています。しばらくしてからお試しください。',
-                        'error_code': 'QUEUE_FULL',
-                        'status_code': 503
-                    }), 503
-                # キューに登録
-                jobs[job_id] = {
-                    'status': 'queued',
-                    'logs': deque(maxlen=MAX_JOB_LOGS),
-                    'progress': 0,
-                    'step_name': '待機中',
-                    'current_data': 0,
-                    'total_data': 0,
-                    'start_time': time.time(),
-                    'queued_at': time.time(),
-                    'end_time': None,
-                    'login_status': 'initializing',
-                    'login_message': '現在、他ユーザーが作業中。順番に処理します。',
-                    'session_id': session_id,
-                    'session_dir': session_dir,
-                    'file_path': file_path,
-                    'email_hash': hash(email),
-                    'company_id': company_id,
-                    'queue_key': queue_key,
-                    'resource_warnings': [],
-                    'last_updated': time.time(),
-                    'last_heartbeat_at': time.time(),
-                    'lease_expires_at': time.time() + QUEUE_HEARTBEAT_TIMEOUT_SEC,
-                    'disconnect_hint_at': None,
-                    'client_attached': True,
-                }
-                job_queue.append(job_id)
-                queued_job_params[job_id] = {
-                    'email': email,
-                    'password': password,
-                    'file_path': file_path,
-                    'session_dir': session_dir,
-                    'session_id': session_id,
-                    'company_id': company_id,
-                    'file_size': file_size,
-                    'queue_key': queue_key,
-                }
-                queue_identity_index[queue_key] = job_id
-                queue_position = get_queue_position_locked(job_id)
-                log_job_event("job_created", job_id, status="queued", elapsed_sec=0)
-                log_job_event("job_queued", job_id, status="queued", queue_position=queue_position, elapsed_sec=0)
-                return jsonify({
-                    'job_id': job_id,
-                    'session_id': session_id,
-                    'status': 'queued',
-                    'queue_position': queue_position,
-                    'message': '現在、他ユーザーが作業中です。順番に処理します。このまま開いておくと自動で開始します。',
-                    'status_url': f'/status/{job_id}'
-                }), 202
-            
-            # 即時開始
-            jobs[job_id] = {
-                'status': 'running',
-                'logs': deque(maxlen=MAX_JOB_LOGS),
-                'progress': 0,
-                'step_name': 'initializing',
-                'current_data': 0,
-                'total_data': 0,
-                'start_time': time.time(),
-                'end_time': None,
-                'login_status': 'initializing',
-                'login_message': '🔄 処理を初期化中...',
-                'session_id': session_id,
-                'session_dir': session_dir,
-                'file_path': file_path,
-                'email_hash': hash(email),
-                'company_id': company_id,
-                'queue_key': queue_key,
-                'resource_warnings': [],
-                'last_updated': time.time(),
-                'last_heartbeat_at': time.time(),
-                'lease_expires_at': time.time() + QUEUE_HEARTBEAT_TIMEOUT_SEC,
-                'disconnect_hint_at': None,
-                'client_attached': True,
-            }
-        log_job_event("job_created", job_id, status="running", elapsed_sec=0)
-        register_session(session_id, job_id)
-        
-        resource_warnings = get_resource_warnings()
-        if resource_warnings:
-            print(f"リソース警告: {', '.join(resource_warnings)}")
-        with jobs_lock:
-            if job_id in jobs:
-                jobs[job_id]['resource_warnings'] = resource_warnings
-                queue_identity_index[queue_key] = job_id
-        
-        thread = threading.Thread(
-            target=run_automation_impl,
-            args=(job_id, email, password, file_path, session_dir, session_id, company_id, file_size)
-        )
-        thread.daemon = True
-        thread.start()
-        
-        return jsonify({
-            'job_id': job_id,
-            'session_id': session_id,
-            'message': '処理を開始しました',
-            'status_url': f'/status/{job_id}',
-            'resource_warnings': resource_warnings
-        })
-        
-    except Exception as e:
-        if file_path and os.path.exists(file_path):
-            try:
-                os.remove(file_path)
-            except Exception:
-                pass
-        if session_id:
-            try:
-                cleanup_user_session(session_id)
-                unregister_session(session_id)
-            except Exception:
-                pass
-        return jsonify({'error': f'予期しないエラーが発生しました: {str(e)}'})
-
-@app.route('/cancel/<job_id>', methods=['POST'])
-def cancel_job(job_id):
-    """queued のジョブのみキャンセル可能。running は 409。"""
-    global job_queue
-    with jobs_lock:
-        if job_id not in jobs:
-            return jsonify({'ok': False, 'error': 'ジョブが見つかりません'}), 404
-        job = jobs[job_id]
-        if job.get('status') in ('cancelled', 'expired'):
-            return jsonify({'ok': True, 'status': job.get('status')}), 200
-        if job.get('status') != 'queued':
-            return jsonify({'ok': False, 'error': '実行中はキャンセルできません。待機中のみキャンセル可能です。', 'status': job.get('status')}), 409
-        # キューから除去
-        job_queue = deque([x for x in job_queue if x != job_id])
-        queued_job_params.pop(job_id, None)
-        jobs[job_id]['status'] = 'cancelled'
-        jobs[job_id]['login_status'] = 'cancelled'
-        jobs[job_id]['end_time'] = time.time()
-        jobs[job_id]['login_message'] = 'キャンセルされました。'
-        jobs[job_id]['last_updated'] = time.time()
-        jobs[job_id]['client_attached'] = False
-        release_queue_identity_locked(job_id, jobs[job_id])
-        fp = job.get('file_path')
-        sid = job.get('session_id')
-        qlen = len(compact_job_queue_locked())
-        rcount = sum(1 for j in jobs.values() if j.get('status') == 'running')
-    elapsed = get_elapsed_sec(job)
-    log_job_event("cancelled", job_id, status="cancelled", elapsed_sec=elapsed, queue_length=qlen, running_count=rcount)
-    if fp and os.path.exists(fp):
-        try:
-            os.remove(fp)
-            logger.info(f"cancel_cleanup_file job_id={job_id} path={fp}")
-        except Exception as e:
-            logger.warning(f"cancel_cleanup_file_error job_id={job_id} error={e}")
-    if sid:
-        try:
-            cleanup_user_session(sid)
-            unregister_session(sid)
-        except Exception as e:
-            logger.warning(f"cancel_cleanup_session_error job_id={job_id} session_id={sid} error={e}")
-    return jsonify({'ok': True, 'status': 'cancelled'})
-
-
-@app.route('/api/queue/detach/<job_id>', methods=['POST'])
-def detach_queue_job(job_id):
-    """タブ close / reload の補助シグナル。最終的な除外判断は heartbeat timeout で行う。"""
-    with jobs_lock:
-        job = jobs.get(job_id)
-        if not job:
-            return jsonify({'ok': True, 'status': 'missing'}), 200
-        if job.get('status') not in QUEUE_LIVE_STATUSES:
-            return jsonify({'ok': True, 'status': job.get('status'), 'ignored': True}), 200
-
-        current_time = time.time()
-        job['disconnect_hint_at'] = current_time
-        job['client_attached'] = False
-        job['last_updated'] = current_time
-        status = job.get('status')
-        queue_position = get_queue_position_locked(job_id) if status == 'queued' else None
-        elapsed_sec = get_elapsed_sec(job)
-
-    log_job_event("job_detached", job_id, status=status, queue_position=queue_position, elapsed_sec=elapsed_sec)
-    return jsonify({'ok': True, 'status': status}), 200
-
-
-@app.route('/status/<job_id>')
-def get_status(job_id):
-    try:
-        # P0-3: 完了ジョブの間引きは間隔制御（ポーリング負荷軽減）
-        global _last_status_prune_time
-        now = time.time()
-        if now - _last_status_prune_time >= STATUS_PRUNE_INTERVAL_SEC:
-            try:
-                prune_jobs(current_time=now)
-                _last_status_prune_time = now
-            except Exception as prune_err:
-                logger.warning(f"prune_jobs_error in get_status: {prune_err}")
-        
-        with jobs_lock:
-            if job_id not in jobs:
-                print(f"ジョブが見つかりません: {job_id}")
-                print(f"現在のジョブ一覧: {list(jobs.keys())}")
-                return jsonify({
-                    'error': 'ジョブが見つかりません',
-                    'job_id': job_id,
-                    'available_jobs': list(jobs.keys())
-                }), 404
-            
-            job = jobs[job_id]
-            if job.get('status') in QUEUE_LIVE_STATUSES:
-                touch_job_lease_locked(job, current_time=now)
-            
-            # P1: ログページングパラメータを取得
-            last_n = request.args.get('last_n', type=int)
-            if last_n is not None and (last_n < 1 or last_n > 1000):
-                last_n = 1000  # 最大値に制限
-            
-            # P1: ログを取得（dequeの場合はlistに変換、ページング対応）
-            job_logs = job.get('logs', [])
-            from collections import deque
-            if isinstance(job_logs, deque):
-                job_logs = list(job_logs)
-            elif not isinstance(job_logs, list):
-                job_logs = list(job_logs) if job_logs else []
-            
-            # P1: ページング対応（最新last_n件のみ返す）
-            if last_n is not None and len(job_logs) > last_n:
-                job_logs = job_logs[-last_n:]
-            
-            # ログイン結果の詳細情報を取得
-            login_status = job.get('login_status', 'unknown')
-            login_message = job.get('login_message', 'ログイン状態が不明です')
-            
-            # ユーザー向けの詳細メッセージを生成
-            user_message = generate_user_message(job['status'], login_status, login_message, job.get('progress', 0))
-            
-            # リソース情報を追加（エラーが発生しても処理を続行）
-            try:
-                resources = get_system_resources()
-            except Exception as resource_error:
-                print(f"リソース情報取得エラー: {resource_error}")
-                resources = {'memory_mb': 0, 'cpu_percent': 0, 'active_sessions': 0}
-            
-            # P0-4: 経過秒数を含める（止まった原因の切り分け用）
-            start_ts = job.get('start_time') or 0
-            elapsed_sec = round(time.time() - start_ts, 1) if start_ts else 0
-            # queued のときキュー内位置を算出（jobs_lock 内のため get_queue_position は使わず自前で取得）
-            queue_position = None
-            if job.get('status') == 'queued':
-                queue_position = get_queue_position_locked(job_id)
-            # レスポンスデータを構築
-            response_data = {
-                'status': job['status'],
-                'progress': job.get('progress', 0),
-                'step_name': job.get('step_name', ''),
-                'current_data': job.get('current_data', 0),
-                'total_data': job.get('total_data', 0),
-                'logs': job_logs,  # P1: ページング対応済みログ
-                'start_time': start_ts,
-                'elapsed_sec': elapsed_sec,
-                'login_status': login_status,
-                'login_message': login_message,
-                'user_message': user_message,
-                'session_id': job.get('session_id', ''),
-                'resources': resources,
-                'resource_warnings': job.get('resource_warnings', [])
-            }
-            if queue_position is not None:
-                response_data['queue_position'] = queue_position
-            
-            # ステータスに応じたHTTPステータスコードを設定
-            if job['status'] == 'error':
-                return jsonify(response_data), 500
-            elif job['status'] == 'completed':
-                return jsonify(response_data), 200
-            else:
-                return jsonify(response_data), 200
-                
-    except Exception as e:
-        print(f"ステータス取得で予期しないエラー: {e}")
-        return jsonify({
-            'error': 'ステータス取得エラー',
-            'status': 'error',
-            'progress': 0,
-            'login_status': 'error',
-            'login_message': 'システムエラーが発生しました'
-        }), 500
-
-@app.route('/sessions')
-def get_active_sessions():
-    """アクティブセッション情報を取得"""
-    try:
-        with session_manager['session_lock']:
-            active_sessions = session_manager['active_sessions'].copy()
-        with jobs_lock:
-            compact_job_queue_locked()
-            queued_jobs = [job_id for job_id in job_queue if jobs.get(job_id, {}).get('status') == 'queued']
-            stale_waiting = [
-                job_id for job_id, job_info in jobs.items()
-                if job_info.get('status') == 'queued'
-                and (job_info.get('lease_expires_at') or 0) < time.time()
-            ]
-            detached_active = [
-                job_id for job_id, job_info in jobs.items()
-                if job_info.get('status') == 'running'
-                and not job_info.get('client_attached', True)
-            ]
-        
-        resources = get_system_resources()
-        warnings = check_resource_limits()
-        
-        return jsonify({
-            'active_sessions': len(active_sessions),
-            'sessions': [
-                {
-                    'session_id': session_id,
-                    'job_id': session_info['job_id'],
-                    'start_time': session_info['start_time'],
-                    'duration': time.time() - session_info['start_time']
-                }
-                for session_id, session_info in active_sessions.items()
-            ],
-            'queue': {
-                'queued_jobs': len(queued_jobs),
-                'stale_waiting_candidates': len(stale_waiting),
-                'detached_active_jobs': len(detached_active),
+                'web_timeout': os.getenv('WEB_TIMEOUT', 'unknown'),
             },
-            'resources': resources,
-            'warnings': warnings
         })
-    except Exception as e:
-        return jsonify({'error': f'セッション情報取得エラー: {str(e)}'})
-
-@app.route('/cleanup-sessions')
-def cleanup_expired_sessions():
-    """期限切れセッションのクリーンアップ"""
-    try:
-        current_time = time.time()
-        expired_sessions = []
-        
-        with session_manager['session_lock']:
-            for session_id, session_info in list(session_manager['active_sessions'].items()):
-                # 30分以上経過したセッションを期限切れとする
-                if current_time - session_info['start_time'] > 1800:
-                    expired_sessions.append(session_id)
-                    del session_manager['active_sessions'][session_id]
-        
-        # 期限切れセッションのクリーンアップ
-        for session_id in expired_sessions:
-            cleanup_user_session(session_id)
-        
-        return jsonify({
-            'cleaned_sessions': len(expired_sessions),
-            'remaining_sessions': len(session_manager['active_sessions']),
-            'message': f'{len(expired_sessions)}個のセッションをクリーンアップしました'
-        })
-    except Exception as e:
-        return jsonify({'error': f'セッションクリーンアップエラー: {str(e)}'})
-
-def generate_user_message(status, login_status, login_message, progress):
-    """ユーザー向けメッセージを生成（二重表示防止: processing時はlogin_messageが「ログイン処理中」系なら1文のみ返す）"""
-    if status == 'running':
-        if login_status == 'success':
-            return f"✅ ログイン成功 - {login_message}"
-        elif login_status == 'failed':
-            return f"❌ ログイン失敗 - {login_message}"
-        elif login_status == 'captcha':
-            return f"🔄 画像認証が必要です - {login_message}"
-        elif login_status == 'processing':
-            # 監査対応: login_messageがすでに「ログイン処理中」系ならprefixを付けず重複を防ぐ
-            if login_message and 'ログイン処理中' in (login_message or ''):
-                return login_message.strip()
-            return f"🔄 ログイン処理中... - {login_message}" if login_message else "🔄 ログイン処理中..."
-        else:
-            return f"🔄 処理中... - {login_message}" if login_message else "🔄 処理中..."
-    elif status == 'completed':
-        return "✅ 処理完了 勤怠データの入力が完了しました。"
-    elif status == 'error':
-        return f"❌ エラーが発生しました: {login_message}"
-    elif status == 'timeout':
-        return f"⏱ タイムアウト - {login_message}" if login_message else "⏱ 処理が時間切れになりました"
-    elif status == 'expired':
-        return login_message or "⏳ 順番待ちは自動的に終了しました。"
-    elif status == 'queued':
-        return login_message or "現在、他ユーザーが作業中。順番に処理します。"
-    elif status == 'cancelled':
-        return login_message or "キャンセルされました。"
-    else:
-        return "🔄 処理中..."
+    except Exception as exc:
+        return jsonify({'status': 'error', 'error': str(exc)}), 500
 
 @app.route('/ads.txt')
 def ads_txt():
-    """ads.txt を配信（Google AdSense用）"""
+    """Serve ads.txt for Google AdSense."""
     content = "google.com, pub-4232725615106709, DIRECT, f08c47fec0942fa0"
     return Response(content, mimetype='text/plain')
 
 @app.route('/robots.txt')
 def robots_txt():
-    """robots.txt を配信（Sitemap 行は BASE_URL から動的生成）"""
+    """Serve robots.txt with the current production sitemap URL."""
     base_url = (os.getenv('BASE_URL') or 'https://oshigoto.onrender.com').rstrip('/')
     content = f"""User-agent: *
 Allow: /
-Disallow: /status/
-Disallow: /cancel/
 Disallow: /autofill
-Disallow: /upload
 Disallow: /api/
-Disallow: /sessions
-Disallow: /download-template
-Disallow: /download-previous-template
-Disallow: /cleanup-sessions
-Disallow: /guide/autofill
-Disallow: /guide/getting-started
-Disallow: /guide/excel-format
-Disallow: /guide/troubleshooting
-Disallow: /guide/complete
-Disallow: /guide/comprehensive-guide
-Disallow: /case-studies
-Disallow: /case-study/
-Disallow: /blog/jobcan-
-Disallow: /blog/playwright-jobcan-
-Disallow: /blog/workstyle-reform-automation
-Disallow: /blog/excel-attendance-limits
-Disallow: /blog/month-end-closing-
-Disallow: /blog/convince-it-and-hr-
-Disallow: /blog/reduce-manual-work-checklist
 
 User-agent: Googlebot
 Allow: /
-Disallow: /status/
-Disallow: /cancel/
 Disallow: /autofill
-Disallow: /upload
 Disallow: /api/
-Disallow: /sessions
-Disallow: /download-template
-Disallow: /download-previous-template
-Disallow: /cleanup-sessions
-Disallow: /guide/autofill
-Disallow: /guide/getting-started
-Disallow: /guide/excel-format
-Disallow: /guide/troubleshooting
-Disallow: /guide/complete
-Disallow: /guide/comprehensive-guide
-Disallow: /case-studies
-Disallow: /case-study/
-Disallow: /blog/jobcan-
-Disallow: /blog/playwright-jobcan-
 
-User-agent: AdsBot-Google
-Allow: /
-Disallow: /status/
-Disallow: /cancel/
-Disallow: /autofill
-Disallow: /upload
-Disallow: /api/
-Disallow: /sessions
-Disallow: /download-template
-Disallow: /download-previous-template
-Disallow: /cleanup-sessions
+User-agent: Googlebot-Image
+Allow: /static/img/
 
 Sitemap: {base_url}/sitemap.xml
 """
     return Response(content, mimetype='text/plain')
 
-_SITEMAP_LASTMOD_MANIFEST = None
+
+_SITEMAP_LASTMOD_CACHE = None
 
 
-def _load_sitemap_lastmod_manifest():
-    """data/sitemap_lastmod.json を読み込む。存在しなければ空 dict。"""
-    global _SITEMAP_LASTMOD_MANIFEST
-    if _SITEMAP_LASTMOD_MANIFEST is not None:
-        return _SITEMAP_LASTMOD_MANIFEST
-    import json
-    manifest_path = os.path.join(app.root_path, 'data', 'sitemap_lastmod.json')
-    try:
-        with open(manifest_path, 'r', encoding='utf-8') as f:
-            _SITEMAP_LASTMOD_MANIFEST = json.load(f)
-    except (OSError, TypeError, json.JSONDecodeError):
-        _SITEMAP_LASTMOD_MANIFEST = {}
-    return _SITEMAP_LASTMOD_MANIFEST
-
-
-def _sitemap_lastmod_for_path(url_path):
-    """url_path に対応する lastmod を YYYY-MM-DD で返す。manifest 優先、取得できない場合は None。"""
-    path = (url_path or '').strip('/') or ''
+def _sitemap_template_for_path(url_path):
+    path = (url_path or '').strip('/')
     special = {
         '': 'landing.html',
         'guide': 'guide/index.html',
@@ -3203,33 +1591,41 @@ def _sitemap_lastmod_for_path(url_path):
         'sitemap.html': 'sitemap.html',
     }
     if path in special:
-        rel = special[path]
-    elif path.startswith('guide/'):
-        rel = 'guide/' + path.split('/', 1)[1] + '.html'
-    elif path.startswith('blog/'):
-        rel = 'blog/' + path.split('/', 1)[1] + '.html'
-    elif path.startswith('tools/'):
-        rel = 'tools/' + path.split('/', 1)[1] + '.html'
-    else:
-        rel = (path + '.html') if path else 'landing.html'
-    manifest = _load_sitemap_lastmod_manifest()
-    if rel in manifest:
-        return manifest[rel]
-    fpath = os.path.join(app.root_path, 'templates', rel.replace('/', os.sep))
+        return special[path]
+    if path.startswith('guide/'):
+        return 'guide/' + path.split('/', 1)[1] + '.html'
+    if path.startswith('blog/'):
+        return 'blog/' + path.split('/', 1)[1] + '.html'
+    if path.startswith('tools/'):
+        return 'tools/' + path.split('/', 1)[1] + '.html'
+    return path + '.html'
+
+
+def _load_sitemap_lastmod_manifest():
+    global _SITEMAP_LASTMOD_CACHE
+    if _SITEMAP_LASTMOD_CACHE is not None:
+        return _SITEMAP_LASTMOD_CACHE
+    manifest_path = os.path.join(app.root_path, 'data', 'sitemap_lastmod.json')
     try:
-        mtime = os.path.getmtime(fpath)
-        return datetime.fromtimestamp(mtime).strftime('%Y-%m-%d')
-    except (OSError, TypeError):
-        return None
+        with open(manifest_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        _SITEMAP_LASTMOD_CACHE = data if isinstance(data, dict) else {}
+    except Exception as exc:
+        logger.warning('sitemap_lastmod_manifest_load_failed error=%s', exc)
+        _SITEMAP_LASTMOD_CACHE = {}
+    return _SITEMAP_LASTMOD_CACHE
 
 
+def _sitemap_lastmod_for_path(url_path):
+    template_path = _sitemap_template_for_path(url_path)
+    return _load_sitemap_lastmod_manifest().get(template_path)
 @app.route('/sitemap.xml')
 def sitemap():
-    """XMLサイトマップを動的生成（P0-1: PRODUCTSから自動生成）"""
+    """Generate the XML sitemap from public product and guide routes."""
     from flask import url_for
     from datetime import datetime
     
-    # PRODUCTSのインポート（失敗しても続行）
+    # PRODUCTS縺ｮ繧､繝ｳ繝昴・繝茨ｼ亥､ｱ謨励＠縺ｦ繧らｶ夊｡鯉ｼ・
     try:
         from lib.products_catalog import get_public_products
         PRODUCTS = get_public_products()
@@ -3237,58 +1633,61 @@ def sitemap():
         logger.warning(f"sitemap_import_failed error={str(import_error)} - using empty list")
         PRODUCTS = []
     
-    # ベースURL（環境変数があれば採用、末尾スラッシュは除去して二重スラッシュを防ぐ）
+    # 繝吶・繧ｹURL・育腸蠅・､画焚縺後≠繧後・謗｡逕ｨ縲∵忰蟆ｾ繧ｹ繝ｩ繝・す繝･縺ｯ髯､蜴ｻ縺励※莠碁㍾繧ｹ繝ｩ繝・す繝･繧帝亟縺撰ｼ・
     base_url = (os.getenv('BASE_URL') or 'https://oshigoto.onrender.com').rstrip('/')
     
-    # 現在日付を取得（lastmod のフォールバック）
+    # 迴ｾ蝨ｨ譌･莉倥ｒ蜿門ｾ暦ｼ・astmod 縺ｮ繝輔か繝ｼ繝ｫ繝舌ャ繧ｯ・・
     today = datetime.now().strftime('%Y-%m-%d')
     
-    # サイトマップに含めるURLのリスト
-    # 形式: (url_path, changefreq, priority, lastmod)
-    # P0-1: 固定ページは維持
+    # 繧ｵ繧､繝医・繝・・縺ｫ蜷ｫ繧√ｋURL縺ｮ繝ｪ繧ｹ繝・
+    # 蠖｢蠑・ (url_path, changefreq, priority, lastmod)
+    # P0-1: 蝗ｺ螳壹・繝ｼ繧ｸ縺ｯ邯ｭ謖・
     urls = [
-        # 主要ページ
+        # 荳ｻ隕√・繝ｼ繧ｸ
         ('/', 'daily', '1.0', today),
         ('/about', 'monthly', '0.8', today),
+        ('/privacy', 'monthly', '0.5', today),
+        ('/terms', 'monthly', '0.5', today),
+        ('/contact', 'monthly', '0.5', today),
         ('/faq', 'weekly', '0.8', today),
         ('/glossary', 'monthly', '0.7', today),
         
-        # ガイドページ（一覧＋固定）
+        # 繧ｬ繧､繝峨・繝ｼ繧ｸ・井ｸ隕ｧ・句崋螳夲ｼ・
         ('/guide', 'weekly', '0.9', today),
         
-        # ツール一覧ページ
+        # 繝・・繝ｫ荳隕ｧ繝壹・繧ｸ
         ('/tools', 'weekly', '0.9', today),
         
-        # ブログ一覧
+        # 繝悶Ο繧ｰ荳隕ｧ
         ('/blog', 'daily', '0.8', today),
         
         ('/blog/excel-format-mistakes-and-design', 'monthly', '0.7', today),
     ]
     
-    # P0-1: PRODUCTSから利用可能なツールページとガイドページを自動生成
-    # URL重複を防ぐために、既存のURLパスを集合で管理
+    # P0-1: PRODUCTS縺九ｉ蛻ｩ逕ｨ蜿ｯ閭ｽ縺ｪ繝・・繝ｫ繝壹・繧ｸ縺ｨ繧ｬ繧､繝峨・繝ｼ繧ｸ繧定・蜍慕函謌・
+    # URL驥崎､・ｒ髦ｲ縺舌◆繧√↓縲∵里蟄倥・URL繝代せ繧帝寔蜷医〒邂｡逅・
     seen_urls = {url_path for url_path, _, _, _ in urls}
     
-    # PRODUCTSがリストであることを確認（恒久対策：型安全性）
+    # PRODUCTS縺後Μ繧ｹ繝医〒縺ゅｋ縺薙→繧堤｢ｺ隱搾ｼ域￡荵・ｯｾ遲厄ｼ壼梛螳牙・諤ｧ・・
     products_list = PRODUCTS if isinstance(PRODUCTS, list) else []
     for product in products_list:
         if product.get('status') == 'available':
-            # product.pathを追加（重複チェック）
+            # product.path繧定ｿｽ蜉・磯㍾隍・メ繧ｧ繝・け・・
             product_path = product.get('path')
             if product_path and product_path not in seen_urls:
-                # ツールページの優先度と更新頻度を設定
+                # 繝・・繝ｫ繝壹・繧ｸ縺ｮ蜆ｪ蜈亥ｺｦ縺ｨ譖ｴ譁ｰ鬆ｻ蠎ｦ繧定ｨｭ螳・
                 changefreq = 'monthly'
                 priority = '0.7'
                 urls.append((product_path, changefreq, priority, today))
                 seen_urls.add(product_path)
             
-            # guide_pathを追加（重複チェック）
+            # guide_path繧定ｿｽ蜉・磯㍾隍・メ繧ｧ繝・け・・
             guide_path = product.get('guide_path')
             if guide_path and guide_path not in seen_urls:
                 urls.append((guide_path, 'monthly', '0.8', today))
                 seen_urls.add(guide_path)
     
-    # XMLサイトマップを生成
+    # XML繧ｵ繧､繝医・繝・・繧堤函謌・
     xml_parts = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
@@ -3311,23 +1710,23 @@ def sitemap():
     return Response(xml_content, mimetype='application/xml')
 
 def monitor_processing_resources(data_index, total_data):
-    """データ処理中のリソース監視（4番目以降で強化）"""
+    """Monitor process resources during a request."""
     try:
         resources = get_system_resources()
         memory_usage_percent = (resources['memory_mb'] / MEMORY_LIMIT_MB) * 100
         
-        # 4番目のデータ以降はより厳密に監視
+        # 4逡ｪ逶ｮ縺ｮ繝・・繧ｿ莉･髯阪・繧医ｊ蜴ｳ蟇・↓逶｣隕・
         if data_index >= 4:
             logger.info(f"processing_monitor data={data_index}/{total_data} memory={resources['memory_mb']:.1f}MB/{MEMORY_LIMIT_MB}MB ({memory_usage_percent:.1f}%) cpu={resources['cpu_percent']:.1f}%")
             
-            # メモリ使用率が85%を超えた場合は警告
+            # 繝｡繝｢繝ｪ菴ｿ逕ｨ邇・′85%繧定ｶ・∴縺溷ｴ蜷医・隴ｦ蜻・
             if memory_usage_percent > 85:
                 logger.warning(f"critical_memory_usage data={data_index} memory={resources['memory_mb']:.1f}MB ({memory_usage_percent:.1f}%) - approaching OOM")
                 
-                # メモリ使用率が90%を超えた場合は緊急停止
+                # 繝｡繝｢繝ｪ菴ｿ逕ｨ邇・′90%繧定ｶ・∴縺溷ｴ蜷医・邱頑･蛛懈ｭ｢
                 if memory_usage_percent > 90:
                     logger.error(f"emergency_memory_stop data={data_index} memory={resources['memory_mb']:.1f}MB ({memory_usage_percent:.1f}%) - preventing OOM")
-                    raise RuntimeError(f"メモリ使用率が危険域に達しました: {memory_usage_percent:.1f}%")
+                    raise RuntimeError(f"繝｡繝｢繝ｪ菴ｿ逕ｨ邇・′蜊ｱ髯ｺ蝓溘↓驕斐＠縺ｾ縺励◆: {memory_usage_percent:.1f}%")
         
         return True
     except Exception as e:
@@ -3335,4 +1734,4 @@ def monitor_processing_resources(data_index, total_data):
         raise
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000))) 
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

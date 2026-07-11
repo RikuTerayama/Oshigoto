@@ -1,343 +1,72 @@
-{% include 'landing_v2.html' %}
-{% if false %}
 <!doctype html>
-<html lang="ja" class="no-js">
+<html lang="ja">
 <head>
-    {% set page_title = '業務効率化ツール集' %}
-    {% set page_description = 'Jobcan自動入力、画像一括変換、PDFユーティリティなど、業務効率化に役立つツールを提供しています。' %}
+    {% set page_title = '???????PDF?CSV????URL?????????' %}
+    {% set page_description = 'PDF?CSV????URL???????????????????????????????????????????' %}
     {% include 'includes/head_meta.html' %}
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
-        }
-        
-        body {
-            font-family: 'Noto Sans JP', 'Helvetica Neue', 'Segoe UI', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            min-height: 100vh;
-            color: #FFFFFF;
-            letter-spacing: 0.05em;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        .hero {
-            text-align: center;
-            padding: 80px 20px;
-            margin-bottom: 60px;
-        }
-        
-        .hero h1 {
-            font-size: 3em;
-            margin: 0 0 20px 0;
-            color: #FFFFFF;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-        }
-        
-        .hero p {
-            font-size: 1.3em;
-            margin: 0 0 40px 0;
-            color: rgba(255, 255, 255, 0.9);
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .cta-button {
-            display: inline-block;
-            padding: 18px 40px;
-            background: rgba(74, 158, 255, 0.2);
-            border: 1px solid rgba(74, 158, 255, 0.5);
-            border-radius: 12px;
-            color: #4A9EFF;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1em;
-            letter-spacing: 0.05em;
-            transition: all 0.3s;
-        }
-        
-        .cta-button:hover {
-            background: rgba(74, 158, 255, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(74, 158, 255, 0.3);
-        }
-        
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-        }
-        
-        .product-card {
-            background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%);
-            border-radius: 16px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-            border-color: rgba(74, 158, 255, 0.5);
-        }
-        
-        .product-card h3 {
-            font-size: 1.5em;
-            margin: 0 0 15px 0;
-            color: #4A9EFF;
-        }
-        
-        .product-card p {
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.7;
-            margin: 0 0 15px 0;
-        }
-        
-        .product-card .status {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 12px;
-            font-size: 0.85em;
-            font-weight: 500;
-        }
-        
-        .status.available {
-            background: rgba(76, 175, 80, 0.2);
-            color: #4CAF50;
-        }
-        
-        .status.coming-soon {
-            background: rgba(255, 152, 0, 0.2);
-            color: #FF9800;
-        }
-        
-        .section {
-            margin: 80px 0;
-        }
-        
-        .section h2 {
-            font-size: 2em;
-            margin: 0 0 30px 0;
-            color: #FFFFFF;
-            text-align: center;
-            font-weight: 600;
-        }
-        
-        .use-cases {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            margin-top: 40px;
-        }
-        
-        .use-case-item {
-            background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%);
-            border-radius: 8px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
-        }
-        
-        .use-case-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .use-case-item h3 {
-            font-size: 1.3em;
-            margin: 0 0 15px 0;
-            color: #4A9EFF;
-            font-weight: 600;
-        }
-        
-        .use-case-item ul {
-            margin: 0;
-            padding-left: 20px;
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.8;
-            font-size: 0.95em;
-        }
-        
-        .trust-section {
-            background: rgba(30, 30, 30, 0.5);
-            border-radius: 16px;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-        }
-        
-        .trust-section h2 {
-            margin-bottom: 20px;
-        }
-        
-        .trust-section p {
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.8;
-            max-width: 800px;
-            margin: 0 auto 15px;
-        }
-        
-        .trust-badges {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .trust-badge {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .trust-badge .icon {
-            font-size: 2.5em;
-        }
-        
-        .trust-badge .text {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.95em;
-        }
-        
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2em;
-            }
-            
-            .hero p {
-                font-size: 1.1em;
-            }
-            
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .use-cases {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .use-case-item {
-                padding: 25px;
-            }
-            
-            .section h2 {
-                font-size: 1.5em;
-            }
-        }
-    </style>
 </head>
-<body>
+<body class="landing-page">
     {% include 'includes/header.html' %}
-    
-    <div class="container">
-        <div class="hero">
-            <h1 data-reveal>🚀 業務効率化ツール集</h1>
-            <p data-reveal data-reveal-delay="50">日々の業務を効率化する、シンプルで強力なツールを提供しています。Excel、画像、PDFなど、よくある作業を自動化します。<a href="/tools" style="color: #4A9EFF;">ツール一覧</a>・<a href="/guide/excel-format" style="color: #4A9EFF;">Excel形式ガイド</a>もご利用ください。使い方は<a href="/guide" style="color: #4A9EFF;">ガイド一覧</a>、運用のヒントは<a href="/blog" style="color: #4A9EFF;">ブログ</a>、用語確認は<a href="/glossary" style="color: #4A9EFF;">用語集</a>も参照できます。</p>
-            <a href="/autofill" class="cta-button" data-reveal data-reveal-delay="100">Jobcan自動入力を使う →</a>
-        </div>
-        {% with slot_id='home_after_hero', slot_render_fallback=true, slot_disable_widget=true, slot_extra_class='affiliate-slot--primary-inline' %}
-            {% include 'includes/affiliate_slot.html' %}
-        {% endwith %}
-        
-        <div class="section">
-            <h2 data-reveal>📦 製品一覧</h2>
-            <div class="products-grid" data-reveal-stagger>
-            {% for product in products|default([]) %}
-            <a href="{{ product.path|default('#') }}" class="product-card">
-                <h3>{{ product.icon|default('📦') }} {{ product.name|default('製品') }}</h3>
-                <p>{{ product.description|default('説明がありません') }}</p>
-                <span class="status {{ 'available' if product.status|default('coming-soon') == 'available' else 'coming-soon' }}">
-                    {% if product.status|default('coming-soon') == 'available' %}利用可能{% else %}準備中{% endif %}
-                </span>
-            </a>
-            {% else %}
-            <p style="color: rgba(255, 255, 255, 0.7); text-align: center; padding: 20px;">製品情報を読み込めませんでした。しばらく待ってから再試行してください。</p>
-            {% endfor %}
+    <main class="landing-shell">
+        <section class="hero-v2" aria-labelledby="landing-hero-heading">
+            <div class="hero-v2__copy">
+                <p class="landing-hero__eyebrow">??????</p>
+                <h1 id="landing-hero-heading">
+                    <span class="landing-hero__headline-line">???????????</span>
+                    <span class="landing-hero__headline-line">????????</span>
+                </h1>
+                <p class="landing-hero__lead">PDF?CSV???????????????????????????????????????</p>
+                <div class="landing-hero__actions">
+                    <a href="/tools" class="btn btn-primary">??????</a>
+                    <a href="/guide" class="btn btn-secondary">??????</a>
+                </div>
             </div>
-        </div>
+            <div class="hero-v2__panel" aria-label="?????">
+                <div class="hero-v2__panel-header">5????</div>
+                <ul class="hero-v2__tool-list">
+                    <li><a href="/tools/pdf">PDF???</a><span>???????????</span></li>
+                    <li><a href="/tools/csv">CSV/Excel???</a><span>??????????</span></li>
+                    <li><a href="/tools/image-batch">??????</a><span>?????????</span></li>
+                    <li><a href="/tools/image-cleanup">?????????</a><span>??????????</span></li>
+                    <li><a href="/tools/seo">SEO/URL??</a><span>OGP?meta?sitemap</span></li>
+                </ul>
+            </div>
+        </section>
 
-        {% include 'includes/seo_link_hub.html' %}
+        {% include 'includes/affiliate_slot.html' with context %}
 
-        <div class="section">
-            <h2 data-reveal>💼 こんな場面で活用できます</h2>
-            <div class="use-cases" data-reveal-stagger>
-                <div class="use-case-item">
-                    <h3>📊 勤怠管理</h3>
-                    <ul>
-                        <li>月次締め作業の時間短縮</li>
-                        <li>Excelからの一括入力</li>
-                        <li>ヒューマンエラーの削減</li>
-                        <li>属人化解消</li>
-                    </ul>
-                </div>
-                <div class="use-case-item">
-                    <h3>🖼️ 画像・メディア処理</h3>
-                    <ul>
-                        <li>複数画像の一括変換</li>
-                        <li>サイズ・形式の統一</li>
-                        <li>背景除去・トリミング</li>
-                        <li>Web用最適化</li>
-                    </ul>
-                </div>
-                <div class="use-case-item">
-                    <h3>📄 ドキュメント処理</h3>
-                    <ul>
-                        <li>PDFの結合・分割</li>
-                        <li>ページ抽出・圧縮</li>
-                        <li>PDF→画像変換</li>
-                        <li>一括処理</li>
-                    </ul>
-                </div>
+        <section class="section-block">
+            <div class="section-heading">
+                <p class="section-kicker">Tools</p>
+                <h2>????????</h2>
             </div>
-        </div>
-        
-        <div class="section">
-            <div class="trust-section" data-reveal>
-                <h2>🔒 セキュリティとプライバシー</h2>
-                <p>
-                    すべてのツールは、お客様のデータを最大限に保護する設計になっています。
-                </p>
-                <p>
-                    <strong>データ保持方針：</strong>機能により処理方式が異なります。Jobcan AutoFillはサーバー側で一時受領し処理後に削除。その他ツールはブラウザ内処理でサーバーに送信しません。詳細は<a href="/privacy" style="color: #4A9EFF;">プライバシーポリシー</a>をご確認ください。ほか<a href="/blog" style="color: #4A9EFF;">ブログ</a>・<a href="/glossary" style="color: #4A9EFF;">用語集</a>・<a href="/guide/excel-format" style="color: #4A9EFF;">Excel形式ガイド</a>・<a href="/best-practices" style="color: #4A9EFF;">ベストプラクティス</a>・<a href="/case-studies" style="color: #4A9EFF;">導入事例</a>もご活用ください。
-                </p>
-                <div class="trust-badges">
-                    <div class="trust-badge">
-                        <div class="icon">🔐</div>
-                        <div class="text">暗号化通信</div>
+            <div class="tool-card-grid">
+                {% for product in public_products %}
+                <article class="tool-card-v2">
+                    <p class="tool-card-v2__eyebrow">{{ product.category|default('tool') }}</p>
+                    <h3>{{ product.name }}</h3>
+                    <p>{{ product.description }}</p>
+                    <div class="tool-card-v2__actions">
+                        <a href="{{ product.path }}" class="btn btn-primary">??</a>
+                        {% if product.guide_path %}<a href="{{ product.guide_path }}" class="btn btn-secondary">???</a>{% endif %}
                     </div>
-                    <div class="trust-badge">
-                        <div class="icon">🗑️</div>
-                        <div class="text">自動削除</div>
-                    </div>
-                    <div class="trust-badge">
-                        <div class="icon">⚡</div>
-                        <div class="text">データ保護</div>
-                    </div>
-                </div>
-                <p style="margin-top: 24px; margin-bottom: 0;">ご質問・ご要望は<a href="/contact" style="color: #4A9EFF; text-decoration: none;">お問い合わせ</a>からどうぞ。</p>
+                </article>
+                {% endfor %}
             </div>
-        </div>
-    </div>
-    
+        </section>
+
+        <section class="section-block" id="safety">
+            <div class="section-heading">
+                <p class="section-kicker">Policy</p>
+                <h2>????????????????</h2>
+            </div>
+            <div class="trust-grid">
+                <article><h3>???????????</h3><p>??????????????????????????</p></article>
+                <article><h3>?????????</h3><p>???????????????????????????????</p></article>
+                <article><h3>???????</h3><p>SEO/URL???URL???timeout?????????????????</p></article>
+            </div>
+        </section>
+    </main>
     {% include 'includes/footer.html' %}
 </body>
 </html>
-{% endif %}

@@ -312,7 +312,7 @@
                                 <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
                                 <h3>{{ product.name }}</h3>
                                 <div class="pill-row">
-                                    {% if product.status == 'available' and product.id != 'autofill' %}
+                                    {% if product.status == 'available' %}
                                         <span class="pill pill--available">Local</span>
                                     {% elif product.status != 'available' %}
                                         <span class="pill pill--pending">準備中</span>
