@@ -6,14 +6,14 @@
    never an empty box. All hrefs must be built via amazon_search_url() (or
    an equivalent already-tagged URL) by the caller so AMAZON_ASSOCIATE_TAG
    is always applied. #}
-{% set side_box_title = side_box_title|default('作業に合わせて、仕事道具も整える') %}
-{% set side_box_lead = side_box_lead|default('PDF・書類・デスク環境など、日々の仕事を少し楽にする道具を探せます。') %}
+{% set side_box_title = side_box_title|default('仕事道具') %}
+{% set side_box_lead = side_box_lead|default('PDF・書類、デスク環境など、日々の仕事を少し楽にする道具を探せます。') %}
 {% set side_box_links = side_box_links|default([]) %}
 {% set side_box_placement = side_box_placement|default('side-box') %}
 {% set side_box_category = side_box_category|default('work-tools') %}
 {% if affiliate_can_render_textlinks() and side_box_links|length > 0 %}
 <aside class="affiliate-side-box" aria-label="{{ side_box_title }}" data-affiliate-placement="{{ side_box_placement }}" data-affiliate-category="{{ side_box_category }}">
-    <p class="affiliate-side-box__eyebrow">PR / Affiliate</p>
+    <p class="affiliate-side-box__eyebrow">仕事道具 / Affiliate</p>
     <h3 class="affiliate-side-box__title">{{ side_box_title }}</h3>
     <p class="affiliate-side-box__lead">{{ side_box_lead }}</p>
     {# Phase 5.7: the page already carries one .affiliate-disclosure block
