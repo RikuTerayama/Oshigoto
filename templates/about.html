@@ -1,25 +1,24 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ja" class="no-js">
 <head>
     {% set page_title = 'サイトについて | しごと道具箱' %}
-    {% set page_description = 'PDF、CSV、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。' %}
+    {% set page_description = 'しごと道具箱は、PDF、CSV/Excel、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。' %}
     {% set breadcrumb_title = 'サイトについて' %}
     {% include 'includes/head_meta.html' %}
-
     <style>
-        * { box-sizing: border-box; font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif; }
+        * { box-sizing: border-box; }
         body { margin: 0; background: var(--brand-bg); color: var(--brand-ink); line-height: 1.8; }
         .page { max-width: 1040px; margin: 0 auto; padding: 56px 20px; }
         .hero { margin-bottom: 32px; }
-        .hero h1 { font-size: 2.3rem; margin: 0 0 12px; letter-spacing: 0; }
-        .hero p { color: var(--brand-muted); font-size: 1.05rem; margin: 0; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin: 28px 0; }
+        .hero h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 12px; letter-spacing: 0; }
+        .hero p { color: var(--brand-muted); font-size: 1.05rem; margin: 0; max-width: 720px; }
+        .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 28px 0; }
         .card { border: 1px solid var(--brand-line); border-radius: 8px; padding: 20px; background: var(--brand-surface); box-shadow: var(--shadow-soft); }
-        .card h2, .card h3 { margin-top: 0; color: var(--brand-primary-strong); letter-spacing: 0; }
-        a { color: var(--brand-primary-strong); }
+        .card h2 { margin-top: 0; color: var(--brand-primary-strong); letter-spacing: 0; font-size: 1.1rem; }
+        .card p { color: var(--brand-muted); margin-bottom: 0; }
         .links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-        .button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 16px; border: 1px solid rgba(14,124,123,.45); border-radius: 6px; text-decoration: none; color: var(--brand-primary-strong); }
-        ul { padding-left: 1.2rem; }
+        .button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 16px; border: 1px solid rgba(14,124,123,.45); border-radius: 8px; text-decoration: none; color: var(--brand-primary-strong); background: var(--brand-teal-soft); font-weight: 700; }
+        @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body class="landing-page">
@@ -27,15 +26,15 @@
     {% include 'includes/breadcrumb.html' %}
     <main class="page">
         <section class="hero">
-            <h1>しごと道具箱 サイトについて</h1>
-            <p>しごとの小さな面倒を、さっと片づける。 PDF、CSV、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。</p>
+            <h1>しごと道具箱について</h1>
+            <p>しごとの小さな面倒を、さっと片づける。PDF、CSV、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。</p>
         </section>
         <section class="grid">
-            <div class="card"><h2>Public tools</h2><p>PDF, CSV/Excel, image batch conversion, image cleanup, and SEO/URL checks are the main public tools.</p></div>
-            <div class="card"><h2>Data handling</h2><p>Most file work runs in the browser. Server-side processing is limited and described on each tool page and privacy page.</p></div>
-            <div class="card"><h2>Affiliate disclosure</h2><p>Amazon Associate and approved A8 placements may appear to support site operation.</p></div>
+            <div class="card"><h2>公開ツール</h2><p>PDF、CSV/Excel、画像一括変換、画像クリーンアップ、SEO/URL確認を中心に提供しています。</p></div>
+            <div class="card"><h2>データの扱い</h2><p>ブラウザ内で完結する処理を優先し、サーバー処理が必要な場合も継続保存を前提にしない方針です。</p></div>
+            <div class="card"><h2>広告について</h2><p>サイト運営のため、Amazon Associate と承認済みA8案件の導線を掲載する場合があります。</p></div>
         </section>
-        <div class="links"><a class="button" href="/tools">道具箱一覧</a><a class="button" href="/privacy">プライバシーポリシー</a></div>
+        <div class="links"><a class="button" href="/tools">ツール一覧</a><a class="button" href="/privacy">プライバシーポリシー</a></div>
     </main>
     {% include 'includes/seo_link_hub.html' %}
     {% include 'includes/footer.html' %}

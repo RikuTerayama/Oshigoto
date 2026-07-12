@@ -119,8 +119,8 @@
                 <div class="page-sidebar">
                     <div class="sticky-side-box">
                         {% set side_box_links = [
-                            {'label': '集中環境を整える', 'description': 'デスク周りや長時間作業に関係する道具を探せます。', 'href': amazon_search_url('集中力 作業環境 グッズ'), 'category': 'desk-focus'},
-                            {'label': '仕事に役立つ本を探す', 'description': 'ビジネス書や仕事術の本を作業の合間に確認できます。', 'href': amazon_search_url('ビジネス書 おすすめ'), 'category': 'business-books'}
+                            {'label': '集中環境を整える', 'description': 'デスク周りや長時間作業に関係する道具を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-focus'},
+                            {'label': '仕事に役立つ本を探す', 'description': 'ビジネス書や仕事術の本を作業の合間に確認できます。', 'href': amazon_search_url('Kindle 仕事効率化'), 'category': 'business-books'}
                         ] %}
                         {% with side_box_title='作業に合わせて、仕事道具も', side_box_lead='選んだ作業に関連する道具を、必要なときだけのぞけます。', side_box_links=side_box_links, side_box_placement='top-side-box', side_box_category='top-work-tools' %}
                             {% include 'includes/affiliate_side_box.html' %}
@@ -170,11 +170,11 @@
                 <p>PDF・ファイル作業、デスク環境、ビジネス書など、日々の仕事を少し楽にする道具を探せます。</p>
             </div>
             {% set affiliate_context_links = [
-                {'label': 'PDF・書類作業アイテムを見る', 'description': '紙とPDFを行き来する作業の周辺道具を探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents', 'cta': '書類作業アイテムを見る'},
-                {'label': '集中環境を整える', 'description': 'デスク周りや長時間作業に関係する道具を探せます。', 'href': amazon_search_url('集中力 作業環境 グッズ'), 'category': 'desk-focus', 'cta': '集中環境を整える'},
-                {'label': '仕事に役立つ本を探す', 'description': 'ビジネス書や仕事術の本を作業の合間に確認できます。', 'href': amazon_search_url('ビジネス書 おすすめ'), 'category': 'business-books', 'cta': '仕事に役立つ本を探す'}
+                {'label': 'PDF・書類作業アイテムを見る', 'description': '紙とPDFを行き来する作業の周辺道具を探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-documents', 'cta': '書類作業アイテムを見る'},
+                {'label': '集中環境を整える', 'description': 'デスク周りや長時間作業に関係する道具を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-focus', 'cta': '集中環境を整える'},
+                {'label': '仕事に役立つ本を探す', 'description': 'ビジネス書や仕事術の本を作業の合間に確認できます。', 'href': amazon_search_url('Kindle 仕事効率化'), 'category': 'business-books', 'cta': '仕事に役立つ本を探す'}
             ] %}
-            {% with affiliate_context_title='作業ついでに、仕事道具も見直す', affiliate_context_lead='PDF・ファイル作業、デスク環境、ビジネス書など、日々の仕事を少し楽にする道具を探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='top-work-tools', affiliate_context_placement='top-inline', affiliate_context_class='affiliate-context-block--landing' %}
+            {% with affiliate_context_title='作業ついでに、仕事道具も見直す', affiliate_context_lead='PDF・ファイル作業、デスク環境、ビジネス書など、日々の仕事を少し楽にする道具を探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='top-work-tools', affiliate_context_placement='top-inline', affiliate_context_class='affiliate-context-block--landing', affiliate_context_show_a8=true, affiliate_context_a8_title='作業に近い関連サービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% set affiliate_disclosure_rendered = true %}
@@ -184,17 +184,6 @@
             {% endwith %}
             {% set affiliate_upper_amazon_rendered = true %}
             {% set affiliate_disclosure_rendered = true %}
-            {% endif %}
-            {% if affiliate_can_render_textlinks() %}
-            {% with affiliate_networks=['rakuten'], affiliate_section_show_disclosure=(not affiliate_disclosure_rendered|default(false)), affiliate_section_class='affiliate-cards-section--mid-rakuten landing-affiliate-block', affiliate_section_tier='mid-rakuten', affiliate_rakuten_variant='two-col' %}
-                {% include 'includes/affiliate_cards_section.html' %}
-            {% endwith %}
-            {% set affiliate_rakuten_rendered = true %}
-            {% set affiliate_disclosure_rendered = true %}
-            {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--bottom-a8 landing-affiliate-block', affiliate_section_tier='lower-a8' %}
-                {% include 'includes/affiliate_cards_section.html' %}
-            {% endwith %}
-            {% set affiliate_a8_rendered = true %}
             {% endif %}
         </section>
 

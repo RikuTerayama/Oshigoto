@@ -247,8 +247,8 @@
         <div class="page-sidebar">
             <div class="sticky-side-box">
                 {% set side_box_links = [
-                    {'label': 'PDF作業アイテムを見る', 'description': 'PDFや書類作業の周辺アイテムを探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents'},
-                    {'label': '書類整理グッズを見る', 'description': '紙の書類やデスク周りを整理する仕事道具を探せます。', 'href': amazon_search_url('書類整理 グッズ'), 'category': 'document-organization'}
+                    {'label': 'PDF作業アイテムを見る', 'description': 'PDFや書類作業の周辺アイテムを探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-documents'},
+                    {'label': '書類整理グッズを見る', 'description': '紙の書類やデスク周りを整理する仕事道具を探せます。', 'href': amazon_search_url('書類整理 文房具'), 'category': 'document-organization'}
                 ] %}
                 {% with side_box_title='PDF・書類作業を整える', side_box_lead='処理の合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='pdf-side-box', side_box_category='pdf-documents' %}
                     {% include 'includes/affiliate_side_box.html' %}
@@ -263,11 +263,11 @@
         </section>
         <section class="tool-affiliate-row" aria-label="PDF作業に関連する仕事道具">
             {% set affiliate_context_links = [
-                {'label': 'PDF作業アイテムを見る', 'description': 'PDFや書類作業の周辺アイテムを探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents', 'cta': 'PDF作業アイテムを見る'},
-                {'label': '書類整理グッズを見る', 'description': '紙の書類やデスク周りを整理する仕事道具を探せます。', 'href': amazon_search_url('書類整理 グッズ'), 'category': 'document-organization', 'cta': '書類整理グッズを見る'},
-                {'label': 'PDF作業に役立つ本を見る', 'description': '書類整理やPDF作業の基本を学べる本を探せます。', 'href': amazon_search_url('書類整理 PDF 作業 本'), 'category': 'pdf-books', 'cta': 'PDF作業に役立つ本を見る'}
+                {'label': 'PDF作業アイテムを見る', 'description': 'PDFや書類作業の周辺アイテムを探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-documents', 'cta': 'PDF作業アイテムを見る'},
+                {'label': '書類整理グッズを見る', 'description': '紙の書類やデスク周りを整理する仕事道具を探せます。', 'href': amazon_search_url('書類整理 文房具'), 'category': 'document-organization', 'cta': '書類整理グッズを見る'},
+                {'label': 'PDF作業に役立つ本を見る', 'description': '書類整理やPDF作業の基本を学べる本を探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-books', 'cta': 'PDF作業に役立つ本を見る'}
             ] %}
-            {% with affiliate_context_title='PDF・書類作業を整える仕事道具', affiliate_context_lead='処理が終わったら、次の書類作業に備える道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='pdf-documents', affiliate_context_placement='pdf-post-action', affiliate_context_class='post-action-affiliate' %}
+            {% with affiliate_context_title='PDF・書類作業を整える仕事道具', affiliate_context_lead='処理が終わったら、次の書類作業に備える道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='pdf-documents', affiliate_context_placement='pdf-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='作業に近い関連サービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}

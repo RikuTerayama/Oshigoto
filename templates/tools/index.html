@@ -1,52 +1,56 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ja" class="no-js">
 <head>
     {% set page_title = 'ツール一覧 | しごと道具箱' %}
-    {% set page_description = 'PDF、CSV/Excel、画像、SEO/URL確認など、仕事で使う軽量ツールを選べます。' %}
+    {% set page_description = 'PDF、CSV/Excel、画像一括変換、画像クリーンアップ、SEO/URL確認など、仕事でたまに必要になる軽量ツールを選べます。' %}
     {% set breadcrumb_title = 'ツール一覧' %}
     {% include 'includes/head_meta.html' %}
     <style>
-        * { box-sizing: border-box; font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif; }
+        * { box-sizing: border-box; }
         body { margin: 0; padding: 0; background: var(--brand-bg); min-height: 100vh; color: var(--brand-ink); line-height: 1.7; }
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
         .tools-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 48px 20px 16px; margin-bottom: 12px; }
         .tools-hero__icon { margin-bottom: 18px; }
-        .tools-hero h1 { font-size: 2.3em; margin: 0 0 14px; color: var(--brand-ink); font-weight: 700; letter-spacing: 0; }
-        .tools-hero p { font-size: 1.08em; color: var(--brand-muted); max-width: 680px; margin: 0 auto; }
+        .tools-hero h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 14px; color: var(--brand-ink); font-weight: 700; letter-spacing: 0; }
+        .tools-hero p { font-size: 1.08em; color: var(--brand-muted); max-width: 720px; margin: 0 auto; }
         .tools-hero__note { margin-top: 14px !important; font-size: 0.92em !important; color: #7c8577 !important; }
         .tools-hero__note a { color: var(--brand-primary-strong); }
         .category-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 22px 0 6px; }
-        .category-chip { display: inline-flex; align-items: center; padding: 7px 16px; border-radius: 999px; border: 1px solid var(--brand-line); background: #fff; color: var(--brand-muted); font-size: 0.85em; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .category-chip { display: inline-flex; align-items: center; padding: 7px 16px; border-radius: 999px; border: 1px solid var(--brand-line); background: #fff; color: var(--brand-muted); font-size: 0.85em; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
         .category-chip:hover { border-color: rgba(14, 124, 123, 0.32); }
         .category-chip--active { background: var(--brand-primary); border-color: var(--brand-primary); color: #fff; }
         .tools-search { max-width: 760px; margin: 22px auto 28px; }
         .tools-search input { width: 100%; padding: 13px 16px; background: #fff; border: 1px solid var(--brand-line); border-radius: 12px; color: var(--brand-ink); font-size: 1em; }
         .tools-search input:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 34px; }
-        .product-card { background: var(--brand-surface); border-radius: var(--radius-xl); padding: 28px; border: 1px solid var(--brand-line); box-shadow: var(--shadow-soft); transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; color: inherit; display: block; }
+        .products-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 24px; margin-top: 34px; }
+        .product-card { grid-column: span 2; background: var(--brand-surface); border-radius: var(--radius-xl); padding: 28px; border: 1px solid var(--brand-line); box-shadow: var(--shadow-soft); transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; color: inherit; display: block; min-width: 0; }
+        .products-grid > .product-card:nth-last-child(2):nth-child(3n + 1) { grid-column: 2 / span 2; }
+        .products-grid > .product-card:only-child { grid-column: 3 / span 2; }
         .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: rgba(14, 124, 123, 0.3); }
         .product-card > a { text-decoration: none; color: inherit; display: block; }
         .product-card .icon-tile { margin-bottom: 16px; }
         .product-card h3 { font-size: 1.32em; margin: 0 0 10px; color: var(--brand-ink); letter-spacing: 0; }
         .product-card p { color: var(--brand-muted); line-height: 1.7; margin: 0 0 14px; }
         .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-        .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.76em; font-weight: 600; }
+        .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.76em; font-weight: 700; }
         .pill--available { background: rgba(31, 122, 92, 0.12); color: #1F7A5C; }
         .pill--pending { background: var(--brand-amber-soft); color: #9a5b00; }
         .pill--tag { background: var(--brand-teal-soft); color: var(--brand-primary-strong); }
         .product-card .feature-list { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--brand-line); }
         .product-card .feature-list p { font-size: 0.85em; color: var(--brand-muted); margin: 0; }
-        .link-button { display: inline-block; padding: 10px 20px; background: var(--brand-primary); border: 1px solid var(--brand-primary); border-radius: 10px; color: #fff; text-decoration: none; font-weight: 600; transition: all 0.2s ease; }
+        .link-button { display: inline-block; padding: 10px 20px; background: var(--brand-primary); border: 1px solid var(--brand-primary); border-radius: 10px; color: #fff; text-decoration: none; font-weight: 700; transition: all 0.2s ease; }
         .link-button:hover { background: var(--brand-primary-strong); text-decoration: none; }
         .tool-cta-row { display: flex; gap: 12px; align-items: stretch; justify-content: space-between; margin-top: 16px; }
         .tool-cta-row .link-button { flex: 1; text-align: center; text-decoration: none; margin: 0; }
-        .guide-card { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: #fff; border: 1px solid var(--brand-line); border-radius: 10px; color: var(--brand-primary-strong); text-decoration: none; font-size: 0.9em; font-weight: 600; transition: all 0.2s ease; white-space: nowrap; min-width: fit-content; }
+        .guide-card { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; background: #fff; border: 1px solid var(--brand-line); border-radius: 10px; color: var(--brand-primary-strong); text-decoration: none; font-size: 0.9em; font-weight: 700; transition: all 0.2s ease; white-space: nowrap; min-width: fit-content; }
         .guide-card:hover { background: var(--brand-teal-soft); border-color: rgba(14, 124, 123, 0.3); transform: translateY(-1px); }
-        .guide-card .guide-arrow { opacity: 0.7; transition: transform 0.2s ease; }
-        .guide-card:hover .guide-arrow { transform: translateX(2px); }
         #no-results { color: var(--brand-muted); }
-        @media (max-width: 640px) { .tool-cta-row { flex-direction: column; gap: 10px; } .tool-cta-row .link-button, .guide-card { width: 100%; justify-content: center; } }
-        @media (max-width: 768px) { .tools-hero h1 { font-size: 1.85em; } .products-grid { grid-template-columns: 1fr; } }
+        .support-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 34px; }
+        .support-card { display: block; border: 1px solid var(--brand-line); border-radius: 8px; padding: 18px; background: var(--brand-paper); text-decoration: none; color: inherit; }
+        .support-card h3 { margin: 0 0 6px; letter-spacing: 0; font-size: 1rem; }
+        .support-card p { margin: 0; color: var(--brand-muted); font-size: .92rem; }
+        @media (min-width: 641px) and (max-width: 959px) { .products-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } .product-card { grid-column: span 2; } .products-grid > .product-card:nth-last-child(2):nth-child(3n + 1) { grid-column: span 2; } .products-grid > .product-card:last-child:nth-child(odd) { grid-column: 2 / span 2; } .products-grid > .product-card:only-child { grid-column: 2 / span 2; } .support-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .tool-cta-row { flex-direction: column; gap: 10px; } .tool-cta-row .link-button, .guide-card { width: 100%; justify-content: center; } .tools-hero h1 { font-size: 1.85em; } .products-grid { grid-template-columns: 1fr; } .product-card, .products-grid > .product-card:nth-last-child(2):nth-child(3n + 1), .products-grid > .product-card:last-child:nth-child(odd), .products-grid > .product-card:only-child { grid-column: auto; } .support-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body class="landing-page">
@@ -55,17 +59,17 @@
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
 
-    <div class="container">
-        <div class="tools-hero">
-            <span class="icon-tile icon-tile--teal icon-tile--lg tools-hero__icon">{{ tool_icon('toolbox', 28) }}</span>
+    <main class="container">
+        <section class="tools-hero">
+            <span class="icon-tile icon-tile--teal icon-tile--lg tools-hero__icon" aria-hidden="true">{{ tool_icon('toolbox', 28) }}</span>
             <h1 data-reveal>今日の作業に合う道具を選ぶ</h1>
             <p class="copy-lines" data-reveal data-reveal-delay="50">
-                <span class="copy-lines__line">しごとの小さな面倒を、さっと片づけるための軽量ツール集です。</span>
-                <span class="copy-lines__line">PDF、表、画像、ページ確認から必要な道具を選んでください。</span>
+                <span class="copy-lines__line">PDF、表、画像、ページ確認など、しごとの小さな面倒を片づける軽量ツール集です。</span>
+                <span class="copy-lines__line">必要な道具を選んで、そのまま作業に進めます。</span>
             </p>
             <p class="copy-lines tools-hero__note" data-reveal data-reveal-delay="80">
-                <span class="copy-lines__line">多くの処理はブラウザ内で実行します。サーバー処理が必要な機能は各ページで明記します。</span>
-                <span class="copy-lines__line"><a href="/faq">FAQ</a>、<a href="/guide">ガイド</a>、<a href="/privacy">プライバシーポリシー</a> もあわせて確認できます。</span>
+                <span class="copy-lines__line">多くの処理はブラウザ内で実行します。サーバー処理が必要な機能は各ページで説明しています。</span>
+                <span class="copy-lines__line"><a href="/faq">FAQ</a>、<a href="/guide">ガイド</a>、<a href="/privacy">プライバシーポリシー</a>もあわせて確認できます。</span>
             </p>
             <div class="category-chips" role="group" aria-label="作業タイプで絞り込む">
                 <button type="button" class="category-chip" data-chip-filter="PDF">書類</button>
@@ -74,7 +78,7 @@
                 <button type="button" class="category-chip" data-chip-filter="SEO">Web確認</button>
                 <button type="button" class="category-chip" data-chip-filter="">すべて表示</button>
             </div>
-        </div>
+        </section>
 
         {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_upper_items|default([])|length > 0) %}
         {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=true, affiliate_section_class='affiliate-cards-section--upper', affiliate_section_tier='upper-amazon', affiliate_section_placement='tools-index', affiliate_section_category='work-tools-index', amazon_items_override=amazon_affiliate_upper_items[:3], amazon_section_title='仕事道具を整える Amazon おすすめ' %}
@@ -85,93 +89,60 @@
         {% endif %}
 
         <div class="tools-search" data-reveal data-reveal-delay="100">
-            <input type="text" id="search-input" placeholder="ツール名や説明で検索...">
+            <input type="text" id="search-input" placeholder="ツール名や説明で検索..." aria-label="ツールを検索">
         </div>
 
-        <div class="page-layout">
-            <div class="page-main">
-                <div class="products-grid" id="products-grid" data-reveal-stagger>
-                    {% for product in products %}
-                        <div class="product-card"
-                             data-name="{{ product.name }}"
-                             data-description="{{ product.description }}"
-                             data-tags="{{ (product.tags or [])|join(',') }}"
-                             data-status="{{ product.status }}">
-                            <a href="{{ product.path }}">
-                                <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
-                                <h3>{{ product.name }}</h3>
-                                <div class="pill-row">
-                                    {% if product.status == 'available' %}
-                                        <span class="pill pill--available">Local</span>
-                                    {% elif product.status != 'available' %}
-                                        <span class="pill pill--pending">準備中</span>
-                                    {% endif %}
-                                    {% if product.tags %}
-                                        {% for tag in product.tags %}
-                                            <span class="pill pill--tag">{{ tag }}</span>
-                                        {% endfor %}
-                                    {% endif %}
-                                </div>
-                                <p>{{ product.description }}</p>
-                                {% if product.features %}
-                                    <div class="feature-list">
-                                        <p><strong>主な機能:</strong> {{ product.features|join('、') }}</p>
-                                    </div>
-                                {% endif %}
-                            </a>
-                            <div class="tool-cta-row">
-                                <a href="{{ product.path }}" class="link-button">
-                                    {% if product.status == 'available' %}使ってみる{% else %}詳細を見る{% endif %}
-                                </a>
-                                {% if product.guide_path and product.status == 'available' %}
-                                    <a href="{{ product.guide_path }}" class="guide-card">
-                                        <span class="guide-text">ガイド</span>
-                                        <span class="guide-arrow">→</span>
-                                    </a>
-                                {% endif %}
-                            </div>
+        <div class="products-grid" id="products-grid" data-reveal-stagger>
+            {% for product in products %}
+                <article class="product-card"
+                         data-name="{{ product.name }}"
+                         data-description="{{ product.description }}"
+                         data-tags="{{ (product.tags or [])|join(',') }}"
+                         data-status="{{ product.status }}">
+                    <a href="{{ product.path }}">
+                        <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
+                        <h3>{{ product.name }}</h3>
+                        <div class="pill-row">
+                            {% if product.status == 'available' %}
+                                <span class="pill pill--available">公開中</span>
+                            {% else %}
+                                <span class="pill pill--pending">準備中</span>
+                            {% endif %}
+                            {% for tag in product.tags|default([]) %}
+                                <span class="pill pill--tag">{{ tag }}</span>
+                            {% endfor %}
                         </div>
-                    {% endfor %}
-                </div>
-
-                <div id="no-results" hidden style="display: none; text-align: center; padding: 40px;" aria-hidden="true"></div>
-
-                <div class="landing-use-grid" style="margin-top: 34px;">
-                    <a href="/guide" class="guide-preview-card">
-                        <h3 class="guide-preview-card__title">ツールの選び方</h3>
-                        <p class="guide-preview-card__desc">用途別のガイドで、どの道具を使えばよいか確認できます。</p>
+                        <p>{{ product.description }}</p>
+                        {% if product.features %}
+                            <div class="feature-list"><p><strong>主な機能:</strong> {{ product.features|join('、') }}</p></div>
+                        {% endif %}
                     </a>
-                    <a href="/faq" class="guide-preview-card">
-                        <h3 class="guide-preview-card__title">よくある質問</h3>
-                        <p class="guide-preview-card__desc">対応形式や処理方法など、使う前によくある疑問に答えます。</p>
-                    </a>
-                    <a href="/privacy" class="guide-preview-card">
-                        <h3 class="guide-preview-card__title">ファイル処理と安全性</h3>
-                        <p class="guide-preview-card__desc">ブラウザ内処理とサーバー処理の違いを確認できます。</p>
-                    </a>
-                </div>
-            </div>
-            <div class="page-sidebar">
-                <div class="sticky-side-box">
-                    {% set side_box_links = [
-                        {'label': 'PDF・書類作業アイテムを見る', 'description': 'PDFや紙の書類を扱う作業まわりを探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents'},
-                        {'label': '画像・資料作成の道具を見る', 'description': '画像処理や資料づくりに役立つ周辺道具を探せます。', 'href': amazon_search_url('画像整理 アイテム'), 'category': 'image-materials'}
-                    ] %}
-                    {% with side_box_title='作業に合わせて、仕事道具も', side_box_lead='使うツールに合わせて、関連する道具を探せます。', side_box_links=side_box_links, side_box_placement='tools-side-box', side_box_category='tools-index' %}
-                        {% include 'includes/affiliate_side_box.html' %}
-                    {% endwith %}
-                </div>
-            </div>
+                    <div class="tool-cta-row">
+                        <a href="{{ product.path }}" class="link-button">{% if product.status == 'available' %}使ってみる{% else %}詳細を見る{% endif %}</a>
+                        {% if product.guide_path and product.status == 'available' %}
+                            <a href="{{ product.guide_path }}" class="guide-card"><span class="guide-text">ガイド</span><span class="guide-arrow">→</span></a>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
         </div>
+
+        <div id="no-results" hidden style="display: none; text-align: center; padding: 40px;" aria-hidden="true"></div>
+
+        <nav class="support-grid" aria-label="関連ガイド">
+            <a href="/guide" class="support-card"><h3>ツールの選び方</h3><p>用途別のガイドで、どの道具を使えばよいか確認できます。</p></a>
+            <a href="/faq" class="support-card"><h3>よくある質問</h3><p>対応形式や処理方法など、使う前の疑問をまとめています。</p></a>
+            <a href="/privacy" class="support-card"><h3>ファイル処理と安全性</h3><p>ブラウザ内処理とサーバー処理の違いを確認できます。</p></a>
+        </nav>
 
         {% set affiliate_context_links = [
-            {'label': 'PDF・書類作業', 'description': 'PDFや紙の書類を扱う作業まわりを探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents', 'cta': 'PDF・書類作業を見る'},
-            {'label': '表計算・デスク作業', 'description': 'CSV、Excel、デスク作業に関係する道具や本を探せます。', 'href': amazon_search_url('Excel 表計算 本'), 'category': 'spreadsheet-desk', 'cta': '表計算・デスク作業を見る'},
-            {'label': '画像・資料作成', 'description': '画像処理や資料づくりに役立つ周辺道具を探せます。', 'href': amazon_search_url('画像整理 アイテム'), 'category': 'image-materials', 'cta': '画像・資料作成を見る'},
-            {'label': 'Web運用・マーケティング', 'description': 'SEO、Webマーケティング、SNS運用の本を探せます。', 'href': amazon_search_url('Webマーケティング 本'), 'category': 'web-marketing', 'cta': 'Web運用の本を見る'},
-            {'label': '集中環境・デスク周り', 'description': '長時間作業をしやすい環境づくりの道具を探せます。', 'href': amazon_search_url('集中 作業環境 グッズ'), 'category': 'desk-focus', 'cta': '集中環境を見る'}
+            {'label': 'PDF・書類作業', 'description': 'PDFや紙の書類を扱う作業まわりを探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-documents', 'cta': 'PDF作業の本を見る'},
+            {'label': '表計算・デスク作業', 'description': 'CSV、Excel、デスク作業に関係する本や道具を探せます。', 'href': amazon_search_url('Kindle Excel'), 'category': 'spreadsheet-desk', 'cta': 'Excelの本を見る'},
+            {'label': '画像・資料作成', 'description': '画像処理や資料づくりに役立つ本を探せます。', 'href': amazon_search_url('資料作成 Kindle'), 'category': 'image-materials', 'cta': '資料作成の本を見る'},
+            {'label': 'Web運用・マーケティング', 'description': 'SEO、Webマーケティング、SNS運用の本を探せます。', 'href': amazon_search_url('Kindle SEO'), 'category': 'web-marketing', 'cta': 'SEOの本を見る'},
+            {'label': '集中環境・デスク周り', 'description': '作業環境を整える道具を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-focus', 'cta': 'デスク道具を見る'}
         ] %}
-        {% with affiliate_context_title='作業別のおすすめ仕事道具', affiliate_context_lead='使うツールに合わせて、PDF、表、画像、Web運用、デスク環境まわりの道具を探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='tools-index', affiliate_context_placement='tools-index', affiliate_context_class='affiliate-context-block--tools' %}
+        {% with affiliate_context_title='作業別の仕事道具', affiliate_context_lead='使うツールに合わせて、PDF、表、画像、Web運用、デスク環境まわりの本や道具を探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='tools-index', affiliate_context_placement='tools-index', affiliate_context_class='affiliate-context-block--tools', affiliate_context_show_a8=true, affiliate_context_a8_title='作業に近い関連サービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
             {% include 'includes/affiliate_context_block.html' %}
         {% endwith %}
 
@@ -181,14 +152,7 @@
         {% endwith %}
         {% set affiliate_mid_amazon_rendered = true %}
         {% endif %}
-
-        {% if affiliate_can_render_textlinks() %}
-        {% with affiliate_networks=['rakuten'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--mid-rakuten', affiliate_section_tier='mid-rakuten', affiliate_section_placement='tools-index', affiliate_section_category='tools-index', affiliate_rakuten_variant='two-col' %}
-            {% include 'includes/affiliate_cards_section.html' %}
-        {% endwith %}
-        {% set affiliate_rakuten_rendered = true %}
-        {% endif %}
-    </div>
+    </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -227,8 +191,7 @@
             chips.forEach(chip => {
                 chip.addEventListener('click', () => {
                     activeFilter = chip.dataset.chipFilter || '';
-                    chips.forEach(item => item.classList.toggle('category-chip--active', item === chip));
-                    if (!activeFilter) chip.classList.remove('category-chip--active');
+                    chips.forEach(item => item.classList.toggle('category-chip--active', item === chip && Boolean(activeFilter)));
                     applyFilters();
                 });
             });

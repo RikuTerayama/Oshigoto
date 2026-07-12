@@ -22,7 +22,7 @@ _TOKEN_CACHE: Dict[str, object] = {"token": None, "expires_at": 0.0}
 _SEARCH_CACHE: Dict[str, Dict[str, object]] = {}
 _FORBIDDEN_QUERY_FRAGMENTS = ()
 _MAX_SEARCH_QUERY_LEN = 48
-DEFAULT_FALLBACK_KEYWORDS: List[str] = ["デスク収納", "ノートPCスタンド", "ケーブル整理", "タイマー"]
+DEFAULT_FALLBACK_KEYWORDS: List[str] = ["Kindle 仕事効率化", "Kindle Excel", "Kindle SEO", "デスク整理 文房具"]
 
 
 def _env_flag(name: str, default: bool = False) -> bool:
@@ -497,7 +497,7 @@ def _build_fallback_items(settings: Dict[str, object], keywords: List[str]) -> L
         seen_urls.add(url)
         items.append(
             {
-                "title": f"{cleaned} に役立つおすすめ",
+                "title": f"{cleaned} 関連のおすすめ",
                 "image_url": "",
                 "url": url,
                 "cta": "Amazonで見る",

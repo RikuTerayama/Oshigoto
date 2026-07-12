@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import json
@@ -271,12 +271,10 @@ def _env_list(name, default=None):
 
 
 def _normalize_affiliate_network(value):
-    normalized = (value or 'rakuten').strip().lower()
-    if normalized in ('rakuten', 'rakuten_widget'):
-        return 'rakuten'
+    normalized = (value or 'a8_rotation').strip().lower()
     if normalized in ('a8_rotation', 'rotation', 'a8'):
         return 'a8_rotation'
-    return 'rakuten'
+    return 'a8_rotation'
 
 
 def _path_matches_rule(path, rule):
@@ -470,7 +468,7 @@ def affiliate_get_slot_config(slot_id, path=None):
     if page_type not in allowed_page_types:
         return None
 
-    kind = 'rakuten_widget'
+    kind = 'a8_rotation'
     size = rule.get('default_size', '300x250')
     if (
         settings['network'] == 'a8_rotation'

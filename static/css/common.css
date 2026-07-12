@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
    Automation Hub - Common Design System
    Minimal, Calm, Developer-friendly
    ============================================ */
@@ -293,7 +293,7 @@ img {
     margin-bottom: 22px;
 }
 
-.affiliate-cards-section--mid-rakuten {
+.affiliate-cards-section--mid-legacy-market {
     margin-top: 26px;
     margin-bottom: 20px;
 }
@@ -307,17 +307,17 @@ img {
     margin-top: 14px;
 }
 
-.affiliate-cards-section--top-rakuten {
+.affiliate-cards-section--top-legacy-market {
     margin-top: 8px;
 }
 
-.affiliate-cards-section--top-rakuten .affiliate-stack__row--rakuten {
+.affiliate-cards-section--top-legacy-market .affiliate-stack__row--legacy-market {
     padding: 10px 12px;
     border-color: rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.025);
 }
 
-.affiliate-cards-section--top-rakuten .affiliate-stack__row--rakuten .affiliate-stack__label {
+.affiliate-cards-section--top-legacy-market .affiliate-stack__row--legacy-market .affiliate-stack__label {
     display: none;
 }
 
@@ -494,33 +494,33 @@ img {
     max-width: 100%;
 }
 
-.affiliate-stack__row--rakuten .affiliate-stack__head {
+.affiliate-stack__row--legacy-market .affiliate-stack__head {
     justify-content: center;
     text-align: center;
     margin-bottom: 10px;
 }
 
-.affiliate-stack__row--rakuten .affiliate-stack__label {
+.affiliate-stack__row--legacy-market .affiliate-stack__label {
     margin-bottom: 12px;
     text-align: center;
 }
 
-.affiliate-stack__row--rakuten .affiliate-link-grid {
+.affiliate-stack__row--legacy-market .affiliate-link-grid {
     max-width: 760px;
     margin: 0 auto;
 }
 
-.affiliate-stack__row--rakuten .affiliate-link-card {
+.affiliate-stack__row--legacy-market .affiliate-link-card {
     min-height: 292px;
 }
 
-.affiliate-stack__row--rakuten .affiliate-link-card__anchor {
+.affiliate-stack__row--legacy-market .affiliate-link-card__anchor {
     height: 100%;
     align-items: center;
     text-align: center;
 }
 
-.affiliate-stack__row--rakuten .affiliate-link-card__media {
+.affiliate-stack__row--legacy-market .affiliate-link-card__media {
     min-height: 136px;
     padding: 18px 18px 8px;
     display: flex;
@@ -528,28 +528,28 @@ img {
     justify-content: center;
 }
 
-.affiliate-stack__row--rakuten .affiliate-link-card__media img {
+.affiliate-stack__row--legacy-market .affiliate-link-card__media img {
     width: 100%;
     max-width: 280px;
     height: 120px;
     object-fit: contain;
 }
 
-.affiliate-stack__row--rakuten .affiliate-link-card__content {
+.affiliate-stack__row--legacy-market .affiliate-link-card__content {
     padding: 16px 18px 20px;
     align-items: center;
     text-align: center;
     gap: 10px;
 }
 
-.affiliate-stack__row--rakuten .affiliate-link-card__eyebrow,
-.affiliate-stack__row--rakuten .affiliate-link-card__label,
-.affiliate-stack__row--rakuten .affiliate-link-card__desc,
-.affiliate-stack__row--rakuten .affiliate-link-card__cta {
+.affiliate-stack__row--legacy-market .affiliate-link-card__eyebrow,
+.affiliate-stack__row--legacy-market .affiliate-link-card__label,
+.affiliate-stack__row--legacy-market .affiliate-link-card__desc,
+.affiliate-stack__row--legacy-market .affiliate-link-card__cta {
     text-align: center;
 }
 
-.affiliate-stack__row--rakuten .affiliate-link-card__desc {
+.affiliate-stack__row--legacy-market .affiliate-link-card__desc {
     max-width: 36ch;
     margin: 0 auto;
 }
@@ -1027,16 +1027,16 @@ img {
         padding: 16px 18px 18px;
     }
 
-    .affiliate-cards-section--top-rakuten .affiliate-link-card--module .affiliate-link-card__anchor {
+    .affiliate-cards-section--top-legacy-market .affiliate-link-card--module .affiliate-link-card__anchor {
         flex-direction: row;
     }
 
-    .affiliate-cards-section--top-rakuten .affiliate-link-card--module .affiliate-link-card__media {
+    .affiliate-cards-section--top-legacy-market .affiliate-link-card--module .affiliate-link-card__media {
         flex: 0 0 132px;
         padding: 12px 0 12px 12px;
     }
 
-    .affiliate-cards-section--top-rakuten .affiliate-link-card--module .affiliate-link-card__content {
+    .affiliate-cards-section--top-legacy-market .affiliate-link-card--module .affiliate-link-card__content {
         padding: 12px 14px 12px 8px;
     }
 
@@ -3888,4 +3888,71 @@ body.landing-page,
     max-width: 100% !important;
     overflow-wrap: anywhere !important;
     word-break: break-word !important;
+}
+
+/* Balanced odd-card layouts for public card grids. */
+@media (min-width: 960px) {
+    .landing-page .affiliate-context-grid,
+    .landing-page .amazon-recommendation-grid,
+    .landing-page .landing-use-grid,
+    .landing-page .related-tools-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .landing-page .affiliate-context-grid > *,
+    .landing-page .amazon-recommendation-grid > *,
+    .landing-page .landing-use-grid > *,
+    .landing-page .related-tools-grid > * {
+        grid-column: span 2;
+    }
+
+    .landing-page .affiliate-context-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .amazon-recommendation-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .landing-use-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .related-tools-grid > *:nth-last-child(2):nth-child(3n + 1) {
+        grid-column: 2 / span 2;
+    }
+
+    .landing-page .affiliate-context-grid > *:only-child,
+    .landing-page .amazon-recommendation-grid > *:only-child,
+    .landing-page .landing-use-grid > *:only-child,
+    .landing-page .related-tools-grid > *:only-child {
+        grid-column: 3 / span 2;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 959px) {
+    .landing-page .affiliate-context-grid,
+    .landing-page .amazon-recommendation-grid,
+    .landing-page .landing-use-grid,
+    .landing-page .related-tools-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .landing-page .affiliate-context-grid > *,
+    .landing-page .amazon-recommendation-grid > *,
+    .landing-page .landing-use-grid > *,
+    .landing-page .related-tools-grid > * {
+        grid-column: span 2;
+    }
+
+    .landing-page .affiliate-context-grid > *:last-child:nth-child(odd),
+    .landing-page .amazon-recommendation-grid > *:last-child:nth-child(odd),
+    .landing-page .landing-use-grid > *:last-child:nth-child(odd),
+    .landing-page .related-tools-grid > *:last-child:nth-child(odd),
+    .landing-page .affiliate-context-grid > *:only-child,
+    .landing-page .amazon-recommendation-grid > *:only-child,
+    .landing-page .landing-use-grid > *:only-child,
+    .landing-page .related-tools-grid > *:only-child {
+        grid-column: 2 / span 2;
+    }
+}
+
+@media (max-width: 640px) {
+    .landing-page .affiliate-context-grid > *,
+    .landing-page .amazon-recommendation-grid > *,
+    .landing-page .landing-use-grid > *,
+    .landing-page .related-tools-grid > * {
+        grid-column: auto !important;
+    }
 }

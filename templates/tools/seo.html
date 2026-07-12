@@ -580,8 +580,8 @@
         <div class="page-sidebar">
             <div class="sticky-side-box">
                 {% set side_box_links = [
-                    {'label': 'SEOの本を探す', 'description': 'SEOの基礎や運用を学べる本を探せます。', 'href': amazon_search_url('SEO 本'), 'category': 'seo-books'},
-                    {'label': 'Webマーケティングの本を見る', 'description': 'サイト改善や集客に関係する本を探せます。', 'href': amazon_search_url('Webマーケティング 本'), 'category': 'web-marketing-books'}
+                    {'label': 'SEOの本を探す', 'description': 'SEOの基礎や運用を学べる本を探せます。', 'href': amazon_search_url('Kindle SEO'), 'category': 'seo-books'},
+                    {'label': 'Webマーケティングの本を見る', 'description': 'サイト改善や集客に関係する本を探せます。', 'href': amazon_search_url('Kindle Webマーケティング'), 'category': 'web-marketing-books'}
                 ] %}
                 {% with side_box_title='Web運用・マーケティングを学ぶ', side_box_lead='チェックの合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='seo-side-box', side_box_category='web-marketing' %}
                     {% include 'includes/affiliate_side_box.html' %}
@@ -596,11 +596,11 @@
         </section>
         <section class="tool-affiliate-row" aria-label="Web運用に関連する仕事道具">
             {% set affiliate_context_links = [
-                {'label': 'SEOの本を探す', 'description': 'SEOの基礎や運用を学べる本を探せます。', 'href': amazon_search_url('SEO 本'), 'category': 'seo-books', 'cta': 'SEOの本を探す'},
-                {'label': 'Webマーケティングの本を見る', 'description': 'サイト改善や集客に関係する本を探せます。', 'href': amazon_search_url('Webマーケティング 本'), 'category': 'web-marketing-books', 'cta': 'Webマーケティングの本を見る'},
-                {'label': 'SNS運用の本を見る', 'description': 'SNS投稿や運用設計に関係する本を探せます。', 'href': amazon_search_url('SNS運用 本'), 'category': 'sns-books', 'cta': 'SNS運用の本を見る'}
+                {'label': 'SEOの本を探す', 'description': 'SEOの基礎や運用を学べる本を探せます。', 'href': amazon_search_url('Kindle SEO'), 'category': 'seo-books', 'cta': 'SEOの本を探す'},
+                {'label': 'Webマーケティングの本を見る', 'description': 'サイト改善や集客に関係する本を探せます。', 'href': amazon_search_url('Kindle Webマーケティング'), 'category': 'web-marketing-books', 'cta': 'Webマーケティングの本を見る'},
+                {'label': 'SNS運用の本を見る', 'description': 'SNS投稿や運用設計に関係する本を探せます。', 'href': amazon_search_url('SNS運用 Kindle'), 'category': 'sns-books', 'cta': 'SNS運用の本を見る'}
             ] %}
-            {% with affiliate_context_title='Web運用・マーケティングを学ぶ', affiliate_context_lead='OGPやmetaを確認したあと、Web運用の学びにつながる本も探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='web-marketing', affiliate_context_placement='seo-post-action', affiliate_context_class='post-action-affiliate' %}
+            {% with affiliate_context_title='Web運用・マーケティングを学ぶ', affiliate_context_lead='OGPやmetaを確認したあと、Web運用の学びにつながる本も探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='web-marketing', affiliate_context_placement='seo-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='作業に近い関連サービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
