@@ -116,8 +116,8 @@
         <div class="page-sidebar">
             <div class="sticky-side-box">
                 {% set side_box_links = [
-                    {'label': '表計算の本を探す', 'description': 'Excelや表計算の基礎・実務本を探せます。', 'href': amazon_search_url('Excel 表計算 本'), 'category': 'spreadsheet-books'},
-                    {'label': 'デスク作業アイテムを見る', 'description': '表作業や確認作業を進めやすいデスク道具を探せます。', 'href': amazon_search_url('デスク作業 効率化 アイテム'), 'category': 'desk-work'}
+                    {'label': '表計算の本を探す', 'description': 'Excelや表計算の基礎・実務本を探せます。', 'href': amazon_search_url('Kindle Excel'), 'category': 'spreadsheet-books'},
+                    {'label': 'デスク作業アイテムを見る', 'description': '表作業や確認作業を進めやすいデスク道具を探せます。', 'href': amazon_search_url('テンキー オフィス用品'), 'category': 'desk-work'}
                 ] %}
                 {% with side_box_title='表作業を少し楽にする', side_box_lead='処理の合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='csv-side-box', side_box_category='spreadsheet-desk' %}
                     {% include 'includes/affiliate_side_box.html' %}
@@ -132,11 +132,11 @@
         </section>
         <section class="tool-affiliate-row" aria-label="表計算作業に関連する仕事道具">
             {% set affiliate_context_links = [
-                {'label': '表計算の本を探す', 'description': 'Excelや表計算の基礎・実務本を探せます。', 'href': amazon_search_url('Excel 表計算 本'), 'category': 'spreadsheet-books', 'cta': '表計算の本を探す'},
-                {'label': 'デスク作業アイテムを見る', 'description': '表作業や確認作業を進めやすいデスク道具を探せます。', 'href': amazon_search_url('デスク作業 効率化 アイテム'), 'category': 'desk-work', 'cta': 'デスク作業アイテムを見る'},
-                {'label': '仕事効率化の本を見る', 'description': '日々の表作業を見直すための仕事術本を探せます。', 'href': amazon_search_url('仕事効率化 本'), 'category': 'productivity-books', 'cta': '仕事効率化の本を見る'}
+                {'label': '表計算の本を探す', 'description': 'Excelや表計算の基礎・実務本を探せます。', 'href': amazon_search_url('Kindle Excel'), 'category': 'spreadsheet-books', 'cta': '表計算の本を探す'},
+                {'label': 'デスク作業アイテムを見る', 'description': '表作業や確認作業を進めやすいデスク道具を探せます。', 'href': amazon_search_url('テンキー オフィス用品'), 'category': 'desk-work', 'cta': 'デスク作業アイテムを見る'},
+                {'label': '仕事効率化の本を見る', 'description': '日々の表作業を見直すための仕事術本を探せます。', 'href': amazon_search_url('Kindle 仕事効率化'), 'category': 'productivity-books', 'cta': '仕事効率化の本を見る'}
             ] %}
-            {% with affiliate_context_title='表作業を少し楽にする', affiliate_context_lead='CSVやExcelを整えたあと、次の集計や確認作業に役立つ道具も探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='spreadsheet-desk', affiliate_context_placement='csv-post-action', affiliate_context_class='post-action-affiliate' %}
+            {% with affiliate_context_title='表作業を少し楽にする', affiliate_context_lead='CSVやExcelを整えたあと、次の集計や確認作業に役立つ道具も探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='spreadsheet-desk', affiliate_context_placement='csv-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='作業に近い関連サービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}

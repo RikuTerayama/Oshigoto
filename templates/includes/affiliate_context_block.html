@@ -1,5 +1,5 @@
-{% set affiliate_context_title = affiliate_context_title|default('仕事道具を探す') %}
-{% set affiliate_context_lead = affiliate_context_lead|default('作業に合わせて、関連する道具や本を探せます。') %}
+﻿{% set affiliate_context_title = affiliate_context_title|default('仕事道具を探す') %}
+{% set affiliate_context_lead = affiliate_context_lead|default('作業内容に近い本や道具を、必要なときだけ確認できます。') %}
 {% set affiliate_context_links = affiliate_context_links|default([]) %}
 {% set affiliate_context_category = affiliate_context_category|default('work-tools') %}
 {% set affiliate_context_placement = affiliate_context_placement|default('context') %}
@@ -7,7 +7,7 @@
 {% set affiliate_context_show_disclosure = affiliate_context_show_disclosure|default(true) %}
 {% set affiliate_context_show_a8 = affiliate_context_show_a8|default(false) %}
 {% set affiliate_context_a8_title = affiliate_context_a8_title|default('関連サービス') %}
-{% set affiliate_context_a8_lead = affiliate_context_a8_lead|default('作業内容に近いサービスがある場合だけ表示しています。') %}
+{% set affiliate_context_a8_lead = affiliate_context_a8_lead|default('承認済み案件がある場合だけ、作業内容に近いサービスを表示します。') %}
 {% set has_context_links = affiliate_context_links|length > 0 %}
 {% set can_render_context = affiliate_can_render_textlinks() and has_context_links %}
 {% if can_render_context %}
@@ -52,7 +52,7 @@
             <strong>{{ affiliate_context_a8_title }}</strong>
             <span>{{ affiliate_context_a8_lead }}</span>
         </div>
-        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--bottom-a8 affiliate-cards-section--context-a8', affiliate_section_tier='lower-a8' %}
+        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8', affiliate_section_tier='context-a8' %}
             {% include 'includes/affiliate_cards_section.html' %}
         {% endwith %}
         {% set affiliate_a8_rendered = true %}

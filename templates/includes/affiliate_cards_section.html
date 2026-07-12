@@ -1,6 +1,6 @@
-{% set affiliate_section_class = affiliate_section_class|default('') %}
+﻿{% set affiliate_section_class = affiliate_section_class|default('') %}
 {% set affiliate_section_show_disclosure = affiliate_section_show_disclosure|default(true) %}
-{% set affiliate_networks = affiliate_networks|default(['amazon', 'rakuten', 'a8']) %}
+{% set affiliate_networks = affiliate_networks|default(['amazon', 'a8']) %}
 {% set affiliate_section_tier = affiliate_section_tier|default('') %}
 {% set affiliate_section_placement = affiliate_section_placement|default(affiliate_section_tier or 'affiliate-stack') %}
 {% set affiliate_section_category = affiliate_section_category|default('work-tools') %}
@@ -9,9 +9,7 @@
 {% set affiliate_section_lead = affiliate_section_lead|default('') %}
 {% set affiliate_section_kicker = affiliate_section_kicker|default('PR / Affiliate') %}
 {% set show_amazon_network = 'amazon' in affiliate_networks %}
-{% set show_rakuten_network = 'rakuten' in affiliate_networks %}
 {% set show_a8_network = 'a8' in affiliate_networks %}
-{% set rakuten_variant = affiliate_rakuten_variant|default('two-col') %}
 {% if amazon_items_override is defined and amazon_items_override is not none %}
     {% set amazon_items_source = amazon_items_override %}
 {% else %}
@@ -22,18 +20,18 @@
 {% if amazon_section_title is defined and amazon_section_title %}
     {% set amazon_section_title = amazon_section_title %}
 {% elif affiliate_section_tier == 'upper-amazon' %}
-    {% set amazon_section_title = '目的から選べるAmazonおすすめ' %}
+    {% set amazon_section_title = '仕事道具を整える Amazon おすすめ' %}
 {% elif affiliate_section_tier == 'mid-amazon' %}
-    {% set amazon_section_title = '関連キーワードから探すAmazonおすすめ' %}
+    {% set amazon_section_title = '作業内容に近い Amazon おすすめ' %}
 {% else %}
-    {% set amazon_section_title = 'Amazonおすすめ' %}
+    {% set amazon_section_title = 'Amazon おすすめ' %}
 {% endif %}
 {% set has_amazon_items = show_amazon_network and amazon_enabled and (amazon_items|length > 0) %}
-{% set should_render_section = has_amazon_items or show_rakuten_network or show_a8_network %}
+{% set should_render_section = has_amazon_items or show_a8_network %}
 {% if should_render_section %}
 <section
     class="affiliate-footer-block affiliate-footer-block--quiet affiliate-cards-section affiliate-stack{% if affiliate_section_class %} {{ affiliate_section_class }}{% endif %}"
-    aria-label="Affiliate Links"
+    aria-label="広告リンク"
     {% if affiliate_section_tier %}data-affiliate-tier="{{ affiliate_section_tier }}"{% endif %}
     data-affiliate-placement="{{ affiliate_section_placement }}"
     data-affiliate-category="{{ affiliate_section_category }}"
@@ -55,19 +53,19 @@
             <div class="affiliate-stack__head">
                 <p class="affiliate-stack__label affiliate-stack__label--amazon">{{ amazon_section_title }}</p>
             </div>
-            <div class="amazon-recommendation-grid" role="list" aria-label="Amazon Recommendations">
+            <div class="amazon-recommendation-grid" role="list" aria-label="Amazon のおすすめ">
                 {% for item in amazon_items %}
                 <article class="amazon-recommendation-card" role="listitem">
                     <a href="{{ item.url|default('#') }}" target="_blank" rel="nofollow sponsored noopener" class="amazon-recommendation-card__anchor" data-affiliate-network="amazon" data-affiliate-category="{{ item.category_label|default(affiliate_section_category) }}" data-affiliate-placement="{{ affiliate_section_placement }}" data-affiliate-cta="{{ item.cta|default('Amazonで見る') }}">
                         {% if item.image_url %}
                         <span class="amazon-recommendation-card__media">
-                            <img src="{{ item.image_url }}" alt="{{ item.title|default('Amazon おすすめ商品') }}" loading="lazy">
+                            <img src="{{ item.image_url }}" alt="{{ item.title|default('Amazon おすすめ') }}" loading="lazy">
                         </span>
                         {% endif %}
                         {% if item.category_label %}
                         <span class="amazon-recommendation-card__category">{{ item.category_label }}</span>
                         {% endif %}
-                        <span class="amazon-recommendation-card__title">{{ item.title|default('Amazon おすすめ商品') }}</span>
+                        <span class="amazon-recommendation-card__title">{{ item.title|default('Amazon おすすめ') }}</span>
                         <span class="amazon-recommendation-card__cta">{{ item.cta|default('Amazonで見る') }}</span>
                     </a>
                 </article>
@@ -76,20 +74,9 @@
         </div>
         {% endif %}
 
-        {% if show_rakuten_network %}
-        <div class="affiliate-stack__row affiliate-stack__row--rakuten" data-affiliate-network="rakuten" data-affiliate-placement="{{ affiliate_section_placement }}" data-affiliate-category="{{ affiliate_section_category }}">
-            <p class="affiliate-stack__label">楽天</p>
-            <div class="affiliate-cards-section__inner">
-                {% with affiliate_cards_variant=rakuten_variant %}
-                    {% include 'includes/affiliate_cards.html' %}
-                {% endwith %}
-            </div>
-        </div>
-        {% endif %}
-
         {% if show_a8_network %}
         <div class="affiliate-stack__row affiliate-stack__row--a8" data-affiliate-network="a8" data-affiliate-placement="{{ affiliate_section_placement }}" data-affiliate-category="{{ affiliate_section_category }}">
-            <div class="affiliate-a8-banner" aria-label="A8.net Banner">
+            <div class="affiliate-a8-banner" aria-label="A8.net 広告">
                 <script type="text/javascript" src="//rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js"></script>
             </div>
         </div>

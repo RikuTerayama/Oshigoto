@@ -510,8 +510,8 @@
         <div class="page-sidebar">
             <div class="sticky-side-box">
                 {% set side_box_links = [
-                    {'label': '画像整理アイテムを見る', 'description': '画像や素材を扱う作業まわりの道具を探せます。', 'href': amazon_search_url('画像整理 アイテム'), 'category': 'image-organization'},
-                    {'label': 'デスク環境を整える', 'description': '画像確認や資料作成を進めやすい作業環境を探せます。', 'href': amazon_search_url('デスク環境 整理 グッズ'), 'category': 'desk-setup'}
+                    {'label': '画像整理アイテムを見る', 'description': '画像や素材を扱う作業まわりの道具を探せます。', 'href': amazon_search_url('画像整理 文房具'), 'category': 'image-organization'},
+                    {'label': 'デスク環境を整える', 'description': '画像確認や資料作成を進めやすい作業環境を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-setup'}
                 ] %}
                 {% with side_box_title='画像・資料作成まわりを整える', side_box_lead='変換の合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='image-batch-side-box', side_box_category='image-materials' %}
                     {% include 'includes/affiliate_side_box.html' %}
@@ -526,11 +526,11 @@
         </section>
         <section class="tool-affiliate-row" aria-label="画像作業に関連する仕事道具">
             {% set affiliate_context_links = [
-                {'label': '画像整理アイテムを見る', 'description': '画像や素材を扱う作業まわりの道具を探せます。', 'href': amazon_search_url('画像整理 アイテム'), 'category': 'image-organization', 'cta': '画像整理アイテムを見る'},
-                {'label': '資料作成に役立つ本を見る', 'description': '見やすい資料づくりに関係する本を探せます。', 'href': amazon_search_url('資料作成 本'), 'category': 'material-books', 'cta': '資料作成に役立つ本を見る'},
-                {'label': 'デスク環境を整える', 'description': '画像確認や資料作成を進めやすい作業環境を探せます。', 'href': amazon_search_url('デスク環境 整理 グッズ'), 'category': 'desk-setup', 'cta': 'デスク環境を整える'}
+                {'label': '画像整理アイテムを見る', 'description': '画像や素材を扱う作業まわりの道具を探せます。', 'href': amazon_search_url('画像整理 文房具'), 'category': 'image-organization', 'cta': '画像整理アイテムを見る'},
+                {'label': '資料作成に役立つ本を見る', 'description': '見やすい資料づくりに関係する本を探せます。', 'href': amazon_search_url('資料作成 Kindle'), 'category': 'material-books', 'cta': '資料作成に役立つ本を見る'},
+                {'label': 'デスク環境を整える', 'description': '画像確認や資料作成を進めやすい作業環境を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-setup', 'cta': 'デスク環境を整える'}
             ] %}
-            {% with affiliate_context_title='画像・資料作成まわりを整える', affiliate_context_lead='画像を変換したあと、素材整理や資料作成に使う道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='image-materials', affiliate_context_placement='image-batch-post-action', affiliate_context_class='post-action-affiliate' %}
+            {% with affiliate_context_title='画像・資料作成まわりを整える', affiliate_context_lead='画像を変換したあと、素材整理や資料作成に使う道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='image-materials', affiliate_context_placement='image-batch-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='作業に近い関連サービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}

@@ -1,230 +1,74 @@
-<!DOCTYPE html>
-<html lang="ja">
+﻿<!doctype html>
+<html lang="ja" class="no-js">
 <head>
     {% set page_title = 'お問い合わせ | しごと道具箱' %}
+    {% set page_description = 'しごと道具箱へのご意見、不具合報告、機能リクエストはこちらからお送りください。' %}
+    {% set breadcrumb_title = 'お問い合わせ' %}
     {% include 'includes/head_meta.html' %}
     <style>
-        body {
-            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: var(--brand-bg);
-            min-height: 100vh;
-            color: var(--brand-ink);
-            line-height: 1.8;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 50px;
-            border: 1px solid var(--brand-line);
-            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
-        }
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 30px;
-            color: var(--brand-ink);
-        }
-        h2 {
-            font-size: 1.8em;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            color: var(--brand-ink);
-            border-bottom: 2px solid var(--brand-line);
-            padding-bottom: 10px;
-        }
-        p, li {
-            color: #3A342B;
-            margin-bottom: 15px;
-        }
-        .info-box {
-            background: var(--brand-teal-soft);
-            border-left: 4px solid var(--brand-primary);
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 8px;
-        }
-        .contact-methods {
-            margin-top: 30px;
-        }
-        .contact-method {
-            background: var(--brand-paper);
-            border: 1px solid var(--brand-line);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
-        }
-        .contact-method h3 {
-            margin-top: 0;
-            color: var(--brand-primary-strong);
-        }
-        .contact-method a {
-            color: var(--brand-primary-strong);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .contact-method a:hover {
-            text-decoration: underline;
-        }
-        .faq {
-            margin-top: 40px;
-        }
-        .faq-item {
-            margin-bottom: 30px;
-            background: var(--brand-paper);
-            padding: 20px;
-            border-radius: 8px;
-        }
-        .faq-question {
-            font-weight: 600;
-            color: var(--brand-ink);
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-        .faq-answer {
-            color: var(--brand-muted);
-        }
-        .back-link {
-            display: inline-block;
-            margin-top: 40px;
-            padding: 15px 30px;
-            background: var(--brand-teal-soft);
-            border: 1px solid rgba(14, 124, 123, 0.32);
-            border-radius: 10px;
-            color: var(--brand-primary-strong);
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        .back-link:hover {
-            background: rgba(14, 124, 123, 0.16);
-            transform: translateY(-2px);
-        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--brand-bg); color: var(--brand-ink); line-height: 1.8; }
+        .contact-page { max-width: 980px; margin: 0 auto; padding: 56px 20px; }
+        .contact-hero { margin-bottom: 28px; }
+        .contact-hero h1 { margin: 14px 0 10px; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: 0; }
+        .contact-hero p { max-width: 680px; color: var(--brand-muted); margin: 0; }
+        .contact-panel { background: var(--brand-surface); border: 1px solid var(--brand-line); border-radius: var(--radius-xl); box-shadow: var(--shadow-soft); padding: clamp(22px, 4vw, 36px); margin-top: 24px; }
+        .contact-panel h2 { margin: 0 0 10px; font-size: 1.35rem; letter-spacing: 0; }
+        .contact-panel p { color: var(--brand-muted); margin: 0 0 16px; }
+        .contact-list { margin: 0 0 22px; padding-left: 1.2rem; color: var(--brand-muted); }
+        .contact-list li { margin: 4px 0; }
+        .contact-action { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 11px 18px; border-radius: 8px; border: 1px solid var(--brand-primary); background: var(--brand-primary); color: #fff; text-decoration: none; font-weight: 700; }
+        .contact-action:hover { background: var(--brand-primary-strong); text-decoration: none; }
+        .contact-note { font-size: .92rem; color: var(--brand-muted); margin-top: 12px !important; }
+        .contact-frame { width: 100%; min-height: 900px; border: 0; border-radius: 8px; background: #fff; }
+        .help-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
+        .help-card { border: 1px solid var(--brand-line); border-radius: 8px; padding: 16px; background: var(--brand-paper); color: inherit; text-decoration: none; }
+        .help-card strong { display: block; margin-bottom: 4px; color: var(--brand-ink); }
+        .help-card span { display: block; color: var(--brand-muted); font-size: .92rem; }
+        @media (max-width: 760px) { .help-grid { grid-template-columns: 1fr; } .contact-frame { min-height: 760px; } }
     </style>
 </head>
 <body class="landing-page">
     {% from 'includes/tool_icons.html' import tool_icon %}
-    {# P1-1: ナビゲーションの一貫性 #}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <div class="container">
-        <span class="icon-tile icon-tile--teal" aria-hidden="true" style="margin-bottom: 14px;">{{ tool_icon('contact', 22) }}</span>
-        <h1>お問い合わせ</h1>
+    <main class="contact-page">
+        <section class="contact-hero">
+            <span class="icon-tile icon-tile--lg icon-tile--teal" aria-hidden="true">{{ tool_icon('contact', 28) }}</span>
+            <h1>お問い合わせ</h1>
+            <p>不具合の報告、機能のリクエスト、サイト内容に関するご連絡はこちらからお送りください。内容を確認し、必要に応じて返信します。</p>
+        </section>
 
-        <div class="info-box">
-            <p>しごと道具箱に関するご質問、ご意見、不具合報告などは、以下の方法でお問い合わせください。原則として <strong>3営業日以内</strong> に返信いたします。個人情報の取り扱いについては、<a href="/privacy">プライバシーポリシー</a>に従います。</p>
-        </div>
+        <section class="contact-panel" aria-labelledby="contact-form-heading">
+            <h2 id="contact-form-heading">お問い合わせフォーム</h2>
+            <p>次のような内容を受け付けています。</p>
+            <ul class="contact-list">
+                <li>ツールの動作不具合</li>
+                <li>表示崩れや日本語表記の違和感</li>
+                <li>追加してほしい機能や改善案</li>
+                <li>利用方法に関する質問</li>
+            </ul>
+            <p>
+                <a id="contact-form-newtab" class="contact-action" href="https://docs.google.com/forms/d/e/1FAIpQLScnT5OIhiMD3D1Bm2EWhrSIvPrTl54oz5al9maZfNIfRO2q5A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">フォームを別タブで開く</a>
+            </p>
+            <p class="contact-note">フォームが表示されない場合は、上のボタンから別タブで開いてください。</p>
+            <iframe id="contact-form" class="contact-frame" src="https://docs.google.com/forms/d/e/1FAIpQLScnT5OIhiMD3D1Bm2EWhrSIvPrTl54oz5al9maZfNIfRO2q5A/viewform?embedded=true" loading="lazy" title="お問い合わせフォーム"></iframe>
+        </section>
 
-        <div class="contact-methods">
-            <div class="contact-method" style="background: var(--brand-teal-soft); border: 2px solid rgba(14, 124, 123, 0.32);">
-                <h3>📝 お問い合わせフォーム（推奨）</h3>
-                <p>以下のような内容について、お気軽にお問い合わせください：</p>
-                <ul style="margin-top: 10px; margin-bottom: 20px;">
-                    <li>不具合報告</li>
-                    <li>機能要望</li>
-                    <li>導入に関する相談</li>
-                    <li>使い方に関する質問</li>
-                    <li>その他のご意見・ご感想</li>
-                </ul>
-                <p style="margin-bottom: 20px;">
-                    <a id="contact-form-newtab" href="https://docs.google.com/forms/d/e/1FAIpQLSfAV8D2vxo7sCIvd3z9_1PBbFf3wLpST_bA8Y-P0Ab6WRM3gQ/viewform?usp=publish-editor" target="_blank" style="display: inline-block; padding: 15px 30px; background: var(--brand-primary); border: 1px solid var(--brand-primary); border-radius: 8px; color: #ffffff; text-decoration: none; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='var(--brand-primary-strong)'" onmouseout="this.style.background='var(--brand-primary)'">お問い合わせフォームを別タブで開く</a>
-                </p>
-                <p style="font-size: 0.9em; color: var(--brand-muted);">※ 下のフォームはGoogleフォームです。表示されない場合は上のリンクから別タブで開いてください。</p>
-                <div id="contact-form" style="margin-top: 20px; width: 100%; overflow: hidden;">
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfAV8D2vxo7sCIvd3z9_1PBbFf3wLpST_bA8Y-P0Ab6WRM3gQ/viewform?embedded=true" style="width:100%; min-height:900px; border:0;" loading="lazy" title="お問い合わせフォーム"></iframe>
-                </div>
-            </div>
+        {% if OPERATOR_EMAIL %}
+        <section class="contact-panel" aria-labelledby="contact-mail-heading">
+            <h2 id="contact-mail-heading">メールでの連絡</h2>
+            <p>フォームが使えない場合は、次のメールアドレス宛にご連絡ください。</p>
+            <p><a class="contact-action" href="mailto:{{ OPERATOR_EMAIL }}">{{ OPERATOR_EMAIL }}</a></p>
+        </section>
+        {% endif %}
 
-            {# P0-1: メール連絡先（環境変数が設定されている場合） #}
-            {% if OPERATOR_EMAIL %}
-            <div class="contact-method" style="background: rgba(46, 125, 50, 0.08); border: 2px solid rgba(46, 125, 50, 0.3);">
-                <h3>📧 メールでのお問い合わせ</h3>
-                <p>メールでのお問い合わせも受け付けております。以下のメールアドレスまでご連絡ください：</p>
-                <p style="margin: 20px 0;">
-                    <a href="mailto:{{ OPERATOR_EMAIL }}" style="display: inline-block; padding: 15px 30px; background: #1F7A5C; border: 1px solid #1F7A5C; border-radius: 8px; color: #ffffff; text-decoration: none; font-weight: 600; transition: all 0.3s; font-size: 1.1em;">{{ OPERATOR_EMAIL }}</a>
-                </p>
-                <p style="font-size: 0.9em; color: var(--brand-muted);">※ 原則として3営業日以内に返信いたします。</p>
-            </div>
-            {% else %}
-            {# Phase1: OPERATOR_EMAIL 未設定時 — フォームが主導線である旨を明示 #}
-            <div class="contact-method" style="background: var(--brand-teal-soft); border: 2px solid rgba(14, 124, 123, 0.32);">
-                <h3>📬 お問い合わせの受け付けについて</h3>
-                <p>上記のフォームがお問い合わせの主な窓口です。フォーム送信時にご記入いただいたメールアドレスへ、返信いたします。表示されない場合は「お問い合わせフォームを別タブで開く」ボタンからご利用ください。</p>
-            </div>
-            {% endif %}
-
-            <div class="contact-method">
-                <h3>💻 GitHub Issues（開発者向け）</h3>
-                <p>技術的な不具合報告や改善要望、コードに関する質問は、GitHubのIssuesでご報告ください：</p>
-                <p><a href="https://github.com/RikuTerayama/Oshigoto/issues" target="_blank">GitHub Issues</a></p>
-                <p style="font-size: 0.9em; color: var(--brand-muted);">※ 開発者コミュニティからも回答を得られる場合があります</p>
-            </div>
-        </div>
-
-        <h2>よくある質問（FAQ）</h2>
-        <div class="faq">
-            <div class="faq-item">
-                <div class="faq-question">Q1. ファイルはサーバーに保存されますか？</div>
-                <div class="faq-answer">
-                    A. 多くのツールはブラウザ内で処理が完結し、ファイルはサーバーに送信されません。PDFパスワード付与やSEO/URL確認の一部などサーバーを使う機能でも、処理後に継続保存はしません。詳しくは<a href="/privacy">プライバシーポリシー</a>をご確認ください。
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">Q2. 処理がエラーで終了してしまいます</div>
-                <div class="faq-answer">
-                    A. 以下の点をご確認ください：
-                    <ul style="margin-top: 10px;">
-                        <li>ファイル形式が各ツールの対応形式に合っているか</li>
-                        <li>ファイルサイズや件数が上限を超えていないか</li>
-                        <li>ブラウザの拡張機能やセキュリティソフトが処理をブロックしていないか</li>
-                    </ul>
-                    問題が解決しない場合は、お問い合わせください。
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">Q3. どんなツールが使えますか？</div>
-                <div class="faq-answer">
-                    A. <a href="/tools">道具箱一覧</a>から、PDFを整える、表を整える、画像をまとめて変換、画像を見やすくする、ページを確認する、の5つの軽量ツールを選べます。
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">Q4. 会社の規則で使用が制限されている場合は？</div>
-                <div class="faq-answer">
-                    A. 本サービスは業務の小さな作業を補助するツールですが、所属企業の就業規則やセキュリティポリシーを遵守してください。使用が禁止されている場合は、使用を控えてください。
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">Q5. パスワード付きPDFのロックを外せますか？</div>
-                <div class="faq-answer">
-                    A. いいえ。ロックを外す機能は公開していません。PDFへパスワードを設定して保護する機能のみ提供しています。
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">Q6. サービスは無料ですか？</div>
-                <div class="faq-answer">
-                    A. はい、本サービスは無料でご利用いただけます。
-                </div>
-            </div>
-        </div>
-
-        <h2>お問い合わせの前に</h2>
-        <p>以下のドキュメントもご参照ください：</p>
-        <ul>
-            <li><a href="/faq">よくある質問</a></li>
-            <li><a href="/terms">利用規約</a></li>
-            <li><a href="/privacy">プライバシーポリシー</a></li>
-        </ul>
-
-        <a href="/" class="back-link">← トップページに戻る</a>
-    </div>
-    
-    {# Phase 4: contact_submit_intent — iframe 内の Google Form 送信完了は同一オリジンで取れないため、別タブリンククリックを代理指標とする #}
+        <nav class="help-grid" aria-label="関連ページ">
+            <a class="help-card" href="/faq"><strong>よくある質問</strong><span>ファイル処理や安全性について確認できます。</span></a>
+            <a class="help-card" href="/privacy"><strong>プライバシーポリシー</strong><span>データの取り扱い方針をまとめています。</span></a>
+            <a class="help-card" href="/tools"><strong>ツール一覧</strong><span>公開中の5つのツールへ移動できます。</span></a>
+        </nav>
+    </main>
     <script>
     (function() {
         var el = document.getElementById('contact-form-newtab');
@@ -233,8 +77,6 @@
         }
     })();
     </script>
-    {# P1-1: ナビゲーションの一貫性 #}
     {% include 'includes/footer.html' %}
 </body>
 </html>
-
