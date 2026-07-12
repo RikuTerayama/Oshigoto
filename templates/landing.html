@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    {% set page_title = '???????PDF?CSV????URL?????????' %}
-    {% set page_description = 'PDF?CSV????URL???????????????????????????????????????????' %}
+    {% set page_title = 'しごとの小さな面倒を、さっと片づける。 | しごと道具箱' %}
+    {% set page_description = 'PDF、CSV、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。' %}
     {% include 'includes/head_meta.html' %}
 </head>
 <body class="landing-page">
@@ -10,60 +10,60 @@
     <main class="landing-shell">
         <section class="hero-v2" aria-labelledby="landing-hero-heading">
             <div class="hero-v2__copy">
-                <p class="landing-hero__eyebrow">??????</p>
+                <p class="landing-hero__eyebrow">しごと道具箱</p>
                 <h1 id="landing-hero-heading">
-                    <span class="landing-hero__headline-line">???????????</span>
-                    <span class="landing-hero__headline-line">????????</span>
+                    <span class="landing-hero__headline-line">しごとの小さな面倒を、</span>
+                    <span class="landing-hero__headline-line">さっと片づける。</span>
                 </h1>
-                <p class="landing-hero__lead">PDF?CSV???????????????????????????????????????</p>
+                <p class="landing-hero__lead">PDF、CSV、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。</p>
                 <div class="landing-hero__actions">
-                    <a href="/tools" class="btn btn-primary">??????</a>
-                    <a href="/guide" class="btn btn-secondary">??????</a>
+                    <a href="/tools" class="btn btn-primary">ツールを選ぶ</a>
+                    <a href="/guide" class="btn btn-secondary">使い方を見る</a>
                 </div>
             </div>
-            <div class="hero-v2__panel" aria-label="?????">
-                <div class="hero-v2__panel-header">5????</div>
+            <div class="hero-v2__panel" aria-label="主なツール">
+                <div class="hero-v2__panel-header">5つの道具</div>
                 <ul class="hero-v2__tool-list">
-                    <li><a href="/tools/pdf">PDF???</a><span>???????????</span></li>
-                    <li><a href="/tools/csv">CSV/Excel???</a><span>??????????</span></li>
-                    <li><a href="/tools/image-batch">??????</a><span>?????????</span></li>
-                    <li><a href="/tools/image-cleanup">?????????</a><span>??????????</span></li>
-                    <li><a href="/tools/seo">SEO/URL??</a><span>OGP?meta?sitemap</span></li>
+                    <li><a href="/tools/pdf">PDFツール</a><span>結合、分割、圧縮、保護付与</span></li>
+                    <li><a href="/tools/csv">CSV/Excelツール</a><span>変換、文字コード、列整理</span></li>
+                    <li><a href="/tools/image-batch">画像一括変換</a><span>形式変換とリサイズ</span></li>
+                    <li><a href="/tools/image-cleanup">画像クリーンアップ</a><span>余白と背景を整える</span></li>
+                    <li><a href="/tools/seo">SEO/URL確認</a><span>OGP、meta、sitemap</span></li>
                 </ul>
             </div>
         </section>
 
-        {% include 'includes/affiliate_slot.html' with context %}
-
         <section class="section-block">
             <div class="section-heading">
                 <p class="section-kicker">Tools</p>
-                <h2>????????</h2>
+                <h2>必要な作業を選ぶ</h2>
             </div>
             <div class="tool-card-grid">
-                {% for product in public_products %}
+                {% for product in public_products|default(products) %}
                 <article class="tool-card-v2">
                     <p class="tool-card-v2__eyebrow">{{ product.category|default('tool') }}</p>
                     <h3>{{ product.name }}</h3>
                     <p>{{ product.description }}</p>
                     <div class="tool-card-v2__actions">
-                        <a href="{{ product.path }}" class="btn btn-primary">??</a>
-                        {% if product.guide_path %}<a href="{{ product.guide_path }}" class="btn btn-secondary">???</a>{% endif %}
+                        <a href="{{ product.path }}" class="btn btn-primary">使う</a>
+                        {% if product.guide_path %}<a href="{{ product.guide_path }}" class="btn btn-secondary">ガイド</a>{% endif %}
                     </div>
                 </article>
                 {% endfor %}
             </div>
         </section>
 
+        {% include 'includes/affiliate_slot.html' with context %}
+
         <section class="section-block" id="safety">
             <div class="section-heading">
                 <p class="section-kicker">Policy</p>
-                <h2>????????????????</h2>
+                <h2>安心して使うための基本方針</h2>
             </div>
             <div class="trust-grid">
-                <article><h3>???????????</h3><p>??????????????????????????</p></article>
-                <article><h3>?????????</h3><p>???????????????????????????????</p></article>
-                <article><h3>???????</h3><p>SEO/URL???URL???timeout?????????????????</p></article>
+                <article><h3>必要な処理だけ</h3><p>ファイル処理は目的ごとに分け、不要な操作や公開しない機能を表示しません。</p></article>
+                <article><h3>誇張しない表示</h3><p>affiliate枠では実績風の数値表示や順位づけを行いません。</p></article>
+                <article><h3>URL確認は慎重に</h3><p>SEO/URL確認はタイムアウトとURL制限を設け、公開前の基本確認に用途を絞ります。</p></article>
             </div>
         </section>
     </main>

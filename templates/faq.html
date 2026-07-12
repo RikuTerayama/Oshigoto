@@ -2,7 +2,7 @@
 <html lang="ja" class="no-js">
 <head>
     {% set page_title = 'FAQ | しごと道具箱' %}
-    {% set page_description = 'しごと道具箱 FAQ.' %}
+    {% set page_description = 'しごと道具箱の使い方、ファイル処理、PDF保護、SEO/URL確認、affiliate表示についてのFAQです。' %}
     {% set breadcrumb_title = 'FAQ' %}
     {% include 'includes/head_meta.html' %}
 
@@ -12,7 +12,7 @@
         .page { max-width: 1040px; margin: 0 auto; padding: 56px 20px; }
         .hero { margin-bottom: 32px; text-align: center; }
         .hero h1 { font-size: 2.3rem; margin: 0 0 12px; letter-spacing: 0; color: var(--brand-ink); }
-        .hero p { color: var(--brand-muted); font-size: 1.05rem; margin: 0 auto; max-width: 520px; }
+        .hero p { color: var(--brand-muted); font-size: 1.05rem; margin: 0 auto; max-width: 620px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin: 28px 0; }
         .card { border: 1px solid var(--brand-line); border-radius: var(--radius-lg); padding: 20px; background: var(--brand-surface); box-shadow: var(--shadow-soft); }
         .card h2, .card h3 { margin-top: 0; color: var(--brand-primary-strong); letter-spacing: 0; font-size: 1.05rem; }
@@ -21,7 +21,6 @@
         .links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
         .button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 16px; border: 1px solid rgba(14, 124, 123, 0.32); border-radius: 10px; background: var(--brand-teal-soft); text-decoration: none; color: var(--brand-primary-strong); font-weight: 600; }
         .button:hover { background: rgba(14, 124, 123, 0.16); text-decoration: none; }
-        ul { padding-left: 1.2rem; }
     </style>
 </head>
 <body class="landing-page">
@@ -32,15 +31,15 @@
         <section class="hero">
             <span class="icon-tile icon-tile--lg icon-tile--teal" aria-hidden="true">{{ tool_icon('faq', 28) }}</span>
             <h1>FAQ</h1>
-            <p>しごと道具箱 FAQ for file tools, browser processing, SEO/URL checks, and affiliate display.</p>
+            <p>ファイル処理、ブラウザ内での操作、SEO/URL確認、affiliate表示について、よくある質問をまとめています。</p>
         </section>
         <section class="grid">
-            <div class="card"><h2>What tools are public?</h2><p>PDF, CSV/Excel, image batch conversion, image cleanup, and SEO/URL checks.</p></div>
-            <div class="card"><h2>Are files stored?</h2><p>Browser-side tools do not save files on the server. Server-side tools avoid persistent storage.</p></div>
-            <div class="card"><h2>????PDF????????????</h2><p>???????????PDF???????????????????????</p></div>
-            <div class="card"><h2>Are affiliate links used?</h2><p>Amazon Associate, Rakuten, and approved A8 placements may appear. Price, stock, reviews, star ratings, and fixed rankings are not shown.</p></div>
+            <div class="card"><h2>公開されているツールは何ですか？</h2><p>PDFツール、CSV/Excelツール、画像一括変換、画像クリーンアップ、SEO/URL確認の5つです。</p></div>
+            <div class="card"><h2>ファイルは保存されますか？</h2><p>ブラウザ内で完結する処理はサーバーへ保存しません。サーバー処理が必要な機能も、永続保存を前提にしない設計です。</p></div>
+            <div class="card"><h2>PDFのパスワード保護は使えますか？</h2><p>PDFへ開封用パスワードを付与する機能は公開しています。パスワードを外す機能は公開していません。</p></div>
+            <div class="card"><h2>affiliateリンクはありますか？</h2><p>Amazon Associate、楽天、承認済みA8案件の導線が表示される場合があります。実績風の数値表示や順位づけは行いません。</p></div>
         </section>
-        <div class="links"><a class="button" href="/tools">道具箱一覧</a><a class="button" href="/contact">お問い合わせ</a></div>
+        <div class="links"><a class="button" href="/tools">ツール一覧</a><a class="button" href="/contact">お問い合わせ</a></div>
     </main>
     {% include 'includes/seo_link_hub.html' %}
     {% include 'includes/footer.html' %}

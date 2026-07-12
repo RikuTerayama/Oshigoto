@@ -1,11 +1,10 @@
 <!doctype html>
 <html lang="ja" class="no-js">
 <head>
-    {% set page_title = 'PDFを整える - 結合・分割・抽出・圧縮・画像変換 | しごと道具箱' %}
-    {% set page_description = 'PDFの結合・分割・ページ抽出、圧縮、PDF→画像、画像→PDF、PDF保護を操作順に使える無料ツール。ブラウザ内で処理します。' %}
-    {% set breadcrumb_title = 'PDFを整える' %}
+    {% set page_title = 'PDFツール - 結合・分割・抽出・圧縮・画像変換 | しごと道具箱' %}
+    {% set page_description = 'PDFの結合、分割、ページ抽出、圧縮、PDFから画像、画像からPDF、PDF保護付与を扱える無料ツールです。' %}
+    {% set breadcrumb_title = 'PDFツール' %}
     {% include 'includes/head_meta.html' %}
-    {# P1-4: SoftwareApplication構造化データ #}
     {% if product %}
     {% include 'includes/structured_data.html' %}
     {% block extra_structured_data %}
@@ -33,266 +32,55 @@
     {% endblock %}
     {% endif %}
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
-        }
-        
-        body {
-            font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: var(--brand-bg);
-            min-height: 100vh;
-            color: var(--brand-ink);
-            letter-spacing: 0.02em;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .page-header {
-            text-align: center;
-            padding: 40px 20px;
-            margin-bottom: 40px;
-        }
-
-        .page-header h1 {
-            font-size: 2.5em;
-            margin: 0 0 15px 0;
-            color: var(--brand-ink);
-            font-weight: 600;
-        }
-
-        .page-header p {
-            font-size: 1.1em;
-            color: var(--brand-muted);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .tool-section {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid var(--brand-line);
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
-        }
-
-        .tool-section h3 {
-            color: var(--brand-primary);
-            font-size: 1.3em;
-            margin: 0 0 20px 0;
-        }
-
-        .file-list {
-            margin-top: 20px;
-        }
-
-        .file-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background: var(--brand-paper);
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
-
-        .file-item-info {
-            flex: 1;
-        }
-
-        .file-item-name {
-            color: var(--brand-ink);
-            font-size: 0.95em;
-            margin-bottom: 4px;
-        }
-
-        .file-item-size {
-            color: var(--brand-muted);
-            font-size: 0.85em;
-        }
-
-        .file-item-remove {
-            padding: 6px 12px;
-            background: rgba(198, 40, 40, 0.1);
-            border: 1px solid rgba(198, 40, 40, 0.35);
-            border-radius: 6px;
-            color: #9B2C2C;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.3s;
-        }
-
-        .file-item-remove:hover {
-            background: rgba(198, 40, 40, 0.18);
-        }
-
-        .option-group {
-            margin-bottom: 20px;
-        }
-
-        .option-group label {
-            display: block;
-            color: var(--brand-ink);
-            margin-bottom: 8px;
-            font-size: 0.95em;
-        }
-
-        .option-group input,
-        .option-group select {
-            width: 100%;
-            padding: 10px;
-            background: #ffffff;
-            border: 1px solid var(--brand-line);
-            border-radius: 6px;
-            color: var(--brand-ink);
-            font-size: 0.95em;
-        }
-
-        .option-group input[type="range"] {
-            padding: 0;
-        }
-
-        .action-button {
-            padding: 12px 24px;
-            background: var(--brand-teal-soft);
-            border: 1px solid rgba(14, 124, 123, 0.32);
-            border-radius: 8px;
-            color: var(--brand-primary-strong);
-            font-size: 1em;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .action-button:hover:not(:disabled) {
-            background: rgba(14, 124, 123, 0.16);
-        }
-
-        .action-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .progress-info {
-            margin-top: 15px;
-            padding: 15px;
-            background: var(--brand-paper);
-            border-radius: 8px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--brand-line);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--brand-primary), #4FA79C);
-            transition: width 0.3s;
-        }
-
-        .task-list {
-            margin-top: 15px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .task-item {
-            padding: 8px;
-            font-size: 0.9em;
-            border-bottom: 1px solid var(--brand-line);
-        }
-
-        .task-item.queued {
-            color: var(--brand-muted);
-        }
-
-        .task-item.running {
-            color: var(--brand-primary);
-        }
-
-        .task-item.success {
-            color: #1F7A5C;
-        }
-
-        .task-item.error {
-            color: #9B2C2C;
-        }
-
-        .error-message {
-            background: rgba(198, 40, 40, 0.08);
-            border: 1px solid rgba(198, 40, 40, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-            color: #7A1F1F;
-        }
-
-        .rejected-files {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(180, 83, 9, 0.08);
-            border: 1px solid rgba(180, 83, 9, 0.3);
-            border-radius: 8px;
-        }
-
-        .rejected-file {
-            margin-top: 8px;
-            font-size: 0.9em;
-            color: var(--brand-ink);
-        }
-
-        .info-text {
-            color: var(--brand-muted);
-            font-size: 0.85em;
-            margin-top: 5px;
-        }
-
-        .preset-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-
-        .preset-button {
-            padding: 8px 16px;
-            background: var(--brand-teal-soft);
-            border: 1px solid rgba(14, 124, 123, 0.32);
-            border-radius: 6px;
-            color: var(--brand-primary-strong);
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.3s;
-        }
-
-        .preset-button:hover {
-            background: rgba(14, 124, 123, 0.16);
-        }
-
-        @media (max-width: 768px) {
-            .page-header h1 {
-                font-size: 2em;
-            }
-
-            .container {
-                padding: 20px 15px;
-            }
-        }
+        * { box-sizing: border-box; font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif; }
+        body { margin: 0; padding: 0; background: var(--brand-bg); min-height: 100vh; color: var(--brand-ink); line-height: 1.6; letter-spacing: 0; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .page-header { text-align: center; padding: 40px 20px; margin-bottom: 40px; }
+        .page-header h1 { font-size: 2.5em; margin: 0 0 15px; color: var(--brand-ink); font-weight: 700; letter-spacing: 0; }
+        .page-header p { font-size: 1.1em; color: var(--brand-muted); max-width: 720px; margin: 0 auto; }
+        .tool-section { background: #fff; border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid var(--brand-line); box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05); }
+        .tool-section h3 { color: var(--brand-primary); font-size: 1.3em; margin: 0 0 20px; letter-spacing: 0; }
+        .file-dropzone { border: 2px dashed rgba(14, 124, 123, 0.35); border-radius: 14px; padding: 56px 20px; text-align: center; background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(244, 241, 232, 0.76)); transition: all 0.3s; cursor: pointer; }
+        .file-dropzone:hover { border-color: rgba(14, 124, 123, 0.58); background: #fff; }
+        .dropzone-mark { width: 64px; height: 48px; margin: 0 auto 18px; border: 2px solid rgba(14, 124, 123, 0.32); border-radius: 8px 8px 14px 14px; background: var(--brand-paper); position: relative; }
+        .dropzone-mark::before { content: ""; position: absolute; left: 10px; top: -10px; width: 34px; height: 14px; border: 2px solid rgba(14, 124, 123, 0.32); border-bottom: 0; border-radius: 8px 8px 0 0; background: var(--brand-paper); }
+        .file-list { margin-top: 20px; }
+        .file-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--brand-paper); border-radius: 8px; margin-bottom: 8px; }
+        .file-item-info { flex: 1; min-width: 0; }
+        .file-item-name { color: var(--brand-ink); font-size: 0.95em; margin-bottom: 4px; word-break: break-word; }
+        .file-item-size { color: var(--brand-muted); font-size: 0.85em; }
+        .file-item-remove { padding: 6px 12px; background: rgba(198, 40, 40, 0.1); border: 1px solid rgba(198, 40, 40, 0.35); border-radius: 6px; color: #9B2C2C; cursor: pointer; font-size: 0.9em; }
+        .option-group { margin-bottom: 20px; }
+        .option-group label { display: block; color: var(--brand-ink); margin-bottom: 8px; font-size: 0.95em; font-weight: 700; }
+        .option-group input, .option-group select { width: 100%; padding: 10px; background: #fff; border: 1px solid var(--brand-line); border-radius: 6px; color: var(--brand-ink); font-size: 0.95em; }
+        .option-group input[type="range"] { padding: 0; }
+        .mode-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 14px; }
+        .mode-card { text-align: left; border: 1px solid var(--brand-line); border-radius: 12px; padding: 14px; background: #fff; color: var(--brand-ink); cursor: pointer; min-height: 112px; transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
+        .mode-card:hover { border-color: rgba(14, 124, 123, 0.42); transform: translateY(-1px); }
+        .mode-card[aria-pressed="true"] { border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(14, 124, 123, 0.12); background: var(--brand-teal-soft); }
+        .mode-card__label { display: block; font-weight: 700; margin-bottom: 6px; }
+        .mode-card__desc { display: block; color: var(--brand-muted); font-size: 0.86em; line-height: 1.55; }
+        .mode-select-compat { position: absolute; width: 1px !important; height: 1px; padding: 0 !important; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0 !important; }
+        .action-button { padding: 12px 24px; background: var(--brand-teal-soft); border: 1px solid rgba(14, 124, 123, 0.32); border-radius: 8px; color: var(--brand-primary-strong); font-size: 1em; font-weight: 700; cursor: pointer; transition: all 0.3s; width: 100%; margin-top: 20px; }
+        .action-button:hover:not(:disabled) { background: rgba(14, 124, 123, 0.16); }
+        .action-button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .progress-info { margin-top: 15px; padding: 15px; background: var(--brand-paper); border-radius: 8px; }
+        .progress-bar { width: 100%; height: 8px; background: var(--brand-line); border-radius: 4px; overflow: hidden; margin-top: 10px; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--brand-primary), #4FA79C); transition: width 0.3s; }
+        .task-list { margin-top: 15px; max-height: 200px; overflow-y: auto; }
+        .task-item { padding: 8px; font-size: 0.9em; border-bottom: 1px solid var(--brand-line); }
+        .task-item.queued { color: var(--brand-muted); }
+        .task-item.running { color: var(--brand-primary); }
+        .task-item.success { color: #1F7A5C; }
+        .task-item.error { color: #9B2C2C; }
+        .error-message { background: rgba(198, 40, 40, 0.08); border-left: 5px solid #9B2C2C; border-radius: 8px; padding: 15px; margin-top: 15px; color: #7A1F1F; }
+        .rejected-files { margin-top: 15px; padding: 15px; background: rgba(180, 83, 9, 0.08); border: 1px solid rgba(180, 83, 9, 0.3); border-radius: 8px; }
+        .rejected-file { margin-top: 8px; font-size: 0.9em; color: var(--brand-ink); }
+        .info-text { color: var(--brand-muted); font-size: 0.85em; margin-top: 5px; }
+        .preset-buttons { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .preset-button { padding: 8px 16px; background: var(--brand-teal-soft); border: 1px solid rgba(14, 124, 123, 0.32); border-radius: 6px; color: var(--brand-primary-strong); cursor: pointer; font-size: 0.9em; transition: all 0.3s; }
+        .preset-button:hover { background: rgba(14, 124, 123, 0.16); }
+        @media (max-width: 768px) { .page-header h1 { font-size: 2em; } .container { padding: 20px 15px; } .mode-card-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body class="landing-page">
@@ -303,19 +91,19 @@
     <div class="container">
         <div class="page-header">
             <span class="icon-tile icon-tile--lg icon-tile--teal" aria-hidden="true">{{ tool_icon('pdf', 28) }}</span>
-            <h1 data-reveal>PDFを整える</h1>
-            <p data-reveal data-reveal-delay="50">結合、分割、抽出、圧縮、画像変換まで。PDF作業をこのページでさっと片づけます。</p>
+            <h1 data-reveal>PDFツール</h1>
+            <p data-reveal data-reveal-delay="50">結合、分割、抽出、圧縮、画像変換、保護付与まで、PDF作業をこのページでさっと片づけます。</p>
         </div>
         {% set tool_intro_what = 'PDFをまとめる、必要なページだけ取り出す、軽くする、画像にする作業をまとめて扱えます。' %}
-        {% set tool_intro_steps = ['やりたい操作を選ぶ', 'PDFまたは画像を選ぶ', '必要な設定を入れる', '実行してダウンロード'] %}
+        {% set tool_intro_steps = ['操作を選ぶ', 'PDFまたは画像を選ぶ', '必要な設定を入れる', '実行してダウンロード'] %}
         {% set tool_intro_notice = '大きなPDFやページ数の多いPDFは処理に時間がかかることがあります。' %}
         {% include 'includes/tool_intro.html' %}
         <section class="tool-flow" aria-labelledby="pdf-flow-heading">
-            <h2 id="pdf-flow-heading">使う順番</h2>
+            <h2 id="pdf-flow-heading">使い方</h2>
             <ol class="tool-step-list">
-                <li><strong>操作を選ぶ</strong><span>結合、分割、抽出、圧縮、PDFを保護、PDF→画像、画像→PDFから選びます。</span></li>
-                <li><strong>ファイルを選ぶ</strong><span>PDFまたは画像をドラッグ＆ドロップします。</span></li>
-                <li><strong>必要な設定だけ入れる</strong><span>ページ範囲、品質、出力形式などを必要な場合だけ指定します。</span></li>
+                <li><strong>操作を選ぶ</strong><span>結合、分割、抽出、圧縮、保護付与、PDFから画像、画像からPDFから選びます。</span></li>
+                <li><strong>ファイルを選ぶ</strong><span>PDFまたは画像をドラッグ&ドロップ、またはクリックして選択します。</span></li>
+                <li><strong>必要な設定を入れる</strong><span>ページ範囲、品質、出力形式などを必要な場合だけ指定します。</span></li>
                 <li><strong>実行して保存する</strong><span>処理後にPDF、画像、ZIPをダウンロードできます。</span></li>
             </ol>
         </section>
@@ -324,37 +112,41 @@
         <div class="tool-workspace">
         <div class="tool-section tool-main-panel">
             <h3>2. ファイルを選ぶ</h3>
-            <div id="dropzone" class="file-dropzone" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 60px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); transition: all 0.3s; cursor: pointer;">
-                <div style="font-size: 3em; margin-bottom: 20px;">📁</div>
-                <p style="color: var(--brand-ink); font-size: 1.1em; margin: 0 0 10px 0; font-weight: 500;">
-                    ファイルをドラッグ＆ドロップ
-                </p>
-                <p style="color: var(--brand-muted); font-size: 0.95em; margin: 0;">
-                    またはクリックしてファイルを選択
-                </p>
-                <p id="dropzone-hint" style="color: var(--brand-muted); font-size: 0.85em; margin: 15px 0 0 0;">
-                    対応形式: PDF（操作により最大10または20ファイル、1ファイル50MBまで）
-                </p>
+            <div id="dropzone" class="file-dropzone">
+                <div class="dropzone-mark" aria-hidden="true"></div>
+                <p style="color: var(--brand-ink); font-size: 1.1em; margin: 0 0 10px; font-weight: 700;">ファイルをトレイへ置く</p>
+                <p style="color: var(--brand-muted); font-size: 0.95em; margin: 0;">ドラッグ&ドロップ、またはクリックしてファイルを選択</p>
+                <p id="dropzone-hint" style="color: var(--brand-muted); font-size: 0.85em; margin: 15px 0 0;">対応形式: PDF（操作により最大10または20ファイル、1ファイル50MBまで）</p>
                 <input type="file" id="file-input" accept="application/pdf" multiple style="display: none;">
             </div>
             <div id="file-list" class="file-list"></div>
             <div id="rejected-files" class="rejected-files" style="display: none;"></div>
         </div>
-        
+
         <div class="tool-section tool-operation-card">
             <h3>1・3・4. 操作を選んで実行する</h3>
             <div class="option-group">
                 <label>操作モード</label>
-                <select id="mode" onchange="updateModeOptions()">
-                    <optgroup label="v1: 基本操作">
+                <div class="mode-card-grid" role="group" aria-label="PDF操作モード">
+                    <button type="button" class="mode-card" data-mode="merge" aria-pressed="true"><span class="mode-card__label">結合</span><span class="mode-card__desc">複数のPDFを1つにまとめます。</span></button>
+                    <button type="button" class="mode-card" data-mode="extract" aria-pressed="false"><span class="mode-card__label">ページ抽出</span><span class="mode-card__desc">必要なページだけ取り出します。</span></button>
+                    <button type="button" class="mode-card" data-mode="split" aria-pressed="false"><span class="mode-card__label">分割</span><span class="mode-card__desc">指定した範囲ごとにPDFを分けます。</span></button>
+                    <button type="button" class="mode-card" data-mode="compress" aria-pressed="false"><span class="mode-card__label">圧縮</span><span class="mode-card__desc">画像中心のPDFを軽くします。</span></button>
+                    <button type="button" class="mode-card" data-mode="to-images" aria-pressed="false"><span class="mode-card__label">PDFから画像</span><span class="mode-card__desc">各ページをPNG/JPEGに変換します。</span></button>
+                    <button type="button" class="mode-card" data-mode="images-to-pdf" aria-pressed="false"><span class="mode-card__label">画像からPDF</span><span class="mode-card__desc">画像を並べてPDFにします。</span></button>
+                    <button type="button" class="mode-card" data-mode="extract-images" aria-pressed="false"><span class="mode-card__label">埋め込み画像抽出</span><span class="mode-card__desc">PDF内の画像を取り出します。</span></button>
+                    <button type="button" class="mode-card" data-mode="lock-pdf" aria-pressed="false"><span class="mode-card__label">保護付与</span><span class="mode-card__desc">開くときのパスワードを付けます。</span></button>
+                </div>
+                <select id="mode" class="mode-select-compat" onchange="updateModeOptions()" aria-label="操作モード互換セレクト">
+                    <optgroup label="基本操作">
                         <option value="merge">結合</option>
                         <option value="extract">抽出</option>
                         <option value="split">分割</option>
-                        <option value="to-images">PDF→画像</option>
+                        <option value="to-images">PDFから画像</option>
                     </optgroup>
-                    <optgroup label="v2: 拡張機能">
+                    <optgroup label="拡張機能">
                         <option value="compress">圧縮</option>
-                        <option value="images-to-pdf">画像→PDF</option>
+                        <option value="images-to-pdf">画像からPDF</option>
                         <option value="extract-images">埋め込み画像抽出（試験版）</option>
                     </optgroup>
                     <optgroup label="保護の付与">
@@ -362,155 +154,101 @@
                     </optgroup>
                 </select>
             </div>
-            
+
             <div id="input-pdf-password-group" class="option-group" style="display: none;">
                 <input type="hidden" id="input-pdf-password" value="">
             </div>
             <div id="output-pdf-password-group" class="option-group" style="display: none;">
                 <label>出力PDFに設定するパスワード</label>
                 <input type="password" id="output-pdf-password" placeholder="8文字以上推奨" autocomplete="off">
-                <p class="info-text" style="color: #9a5b00;">⚠️ パスワードを忘れると開けられません。控えておいてください。</p>
+                <p class="info-text" style="color: #9a5b00;">設定したパスワードは必ず控えてください。</p>
             </div>
             <div id="extract-options" class="option-group" style="display: none;">
                 <label>ページ範囲（例: 1-3,5,7-9）</label>
                 <input type="text" id="extract-range" placeholder="1-3,5,7-9">
-                <p class="info-text">抽出するページ番号を指定（1始まり）</p>
+                <p class="info-text">取り出すページ番号を指定してください。</p>
             </div>
-            
             <div id="split-options" class="option-group" style="display: none;">
                 <label>グループ範囲（例: 1-3;4-6;7-10）</label>
                 <input type="text" id="split-range" placeholder="1-3;4-6;7-10">
-                <p class="info-text">セミコロン(;)でグループを区切り、各グループ内はカンマ(,)でページ範囲を指定</p>
+                <p class="info-text">セミコロンでグループを区切り、各グループ内はカンマでページ範囲を指定します。</p>
             </div>
-            
             <div id="to-images-options" class="option-group" style="display: none;">
                 <label>画像形式</label>
-                <select id="image-format">
-                    <option value="png">PNG</option>
-                    <option value="jpeg">JPEG</option>
-                </select>
+                <select id="image-format"><option value="png">PNG</option><option value="jpeg">JPEG</option></select>
             </div>
-            
             <div id="to-images-scale" class="option-group" style="display: none;">
                 <label>スケール</label>
-                <select id="image-scale">
-                    <option value="1.0">1.0x（標準）</option>
-                    <option value="1.5">1.5x</option>
-                    <option value="2.0">2.0x（高解像度）</option>
-                </select>
+                <select id="image-scale"><option value="1.0">1.0x（標準）</option><option value="1.5">1.5x</option><option value="2.0">2.0x（高解像度）</option></select>
             </div>
-            
             <div id="to-images-quality" class="option-group" style="display: none;">
                 <label>品質 <span id="quality-value">0.9</span></label>
                 <input type="range" id="image-quality" min="0.1" max="1.0" step="0.1" value="0.9">
             </div>
-            
-            <!-- v2: 圧縮オプション -->
             <div id="compress-options" class="option-group" style="display: none;">
                 <label>プリセット</label>
-                <div class="preset-buttons" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
-                    <button class="preset-button" onclick="applyCompressPreset('email')">メール用</button>
-                    <button class="preset-button" onclick="applyCompressPreset('balanced')">バランス</button>
-                    <button class="preset-button" onclick="applyCompressPreset('quality')">画質優先</button>
+                <div class="preset-buttons">
+                    <button type="button" class="preset-button" onclick="applyCompressPreset('email')">メール向け</button>
+                    <button type="button" class="preset-button" onclick="applyCompressPreset('balanced')">バランス</button>
+                    <button type="button" class="preset-button" onclick="applyCompressPreset('quality')">画質優先</button>
                 </div>
                 <label style="margin-top: 15px;">品質 <span id="compress-quality-value">0.75</span></label>
                 <input type="range" id="compress-quality" min="0.5" max="0.9" step="0.05" value="0.75">
                 <label style="margin-top: 15px;">スケール</label>
-                <select id="compress-scale">
-                    <option value="1.0">1.0x</option>
-                    <option value="1.5" selected>1.5x</option>
-                    <option value="2.0">2.0x</option>
-                </select>
+                <select id="compress-scale"><option value="1.0">1.0x</option><option value="1.5" selected>1.5x</option><option value="2.0">2.0x</option></select>
                 <label style="margin-top: 15px;">最大長辺（px）</label>
                 <input type="number" id="compress-max-long-edge" min="800" max="4000" value="2000">
-                <p class="info-text" style="color: #9a5b00; margin-top: 10px;">
-                    ⚠️ 注意: この方式は文字検索やテキスト選択ができなくなります（ページが画像になります）
-                </p>
+                <p class="info-text" style="color: #9a5b00; margin-top: 10px;">この方式は画像中心のPDF向けです。文字検索やテキスト選択ができなくなる場合があります。</p>
             </div>
-            
-            <!-- v2: 画像→PDFオプション -->
             <div id="images-to-pdf-options" class="option-group" style="display: none;">
                 <label>ページサイズ</label>
-                <select id="images-page-size">
-                    <option value="auto">自動（画像サイズに合わせる）</option>
-                    <option value="a4">A4</option>
-                    <option value="letter">Letter</option>
-                </select>
+                <select id="images-page-size"><option value="auto">自動（画像サイズに合わせる）</option><option value="a4">A4</option><option value="letter">Letter</option></select>
                 <label style="margin-top: 15px;">マージン（pt）</label>
                 <input type="number" id="images-margin" min="0" max="100" value="24">
-                <p class="info-text" style="margin-top: 10px;">
-                    画像の順序がPDFの順序になります（ファイル名順で処理）
-                </p>
+                <p class="info-text" style="margin-top: 10px;">画像の順序がPDFのページ順になります。</p>
             </div>
-            
-            <!-- v2: 埋め込み画像抽出オプション -->
             <div id="extract-images-options" class="option-group" style="display: none;">
-                <div class="info-text" style="margin-bottom: 15px; padding: 12px; background: rgba(74, 158, 255, 0.08); border-radius: 8px; border-left: 3px solid rgba(74, 158, 255, 0.5);">
+                <div class="info-text" style="margin-bottom: 15px; padding: 12px; background: rgba(14, 124, 123, 0.08); border-radius: 8px; border-left: 3px solid rgba(14, 124, 123, 0.5);">
                     <strong>埋め込み画像抽出（試験版）について</strong>
-                    <ul style="margin: 10px 0 0 0; padding-left: 20px; line-height: 1.6;">
+                    <ul style="margin: 10px 0 0; padding-left: 20px; line-height: 1.6;">
                         <li>PDFの中に含まれる画像を取り出し、画像ファイルとして保存します。</li>
-                        <li>PDFの種類によっては「画像だけ」ではなく「ページ全体を画像として保存」する形になることがあります（試験版）。</li>
-                        <li>うまく抽出できない主なケース:
-                            <ul style="margin-top: 4px; padding-left: 18px;">
-                                <li>図形や文字中心（ベクター中心）のPDF</li>
-                                <li>開けないPDFや権限制限のあるPDF</li>
-                                <li>ページ数が多いPDF（重くなるため、必要ページだけに分割すると安定します）</li>
-                            </ul>
-                        </li>
-                        <li>複数の画像が出力された場合は「ZIPで一括ダウンロード」でまとめて保存できます。</li>
+                        <li>PDFの種類によってはページ全体を画像として保存する形になることがあります。</li>
+                        <li>複数の画像が出力された場合はZIPでまとめて保存できます。</li>
                     </ul>
                 </div>
                 <label>画像形式</label>
-                <select id="extract-images-format">
-                    <option value="png">PNG</option>
-                    <option value="jpeg">JPEG</option>
-                </select>
+                <select id="extract-images-format"><option value="png">PNG</option><option value="jpeg">JPEG</option></select>
                 <div id="extract-images-quality-group" style="display: none; margin-top: 15px;">
                     <label>品質 <span id="extract-images-quality-value">0.9</span></label>
                     <input type="range" id="extract-images-quality" min="0.1" max="1.0" step="0.1" value="0.9">
                 </div>
                 <label style="margin-top: 15px;">最大抽出数（PDFあたり）</label>
                 <input type="number" id="extract-images-max" min="10" max="500" value="200">
-                <p class="info-text" style="color: #9a5b00; margin-top: 10px;">
-                    ⚠️ 試験版: PDFによっては抽出できない場合があります
-                </p>
+                <p class="info-text" style="color: #9a5b00; margin-top: 10px;">試験版のため、PDFによっては抽出できない場合があります。</p>
             </div>
-            
+
             <button id="run-button" class="action-button" onclick="runOperation()">PDFを処理する</button>
             <p id="run-hint" class="info-text">操作に必要なファイルと設定を入れると実行できます。</p>
             <button id="cancel-button" class="action-button" onclick="cancelOperation()" style="display: none; background: rgba(244, 67, 54, 0.2); border-color: rgba(244, 67, 54, 0.5); color: #F44336;">キャンセル</button>
         </div>
-        
+
         <div id="progress-section" class="tool-section" style="display: none;">
-            <h3>📊 進捗状況</h3>
+            <h3>進捗状況</h3>
             <div id="progress-info" class="progress-info">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span id="progress-text">待機中...</span>
-                    <span id="progress-percent">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
-                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span id="progress-text">待機中...</span><span id="progress-percent">0%</span></div>
+                <div class="progress-bar"><div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div></div>
                 <div id="task-list" class="task-list"></div>
             </div>
         </div>
-        
-        <div id="output-section" class="tool-section tool-result-panel" style="display: none;">
-            <h3>5. ダウンロードする</h3>
-            <div id="download-panel"></div>
-        </div>
-        
-        <div id="error-section" class="tool-section" style="display: none;">
-            <h3>❌ エラー</h3>
-            <div id="error-message" class="error-message"></div>
-        </div>
+        <div id="output-section" class="tool-section tool-result-panel" style="display: none;"><h3>5. ダウンロードする</h3><div id="download-panel"></div></div>
+        <div id="error-section" class="tool-section" style="display: none;"><h3>エラー</h3><div id="error-message" class="error-message"></div></div>
         </div>
         </div>
         <div class="page-sidebar">
             <div class="sticky-side-box">
                 {% set side_box_links = [
                     {'label': 'PDF作業アイテムを見る', 'description': 'PDFや書類作業の周辺アイテムを探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents'},
-                    {'label': '書類整理グッズを見る', 'description': '紙の書類やデスク周りを整理する道具を探せます。', 'href': amazon_search_url('書類整理 グッズ'), 'category': 'document-organization'}
+                    {'label': '書類整理グッズを見る', 'description': '紙の書類やデスク周りを整理する仕事道具を探せます。', 'href': amazon_search_url('書類整理 グッズ'), 'category': 'document-organization'}
                 ] %}
                 {% with side_box_title='PDF・書類作業を整える', side_box_lead='処理の合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='pdf-side-box', side_box_category='pdf-documents' %}
                     {% include 'includes/affiliate_side_box.html' %}
@@ -521,15 +259,15 @@
 
         <section class="tool-note" aria-label="PDF利用時の注意">
             <h3>安全に使うために</h3>
-            <p>機密資料や個人情報を含むPDFは、必要な範囲だけ選んで処理してください。PDFを保護する場合は、設定したパスワードを必ず控えておいてください。</p>
+            <p>機密資料や個人情報を含むPDFは、必要な範囲だけ選んで処理してください。PDFに保護を付ける場合は、設定したパスワードを必ず控えてください。</p>
         </section>
         <section class="tool-affiliate-row" aria-label="PDF作業に関連する仕事道具">
             {% set affiliate_context_links = [
                 {'label': 'PDF作業アイテムを見る', 'description': 'PDFや書類作業の周辺アイテムを探せます。', 'href': amazon_search_url('PDF 書類整理 アイテム'), 'category': 'pdf-documents', 'cta': 'PDF作業アイテムを見る'},
-                {'label': '書類整理グッズを見る', 'description': '紙の書類やデスク周りを整理する道具を探せます。', 'href': amazon_search_url('書類整理 グッズ'), 'category': 'document-organization', 'cta': '書類整理グッズを見る'},
-                {'label': '契約・PDF作業に役立つ本を見る', 'description': '契約書やPDF作業の基礎を学べる本を探せます。', 'href': amazon_search_url('契約書 PDF 作業 本'), 'category': 'pdf-books', 'cta': 'PDF作業に役立つ本を見る'}
+                {'label': '書類整理グッズを見る', 'description': '紙の書類やデスク周りを整理する仕事道具を探せます。', 'href': amazon_search_url('書類整理 グッズ'), 'category': 'document-organization', 'cta': '書類整理グッズを見る'},
+                {'label': 'PDF作業に役立つ本を見る', 'description': '書類整理やPDF作業の基本を学べる本を探せます。', 'href': amazon_search_url('書類整理 PDF 作業 本'), 'category': 'pdf-books', 'cta': 'PDF作業に役立つ本を見る'}
             ] %}
-            {% with affiliate_context_title='PDF・書類作業を整える道具', affiliate_context_lead='処理が終わったら、次の書類作業に備える道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='pdf-documents', affiliate_context_placement='pdf-post-action', affiliate_context_class='post-action-affiliate' %}
+            {% with affiliate_context_title='PDF・書類作業を整える仕事道具', affiliate_context_lead='処理が終わったら、次の書類作業に備える道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='pdf-documents', affiliate_context_placement='pdf-post-action', affiliate_context_class='post-action-affiliate' %}
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
@@ -539,14 +277,36 @@
             {% set affiliate_mid_amazon_rendered = true %}
             {% endif %}
         </section>
-        <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px 0;"><a href="#about-tool" style="color: #4FA79C;">使い方・FAQを読む ↓</a></div>
+        <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px;"><a href="#about-tool" style="color: #4FA79C;">使い方・FAQを読む →</a></div>
         {% include 'includes/tool_content_blocks.html' %}
     </div>
 
     {% include 'includes/related_tools.html' %}
     {% include 'includes/footer.html' %}
-    
-    <!-- PDFライブラリ（CDN） -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const select = document.getElementById('mode');
+            const cards = Array.from(document.querySelectorAll('[data-mode]'));
+            function syncModeCards() {
+                cards.forEach(card => {
+                    const active = card.dataset.mode === select.value;
+                    card.setAttribute('aria-pressed', active ? 'true' : 'false');
+                });
+            }
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    if (select.value !== card.dataset.mode) {
+                        select.value = card.dataset.mode;
+                        select.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                    syncModeCards();
+                });
+            });
+            select.addEventListener('change', syncModeCards);
+            syncModeCards();
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
