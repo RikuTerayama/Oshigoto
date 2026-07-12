@@ -1,4 +1,4 @@
-﻿{% set affiliate_section_class = affiliate_section_class|default('') %}
+{% set affiliate_section_class = affiliate_section_class|default('') %}
 {% set affiliate_section_show_disclosure = affiliate_section_show_disclosure|default(true) %}
 {% set affiliate_networks = affiliate_networks|default(['amazon', 'a8']) %}
 {% set affiliate_section_tier = affiliate_section_tier|default('') %}
@@ -76,8 +76,11 @@
 
         {% if show_a8_network %}
         <div class="affiliate-stack__row affiliate-stack__row--a8" data-affiliate-network="a8" data-affiliate-placement="{{ affiliate_section_placement }}" data-affiliate-category="{{ affiliate_section_category }}">
+            <div class="affiliate-stack__head affiliate-stack__head--a8">
+                <p class="affiliate-stack__label affiliate-stack__label--a8">A8.net 承認済み広告</p>
+            </div>
             <div class="affiliate-a8-banner" aria-label="A8.net 広告">
-                <script type="text/javascript" src="//rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js"></script>
+                <script type="text/javascript" src="https://rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js"></script>
             </div>
         </div>
         {% endif %}

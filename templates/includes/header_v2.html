@@ -30,7 +30,7 @@
                                     id="nav-{{ section.id|default(loop.index) }}">
                                 {% if section.id == 'tools' %}{{ icon('tools', 18, 'site-nav__icon') }}{% elif section.id == 'guide' %}{{ icon('book', 18, 'site-nav__icon') }}{% endif %}
                                 <span>{{ section.label }}</span>
-                                <span class="site-nav__chevron" aria-hidden="true">▼</span>
+                                <span class="site-nav__chevron" aria-hidden="true">▾</span>
                             </button>
                             <ul class="site-nav__dropdown" id="dropdown-{{ section.id|default(loop.index) }}" role="menu" aria-label="{{ section.label }}">
                                 {% for item in section.children %}

@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ja">
 <head>
     {% set page_title = 'しごとの小さな面倒を、さっと片づける。 | しごと道具箱' %}
@@ -6,6 +6,8 @@
     {% include 'includes/head_meta.html' %}
 </head>
 <body class="landing-page">
+    {% from 'includes/tool_icons.html' import tool_icon %}
+    {% set icon_tint_by_id = {'pdf': 'teal', 'csv': 'blue', 'image-batch': 'amber', 'image-cleanup': 'teal', 'seo': 'blue'} %}
     {% include 'includes/header.html' %}
     <main class="landing-shell">
         <section class="hero-v2" aria-labelledby="landing-hero-heading">
@@ -21,26 +23,42 @@
                     <a href="/guide" class="btn btn-secondary">使い方を見る</a>
                 </div>
             </div>
-            <div class="hero-v2__panel" aria-label="主なツール">
+            <aside class="hero-v2__panel hero-tool-panel" aria-label="5つの道具">
                 <div class="hero-v2__panel-header">5つの道具</div>
-                <ul class="hero-v2__tool-list">
-                    <li><a href="/tools/pdf">PDFツール</a><span>結合、分割、圧縮、画像変換、保護付与</span></li>
-                    <li><a href="/tools/csv">CSV/Excelツール</a><span>変換、文字コード確認、重複削除、列整理</span></li>
-                    <li><a href="/tools/image-batch">画像一括変換</a><span>形式変換とリサイズ</span></li>
-                    <li><a href="/tools/image-cleanup">画像クリーンアップ</a><span>余白、背景、比率、枠まわりの調整</span></li>
-                    <li><a href="/tools/seo">SEO/URL確認</a><span>title、meta、OGP、URL一覧確認</span></li>
-                </ul>
-            </div>
+                <div class="hero-tool-stack" role="list">
+                    <a class="hero-tool-card hero-tool-card--pdf" href="/tools/pdf" role="listitem">
+                        <span class="icon-tile icon-tile--teal" aria-hidden="true">{{ tool_icon('pdf', 18) }}</span>
+                        <span><strong>PDF</strong><em>結合・分割・圧縮・保護</em></span>
+                    </a>
+                    <a class="hero-tool-card hero-tool-card--csv" href="/tools/csv" role="listitem">
+                        <span class="icon-tile icon-tile--blue" aria-hidden="true">{{ tool_icon('csv', 18) }}</span>
+                        <span><strong>CSV/Excel</strong><em>変換・文字コード・列整理</em></span>
+                    </a>
+                    <a class="hero-tool-card hero-tool-card--image" href="/tools/image-batch" role="listitem">
+                        <span class="icon-tile icon-tile--amber" aria-hidden="true">{{ tool_icon('image-batch', 18) }}</span>
+                        <span><strong>画像変換</strong><em>形式変換・リサイズ</em></span>
+                    </a>
+                    <a class="hero-tool-card hero-tool-card--cleanup" href="/tools/image-cleanup" role="listitem">
+                        <span class="icon-tile icon-tile--teal" aria-hidden="true">{{ tool_icon('image-cleanup', 18) }}</span>
+                        <span><strong>画像整理</strong><em>余白・背景・比率・枠まわり</em></span>
+                    </a>
+                    <a class="hero-tool-card hero-tool-card--seo" href="/tools/seo" role="listitem">
+                        <span class="icon-tile icon-tile--blue" aria-hidden="true">{{ tool_icon('seo', 18) }}</span>
+                        <span><strong>SEO/URL</strong><em>title・meta・OGP・URL一覧</em></span>
+                    </a>
+                </div>
+            </aside>
         </section>
 
-        <section class="section-block">
+        <section class="section-block section-block--tools">
             <div class="section-heading">
                 <p class="section-kicker">Tools</p>
                 <h2>必要な作業を選ぶ</h2>
             </div>
-            <div class="tool-card-grid">
+            <div class="tool-card-grid cards-grid--balanced">
                 {% for product in public_products|default(products) %}
                 <article class="tool-card-v2">
+                    <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} tool-card-v2__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
                     <p class="tool-card-v2__eyebrow">{{ product.category|default('tool') }}</p>
                     <h3>{{ product.name }}</h3>
                     <p>{{ product.description }}</p>
@@ -68,7 +86,7 @@
                 <p class="section-kicker">Policy</p>
                 <h2>安心して使うための基本方針</h2>
             </div>
-            <div class="trust-grid">
+            <div class="trust-grid cards-grid--balanced">
                 <article><h3>必要な処理だけ</h3><p>ファイル処理は目的ごとに分け、不要な操作や公開しない機能を表示しません。</p></article>
                 <article><h3>誤解を招かない広告表示</h3><p>広告枠では実績風の数値表示や順位づけを行いません。</p></article>
                 <article><h3>公開前の確認を軽く</h3><p>SEO/URL確認はタイムアウトとURL制限を設け、公開前の基本確認に用途を絞っています。</p></article>
