@@ -1,9 +1,9 @@
-﻿(function() {
+(function() {
   if (window.OshigotoAffiliate) {
     return;
   }
 
-  var ROTATION_SRC = '//rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js';
+  var ROTATION_SRC = 'https://rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js';
   var observer = null;
 
   function getDeviceClass() {

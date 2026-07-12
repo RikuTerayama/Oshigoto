@@ -1,4 +1,4 @@
-﻿/* ============================================
+/* ============================================
    Automation Hub - Common Design System
    Minimal, Calm, Developer-friendly
    ============================================ */
@@ -3954,5 +3954,433 @@ body.landing-page,
     .landing-page .landing-use-grid > *,
     .landing-page .related-tools-grid > * {
         grid-column: auto !important;
+    }
+}
+
+/* Phase 8.7: production QA layout polish. */
+:root {
+    --container-max-width: 1320px;
+    --page-inline-padding: clamp(16px, 3vw, 32px);
+    --sticky-header-offset: 88px;
+}
+
+html {
+    scroll-padding-top: calc(var(--sticky-header-offset) + 16px);
+}
+
+[id] {
+    scroll-margin-top: calc(var(--sticky-header-offset) + 16px);
+}
+
+.landing-page .site-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    background: rgba(255, 252, 246, 0.96) !important;
+    box-shadow: 0 1px 0 rgba(43, 38, 32, 0.08), 0 10px 28px rgba(43, 38, 32, 0.07) !important;
+}
+
+.landing-page .site-nav__dropdown {
+    z-index: 1010 !important;
+    margin-top: 10px;
+    max-height: min(72vh, 560px);
+}
+
+.landing-page .site-nav__inner {
+    width: min(100%, var(--container-max-width));
+}
+
+.landing-page .site-logo__text {
+    min-width: 0;
+}
+
+.landing-page .site-logo__meta,
+.landing-page .site-nav__link span,
+.landing-page .site-nav__dropdown-link span {
+    overflow-wrap: anywhere;
+}
+
+.landing-page .landing-shell,
+.landing-page .container,
+.landing-page .page,
+.landing-page .contact-page,
+.landing-page .related-tools-container {
+    width: min(100%, var(--container-max-width)) !important;
+    max-width: var(--container-max-width) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: var(--page-inline-padding) !important;
+    padding-right: var(--page-inline-padding) !important;
+}
+
+.landing-page .section-block,
+.landing-page .affiliate-context-block,
+.landing-page .affiliate-cards-section,
+.landing-page .related-tools-section,
+.landing-page .tools-hero,
+.landing-page .hero-v2,
+.landing-page .page-header,
+.landing-page .hero,
+.landing-page .contact-panel {
+    width: 100%;
+    max-width: 100%;
+}
+
+.landing-page .section-heading,
+.landing-page .related-tools-header,
+.landing-page .affiliate-context-block__header,
+.landing-page .affiliate-spotlight__header {
+    max-width: 780px;
+    margin-left: 0;
+    margin-right: auto;
+    text-align: left;
+}
+
+.landing-page .tools-hero,
+.landing-page .hero,
+.landing-page .contact-hero {
+    text-align: left;
+    align-items: flex-start;
+}
+
+.landing-page .tools-hero p,
+.landing-page .hero p,
+.landing-page .contact-hero p {
+    margin-left: 0;
+}
+
+.landing-page .hero-v2 {
+    grid-template-columns: minmax(0, 1.06fr) minmax(320px, 0.94fr) !important;
+    gap: clamp(24px, 4vw, 54px) !important;
+    align-items: stretch;
+}
+
+.landing-page .hero-tool-panel {
+    align-self: stretch;
+}
+
+.landing-page .hero-tool-stack {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.landing-page .hero-tool-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: rgba(255, 252, 246, 0.82);
+    color: var(--brand-ink);
+    text-decoration: none;
+}
+
+.landing-page .hero-tool-card:hover {
+    border-color: rgba(140, 90, 60, 0.34);
+    background: #fffaf0;
+    text-decoration: none;
+}
+
+.landing-page .hero-tool-card strong,
+.landing-page .hero-tool-card em {
+    display: block;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.landing-page .hero-tool-card strong {
+    color: var(--brand-ink);
+    font-size: 0.95rem;
+    line-height: 1.35;
+}
+
+.landing-page .hero-tool-card em {
+    margin-top: 2px;
+    color: var(--brand-muted);
+    font-size: 0.78rem;
+    font-style: normal;
+    line-height: 1.45;
+}
+
+.landing-page .hero-tool-card--seo {
+    grid-column: 1 / -1;
+}
+
+.landing-page .tool-card-v2,
+.landing-page .product-card,
+.landing-page .related-tools-card,
+.landing-page .affiliate-context-card,
+.landing-page .support-card,
+.landing-page .guide-preview-card {
+    display: flex !important;
+    flex-direction: column;
+    min-width: 0;
+    height: 100%;
+    text-align: left;
+}
+
+.landing-page .tool-card-v2__icon,
+.landing-page .product-card .icon-tile,
+.landing-page .related-tools-card__icon {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 14px;
+}
+
+.landing-page .tool-card-v2 h3,
+.landing-page .product-card h3,
+.landing-page .related-tools-card__title,
+.landing-page .affiliate-context-card__label {
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.landing-page .tool-card-v2 p,
+.landing-page .product-card p,
+.landing-page .related-tools-card__desc,
+.landing-page .affiliate-context-card__desc {
+    line-height: 1.75;
+}
+
+.landing-page .tool-card-v2__actions,
+.landing-page .tool-cta-row,
+.landing-page .related-tools-card__actions {
+    margin-top: auto !important;
+    padding-top: 18px;
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.landing-page .tool-card-v2__actions .btn,
+.landing-page .tool-cta-row .link-button,
+.landing-page .tool-cta-row .guide-card,
+.landing-page .related-tools-card__cta,
+.landing-page .related-tools-card__guide {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.landing-page .cards-grid--balanced,
+.landing-page .tool-card-grid,
+.landing-page .products-grid,
+.landing-page .related-tools-grid,
+.landing-page .affiliate-context-grid,
+.landing-page .landing-use-grid {
+    display: grid !important;
+    gap: clamp(16px, 2vw, 24px) !important;
+    align-items: stretch;
+}
+
+@media (min-width: 1280px) {
+    .landing-page .cards-grid--balanced,
+    .landing-page .tool-card-grid,
+    .landing-page .products-grid,
+    .landing-page .related-tools-grid,
+    .landing-page .affiliate-context-grid,
+    .landing-page .landing-use-grid {
+        grid-template-columns: repeat(10, minmax(0, 1fr)) !important;
+    }
+
+    .landing-page .cards-grid--balanced > *,
+    .landing-page .tool-card-grid > *,
+    .landing-page .products-grid > *,
+    .landing-page .related-tools-grid > *,
+    .landing-page .affiliate-context-grid > *,
+    .landing-page .landing-use-grid > * {
+        grid-column: span 2 !important;
+    }
+}
+
+@media (min-width: 960px) and (max-width: 1279px) {
+    .landing-page .cards-grid--balanced,
+    .landing-page .tool-card-grid,
+    .landing-page .products-grid,
+    .landing-page .related-tools-grid,
+    .landing-page .affiliate-context-grid,
+    .landing-page .landing-use-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    }
+
+    .landing-page .cards-grid--balanced > *,
+    .landing-page .tool-card-grid > *,
+    .landing-page .products-grid > *,
+    .landing-page .related-tools-grid > *,
+    .landing-page .affiliate-context-grid > *,
+    .landing-page .landing-use-grid > * {
+        grid-column: span 2 !important;
+    }
+
+    .landing-page .cards-grid--balanced > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .tool-card-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .products-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .related-tools-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .affiliate-context-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .landing-use-grid > *:nth-last-child(2):nth-child(3n + 1) {
+        grid-column: 2 / span 2 !important;
+    }
+
+    .landing-page .cards-grid--balanced > *:only-child,
+    .landing-page .tool-card-grid > *:only-child,
+    .landing-page .products-grid > *:only-child,
+    .landing-page .related-tools-grid > *:only-child,
+    .landing-page .affiliate-context-grid > *:only-child,
+    .landing-page .landing-use-grid > *:only-child {
+        grid-column: 3 / span 2 !important;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 959px) {
+    .landing-page .cards-grid--balanced,
+    .landing-page .tool-card-grid,
+    .landing-page .products-grid,
+    .landing-page .related-tools-grid,
+    .landing-page .affiliate-context-grid,
+    .landing-page .landing-use-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+
+    .landing-page .cards-grid--balanced > *,
+    .landing-page .tool-card-grid > *,
+    .landing-page .products-grid > *,
+    .landing-page .related-tools-grid > *,
+    .landing-page .affiliate-context-grid > *,
+    .landing-page .landing-use-grid > * {
+        grid-column: span 2 !important;
+    }
+
+    .landing-page .cards-grid--balanced > *:last-child:nth-child(odd),
+    .landing-page .tool-card-grid > *:last-child:nth-child(odd),
+    .landing-page .products-grid > *:last-child:nth-child(odd),
+    .landing-page .related-tools-grid > *:last-child:nth-child(odd),
+    .landing-page .affiliate-context-grid > *:last-child:nth-child(odd),
+    .landing-page .landing-use-grid > *:last-child:nth-child(odd) {
+        grid-column: 2 / span 2 !important;
+    }
+}
+
+.landing-page .affiliate-context-a8 {
+    margin-top: clamp(18px, 2.4vw, 28px);
+    padding: 18px;
+    border: 1px solid rgba(140, 90, 60, 0.16) !important;
+    border-radius: 12px;
+    background: #fffaf0;
+}
+
+.landing-page .affiliate-context-a8__copy {
+    margin-bottom: 12px;
+    text-align: left;
+}
+
+.landing-page .affiliate-context-a8__copy strong {
+    color: var(--brand-ink) !important;
+}
+
+.landing-page .affiliate-context-a8__copy span {
+    color: var(--brand-muted) !important;
+}
+
+.landing-page .affiliate-stack__head--a8 {
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+
+.landing-page .affiliate-stack__label--a8 {
+    color: var(--brand-primary-strong);
+    font-size: 0.86rem;
+    font-weight: 700;
+}
+
+.landing-page .affiliate-a8-banner {
+    width: min(100%, 728px);
+    min-height: 88px;
+    display: grid;
+    place-items: center;
+    margin: 0;
+    overflow: hidden;
+    border: 1px dashed rgba(140, 90, 60, 0.22);
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+@media (max-width: 920px) {
+    :root { --sticky-header-offset: 112px; }
+
+    .landing-page .hero-v2 {
+        grid-template-columns: 1fr !important;
+    }
+
+    .landing-page .hero-tool-card--seo {
+        grid-column: auto;
+    }
+
+    .landing-page .site-nav__inner {
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .landing-page .site-nav__links {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .landing-page .site-nav__dropdown {
+        left: 0 !important;
+        right: auto !important;
+        transform: none !important;
+        max-width: calc(100vw - 32px);
+    }
+}
+
+@media (max-width: 640px) {
+    :root { --sticky-header-offset: 128px; }
+
+    .landing-page .landing-shell,
+    .landing-page .container,
+    .landing-page .page,
+    .landing-page .contact-page,
+    .landing-page .related-tools-container {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
+
+    .landing-page .hero-tool-stack,
+    .landing-page .cards-grid--balanced,
+    .landing-page .tool-card-grid,
+    .landing-page .products-grid,
+    .landing-page .related-tools-grid,
+    .landing-page .affiliate-context-grid,
+    .landing-page .landing-use-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .landing-page .cards-grid--balanced > *,
+    .landing-page .tool-card-grid > *,
+    .landing-page .products-grid > *,
+    .landing-page .related-tools-grid > *,
+    .landing-page .affiliate-context-grid > *,
+    .landing-page .landing-use-grid > * {
+        grid-column: auto !important;
+    }
+
+    .landing-page .tool-card-v2__actions,
+    .landing-page .tool-cta-row,
+    .landing-page .related-tools-card__actions {
+        flex-direction: column;
+    }
+
+    .landing-page .site-logo__meta {
+        display: none;
     }
 }

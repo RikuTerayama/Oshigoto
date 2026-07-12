@@ -1,77 +1,32 @@
-{# 関連ツールセクション（PRODUCTS の全件を表示。context の products_catalog を使用） #}
+{% from 'includes/tool_icons.html' import tool_icon %}
 {% set current_path = request.path|default('/') %}
 {% set all_tools = products_catalog|default([]) %}
+{% set icon_tint_by_id = {'pdf': 'teal', 'csv': 'blue', 'image-batch': 'amber', 'image-cleanup': 'teal', 'seo': 'blue'} %}
 {% if all_tools %}
 <section class="related-tools-section" aria-labelledby="related-tools-heading">
     <div class="related-tools-container">
-        <h2 id="related-tools-heading" class="related-tools-heading" data-reveal>関連ツール</h2>
-        <div class="related-tools-grid" data-reveal data-reveal-delay="50">
+        <div class="related-tools-header">
+            <p class="section-kicker">Related Tools</p>
+            <h2 id="related-tools-heading" class="related-tools-heading" data-reveal>関連ツール</h2>
+        </div>
+        <div class="related-tools-grid cards-grid--balanced" data-reveal data-reveal-delay="50">
             {% for product in all_tools %}
-            <div class="related-tools-card {{ 'related-tools-card--current' if product.path == current_path else '' }}">
+            <article class="related-tools-card {{ 'related-tools-card--current' if product.path == current_path else '' }}">
                 {% if product.path == current_path %}
                 <span class="related-tools-card__badge" aria-label="現在のページ">現在表示中</span>
                 {% endif %}
-                <div class="related-tools-card__icon">{{ product.icon|default('📦') }}</div>
+                <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} related-tools-card__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
                 <h3 class="related-tools-card__title">{{ product.name|default('') }}</h3>
                 <p class="related-tools-card__desc">{{ product.description|default('') }}</p>
                 <div class="related-tools-card__actions">
-                    <a href="{{ product.path|default('#') }}" class="related-tools-card__cta">ツールを開く →</a>
+                    <a href="{{ product.path|default('#') }}" class="related-tools-card__cta">ツールを開く</a>
                     {% if product.guide_path %}
                     <a href="{{ product.guide_path }}" class="related-tools-card__guide">ガイド</a>
                     {% endif %}
                 </div>
-            </div>
+            </article>
             {% endfor %}
         </div>
     </div>
 </section>
-<style>
-.related-tools-section { margin-top: 60px; padding-top: 40px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
-.related-tools-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-.related-tools-heading { font-size: 1.8em; margin-bottom: 30px; color: #FFFFFF; text-align: center; }
-.related-tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-.related-tools-card {
-    position: relative; display: block; background: linear-gradient(145deg, #1E1E1E 0%, #2A2A2A 100%); border-radius: 12px; padding: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.1); color: #FFFFFF; transition: all 0.3s;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-.related-tools-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); border-color: rgba(74, 158, 255, 0.4); }
-.related-tools-card--current { border-color: rgba(76, 175, 80, 0.5); }
-.related-tools-card__badge {
-    position: absolute; top: 12px; right: 12px; padding: 4px 10px; border-radius: 6px;
-    background: rgba(76, 175, 80, 0.2); color: #4CAF50; font-size: 0.75em; font-weight: 500;
-}
-.related-tools-card__icon { font-size: 2.5em; margin-bottom: 15px; text-align: center; }
-.related-tools-card__title { font-size: 1.3em; margin: 0 0 10px 0; color: #FFFFFF; text-align: center; }
-.related-tools-card__desc { font-size: 0.95em; color: rgba(255, 255, 255, 0.7); margin: 0; line-height: 1.5; text-align: center; }
-.related-tools-card__actions { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
-.related-tools-card__cta {
-    display: inline-block; padding: 8px 16px; background: rgba(74, 158, 255, 0.2); border: 1px solid rgba(74, 158, 255, 0.5);
-    border-radius: 6px; color: #4A9EFF; font-size: 0.9em; font-weight: 500; text-decoration: none; transition: all 0.3s;
-}
-.related-tools-card__cta:hover { background: rgba(74, 158, 255, 0.3); color: #FFFFFF; }
-.related-tools-card__guide {
-    display: inline-block; padding: 6px 12px; border-radius: 6px; color: rgba(255, 255, 255, 0.8);
-    font-size: 0.85em; text-decoration: none; border: 1px solid rgba(255, 255, 255, 0.2);
-}
-.related-tools-card__guide:hover { background: rgba(255, 255, 255, 0.1); color: #FFFFFF; }
-
-.landing-page .related-tools-section { border-top-color: #e2e8f0; }
-.landing-page .related-tools-heading { color: #172033; }
-.landing-page .related-tools-card {
-    background: #ffffff;
-    border-color: #dde5ee;
-    color: #172033;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
-}
-.landing-page .related-tools-card:hover { box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1); border-color: #b9d4ec; }
-.landing-page .related-tools-card--current { border-color: rgba(46, 125, 50, 0.4); }
-.landing-page .related-tools-card__badge { background: rgba(46, 125, 50, 0.12); color: #2e7d32; }
-.landing-page .related-tools-card__title { color: #172033; }
-.landing-page .related-tools-card__desc { color: #64748b; }
-.landing-page .related-tools-card__cta { background: #eaf2fc; border-color: #bcd6f5; color: #175aab; }
-.landing-page .related-tools-card__cta:hover { background: #d9e9fb; color: #175aab; }
-.landing-page .related-tools-card__guide { color: #64748b; border-color: #dde5ee; }
-.landing-page .related-tools-card__guide:hover { background: #f1f5f9; color: #172033; }
-</style>
 {% endif %}
