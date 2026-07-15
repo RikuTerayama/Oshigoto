@@ -8,7 +8,7 @@
                 <span class="site-logo__mark" aria-hidden="true">{{ tool_icon('toolbox', 20) }}</span>
                 <span class="site-logo__text">
                     <span class="site-logo__badge">しごと道具箱</span>
-                    <span class="site-logo__meta">作業を選んですぐ始める道具箱</span>
+                    <span class="site-logo__meta">小さな仕事を片づける軽量ツール集</span>
                 </span>
             </a>
             <div class="site-nav__links">
@@ -30,7 +30,7 @@
                                     id="nav-{{ section.id|default(loop.index) }}">
                                 {% if section.id == 'tools' %}{{ icon('tools', 18, 'site-nav__icon') }}{% elif section.id == 'guide' %}{{ icon('book', 18, 'site-nav__icon') }}{% endif %}
                                 <span>{{ section.label }}</span>
-                                <span class="site-nav__chevron" aria-hidden="true">⌄</span>
+                                <span class="site-nav__chevron" aria-hidden="true">▾</span>
                             </button>
                             <ul class="site-nav__dropdown" id="dropdown-{{ section.id|default(loop.index) }}" role="menu" aria-label="{{ section.label }}">
                                 {% for item in section.children %}

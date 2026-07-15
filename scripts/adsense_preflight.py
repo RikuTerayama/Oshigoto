@@ -15,6 +15,8 @@ TOOL_PATHS = ['/tools/pdf', '/tools/csv', '/tools/image-batch', '/tools/image-cl
 GUIDE_PATHS = ['/guide/pdf', '/guide/csv', '/guide/image-batch', '/guide/image-cleanup', '/guide/seo']
 INDEXABLE_PATHS = ['/', '/tools', '/guide', '/blog', '/glossary'] + TOOL_PATHS + GUIDE_PATHS
 PUBLIC_AFFILIATE_PATHS = ['/', '/tools'] + TOOL_PATHS
+ADSENSE_SCRIPT_SRC = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4232725615106709'
+ADSENSE_HEAD_PATHS = ['/', '/tools', '/tools/pdf']
 FORBIDDEN_PUBLIC_STRINGS = [
     'Jobcan',
     'AutoFill',
@@ -79,6 +81,15 @@ def run_checks(get):
     resp = get('/api/pdf/unlock')
     add('pdf_unlock_404', '/api/pdf/unlock', _status(resp) == 404, f'status={_status(resp)}')
 
+
+    for path in ADSENSE_HEAD_PATHS:
+        body = _body(get(path))
+        lower_body = body.lower()
+        script_count = body.count(ADSENSE_SCRIPT_SRC)
+        script_pos = body.find(ADSENSE_SCRIPT_SRC)
+        head_end = lower_body.find('</head>')
+        add('adsense_script_once', path, script_count == 1, f'count={script_count}')
+        add('adsense_script_in_head', path, script_pos != -1 and head_end != -1 and script_pos < head_end, f'script_pos={script_pos} head_end={head_end}')
     for path in INDEXABLE_PATHS:
         resp = get(path)
         body = _body(resp)
