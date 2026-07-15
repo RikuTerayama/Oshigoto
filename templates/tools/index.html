@@ -8,49 +8,48 @@
     <style>
         * { box-sizing: border-box; }
         body { margin: 0; padding: 0; background: var(--brand-bg); min-height: 100vh; color: var(--brand-ink); line-height: 1.7; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        .tools-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 48px 20px 16px; margin-bottom: 12px; }
-        .tools-hero__icon { margin-bottom: 18px; }
-        .tools-hero h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 14px; color: var(--brand-ink); font-weight: 700; letter-spacing: 0; }
-        .tools-hero p { font-size: 1.08em; color: var(--brand-muted); max-width: 720px; margin: 0 auto; }
+        .container { width: min(100% - 40px, 1120px); margin: 0 auto; padding: 34px 0 52px; }
+        .tools-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 44px 20px 18px; margin: 0 auto 10px; }
+        .tools-hero__icon { margin-bottom: 14px; }
+        .tools-hero h1 { max-width: 760px; font-size: clamp(2rem, 4.8vw, 3.15rem); margin: 0 0 14px; color: var(--brand-ink); font-weight: 700; letter-spacing: 0; line-height: 1.18; }
+        .tools-hero p { font-size: 1.05em; color: var(--brand-muted); max-width: 760px; margin: 0 auto; }
         .tools-hero__note { margin-top: 14px !important; font-size: 0.92em !important; color: #7c8577 !important; }
         .tools-hero__note a { color: var(--brand-primary-strong); }
-        .category-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 22px 0 6px; }
-        .category-chip { display: inline-flex; align-items: center; padding: 7px 16px; border-radius: 999px; border: 1px solid var(--brand-line); background: #fff; color: var(--brand-muted); font-size: 0.85em; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
-        .category-chip:hover { border-color: rgba(14, 124, 123, 0.32); }
+        .category-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; width: min(100%, 820px); margin: 22px auto 6px; padding: 8px; border: 1px solid var(--brand-line); border-radius: 14px; background: rgba(255, 252, 246, 0.82); }
+        .category-chip { display: inline-flex; align-items: center; min-height: 34px; padding: 7px 15px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--brand-muted); font-size: 0.86em; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
+        .category-chip:hover { border-color: rgba(14, 124, 123, 0.28); background: rgba(255,255,255,0.72); }
         .category-chip--active { background: var(--brand-primary); border-color: var(--brand-primary); color: #fff; }
-        .tools-search { max-width: 760px; margin: 22px auto 28px; }
+        .tools-search { max-width: 760px; margin: 20px auto 24px; }
         .tools-search input { width: 100%; padding: 13px 16px; background: #fff; border: 1px solid var(--brand-line); border-radius: 12px; color: var(--brand-ink); font-size: 1em; }
         .tools-search input:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
-        .products-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 24px; margin-top: 34px; }
-        .product-card { grid-column: span 2; background: var(--brand-surface); border-radius: var(--radius-xl); padding: 28px; border: 1px solid var(--brand-line); box-shadow: var(--shadow-soft); transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; color: inherit; display: block; min-width: 0; }
-        .products-grid > .product-card:nth-last-child(2):nth-child(3n + 1) { grid-column: 2 / span 2; }
-        .products-grid > .product-card:only-child { grid-column: 3 / span 2; }
-        .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: rgba(14, 124, 123, 0.3); }
-        .product-card > a { text-decoration: none; color: inherit; display: block; }
-        .product-card .icon-tile { margin-bottom: 16px; }
-        .product-card h3 { font-size: 1.32em; margin: 0 0 10px; color: var(--brand-ink); letter-spacing: 0; }
-        .product-card p { color: var(--brand-muted); line-height: 1.7; margin: 0 0 14px; }
-        .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-        .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.76em; font-weight: 700; }
+        .products-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; width: min(100%, 1040px); margin: 30px auto 0; }
+        .product-card { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 18px; border: 1px solid var(--brand-line); border-radius: 14px; background: rgba(255, 252, 246, 0.82); box-shadow: none; color: inherit; transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease; }
+        .product-card:hover { transform: translateY(-1px); border-color: rgba(14, 124, 123, 0.32); background: #fffdf8; }
+        .product-card > a { min-width: 0; display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 14px; align-items: center; text-decoration: none; color: inherit; }
+        .product-card .icon-tile { width: 42px; height: 42px; margin: 0; border-radius: 12px; }
+        .product-card__body { min-width: 0; }
+        .product-card h3 { font-size: 1.15em; margin: 0 0 4px; color: var(--brand-ink); letter-spacing: 0; line-height: 1.35; }
+        .product-card p { color: var(--brand-muted); line-height: 1.65; margin: 0; font-size: 0.94em; }
+        .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 6px; }
+        .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.72em; font-weight: 700; }
         .pill--available { background: rgba(31, 122, 92, 0.12); color: #1F7A5C; }
         .pill--pending { background: var(--brand-amber-soft); color: #9a5b00; }
-        .pill--tag { background: var(--brand-teal-soft); color: var(--brand-primary-strong); }
-        .product-card .feature-list { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--brand-line); }
-        .product-card .feature-list p { font-size: 0.85em; color: var(--brand-muted); margin: 0; }
-        .link-button { display: inline-block; padding: 10px 20px; background: var(--brand-primary); border: 1px solid var(--brand-primary); border-radius: 10px; color: #fff; text-decoration: none; font-weight: 700; transition: all 0.2s ease; }
+        .pill--tag { background: rgba(76, 105, 118, 0.09); color: #50636d; }
+        .product-card .feature-list { display: none; }
+        .tool-cta-row { display: flex; gap: 8px; align-items: center; justify-content: flex-end; min-width: 156px; margin: 0; }
+        .link-button, .guide-card { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 8px 14px; border-radius: 9px; text-decoration: none; font-weight: 700; white-space: nowrap; transition: all 0.2s ease; }
+        .link-button { background: var(--brand-primary); border: 1px solid var(--brand-primary); color: #fff; }
         .link-button:hover { background: var(--brand-primary-strong); text-decoration: none; }
-        .tool-cta-row { display: flex; gap: 12px; align-items: stretch; justify-content: space-between; margin-top: 16px; }
-        .tool-cta-row .link-button { flex: 1; text-align: center; text-decoration: none; margin: 0; }
-        .guide-card { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; background: #fff; border: 1px solid var(--brand-line); border-radius: 10px; color: var(--brand-primary-strong); text-decoration: none; font-size: 0.9em; font-weight: 700; transition: all 0.2s ease; white-space: nowrap; min-width: fit-content; }
-        .guide-card:hover { background: var(--brand-teal-soft); border-color: rgba(14, 124, 123, 0.3); transform: translateY(-1px); }
+        .guide-card { gap: 6px; background: transparent; border: 1px solid var(--brand-line); color: var(--brand-primary-strong); font-size: 0.9em; }
+        .guide-card:hover { background: var(--brand-teal-soft); border-color: rgba(14, 124, 123, 0.3); }
         #no-results { color: var(--brand-muted); }
-        .support-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 34px; }
-        .support-card { display: block; border: 1px solid var(--brand-line); border-radius: 8px; padding: 18px; background: var(--brand-paper); text-decoration: none; color: inherit; }
-        .support-card h3 { margin: 0 0 6px; letter-spacing: 0; font-size: 1rem; }
+        .support-grid { display: grid; grid-template-columns: 1fr; gap: 0; width: min(100%, 820px); margin: 34px auto 0; border: 1px solid var(--brand-line); border-radius: 14px; background: rgba(255, 252, 246, 0.82); overflow: hidden; }
+        .support-card { display: grid; grid-template-columns: minmax(150px, 0.4fr) minmax(0, 1fr); gap: 16px; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--brand-line); background: transparent; text-decoration: none; color: inherit; }
+        .support-card:last-child { border-bottom: 0; }
+        .support-card h3 { margin: 0; letter-spacing: 0; font-size: 1rem; color: var(--brand-primary-strong); }
         .support-card p { margin: 0; color: var(--brand-muted); font-size: .92rem; }
-        @media (min-width: 641px) and (max-width: 959px) { .products-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } .product-card { grid-column: span 2; } .products-grid > .product-card:nth-last-child(2):nth-child(3n + 1) { grid-column: span 2; } .products-grid > .product-card:last-child:nth-child(odd) { grid-column: 2 / span 2; } .products-grid > .product-card:only-child { grid-column: 2 / span 2; } .support-grid { grid-template-columns: 1fr; } }
-        @media (max-width: 640px) { .tool-cta-row { flex-direction: column; gap: 10px; } .tool-cta-row .link-button, .guide-card { width: 100%; justify-content: center; } .tools-hero h1 { font-size: 1.85em; } .products-grid { grid-template-columns: 1fr; } .product-card, .products-grid > .product-card:nth-last-child(2):nth-child(3n + 1), .products-grid > .product-card:last-child:nth-child(odd), .products-grid > .product-card:only-child { grid-column: auto; } .support-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) { .products-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .container { width: min(100% - 28px, 1120px); padding-top: 24px; } .tools-hero { padding: 30px 0 12px; } .tools-hero h1 { font-size: 1.8em; } .product-card { grid-template-columns: 1fr; align-items: stretch; } .product-card > a { grid-template-columns: 38px minmax(0, 1fr); } .tool-cta-row { justify-content: stretch; min-width: 0; } .tool-cta-row .link-button, .guide-card { flex: 1; } .support-card { grid-template-columns: 1fr; gap: 4px; } }
     </style>
 </head>
 <body class="landing-page">
@@ -80,38 +79,39 @@
             </div>
         </section>
 
-
         <div class="tools-search" data-reveal data-reveal-delay="100">
             <input type="text" id="search-input" placeholder="ツール名や説明で検索..." aria-label="ツールを検索">
         </div>
 
         <div class="products-grid" id="products-grid" data-reveal-stagger>
             {% for product in products %}
-                <article class="product-card"
+                <article class="product-card product-card--command"
                          data-name="{{ product.name }}"
                          data-description="{{ product.description }}"
                          data-tags="{{ (product.tags or [])|join(',') }}"
                          data-status="{{ product.status }}">
                     <a href="{{ product.path }}">
                         <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
-                        <h3>{{ product.name }}</h3>
-                        <div class="pill-row">
-                            {% if product.status == 'available' %}
-                                <span class="pill pill--available">公開中</span>
-                            {% else %}
-                                <span class="pill pill--pending">準備中</span>
+                        <span class="product-card__body">
+                            <h3>{{ product.name }}</h3>
+                            <span class="pill-row">
+                                {% if product.status == 'available' %}
+                                    <span class="pill pill--available">公開中</span>
+                                {% else %}
+                                    <span class="pill pill--pending">準備中</span>
+                                {% endif %}
+                                {% for tag in product.tags|default([]) %}
+                                    <span class="pill pill--tag">{{ tag }}</span>
+                                {% endfor %}
+                            </span>
+                            <p>{{ product.description }}</p>
+                            {% if product.features %}
+                                <span class="feature-list"><span><strong>主な機能:</strong> {{ product.features|join('、') }}</span></span>
                             {% endif %}
-                            {% for tag in product.tags|default([]) %}
-                                <span class="pill pill--tag">{{ tag }}</span>
-                            {% endfor %}
-                        </div>
-                        <p>{{ product.description }}</p>
-                        {% if product.features %}
-                            <div class="feature-list"><p><strong>主な機能:</strong> {{ product.features|join('、') }}</p></div>
-                        {% endif %}
+                        </span>
                     </a>
                     <div class="tool-cta-row">
-                        <a href="{{ product.path }}" class="link-button">{% if product.status == 'available' %}使ってみる{% else %}詳細を見る{% endif %}</a>
+                        <a href="{{ product.path }}" class="link-button">{% if product.status == 'available' %}使う{% else %}詳細{% endif %}</a>
                         {% if product.guide_path and product.status == 'available' %}
                             <a href="{{ product.guide_path }}" class="guide-card"><span class="guide-text">ガイド</span><span class="guide-arrow">→</span></a>
                         {% endif %}
@@ -129,19 +129,17 @@
         </nav>
 
         {% set affiliate_context_links = [
-            {'label': 'PDF・書類作業', 'description': 'PDFや紙の書類を扱う作業まわりを探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-documents', 'cta': 'PDF作業の本を見る'},
-            {'label': '表計算・デスク作業', 'description': 'CSV、Excel、デスク作業に関係する本や道具を探せます。', 'href': amazon_search_url('Kindle Excel'), 'category': 'spreadsheet-desk', 'cta': 'Excelの本を見る'},
-            {'label': '画像・資料作成', 'description': '画像処理や資料づくりに役立つ本を探せます。', 'href': amazon_search_url('資料作成 Kindle'), 'category': 'image-materials', 'cta': '資料作成の本を見る'},
-            {'label': 'Web運用・マーケティング', 'description': 'SEO、Webマーケティング、SNS運用の本を探せます。', 'href': amazon_search_url('Kindle SEO'), 'category': 'web-marketing', 'cta': 'SEOの本を見る'},
-            {'label': '集中環境・デスク周り', 'description': '作業環境を整える道具を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-focus', 'cta': 'デスク道具を見る'}
+            {'label': '書類作業', 'description': 'PDFや紙の書類を扱う作業まわりを探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-documents', 'cta': '書類作業の道具を見る'},
+            {'label': '表計算・デスク作業', 'description': 'CSV、Excel、デスク作業に関係する本や道具を探せます。', 'href': amazon_search_url('Kindle Excel'), 'category': 'spreadsheet-desk', 'cta': 'Excel本を見る'},
+            {'label': '画像・資料作成', 'description': '画像処理や資料づくりに役立つ本を探せます。', 'href': amazon_search_url('資料作成 Kindle'), 'category': 'image-materials', 'cta': '資料作成の本を見る'}
         ] %}
-        {% with affiliate_context_title='作業別の仕事道具', affiliate_context_lead='使うツールに合わせて、PDF、表、画像、Web運用、デスク環境まわりの本や道具を探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='tools-index', affiliate_context_placement='tools-index', affiliate_context_class='affiliate-context-block--tools', affiliate_context_show_a8=false %}
+        {% with affiliate_context_title='仕事道具メモ', affiliate_context_lead='作業内容に近い本や道具を、必要なときだけ確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='tools-index', affiliate_context_placement='tools-index', affiliate_context_class='affiliate-context-block--tools affiliate-context-block--memo', affiliate_context_show_a8=false %}
             {% include 'includes/affiliate_context_block.html' %}
         {% endwith %}
 
         {% set affiliate_disclosure_rendered = true %}
 
-        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--tools-a8', affiliate_section_tier='context-a8', affiliate_section_placement='tools-index-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='必要なときだけ確認できます。', affiliate_a8_label='PR' %}
+        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--tools-a8 affiliate-cards-section--single-frame', affiliate_section_tier='context-a8', affiliate_section_placement='tools-index-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='承認済みの案件がある場合だけ表示します。', affiliate_a8_label='PR' %}
             {% include 'includes/affiliate_cards_section.html' %}
         {% endwith %}
     </main>
@@ -172,7 +170,7 @@
                     const matchesQuery = !query || haystack.includes(query);
                     const matchesChip = !activeFilter || haystack.includes(activeFilter.toLowerCase());
                     const isVisible = matchesQuery && matchesChip;
-                    card.style.display = isVisible ? 'block' : 'none';
+                    card.style.display = isVisible ? '' : 'none';
                     if (isVisible) visibleCount += 1;
                 });
 
