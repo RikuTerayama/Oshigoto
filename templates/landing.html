@@ -77,7 +77,7 @@
             {'label': 'CSV/Excel作業', 'description': '表計算、データ整理、Excel作業に関係する本を探せます。', 'href': amazon_search_url('Kindle Excel'), 'category': 'spreadsheet-books', 'cta': 'Excelの本を見る'},
             {'label': 'デスク環境・仕事道具', 'description': '作業環境を整えるデスク用品や仕事道具を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-focus', 'cta': '仕事道具を見る'}
         ] %}
-        {% with affiliate_context_title='仕事ついでに、道具も見直す', affiliate_context_lead='ツールの利用後に近い本や道具を、必要なときだけ確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='top-work-tools', affiliate_context_placement='top-inline', affiliate_context_class='affiliate-context-block--landing', affiliate_context_show_a8=true, affiliate_context_a8_title='関連サービス', affiliate_context_a8_lead='作業内容に近いサービスを、必要なときだけ確認できます。' %}
+        {% with affiliate_context_title='仕事ついでに、道具も見直す', affiliate_context_lead='ツールの利用後に近い本や道具を、必要なときだけ確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='top-work-tools', affiliate_context_placement='top-inline', affiliate_context_class='affiliate-context-block--landing', affiliate_context_show_a8=false %}
             {% include 'includes/affiliate_context_block.html' %}
         {% endwith %}
         {% set affiliate_disclosure_rendered = true %}
@@ -116,6 +116,10 @@
                 </a>
             </div>
         </section>
+
+        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--landing-a8', affiliate_section_tier='context-a8', affiliate_section_placement='top-lower-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='必要なときだけ確認できます。', affiliate_a8_label='PR' %}
+            {% include 'includes/affiliate_cards_section.html' %}
+        {% endwith %}
     </main>
     {% include 'includes/footer.html' %}
 </body>

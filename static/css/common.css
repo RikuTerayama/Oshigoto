@@ -4994,3 +4994,513 @@ html {
         margin: 0 !important;
     }
 }
+
+/* Phase 8.10: stabilize section frames, centered rhythm, and compact ad surfaces. */
+html,
+body {
+    overflow-x: clip;
+}
+
+.landing-page *,
+.landing-page *::before,
+.landing-page *::after {
+    box-sizing: border-box;
+}
+
+.landing-page .landing-shell,
+.landing-page .container,
+.landing-page .page,
+.landing-page .contact-page {
+    width: min(100%, 1360px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.landing-page .hero-v2,
+.landing-page .tools-hero,
+.landing-page .section-block,
+.landing-page .affiliate-context-block,
+.landing-page .affiliate-cards-section,
+.landing-page .related-tools-section,
+.landing-page .related-content,
+.landing-page .page-header,
+.landing-page .legal-content-card,
+.landing-page .contact-panel {
+    width: min(100%, 1220px) !important;
+    max-width: 1220px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    overflow: hidden !important;
+}
+
+.landing-page .hero-v2 {
+    max-width: 1280px !important;
+    grid-template-columns: minmax(0, 0.98fr) minmax(340px, 0.9fr) !important;
+    align-items: center !important;
+}
+
+.landing-page .hero-v2__copy {
+    max-width: 620px !important;
+    justify-self: center !important;
+}
+
+.landing-page .landing-hero__lead,
+.landing-page .copy-lines,
+.landing-page .section-heading > p,
+.landing-page .affiliate-context-block__header > p:not(.affiliate-context-block__eyebrow):not(.affiliate-disclosure),
+.landing-page .affiliate-spotlight__header > p,
+.landing-page .related-content__intro,
+.landing-page .related-tools-header > p {
+    max-width: 760px !important;
+}
+
+.landing-page .section-heading,
+.landing-page .affiliate-context-block__header,
+.landing-page .affiliate-spotlight__header,
+.landing-page .related-tools-header,
+.landing-page .related-content__header,
+.landing-page .affiliate-context-a8__copy {
+    max-width: 820px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+}
+
+.landing-page .section-heading > *,
+.landing-page .affiliate-context-block__header > *,
+.landing-page .affiliate-spotlight__header > *,
+.landing-page .related-tools-header > *,
+.landing-page .related-content__header > *,
+.landing-page .affiliate-context-a8__copy > * {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.landing-page .tool-card-grid,
+.landing-page .products-grid,
+.landing-page .trust-grid,
+.landing-page .landing-use-grid,
+.landing-page .support-grid,
+.landing-page .related-tools-grid,
+.landing-page .related-content__grid,
+.landing-page .affiliate-context-grid,
+.landing-page .amazon-recommendation-grid {
+    width: min(100%, 1040px) !important;
+    max-width: 1040px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+}
+
+.landing-page .trust-grid,
+.landing-page .landing-use-grid,
+.landing-page .support-grid,
+.landing-page .amazon-recommendation-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.landing-page .affiliate-context-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.landing-page .related-content__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.landing-page .tool-card-v2,
+.landing-page .product-card,
+.landing-page .trust-grid > article,
+.landing-page .landing-use-grid > *,
+.landing-page .support-card,
+.landing-page .related-tools-card,
+.landing-page .related-content__card,
+.landing-page .affiliate-context-card,
+.landing-page .amazon-recommendation-card {
+    min-width: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+}
+
+.landing-page .affiliate-context-block,
+.landing-page .affiliate-cards-section {
+    padding-left: clamp(28px, 4vw, 58px) !important;
+    padding-right: clamp(28px, 4vw, 58px) !important;
+}
+
+.landing-page .affiliate-context-block--landing,
+.landing-page .affiliate-context-block--tools {
+    background: rgba(255, 252, 246, 0.92) !important;
+}
+
+.landing-page .affiliate-cards-section--upper,
+.landing-page .affiliate-cards-section--upper-mid,
+.landing-page .affiliate-cards-section--context-a8 {
+    margin-top: clamp(34px, 5vw, 62px) !important;
+}
+
+.landing-page .affiliate-stack__rows,
+.landing-page .affiliate-stack__row,
+.landing-page .affiliate-stack__row--amazon,
+.landing-page .affiliate-stack__row--a8 {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.landing-page .affiliate-stack__row--amazon {
+    padding: clamp(18px, 2vw, 24px) !important;
+    border-color: var(--brand-line) !important;
+    background: rgba(255, 252, 246, 0.7) !important;
+}
+
+.landing-page .amazon-recommendation-grid {
+    overflow: hidden !important;
+    gap: clamp(14px, 2vw, 22px) !important;
+}
+
+.landing-page .amazon-recommendation-card {
+    min-height: 172px !important;
+    border-color: var(--brand-line) !important;
+    background: var(--brand-paper) !important;
+}
+
+.landing-page .affiliate-cards-section--compact-a8 {
+    width: min(100%, 880px) !important;
+    max-width: 880px !important;
+    padding: clamp(22px, 3vw, 34px) !important;
+    background: rgba(255, 252, 246, 0.9) !important;
+    box-shadow: var(--shadow-soft) !important;
+}
+
+.landing-page .affiliate-cards-section--compact-a8 .affiliate-spotlight__header {
+    margin-bottom: 16px !important;
+}
+
+.landing-page .affiliate-cards-section--compact-a8 .affiliate-spotlight__kicker {
+    display: none !important;
+}
+
+.landing-page .affiliate-cards-section--compact-a8 .affiliate-stack__row--a8 {
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.landing-page .affiliate-cards-section--compact-a8 .affiliate-stack__head--a8 {
+    margin-bottom: 10px !important;
+    justify-content: center !important;
+}
+
+.landing-page .affiliate-stack__label--a8 {
+    color: var(--brand-primary-strong) !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+}
+
+.landing-page .affiliate-cards-section--compact-a8 .affiliate-a8-banner {
+    min-height: 0 !important;
+    width: min(100%, 728px) !important;
+    max-width: 728px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.landing-page .related-content,
+.landing-page .related-tools-section {
+    border: 1px solid var(--brand-line) !important;
+    border-radius: var(--radius-xl) !important;
+    background: rgba(255, 252, 246, 0.92) !important;
+    box-shadow: var(--shadow-soft) !important;
+}
+
+.landing-page .related-tools-container {
+    width: 100% !important;
+    max-width: 1120px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 0 !important;
+}
+
+.landing-page .related-content__card,
+.landing-page .related-tools-card {
+    border: 1px solid var(--brand-line) !important;
+    border-radius: var(--radius-lg) !important;
+    background: var(--brand-surface) !important;
+    box-shadow: 0 10px 22px rgba(79, 52, 35, 0.08) !important;
+    color: var(--brand-ink) !important;
+}
+
+.landing-page .related-content__label,
+.landing-page .related-tools-card__title {
+    color: var(--brand-primary-strong) !important;
+}
+
+.landing-page .related-content__description,
+.landing-page .related-tools-card__desc {
+    color: var(--brand-muted) !important;
+}
+
+@media (max-width: 959px) {
+    .landing-page .hero-v2 {
+        grid-template-columns: 1fr !important;
+    }
+
+    .landing-page .hero-v2__copy {
+        text-align: center !important;
+    }
+
+    .landing-page .landing-hero__actions {
+        justify-content: center !important;
+    }
+
+    .landing-page .trust-grid,
+    .landing-page .landing-use-grid,
+    .landing-page .support-grid,
+    .landing-page .affiliate-context-grid,
+    .landing-page .amazon-recommendation-grid,
+    .landing-page .related-content__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .landing-page .hero-v2,
+    .landing-page .tools-hero,
+    .landing-page .section-block,
+    .landing-page .affiliate-context-block,
+    .landing-page .affiliate-cards-section,
+    .landing-page .related-tools-section,
+    .landing-page .related-content,
+    .landing-page .page-header,
+    .landing-page .legal-content-card,
+    .landing-page .contact-panel {
+        width: 100% !important;
+        padding-left: clamp(18px, 5vw, 24px) !important;
+        padding-right: clamp(18px, 5vw, 24px) !important;
+    }
+
+    .landing-page .trust-grid,
+    .landing-page .landing-use-grid,
+    .landing-page .support-grid,
+    .landing-page .affiliate-context-grid,
+    .landing-page .amazon-recommendation-grid,
+    .landing-page .related-content__grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+/* Phase 8.10 mobile guardrail: keep all card grids inside the viewport. */
+@media (max-width: 640px) {
+    .landing-page .tools-hero h1,
+    .landing-page .hero-v2 h1,
+    .landing-page .section-heading h2,
+    .landing-page .related-tools-heading,
+    .landing-page .related-content h2 {
+        max-width: 100% !important;
+        overflow-wrap: anywhere !important;
+        word-break: keep-all !important;
+        line-height: 1.28 !important;
+    }
+
+    .landing-page .tools-hero h1 {
+        font-size: clamp(1.78rem, 8.8vw, 2.2rem) !important;
+    }
+
+    .landing-page .tool-card-grid,
+    .landing-page .products-grid,
+    .landing-page .cards-grid--five-balanced,
+    .landing-page .related-tools-grid,
+    .landing-page .content-grid--three.glossary-grid {
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .landing-page .tool-card-grid > *,
+    .landing-page .products-grid > *,
+    .landing-page .cards-grid--five-balanced > *,
+    .landing-page .related-tools-grid > *,
+    .landing-page .content-grid--three.glossary-grid > *,
+    .landing-page .tool-card-grid > *:last-child:nth-child(odd),
+    .landing-page .products-grid > *:last-child:nth-child(odd),
+    .landing-page .cards-grid--five-balanced > *:last-child:nth-child(odd),
+    .landing-page .related-tools-grid > *:last-child:nth-child(odd),
+    .landing-page .content-grid--three.glossary-grid > *:last-child:nth-child(odd),
+    .landing-page .tool-card-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .products-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .cards-grid--five-balanced > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .related-tools-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .content-grid--three.glossary-grid > *:nth-last-child(2):nth-child(3n + 1) {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .landing-page .tool-card-v2,
+    .landing-page .product-card,
+    .landing-page .related-tools-card,
+    .landing-page .affiliate-context-card,
+    .landing-page .amazon-recommendation-card,
+    .landing-page .guide-preview-card,
+    .landing-page .support-card {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+/* Phase 8.10 narrow viewport polish: prevent header/hero text from widening the page. */
+@media (max-width: 640px) {
+    .landing-page .site-header,
+    .landing-page .site-header__inner,
+    .landing-page .site-nav {
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .landing-page .site-header__inner {
+        overflow: hidden !important;
+    }
+
+    .landing-page .site-nav {
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        scrollbar-width: none !important;
+    }
+
+    .landing-page .site-nav::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .landing-page .tools-hero h1 {
+        font-size: clamp(1.55rem, 7vw, 1.85rem) !important;
+        line-height: 1.38 !important;
+        word-break: normal !important;
+        overflow-wrap: anywhere !important;
+    }
+}
+/* Phase 8.10 mobile text wrapping: long Japanese labels must not widen cards. */
+@media (max-width: 640px) {
+    .landing-page .tools-hero h1,
+    .landing-page .product-card h3,
+    .landing-page .product-card p,
+    .landing-page .product-card .feature-list p,
+    .landing-page .tool-card-v2 h3,
+    .landing-page .tool-card-v2 p,
+    .landing-page .related-tools-card__title,
+    .landing-page .related-tools-card__desc,
+    .landing-page .affiliate-context-card__label,
+    .landing-page .affiliate-context-card__desc,
+    .landing-page .amazon-recommendation-card__title {
+        word-break: break-all !important;
+        overflow-wrap: anywhere !important;
+    }
+}
+/* Phase 8.10 affiliate context grid: five cards should resolve to centered 3+2. */
+@media (min-width: 960px) {
+    .landing-page .affiliate-context-grid {
+        display: grid !important;
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+        width: min(100%, 1040px) !important;
+        max-width: 1040px !important;
+    }
+
+    .landing-page .affiliate-context-grid > * {
+        grid-column: span 2 !important;
+        width: 100% !important;
+        max-width: none !important;
+    }
+
+    .landing-page .affiliate-context-grid > *:nth-last-child(2):nth-child(3n + 1) {
+        grid-column: 2 / span 2 !important;
+    }
+
+    .landing-page .affiliate-context-grid > *:only-child {
+        grid-column: 3 / span 2 !important;
+    }
+}
+/* Phase 8.10 global context A8: one calm frame, no nested ad boxes. */
+.landing-page .affiliate-context-a8 {
+    width: min(100%, 880px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: clamp(22px, 3vw, 32px) !important;
+    border: 1px solid var(--brand-line) !important;
+    border-radius: var(--radius-xl) !important;
+    background: rgba(255, 252, 246, 0.86) !important;
+    box-shadow: 0 10px 24px rgba(79, 52, 35, 0.08) !important;
+}
+
+.landing-page .affiliate-context-a8 .affiliate-cards-section--context-a8 {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.landing-page .affiliate-context-a8 .affiliate-cards-section--context-a8 .affiliate-stack__row--a8 {
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.landing-page .affiliate-context-a8 .affiliate-cards-section--context-a8 .affiliate-stack__head--a8 {
+    margin-bottom: 10px !important;
+    justify-content: center !important;
+}
+
+.landing-page .affiliate-context-a8 .affiliate-a8-banner {
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.landing-page .seo-link-hub {
+    width: min(100%, 1220px) !important;
+    max-width: 1220px !important;
+    margin: clamp(34px, 5vw, 62px) auto 0 !important;
+    padding: clamp(28px, 4vw, 54px) !important;
+    border: 1px solid var(--brand-line) !important;
+    border-radius: var(--radius-xl) !important;
+    background: rgba(255, 252, 246, 0.92) !important;
+    box-shadow: var(--shadow-soft) !important;
+    overflow: hidden !important;
+}
+
+.landing-page .seo-link-hub__header {
+    max-width: 780px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+}
+
+.landing-page .seo-link-hub__grid {
+    width: min(100%, 1040px) !important;
+    max-width: 1040px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    justify-content: center !important;
+}
+
+@media (max-width: 640px) {
+    .landing-page .seo-link-hub {
+        width: 100% !important;
+        padding-left: clamp(18px, 5vw, 24px) !important;
+        padding-right: clamp(18px, 5vw, 24px) !important;
+    }
+}
