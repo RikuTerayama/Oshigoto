@@ -52,7 +52,7 @@
             <strong>{{ affiliate_context_a8_title }}</strong>
             <span>{{ affiliate_context_a8_lead }}</span>
         </div>
-        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8', affiliate_section_tier='context-a8' %}
+        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8', affiliate_section_tier='context-a8', affiliate_a8_label='PR' %}
             {% include 'includes/affiliate_cards_section.html' %}
         {% endwith %}
         {% set affiliate_a8_rendered = true %}

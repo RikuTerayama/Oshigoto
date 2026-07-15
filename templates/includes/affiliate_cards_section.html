@@ -8,6 +8,7 @@
 {% set affiliate_section_heading = affiliate_section_heading|default('') %}
 {% set affiliate_section_lead = affiliate_section_lead|default('') %}
 {% set affiliate_section_kicker = affiliate_section_kicker|default('PR / Affiliate') %}
+{% set affiliate_a8_label = affiliate_a8_label|default('関連サービス') %}
 {% set show_amazon_network = 'amazon' in affiliate_networks %}
 {% set show_a8_network = 'a8' in affiliate_networks %}
 {% if amazon_items_override is defined and amazon_items_override is not none %}
@@ -77,7 +78,7 @@
         {% if show_a8_network %}
         <div class="affiliate-stack__row affiliate-stack__row--a8" data-affiliate-network="a8" data-affiliate-placement="{{ affiliate_section_placement }}" data-affiliate-category="{{ affiliate_section_category }}">
             <div class="affiliate-stack__head affiliate-stack__head--a8">
-                <p class="affiliate-stack__label affiliate-stack__label--a8">A8.net 承認済み広告</p>
+                <p class="affiliate-stack__label affiliate-stack__label--a8">{{ affiliate_a8_label }}</p>
             </div>
             <div class="affiliate-a8-banner" aria-label="A8.net 広告">
                 <script type="text/javascript" src="https://rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js"></script>
