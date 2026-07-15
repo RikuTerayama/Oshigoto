@@ -1,4 +1,4 @@
-{% from 'includes/tool_icons.html' import tool_icon %}
+﻿{% from 'includes/tool_icons.html' import tool_icon %}
 {% set current_path = request.path|default('/') %}
 {% set all_tools = products_catalog|default([]) %}
 {% set icon_tint_by_id = {'pdf': 'teal', 'csv': 'blue', 'image-batch': 'amber', 'image-cleanup': 'teal', 'seo': 'blue'} %}
@@ -8,12 +8,13 @@
         <div class="related-tools-header">
             <p class="section-kicker">Related Tools</p>
             <h2 id="related-tools-heading" class="related-tools-heading" data-reveal>関連ツール</h2>
+            <p>いまの作業に近い道具も、続けて確認できます。</p>
         </div>
         <div class="related-tools-grid cards-grid--balanced" data-reveal data-reveal-delay="50">
             {% for product in all_tools %}
             <article class="related-tools-card {{ 'related-tools-card--current' if product.path == current_path else '' }}">
                 {% if product.path == current_path %}
-                <span class="related-tools-card__badge" aria-label="現在のページ">現在表示中</span>
+                <span class="related-tools-card__badge" aria-label="現在のページ">表示中</span>
                 {% endif %}
                 <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} related-tools-card__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
                 <h3 class="related-tools-card__title">{{ product.name|default('') }}</h3>

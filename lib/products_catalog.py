@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """Public tool catalog for しごと道具箱."""
 
 PUBLIC_TOOL_IDS = ('pdf', 'csv', 'image-batch', 'image-cleanup', 'seo')
@@ -7,26 +7,26 @@ PRODUCTS = [
     {
         'id': 'pdf',
         'name': 'PDFツール',
-        'description': 'PDFの結合、分割、抽出、圧縮、画像変換、保護付与をまとめて扱えます。',
+        'description': 'PDFの結合、分割、抽出、圧縮、画像変換、保護をまとめて扱えます。',
         'path': '/tools/pdf',
         'guide_path': '/guide/pdf',
         'status': 'available',
         'icon': 'PDF',
-        'category': 'document',
-        'tags': ['File', 'PDF'],
-        'features': ['結合', '分割', '圧縮', '保護付与'],
+        'category': '書類',
+        'tags': ['PDF', '書類'],
+        'features': ['結合', '分割', '抽出', '圧縮', '保護'],
     },
     {
         'id': 'csv',
         'name': 'CSV/Excelツール',
-        'description': 'CSVとXLSXの変換、文字コード確認、列の整理をブラウザで手早く進められます。',
+        'description': 'CSVとXLSXの変換、文字コード確認、重複削除、列整理をブラウザで進められます。',
         'path': '/tools/csv',
         'guide_path': '/guide/csv',
         'status': 'available',
         'icon': 'CSV',
-        'category': 'data',
-        'tags': ['File', 'CSV', 'Excel'],
-        'features': ['CSV/XLSX変換', '文字コード確認', '列整理'],
+        'category': '表',
+        'tags': ['CSV', 'Excel', '表'],
+        'features': ['CSV/XLSX変換', '文字コード確認', '重複削除', '列整理'],
     },
     {
         'id': 'image-batch',
@@ -36,8 +36,8 @@ PRODUCTS = [
         'guide_path': '/guide/image-batch',
         'status': 'available',
         'icon': 'IMG',
-        'category': 'image',
-        'tags': ['File', 'Image'],
+        'category': '画像',
+        'tags': ['画像', '変換'],
         'features': ['形式変換', 'リサイズ', '一括処理'],
     },
     {
@@ -48,21 +48,21 @@ PRODUCTS = [
         'guide_path': '/guide/image-cleanup',
         'status': 'available',
         'icon': 'CLR',
-        'category': 'image',
-        'tags': ['File', 'Image'],
+        'category': '画像',
+        'tags': ['画像', '整える'],
         'features': ['余白調整', '背景整理', 'PNG出力'],
     },
     {
         'id': 'seo',
         'name': 'SEO/URL確認',
-        'description': 'OGP、meta、sitemap、robots.txtなど公開ページの基本情報を確認できます。',
+        'description': 'title、meta、OGP、sitemap、robots.txtなど公開ページの基本情報を確認できます。',
         'path': '/tools/seo',
         'guide_path': '/guide/seo',
         'status': 'available',
         'icon': 'SEO',
-        'category': 'web',
-        'tags': ['Web', 'SEO'],
-        'features': ['OGP確認', 'meta確認', 'sitemap確認'],
+        'category': 'Web確認',
+        'tags': ['SEO', 'URL', 'Web確認'],
+        'features': ['title確認', 'meta確認', 'OGP確認', 'sitemap確認'],
     },
 ]
 
