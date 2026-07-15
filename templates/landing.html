@@ -8,64 +8,58 @@
 <body class="landing-page">
     {% from 'includes/tool_icons.html' import tool_icon %}
     {% set icon_tint_by_id = {'pdf': 'teal', 'csv': 'blue', 'image-batch': 'amber', 'image-cleanup': 'teal', 'seo': 'blue'} %}
+    {% set task_actions = [
+        {'label': '書類を整える', 'desc': '結合、分割、圧縮、保護', 'href': '/tools/pdf', 'icon': 'pdf', 'tint': 'teal'},
+        {'label': '表を整える', 'desc': 'CSV、Excel、列整理', 'href': '/tools/csv', 'icon': 'csv', 'tint': 'blue'},
+        {'label': '画像を変換する', 'desc': '形式変換、リサイズ', 'href': '/tools/image-batch', 'icon': 'image-batch', 'tint': 'amber'},
+        {'label': '画像を見やすくする', 'desc': '余白、背景、資料用の整え', 'href': '/tools/image-cleanup', 'icon': 'image-cleanup', 'tint': 'teal'},
+        {'label': 'ページを確認する', 'desc': 'title、meta、OGP、URL', 'href': '/tools/seo', 'icon': 'seo', 'tint': 'blue'}
+    ] %}
     {% include 'includes/header.html' %}
-    <main class="landing-shell">
-        <section class="hero-v2" aria-labelledby="landing-hero-heading">
-            <div class="hero-v2__copy">
-                <p class="landing-hero__eyebrow">しごと道具箱</p>
-                <h1 id="landing-hero-heading">
-                    <span class="landing-hero__headline-line">しごとの小さな面倒を、</span>
-                    <span class="landing-hero__headline-line">さっと片づける。</span>
-                </h1>
-                <p class="landing-hero__lead">PDF、CSV、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。</p>
-                <div class="landing-hero__actions">
-                    <a href="/tools" class="btn btn-primary">必要な作業を選ぶ</a>
-                    <a href="/guide" class="btn btn-secondary">使い方を見る</a>
-                </div>
+    <main class="landing-shell landing-shell--launcher">
+        <section class="launcher-hero" aria-labelledby="landing-hero-heading">
+            <div class="launcher-hero__header">
+                <p class="launcher-hero__label">しごとの軽量ツール集</p>
+                <h1 id="landing-hero-heading"><span class="launcher-hero__headline-line">しごとの小さな面倒を、</span><span class="launcher-hero__headline-line">さっと片づける。</span></h1>
+                <p class="launcher-hero__lead">PDF、表、画像、ページ確認を、必要なときだけすぐ使える作業ランチャーです。</p>
             </div>
-            <aside class="hero-v2__panel hero-tool-panel" aria-label="5つの道具">
-                <div class="hero-v2__panel-header">5つの道具</div>
-                <div class="hero-tool-stack" role="list">
-                    <a class="hero-tool-card hero-tool-card--pdf" href="/tools/pdf" role="listitem">
-                        <span class="icon-tile icon-tile--teal" aria-hidden="true">{{ tool_icon('pdf', 18) }}</span>
-                        <span><strong>PDF</strong><em>結合・分割・抽出・圧縮・保護</em></span>
-                    </a>
-                    <a class="hero-tool-card hero-tool-card--csv" href="/tools/csv" role="listitem">
-                        <span class="icon-tile icon-tile--blue" aria-hidden="true">{{ tool_icon('csv', 18) }}</span>
-                        <span><strong>CSV/Excel</strong><em>変換・文字コード確認・列整理</em></span>
-                    </a>
-                    <a class="hero-tool-card hero-tool-card--image" href="/tools/image-batch" role="listitem">
-                        <span class="icon-tile icon-tile--amber" aria-hidden="true">{{ tool_icon('image-batch', 18) }}</span>
-                        <span><strong>画像一括変換</strong><em>形式変換・リサイズ・まとめて処理</em></span>
-                    </a>
-                    <a class="hero-tool-card hero-tool-card--cleanup" href="/tools/image-cleanup" role="listitem">
-                        <span class="icon-tile icon-tile--teal" aria-hidden="true">{{ tool_icon('image-cleanup', 18) }}</span>
-                        <span><strong>画像クリーンアップ</strong><em>余白・背景・資料用の整え</em></span>
-                    </a>
-                    <a class="hero-tool-card hero-tool-card--seo" href="/tools/seo" role="listitem">
-                        <span class="icon-tile icon-tile--blue" aria-hidden="true">{{ tool_icon('seo', 18) }}</span>
-                        <span><strong>SEO/URL</strong><em>title・meta・OGP・URL一覧</em></span>
-                    </a>
-                </div>
-            </aside>
+            <div class="task-command-panel" aria-label="作業を選ぶ">
+                {% for task in task_actions %}
+                <a class="task-command" href="{{ task.href }}">
+                    <span class="icon-tile icon-tile--{{ task.tint }} task-command__icon" aria-hidden="true">{{ tool_icon(task.icon, 18) }}</span>
+                    <span class="task-command__body">
+                        <strong>{{ task.label }}</strong>
+                        <small>{{ task.desc }}</small>
+                    </span>
+                </a>
+                {% endfor %}
+            </div>
+            <div class="launcher-hero__actions" aria-label="補助リンク">
+                <a href="/tools" class="launcher-hero__primary">作業を選ぶ</a>
+                <a href="/guide" class="launcher-hero__link">使い方を見る</a>
+                <a href="/faq" class="launcher-hero__link">FAQ</a>
+            </div>
         </section>
 
-        <section class="section-block section-block--tools">
+        <section class="section-block section-block--tools section-block--command-list">
             <div class="section-heading section-heading--centered">
-                <p class="section-kicker">Tools</p>
+                <p class="section-kicker">Task launcher</p>
                 <h2>必要な作業を選ぶ</h2>
-                <p>よくある作業を5つに分けました。目的に近いカードから、そのまま作業に進めます。</p>
+                <p>道具箱の中から、いま片づけたい作業に近いものを選んでください。</p>
             </div>
-            <div class="tool-card-grid cards-grid--balanced cards-grid--five-balanced">
+            <div class="tool-command-list tool-command-list--home">
                 {% for product in public_products|default(products) %}
-                <article class="tool-card-v2">
-                    <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} tool-card-v2__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
-                    <p class="tool-card-v2__eyebrow">{{ product.category|default('ツール') }}</p>
-                    <h3>{{ product.name }}</h3>
-                    <p>{{ product.description }}</p>
-                    <div class="tool-card-v2__actions">
-                        <a href="{{ product.path }}" class="btn btn-primary">使う</a>
-                        {% if product.guide_path %}<a href="{{ product.guide_path }}" class="btn btn-secondary">ガイド</a>{% endif %}
+                <article class="tool-command-item">
+                    <span class="tool-command-item__index">{{ '%02d'|format(loop.index) }}</span>
+                    <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} tool-command-item__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
+                    <div class="tool-command-item__body">
+                        <p class="tool-command-item__eyebrow">{{ product.category|default('ツール') }}</p>
+                        <h3>{{ product.name }}</h3>
+                        <p>{{ product.description }}</p>
+                    </div>
+                    <div class="tool-command-item__actions">
+                        <a href="{{ product.path }}" class="tool-command-item__cta">使う</a>
+                        {% if product.guide_path %}<a href="{{ product.guide_path }}" class="tool-command-item__guide">ガイド</a>{% endif %}
                     </div>
                 </article>
                 {% endfor %}
@@ -73,51 +67,43 @@
         </section>
 
         {% set affiliate_context_links = [
-            {'label': 'PDF・書類作業', 'description': 'PDFや紙の書類を扱う作業まわりの本や道具を探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-documents', 'cta': 'PDF作業の本を見る'},
-            {'label': 'CSV/Excel作業', 'description': '表計算、データ整理、Excel作業に関係する本を探せます。', 'href': amazon_search_url('Kindle Excel'), 'category': 'spreadsheet-books', 'cta': 'Excelの本を見る'},
-            {'label': 'デスク環境・仕事道具', 'description': '作業環境を整えるデスク用品や仕事道具を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-focus', 'cta': '仕事道具を見る'}
+            {'label': 'PDF・書類作業', 'description': '書類作業を整える本や道具を探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-documents', 'cta': '書類作業の道具を見る'},
+            {'label': '表計算・デスク作業', 'description': 'Excelやデータ整理に関係する本を探せます。', 'href': amazon_search_url('Kindle Excel'), 'category': 'spreadsheet-books', 'cta': 'Excel本を見る'},
+            {'label': 'デスク環境・仕事道具', 'description': '集中しやすい作業環境の道具を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-focus', 'cta': '仕事道具を見る'}
         ] %}
-        {% with affiliate_context_title='仕事ついでに、道具も見直す', affiliate_context_lead='ツールの利用後に近い本や道具を、必要なときだけ確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='top-work-tools', affiliate_context_placement='top-inline', affiliate_context_class='affiliate-context-block--landing', affiliate_context_show_a8=false %}
+        {% with affiliate_context_title='仕事道具メモ', affiliate_context_lead='必要なときだけ、作業に近い本や道具を確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='top-work-tools', affiliate_context_placement='top-inline', affiliate_context_class='affiliate-context-block--landing affiliate-context-block--memo', affiliate_context_show_a8=false %}
             {% include 'includes/affiliate_context_block.html' %}
         {% endwith %}
         {% set affiliate_disclosure_rendered = true %}
 
-        <section class="section-block" id="safety">
-            <div class="section-heading section-heading--centered">
-                <p class="section-kicker">Policy</p>
-                <h2>安心して使うための基本方針</h2>
-                <p>ファイル処理の場所、広告の扱い、公開前の確認ポイントを分かりやすく示します。</p>
+        <section class="safety-guide-strip" id="safety" aria-labelledby="safety-heading">
+            <div class="safety-guide-strip__header">
+                <p class="section-kicker">Before you work</p>
+                <h2 id="safety-heading">使う前に確認できること</h2>
+                <p>処理場所、広告の扱い、公開前の確認ポイントを短くまとめています。</p>
             </div>
-            <div class="trust-grid cards-grid--balanced cards-grid--three-balanced">
-                <article><h3>必要な処理だけ</h3><p>作業目的ごとに画面を分け、不要な操作や公開しない機能への導線は表示しません。</p></article>
-                <article><h3>広告表示を明記</h3><p>広告・アフィリエイトリンクを含む場合は、ページ内で分かるように表示します。</p></article>
-                <article><h3>公開前の確認を軽く</h3><p>SEO/URL確認では、title、meta、OGP、sitemapなど基本項目をまとめて確認できます。</p></article>
+            <div class="safety-guide-list" role="list">
+                <a href="/privacy" role="listitem">ファイル処理とプライバシー</a>
+                <a href="/faq" role="listitem">よくある質問</a>
+                <a href="/best-practices" role="listitem">安全に使うための基本</a>
+                <a href="/contact" role="listitem">問い合わせ</a>
             </div>
         </section>
 
-        <section class="section-block">
+        <section class="section-block section-block--directory">
             <div class="section-heading section-heading--centered">
                 <p class="section-kicker">Guide</p>
-                <h2>迷ったらガイドを見る</h2>
-                <p>ツールの選び方、ファイル処理の注意点、よくある失敗を短く確認できます。</p>
+                <h2>作業後に確認すること</h2>
+                <p>使い方や前提知識を、必要な項目だけ短く確認できます。</p>
             </div>
-            <div class="landing-use-grid cards-grid--balanced cards-grid--three-balanced">
-                <a href="/guide" class="guide-preview-card">
-                    <h3 class="guide-preview-card__title">ガイド一覧</h3>
-                    <p class="guide-preview-card__desc">PDF、CSV/Excel、画像、SEO/URL確認の使い方を目的別に確認できます。</p>
-                </a>
-                <a href="/best-practices" class="guide-preview-card">
-                    <h3 class="guide-preview-card__title">ベストプラクティス</h3>
-                    <p class="guide-preview-card__desc">ファイルを扱う前後の確認、広告表示、個人情報の注意点をまとめています。</p>
-                </a>
-                <a href="/glossary" class="guide-preview-card">
-                    <h3 class="guide-preview-card__title">用語集</h3>
-                    <p class="guide-preview-card__desc">PDF、CSV、画像、SEOで出てくる言葉を短く確認できます。</p>
-                </a>
+            <div class="guide-link-list">
+                <a href="/guide" class="guide-link-row"><strong>ガイド一覧</strong><span>PDF、CSV/Excel、画像、SEO/URL確認の使い方を見る</span></a>
+                <a href="/best-practices" class="guide-link-row"><strong>ベストプラクティス</strong><span>ファイルを扱う前後の注意点を確認する</span></a>
+                <a href="/glossary" class="guide-link-row"><strong>用語集</strong><span>PDF、CSV、画像、SEOで出てくる言葉を調べる</span></a>
             </div>
         </section>
 
-        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--landing-a8', affiliate_section_tier='context-a8', affiliate_section_placement='top-lower-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='必要なときだけ確認できます。', affiliate_a8_label='PR' %}
+        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--landing-a8 affiliate-cards-section--single-frame', affiliate_section_tier='context-a8', affiliate_section_placement='top-lower-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='承認済みの案件がある場合だけ表示します。', affiliate_a8_label='PR' %}
             {% include 'includes/affiliate_cards_section.html' %}
         {% endwith %}
     </main>
