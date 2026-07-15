@@ -4384,3 +4384,331 @@ html {
         display: none;
     }
 }
+
+/* Phase 8.8: normalize section spacing before production QA. */
+:root {
+    --container-max-width: 1360px;
+    --section-inner-padding: clamp(48px, 4.4vw, 64px);
+    --section-inner-padding-y: clamp(34px, 3.4vw, 54px);
+    --section-gap: clamp(34px, 5vw, 66px);
+    --card-inner-padding: clamp(24px, 2.2vw, 32px);
+    --compact-card-inner-padding: clamp(18px, 1.7vw, 24px);
+    --balanced-card-min: 224px;
+    --balanced-card-max: 272px;
+}
+
+.landing-page .landing-shell,
+.landing-page .container,
+.landing-page .page,
+.landing-page .contact-page,
+.landing-page .related-tools-container {
+    width: min(100%, var(--container-max-width)) !important;
+    padding-left: var(--page-inline-padding) !important;
+    padding-right: var(--page-inline-padding) !important;
+}
+
+.landing-page .hero-v2,
+.landing-page .tools-hero,
+.landing-page .page-header,
+.landing-page .hero,
+.landing-page .section-block,
+.landing-page .affiliate-context-block,
+.landing-page .affiliate-cards-section,
+.landing-page .related-tools-section,
+.landing-page .contact-panel,
+.landing-page .legal-content-card {
+    padding: var(--section-inner-padding-y) var(--section-inner-padding) !important;
+}
+
+.landing-page .hero-v2,
+.landing-page .section-block,
+.landing-page .affiliate-context-block,
+.landing-page .affiliate-cards-section,
+.landing-page .related-tools-section {
+    margin-top: var(--section-gap) !important;
+    margin-bottom: 0 !important;
+}
+
+.landing-page .hero-v2:first-child,
+.landing-page .tools-hero:first-child,
+.landing-page .page-header:first-child,
+.landing-page .hero:first-child {
+    margin-top: clamp(22px, 3vw, 42px) !important;
+}
+
+.landing-page .hero-v2 {
+    grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr) !important;
+    gap: clamp(42px, 6vw, 82px) !important;
+    padding-top: clamp(46px, 5vw, 72px) !important;
+    padding-bottom: clamp(42px, 4.6vw, 64px) !important;
+}
+
+.landing-page .hero-v2__copy,
+.landing-page .hero-tool-panel {
+    min-width: 0;
+}
+
+.landing-page .hero-tool-panel {
+    padding: clamp(24px, 2.6vw, 34px) !important;
+}
+
+.landing-page .hero-tool-stack {
+    gap: clamp(14px, 1.5vw, 18px) !important;
+}
+
+.landing-page .hero-tool-card {
+    padding: var(--compact-card-inner-padding) !important;
+}
+
+.landing-page .section-heading,
+.landing-page .related-tools-header,
+.landing-page .affiliate-context-block__header,
+.landing-page .affiliate-spotlight__header,
+.landing-page .affiliate-stack__head,
+.landing-page .affiliate-context-a8__copy {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: 780px;
+}
+
+.landing-page .section-kicker,
+.landing-page .tool-card-v2__eyebrow,
+.landing-page .product-card .pill,
+.landing-page .affiliate-stack__label {
+    margin-left: 0 !important;
+}
+
+.landing-page .tool-card-v2,
+.landing-page .product-card,
+.landing-page .related-tools-card,
+.landing-page .affiliate-context-card,
+.landing-page .affiliate-link-card,
+.landing-page .support-card,
+.landing-page .guide-preview-card,
+.landing-page .landing-use-card,
+.landing-page .trust-grid > article {
+    padding: var(--card-inner-padding) !important;
+}
+
+.landing-page .tool-card-v2,
+.landing-page .product-card,
+.landing-page .related-tools-card,
+.landing-page .affiliate-context-card,
+.landing-page .affiliate-link-card {
+    max-width: var(--balanced-card-max);
+    width: 100%;
+    justify-self: center;
+}
+
+.landing-page .tool-card-v2 h3,
+.landing-page .product-card h3,
+.landing-page .related-tools-card__title,
+.landing-page .affiliate-context-card__label,
+.landing-page .affiliate-link-card__label {
+    margin-top: 0 !important;
+    margin-bottom: 10px !important;
+}
+
+.landing-page .tool-card-v2 p,
+.landing-page .product-card p,
+.landing-page .related-tools-card__desc,
+.landing-page .affiliate-context-card__desc,
+.landing-page .affiliate-link-card__desc {
+    margin-top: 0 !important;
+    line-height: 1.78 !important;
+}
+
+.landing-page .cards-grid--balanced,
+.landing-page .tool-card-grid,
+.landing-page .products-grid,
+.landing-page .related-tools-grid,
+.landing-page .affiliate-context-grid,
+.landing-page .landing-use-grid,
+.landing-page .trust-grid {
+    justify-content: center !important;
+    gap: clamp(24px, 2.6vw, 34px) !important;
+}
+
+.landing-page .affiliate-stack__rows,
+.landing-page .affiliate-stack__row,
+.landing-page .affiliate-stack__row--amazon,
+.landing-page .affiliate-stack__row--a8 {
+    width: 100%;
+}
+
+.landing-page .affiliate-link-grid {
+    justify-content: center !important;
+    gap: clamp(18px, 2vw, 26px) !important;
+}
+
+.landing-page .affiliate-stack__row--a8 {
+    display: grid !important;
+    justify-items: center !important;
+}
+
+.landing-page .affiliate-stack__head--a8 {
+    width: min(100%, 728px);
+    justify-content: flex-start !important;
+}
+
+.landing-page .affiliate-a8-banner {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.landing-page .tools-search,
+.landing-page .category-chips {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+@media (min-width: 1280px) {
+    .landing-page .cards-grid--balanced,
+    .landing-page .tool-card-grid,
+    .landing-page .products-grid,
+    .landing-page .related-tools-grid,
+    .landing-page .affiliate-context-grid,
+    .landing-page .landing-use-grid,
+    .landing-page .trust-grid {
+        grid-template-columns: repeat(5, minmax(var(--balanced-card-min), var(--balanced-card-max))) !important;
+    }
+
+    .landing-page .cards-grid--balanced > *,
+    .landing-page .tool-card-grid > *,
+    .landing-page .products-grid > *,
+    .landing-page .related-tools-grid > *,
+    .landing-page .affiliate-context-grid > *,
+    .landing-page .landing-use-grid > *,
+    .landing-page .trust-grid > * {
+        grid-column: auto !important;
+    }
+}
+
+@media (min-width: 960px) and (max-width: 1279px) {
+    .landing-page .cards-grid--balanced,
+    .landing-page .tool-card-grid,
+    .landing-page .products-grid,
+    .landing-page .related-tools-grid,
+    .landing-page .affiliate-context-grid,
+    .landing-page .landing-use-grid,
+    .landing-page .trust-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    }
+
+    .landing-page .cards-grid--balanced > *,
+    .landing-page .tool-card-grid > *,
+    .landing-page .products-grid > *,
+    .landing-page .related-tools-grid > *,
+    .landing-page .affiliate-context-grid > *,
+    .landing-page .landing-use-grid > *,
+    .landing-page .trust-grid > * {
+        grid-column: span 2 !important;
+        max-width: none;
+    }
+
+    .landing-page .cards-grid--balanced > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .tool-card-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .products-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .related-tools-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .affiliate-context-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .landing-use-grid > *:nth-last-child(2):nth-child(3n + 1),
+    .landing-page .trust-grid > *:nth-last-child(2):nth-child(3n + 1) {
+        grid-column: 2 / span 2 !important;
+    }
+}
+
+@media (max-width: 959px) {
+    :root {
+        --section-inner-padding: clamp(30px, 6vw, 40px);
+        --section-inner-padding-y: clamp(28px, 5vw, 38px);
+    }
+
+    .landing-page .hero-v2 {
+        gap: clamp(24px, 5vw, 34px) !important;
+    }
+
+    .landing-page .tool-card-v2,
+    .landing-page .product-card,
+    .landing-page .related-tools-card,
+    .landing-page .affiliate-context-card,
+    .landing-page .affiliate-link-card {
+        max-width: none;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 959px) {
+    .landing-page .cards-grid--balanced,
+    .landing-page .tool-card-grid,
+    .landing-page .products-grid,
+    .landing-page .related-tools-grid,
+    .landing-page .affiliate-context-grid,
+    .landing-page .landing-use-grid,
+    .landing-page .trust-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+
+    .landing-page .cards-grid--balanced > *,
+    .landing-page .tool-card-grid > *,
+    .landing-page .products-grid > *,
+    .landing-page .related-tools-grid > *,
+    .landing-page .affiliate-context-grid > *,
+    .landing-page .landing-use-grid > *,
+    .landing-page .trust-grid > * {
+        grid-column: span 2 !important;
+    }
+
+    .landing-page .cards-grid--balanced > *:last-child:nth-child(odd),
+    .landing-page .tool-card-grid > *:last-child:nth-child(odd),
+    .landing-page .products-grid > *:last-child:nth-child(odd),
+    .landing-page .related-tools-grid > *:last-child:nth-child(odd),
+    .landing-page .affiliate-context-grid > *:last-child:nth-child(odd),
+    .landing-page .landing-use-grid > *:last-child:nth-child(odd),
+    .landing-page .trust-grid > *:last-child:nth-child(odd) {
+        grid-column: 2 / span 2 !important;
+    }
+}
+
+@media (max-width: 640px) {
+    :root {
+        --page-inline-padding: 14px;
+        --section-inner-padding: clamp(20px, 5.6vw, 24px);
+        --section-inner-padding-y: clamp(22px, 6vw, 30px);
+        --card-inner-padding: clamp(18px, 5vw, 22px);
+        --compact-card-inner-padding: clamp(16px, 4.6vw, 20px);
+    }
+
+    .landing-page .hero-v2,
+    .landing-page .tools-hero,
+    .landing-page .page-header,
+    .landing-page .hero,
+    .landing-page .section-block,
+    .landing-page .affiliate-context-block,
+    .landing-page .affiliate-cards-section,
+    .landing-page .related-tools-section,
+    .landing-page .contact-panel,
+    .landing-page .legal-content-card {
+        padding-left: var(--section-inner-padding) !important;
+        padding-right: var(--section-inner-padding) !important;
+    }
+
+    .landing-page .hero-tool-stack,
+    .landing-page .cards-grid--balanced,
+    .landing-page .tool-card-grid,
+    .landing-page .products-grid,
+    .landing-page .related-tools-grid,
+    .landing-page .affiliate-context-grid,
+    .landing-page .landing-use-grid,
+    .landing-page .trust-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .landing-page .cards-grid--balanced > *,
+    .landing-page .tool-card-grid > *,
+    .landing-page .products-grid > *,
+    .landing-page .related-tools-grid > *,
+    .landing-page .affiliate-context-grid > *,
+    .landing-page .landing-use-grid > *,
+    .landing-page .trust-grid > * {
+        grid-column: auto !important;
+    }
+}
