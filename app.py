@@ -1419,6 +1419,12 @@ def about():
 
 
 
+
+@app.route('/best-practices')
+def best_practices():
+    """Render the public best practices page."""
+    return render_template('best-practices.html')
+
 @app.route('/blog')
 def blog_index():
     """Render the blog index."""
@@ -1649,6 +1655,7 @@ def sitemap():
         ('/contact', 'monthly', '0.5', today),
         ('/faq', 'weekly', '0.8', today),
         ('/glossary', 'monthly', '0.7', today),
+        ('/best-practices', 'monthly', '0.7', today),
         
         # 繧ｬ繧､繝峨・繝ｼ繧ｸ・井ｸ隕ｧ・句崋螳夲ｼ・
         ('/guide', 'weekly', '0.9', today),

@@ -1,4 +1,4 @@
-{% set affiliate_section_class = affiliate_section_class|default('') %}
+﻿{% set affiliate_section_class = affiliate_section_class|default('') %}
 {% set affiliate_section_show_disclosure = affiliate_section_show_disclosure|default(true) %}
 {% set affiliate_networks = affiliate_networks|default(['amazon', 'a8']) %}
 {% set affiliate_section_tier = affiliate_section_tier|default('') %}
@@ -31,7 +31,7 @@
 {% if should_render_section %}
 <section
     class="affiliate-footer-block affiliate-footer-block--quiet affiliate-cards-section affiliate-stack{% if affiliate_section_class %} {{ affiliate_section_class }}{% endif %}"
-    aria-label="広告リンク"
+    aria-label="広告・紹介リンク"
     {% if affiliate_section_tier %}data-affiliate-tier="{{ affiliate_section_tier }}"{% endif %}
     data-affiliate-placement="{{ affiliate_section_placement }}"
     data-affiliate-category="{{ affiliate_section_category }}"
@@ -53,7 +53,7 @@
             <div class="affiliate-stack__head">
                 <p class="affiliate-stack__label affiliate-stack__label--amazon">{{ amazon_section_title }}</p>
             </div>
-            <div class="amazon-recommendation-grid" role="list" aria-label="Amazon のおすすめ">
+            <div class="amazon-recommendation-grid" role="list" aria-label="Amazonのおすすめ">
                 {% for item in amazon_items %}
                 <article class="amazon-recommendation-card" role="listitem">
                     <a href="{{ item.url|default('#') }}" target="_blank" rel="nofollow sponsored noopener" class="amazon-recommendation-card__anchor" data-affiliate-network="amazon" data-affiliate-category="{{ item.category_label|default(affiliate_section_category) }}" data-affiliate-placement="{{ affiliate_section_placement }}" data-affiliate-cta="{{ item.cta|default('Amazonで見る') }}">

@@ -1,0 +1,43 @@
+﻿<!doctype html>
+<html lang="ja" class="no-js">
+<head>
+    {% set page_title = 'ベストプラクティス | しごと道具箱' %}
+    {% set page_description = 'PDF、CSV、画像、SEO/URL確認ツールを使う前後に確認したい、ファイル処理と公開確認の基本方針をまとめました。' %}
+    {% set breadcrumb_title = 'ベストプラクティス' %}
+    {% include 'includes/head_meta.html' %}
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--brand-bg); color: var(--brand-ink); line-height: 1.8; }
+        .page { max-width: 1120px; margin: 0 auto; padding: 56px 20px; }
+        .hero { text-align: center; max-width: 780px; margin: 0 auto 34px; }
+        .hero h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 12px; letter-spacing: 0; }
+        .hero p { color: var(--brand-muted); font-size: 1.05rem; margin: 0; }
+        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin: 30px auto; max-width: 980px; }
+        .card { border: 1px solid var(--brand-line); border-radius: 8px; padding: 24px; background: var(--brand-surface); box-shadow: var(--shadow-soft); }
+        .card h2 { margin: 0 0 10px; color: var(--brand-primary-strong); letter-spacing: 0; font-size: 1.12rem; }
+        .card ul { margin: 0; padding-left: 1.2rem; color: var(--brand-muted); }
+        .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 30px; }
+        .button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 16px; border: 1px solid rgba(14,124,123,.45); border-radius: 8px; text-decoration: none; color: var(--brand-primary-strong); background: var(--brand-teal-soft); font-weight: 700; }
+        @media (max-width: 760px) { .page { padding-inline: 16px; } .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body class="landing-page">
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <main class="page">
+        <section class="hero">
+            <h1>しごと道具箱のベストプラクティス</h1>
+            <p>ファイルを扱う前後の確認、公開ページのチェック、広告・紹介リンクの見方をまとめています。</p>
+        </section>
+        <section class="grid" aria-label="ベストプラクティス">
+            <article class="card"><h2>ファイルをアップロードする前</h2><ul><li>個人情報や機密情報が含まれていないか確認します。</li><li>元ファイルは手元に残し、処理後のファイル名も確認します。</li><li>大きなファイルは、処理方法とサイズ上限を先に確認します。</li></ul></article>
+            <article class="card"><h2>PDF / CSV / 画像ツールを使うとき</h2><ul><li>目的に近いツールを選び、必要な設定だけ変更します。</li><li>変換後はページ数、文字化け、画像サイズ、余白を確認します。</li><li>PDFの保護は、パスワード管理と共有先を決めてから使います。</li></ul></article>
+            <article class="card"><h2>SEO/URL確認を使うとき</h2><ul><li>title、meta description、OGP、canonicalをまとめて確認します。</li><li>sitemap.xmlとrobots.txtは、公開前後の両方で確認します。</li><li>リダイレクトや404がないか、URL一覧で見落としを減らします。</li></ul></article>
+            <article class="card"><h2>広告・紹介リンクの見方</h2><ul><li>広告や紹介リンクがある場所では、ページ内に開示文言を表示します。</li><li>価格、在庫、レビュー数、星評価、ランキング順位は表示しません。</li><li>作業に関係する本やサービスを、必要なときだけ確認できます。</li></ul></article>
+        </section>
+        <div class="links"><a class="button" href="/tools">ツール一覧</a><a class="button" href="/guide">ガイド一覧</a><a class="button" href="/faq">FAQ</a><a class="button" href="/privacy">プライバシーポリシー</a></div>
+    </main>
+    {% include 'includes/seo_link_hub.html' %}
+    {% include 'includes/footer.html' %}
+</body>
+</html>
