@@ -7,7 +7,7 @@
         {% set has_amazon_mid_items = AMAZON_AFFILIATE_ENABLED|default(false) and (footer_amazon_mid_items|length > 0) %}
         {% set affiliate_disclosure_rendered = affiliate_disclosure_rendered|default(false) %}
         {% set footer_needs_upper_amazon = can_render_affiliate and has_amazon_upper_items and not affiliate_upper_amazon_rendered|default(false) %}
-        {% set footer_needs_mid_amazon = can_render_affiliate and has_amazon_mid_items and not affiliate_mid_amazon_rendered|default(false) %}
+        {% set footer_needs_mid_amazon = can_render_affiliate and has_amazon_mid_items and not affiliate_mid_amazon_rendered|default(false) and not footer_needs_upper_amazon %}
         {% if related_content_section %}
             {% include 'includes/related_content.html' %}
         {% endif %}
