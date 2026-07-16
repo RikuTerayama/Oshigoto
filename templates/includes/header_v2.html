@@ -1,4 +1,4 @@
-{% from 'includes/icons.html' import icon %}
+﻿{% from 'includes/icons.html' import icon %}
 {% from 'includes/tool_icons.html' import tool_icon %}
 {% set _current_path = request.path|default('/') if (request is defined and request) else '/' %}
 <header class="site-header">
@@ -39,7 +39,6 @@
                                             <span class="site-nav__group-label">{{ item.group_label|default('') }}</span>
                                             {% for sub in item['items'] %}
                                                 <a href="{{ sub.path|default('#') }}" role="menuitem" class="site-nav__dropdown-link">
-                                                    {% if sub.icon %}<span class="site-nav__dropdown-icon">{{ sub.icon }}</span>{% endif %}
                                                     <span>{{ sub.name|default('') }}</span>
                                                 </a>
                                             {% endfor %}
@@ -47,7 +46,6 @@
                                     {% else %}
                                         <li role="none">
                                             <a href="{{ item.path|default('#') }}" role="menuitem" class="site-nav__dropdown-link">
-                                                {% if item.icon %}<span class="site-nav__dropdown-icon">{{ item.icon }}</span>{% endif %}
                                                 <span>{{ item.name|default('') }}</span>
                                             </a>
                                         </li>
@@ -75,44 +73,53 @@
 {% endif %}
 <script>
 (function() {
+    function closeDropdown(wrap) {
+        wrap.removeAttribute('data-open');
+        var btn = wrap.querySelector('button');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+    }
+    function openDropdown(wrap) {
+        document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(function(other) {
+            if (other !== wrap) closeDropdown(other);
+        });
+        wrap.setAttribute('data-open', 'true');
+        var btn = wrap.querySelector('button');
+        if (btn) btn.setAttribute('aria-expanded', 'true');
+    }
     document.querySelectorAll('[data-dropdown]').forEach(function(wrap) {
         var btn = wrap.querySelector('button');
         var menu = wrap.querySelector('.site-nav__dropdown');
+        var leaveTimer;
         if (!btn || !menu) return;
+        wrap.addEventListener('mouseenter', function() {
+            window.clearTimeout(leaveTimer);
+            openDropdown(wrap);
+        });
+        wrap.addEventListener('mouseleave', function() {
+            leaveTimer = window.setTimeout(function() { closeDropdown(wrap); }, 120);
+        });
+        wrap.addEventListener('focusin', function() { openDropdown(wrap); });
+        wrap.addEventListener('focusout', function() {
+            window.setTimeout(function() {
+                if (!wrap.contains(document.activeElement)) closeDropdown(wrap);
+            }, 0);
+        });
         btn.addEventListener('click', function(e) {
             e.preventDefault();
-            var open = wrap.getAttribute('data-open') === 'true';
-            document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(function(other) {
-                if (other !== wrap) {
-                    other.removeAttribute('data-open');
-                    var otherBtn = other.querySelector('button');
-                    if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
-                }
-            });
-            if (open) {
-                wrap.removeAttribute('data-open');
-                btn.setAttribute('aria-expanded', 'false');
+            if (wrap.getAttribute('data-open') === 'true') {
+                closeDropdown(wrap);
             } else {
-                wrap.setAttribute('data-open', 'true');
-                btn.setAttribute('aria-expanded', 'true');
+                openDropdown(wrap);
             }
         });
     });
     document.addEventListener('keydown', function(e) {
         if (e.key !== 'Escape') return;
-        document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(function(wrap) {
-            wrap.removeAttribute('data-open');
-            var btn = wrap.querySelector('button');
-            if (btn) btn.setAttribute('aria-expanded', 'false');
-        });
+        document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(closeDropdown);
     });
     document.addEventListener('click', function(e) {
         if (e.target.closest('[data-dropdown]')) return;
-        document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(function(wrap) {
-            wrap.removeAttribute('data-open');
-            var btn = wrap.querySelector('button');
-            if (btn) btn.setAttribute('aria-expanded', 'false');
-        });
+        document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(closeDropdown);
     });
 })();
 </script>

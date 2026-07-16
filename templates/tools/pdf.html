@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ja" class="no-js">
 <head>
     {% set page_title = 'PDFツール - 結合・分割・抽出・圧縮・画像変換 | しごと道具箱' %}
@@ -270,6 +270,7 @@
             {% with affiliate_context_title='PDF・書類作業を整える仕事道具', affiliate_context_lead='処理が終わったら、次の書類作業に備える道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='pdf-documents', affiliate_context_placement='pdf-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='作業に近い関連サービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
+            {% set affiliate_a8_rendered = true %}
             {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
             {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', affiliate_section_placement='pdf-post-action', affiliate_section_category='pdf-documents', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='PDF・書類作業に役立つ Amazon おすすめ' %}
                 {% include 'includes/affiliate_cards_section.html' %}

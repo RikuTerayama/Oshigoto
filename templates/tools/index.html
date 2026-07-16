@@ -15,10 +15,6 @@
         .tools-hero p { font-size: 1.08em; color: var(--brand-muted); max-width: 720px; margin: 0 auto; }
         .tools-hero__note { margin-top: 14px !important; font-size: 0.92em !important; color: #7c8577 !important; }
         .tools-hero__note a { color: var(--brand-primary-strong); }
-        .category-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 22px 0 6px; }
-        .category-chip { display: inline-flex; align-items: center; padding: 7px 16px; border-radius: 999px; border: 1px solid var(--brand-line); background: #fff; color: var(--brand-muted); font-size: 0.85em; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
-        .category-chip:hover { border-color: rgba(14, 124, 123, 0.32); }
-        .category-chip--active { background: var(--brand-primary); border-color: var(--brand-primary); color: #fff; }
         .tools-search { max-width: 760px; margin: 22px auto 28px; }
         .tools-search input { width: 100%; padding: 13px 16px; background: #fff; border: 1px solid var(--brand-line); border-radius: 12px; color: var(--brand-ink); font-size: 1em; }
         .tools-search input:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
@@ -71,13 +67,6 @@
                 <span class="copy-lines__line">多くの処理はブラウザ内で実行します。サーバー処理が必要な機能は各ページで説明しています。</span>
                 <span class="copy-lines__line"><a href="/faq">FAQ</a>、<a href="/guide">ガイド</a>、<a href="/privacy">プライバシーポリシー</a>もあわせて確認できます。</span>
             </p>
-            <div class="category-chips" role="group" aria-label="作業タイプで絞り込む">
-                <button type="button" class="category-chip" data-chip-filter="PDF">書類</button>
-                <button type="button" class="category-chip" data-chip-filter="CSV">表</button>
-                <button type="button" class="category-chip" data-chip-filter="Image">画像</button>
-                <button type="button" class="category-chip" data-chip-filter="SEO">Web確認</button>
-                <button type="button" class="category-chip" data-chip-filter="">すべて表示</button>
-            </div>
         </section>
 
 
@@ -144,6 +133,7 @@
         {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--tools-a8', affiliate_section_tier='context-a8', affiliate_section_placement='tools-index-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='必要なときだけ確認できます。', affiliate_a8_label='PR' %}
             {% include 'includes/affiliate_cards_section.html' %}
         {% endwith %}
+        {% set affiliate_a8_rendered = true %}
     </main>
 
     <script>
@@ -152,9 +142,7 @@
             const productsGrid = document.getElementById('products-grid');
             const noResults = document.getElementById('no-results');
             const productCards = Array.from(productsGrid.querySelectorAll('.product-card'));
-            const chips = Array.from(document.querySelectorAll('[data-chip-filter]'));
             const NO_RESULTS_MSG = '検索条件に一致するツールが見つかりませんでした。';
-            let activeFilter = '';
 
             function setNoResultsVisible(show) {
                 noResults.hidden = !show;
@@ -170,8 +158,7 @@
                 productCards.forEach(card => {
                     const haystack = [card.dataset.name, card.dataset.description, card.dataset.tags].join(' ').toLowerCase();
                     const matchesQuery = !query || haystack.includes(query);
-                    const matchesChip = !activeFilter || haystack.includes(activeFilter.toLowerCase());
-                    const isVisible = matchesQuery && matchesChip;
+                    const isVisible = matchesQuery;
                     card.style.display = isVisible ? 'block' : 'none';
                     if (isVisible) visibleCount += 1;
                 });
@@ -180,12 +167,6 @@
             }
 
             searchInput.addEventListener('input', applyFilters);
-            chips.forEach(chip => {
-                chip.addEventListener('click', () => {
-                    activeFilter = chip.dataset.chipFilter || '';
-                    chips.forEach(item => item.classList.toggle('category-chip--active', item === chip && Boolean(activeFilter)));
-                    applyFilters();
-                });
             });
 
             setNoResultsVisible(false);

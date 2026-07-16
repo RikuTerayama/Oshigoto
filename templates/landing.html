@@ -120,6 +120,7 @@
         {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--landing-a8', affiliate_section_tier='context-a8', affiliate_section_placement='top-lower-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='必要なときだけ確認できます。', affiliate_a8_label='PR' %}
             {% include 'includes/affiliate_cards_section.html' %}
         {% endwith %}
+        {% set affiliate_a8_rendered = true %}
     </main>
     {% include 'includes/footer.html' %}
 </body>
