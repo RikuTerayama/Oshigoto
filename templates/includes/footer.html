@@ -1,4 +1,4 @@
-<footer style="background: var(--color-bg-primary, #121212); padding: var(--spacing-xl, 48px) var(--spacing-md, 16px); margin-top: var(--spacing-xl, 48px); border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));">
+﻿<footer style="background: var(--color-bg-primary, #121212); padding: var(--spacing-xl, 48px) var(--spacing-md, 16px); margin-top: var(--spacing-xl, 48px); border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));">
     <div style="max-width: 1200px; margin: 0 auto;">
         {% set can_render_affiliate = affiliate_can_render_textlinks() %}
         {% set footer_amazon_upper_items = amazon_affiliate_upper_items|default([]) %}
@@ -30,6 +30,13 @@
                 {% include 'includes/affiliate_cards_section.html' %}
             {% endwith %}
             {% set affiliate_mid_amazon_rendered = true %}
+        {% endif %}
+
+        {% if not affiliate_a8_rendered|default(false) %}
+            {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--footer-a8', affiliate_section_tier='context-a8', affiliate_section_placement='global-footer-a8', affiliate_section_category='related-services', affiliate_a8_label='PR' %}
+                {% include 'includes/affiliate_cards_section.html' %}
+            {% endwith %}
+            {% set affiliate_a8_rendered = true %}
         {% endif %}
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; text-align: left;">

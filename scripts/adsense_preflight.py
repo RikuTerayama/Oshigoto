@@ -10,13 +10,15 @@ from urllib.parse import parse_qs, urlparse
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 BASE_URL_DEFAULT = 'https://oshigoto.onrender.com'
-MAJOR_PATHS = ['/', '/tools', '/privacy', '/terms', '/contact', '/about', '/faq', '/guide', '/blog', '/glossary']
+MAJOR_PATHS = ['/', '/tools', '/privacy', '/terms', '/contact', '/about', '/faq', '/guide', '/blog', '/glossary', '/best-practices']
 TOOL_PATHS = ['/tools/pdf', '/tools/csv', '/tools/image-batch', '/tools/image-cleanup', '/tools/seo']
 GUIDE_PATHS = ['/guide/pdf', '/guide/csv', '/guide/image-batch', '/guide/image-cleanup', '/guide/seo']
 INDEXABLE_PATHS = ['/', '/tools', '/guide', '/blog', '/glossary'] + TOOL_PATHS + GUIDE_PATHS
 PUBLIC_AFFILIATE_PATHS = ['/', '/tools'] + TOOL_PATHS
 ADSENSE_SCRIPT_SRC = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4232725615106709'
 ADSENSE_HEAD_PATHS = ['/', '/tools', '/tools/pdf']
+A8_SCRIPT_SRC = 'https://rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js'
+A8_PUBLIC_PATHS = MAJOR_PATHS + TOOL_PATHS + GUIDE_PATHS
 FORBIDDEN_PUBLIC_STRINGS = [
     'Jobcan',
     'AutoFill',
@@ -113,6 +115,11 @@ def run_checks(get):
     robots = _body(get('/robots.txt'))
     add('robots_sitemap', '/robots.txt', 'https://oshigoto.onrender.com/sitemap.xml' in robots or '/sitemap.xml' in robots)
     add('robots_autofill_disallow', '/robots.txt', 'Disallow: /autofill' in robots)
+
+    for path in A8_PUBLIC_PATHS:
+        body = _body(get(path))
+        a8_count = body.count(A8_SCRIPT_SRC)
+        add('a8_present_once', path, a8_count == 1, f'count={a8_count}')
 
     for path in PUBLIC_AFFILIATE_PATHS:
         body = _body(get(path))
