@@ -110,21 +110,8 @@
         <div class="page-layout">
         <div class="page-main">
         <div class="tool-workspace">
-        <div class="tool-section tool-main-panel">
-            <h3>2. ファイルを選ぶ</h3>
-            <div id="dropzone" class="file-dropzone">
-                <div class="dropzone-mark" aria-hidden="true"></div>
-                <p style="color: var(--brand-ink); font-size: 1.1em; margin: 0 0 10px; font-weight: 700;">ファイルをトレイへ置く</p>
-                <p style="color: var(--brand-muted); font-size: 0.95em; margin: 0;">ドラッグ&ドロップ、またはクリックしてファイルを選択</p>
-                <p id="dropzone-hint" style="color: var(--brand-muted); font-size: 0.85em; margin: 15px 0 0;">対応形式: PDF（操作により最大10または20ファイル、1ファイル50MBまで）</p>
-                <input type="file" id="file-input" accept="application/pdf" multiple style="display: none;">
-            </div>
-            <div id="file-list" class="file-list"></div>
-            <div id="rejected-files" class="rejected-files" style="display: none;"></div>
-        </div>
-
         <div class="tool-section tool-operation-card">
-            <h3>1・3・4. 操作を選んで実行する</h3>
+            <h3>1. 操作を選ぶ</h3>
             <div class="option-group">
                 <label>操作モード</label>
                 <div class="mode-card-grid" role="group" aria-label="PDF操作モード">
@@ -154,7 +141,23 @@
                     </optgroup>
                 </select>
             </div>
+        </div>
 
+        <div class="tool-section tool-main-panel">
+            <h3>2. ファイルを選ぶ</h3>
+            <div id="dropzone" class="file-dropzone">
+                <div class="dropzone-mark" aria-hidden="true"></div>
+                <p style="color: var(--brand-ink); font-size: 1.1em; margin: 0 0 10px; font-weight: 700;">ファイルをトレイへ置く</p>
+                <p style="color: var(--brand-muted); font-size: 0.95em; margin: 0;">ドラッグ&ドロップ、またはクリックしてファイルを選択</p>
+                <p id="dropzone-hint" style="color: var(--brand-muted); font-size: 0.85em; margin: 15px 0 0;">対応形式: PDF（操作により最大10または20ファイル、1ファイル50MBまで）</p>
+                <input type="file" id="file-input" accept="application/pdf" multiple style="display: none;">
+            </div>
+            <div id="file-list" class="file-list"></div>
+            <div id="rejected-files" class="rejected-files" style="display: none;"></div>
+        </div>
+
+        <div class="tool-section tool-settings-card">
+            <h3>3. 必要な設定を入れる</h3>
             <div id="input-pdf-password-group" class="option-group" style="display: none;">
                 <input type="hidden" id="input-pdf-password" value="">
             </div>
@@ -226,7 +229,10 @@
                 <input type="number" id="extract-images-max" min="10" max="500" value="200">
                 <p class="info-text" style="color: #9a5b00; margin-top: 10px;">試験版のため、PDFによっては抽出できない場合があります。</p>
             </div>
+        </div>
 
+        <div class="tool-section tool-run-card">
+            <h3>4. 実行して保存する</h3>
             <button id="run-button" class="action-button" onclick="runOperation()">PDFを処理する</button>
             <p id="run-hint" class="info-text">操作に必要なファイルと設定を入れると実行できます。</p>
             <button id="cancel-button" class="action-button" onclick="cancelOperation()" style="display: none; background: rgba(244, 67, 54, 0.2); border-color: rgba(244, 67, 54, 0.5); color: #F44336;">キャンセル</button>
@@ -271,12 +277,6 @@
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% set affiliate_a8_rendered = true %}
-            {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
-            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', affiliate_section_placement='pdf-post-action', affiliate_section_category='pdf-documents', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='PDF・書類作業に役立つ Amazon おすすめ' %}
-                {% include 'includes/affiliate_cards_section.html' %}
-            {% endwith %}
-            {% set affiliate_mid_amazon_rendered = true %}
-            {% endif %}
         </section>
         <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px;"><a href="#about-tool" style="color: #4FA79C;">使い方・FAQを読む →</a></div>
         {% include 'includes/tool_content_blocks.html' %}

@@ -60,7 +60,7 @@ python -m py_compile app.py lib\seo.py lib\products_catalog.py
 - `/` と `/tools` が200で表示される
 - 5つのツールrouteが200で表示される
 - `/autofill` は `/tools` へ301 redirectする
-- PDFのパスワード解除UI/APIは公開しない
+- PDFの保護解除系UI/APIは公開しない
 - `/api/pdf/lock` はPDF保護付与APIとして維持する
 - `/api/seo/crawl-urls` はURL制限とtimeoutを維持する
 - sitemapに5ツールが含まれる

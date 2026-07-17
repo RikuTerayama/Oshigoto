@@ -548,12 +548,6 @@
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% set affiliate_a8_rendered = true %}
-            {% if affiliate_can_render_textlinks() and AMAZON_AFFILIATE_ENABLED|default(false) and (amazon_affiliate_mid_items|default([])|length > 0) %}
-            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid', affiliate_section_tier='mid-amazon', affiliate_section_placement='image-cleanup-post-action', affiliate_section_category='image-cleanup', amazon_items_override=amazon_affiliate_mid_items[:3], amazon_section_title='画像整理・デスク環境に役立つ Amazon おすすめ' %}
-                {% include 'includes/affiliate_cards_section.html' %}
-            {% endwith %}
-            {% set affiliate_mid_amazon_rendered = true %}
-            {% endif %}
         </section>
         <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px 0;"><a href="#about-tool" style="color: #4FA79C;">使い方・FAQを読む ↓</a></div>
         {% include 'includes/tool_content_blocks.html' %}
