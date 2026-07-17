@@ -6418,3 +6418,376 @@ body {
         grid-column: auto !important;
     }
 }
+
+/* Phase 8.16: restore calm spacing, visible borders, and glossary grouping. */
+.landing-page .tool-flow {
+    margin-bottom: clamp(56px, 6vw, 84px) !important;
+    border: 1px solid var(--brand-line) !important;
+    border-radius: 8px !important;
+    background: rgba(255, 252, 246, 0.86) !important;
+    box-shadow: none !important;
+}
+
+.landing-page .tool-flow + .page-layout {
+    margin-top: 0 !important;
+}
+
+.landing-page .tool-step-list {
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+}
+
+.landing-page .tool-intro__steps {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(160px, 1fr)) !important;
+    gap: clamp(14px, 2vw, 20px) !important;
+    width: min(100%, 1040px) !important;
+    max-width: 1040px !important;
+    margin: clamp(28px, 3.2vw, 42px) auto 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+}
+
+.landing-page .tool-step-list li {
+    border: 1px solid var(--brand-line) !important;
+    border-radius: 8px !important;
+    border-bottom: 1px solid var(--brand-line) !important;
+    background: rgba(255, 252, 246, 0.92) !important;
+    box-shadow: none !important;
+}
+
+.landing-page .tool-intro__steps li {
+    border: 1px solid var(--brand-line) !important;
+    border-radius: 8px !important;
+    border-bottom: 1px solid var(--brand-line) !important;
+    background: rgba(255, 252, 246, 0.92) !important;
+    box-shadow: none !important;
+    min-height: 90px !important;
+}
+
+.landing-page .tool-step-list li[aria-current="step"],
+.landing-page .tool-step-list li:nth-child(2),
+.landing-page .tool-intro__steps li:nth-child(2) {
+    border-color: rgba(151, 95, 61, 0.34) !important;
+    background: rgba(240, 225, 214, 0.64) !important;
+}
+
+.landing-page .tool-step-list li:hover,
+.landing-page .tool-step-list li:focus-within,
+.landing-page .tool-intro__steps li:hover,
+.landing-page .tool-intro__steps li:focus-within {
+    border-color: rgba(151, 95, 61, 0.42) !important;
+    background: rgba(255, 252, 246, 0.96) !important;
+}
+
+.landing-page .tool-step-list li[aria-current="step"]:hover,
+.landing-page .tool-step-list li:nth-child(2):hover,
+.landing-page .tool-step-list li[aria-current="step"]:focus-within,
+.landing-page .tool-step-list li:nth-child(2):focus-within {
+    border-color: rgba(151, 95, 61, 0.46) !important;
+    background: rgba(240, 225, 214, 0.7) !important;
+}
+
+.landing-page .tool-section,
+.landing-page .tool-note,
+.landing-page .tool-affiliate-row,
+.landing-page .affiliate-context-block,
+.landing-page .affiliate-context-a8,
+.landing-page .affiliate-cards-section--context-a8,
+.landing-page .affiliate-cards-section--compact-a8,
+.landing-page .affiliate-cards-section--footer-a8 {
+    border-color: var(--brand-line) !important;
+    box-shadow: none !important;
+}
+
+.landing-page .tool-section + .tool-section {
+    margin-top: clamp(18px, 2.4vw, 28px) !important;
+}
+
+.landing-page .tool-note {
+    margin-top: clamp(64px, 7vw, 96px) !important;
+    margin-bottom: clamp(48px, 5vw, 72px) !important;
+}
+
+.landing-page .tool-affiliate-row {
+    margin-top: clamp(64px, 7vw, 92px) !important;
+    margin-bottom: clamp(56px, 6vw, 86px) !important;
+    padding-top: 0 !important;
+}
+
+.landing-page .tool-note + .tool-affiliate-row {
+    margin-top: clamp(52px, 6vw, 80px) !important;
+}
+
+.landing-page .post-action-affiliate,
+.landing-page .affiliate-context-block {
+    border: 1px solid var(--brand-line) !important;
+    border-radius: 8px !important;
+    background: rgba(255, 252, 246, 0.9) !important;
+}
+
+.landing-page .post-action-affiliate {
+    padding: clamp(32px, 4vw, 52px) clamp(20px, 4vw, 42px) !important;
+}
+
+.landing-page .affiliate-context-block__header {
+    margin-bottom: clamp(28px, 3vw, 40px) !important;
+}
+
+.landing-page .affiliate-context-grid {
+    gap: clamp(18px, 2.2vw, 26px) !important;
+}
+
+.landing-page .affiliate-context-card,
+.landing-page .amazon-recommendation-card,
+.landing-page .amazon-recommendation-card__anchor,
+.landing-page .product-card,
+.landing-page .affiliate-card {
+    border: 1px solid var(--brand-line) !important;
+    border-radius: 8px !important;
+    background: rgba(255, 252, 246, 0.94) !important;
+    box-shadow: none !important;
+}
+
+.landing-page .affiliate-context-card:hover,
+.landing-page .affiliate-context-card:focus-visible,
+.landing-page .affiliate-context-card:focus-within,
+.landing-page .amazon-recommendation-card:hover,
+.landing-page .amazon-recommendation-card:focus-within,
+.landing-page .amazon-recommendation-card__anchor:hover,
+.landing-page .amazon-recommendation-card__anchor:focus-visible,
+.landing-page .product-card:hover,
+.landing-page .product-card:focus-within,
+.landing-page .affiliate-card:hover,
+.landing-page .affiliate-card:focus-within {
+    border-color: rgba(151, 95, 61, 0.44) !important;
+    background: rgba(255, 252, 246, 0.98) !important;
+    box-shadow: 0 10px 24px rgba(74, 54, 36, 0.08) !important;
+    transform: translateY(-1px) !important;
+}
+
+.landing-page .amazon-recommendation-card__anchor:focus-visible,
+.landing-page .affiliate-context-card:focus-visible {
+    outline: 3px solid rgba(14, 124, 123, 0.26) !important;
+    outline-offset: 3px !important;
+}
+
+.landing-page .affiliate-context-a8 {
+    width: min(100%, 900px) !important;
+    margin: clamp(42px, 5vw, 64px) auto 0 !important;
+    padding: clamp(24px, 3vw, 36px) !important;
+    border: 1px solid var(--brand-line) !important;
+    border-radius: 8px !important;
+    background: rgba(255, 252, 246, 0.92) !important;
+}
+
+.landing-page .affiliate-context-a8__copy {
+    margin-bottom: clamp(18px, 2.4vw, 28px) !important;
+}
+
+.landing-page .affiliate-cards-section--context-a8,
+.landing-page .affiliate-cards-section--compact-a8,
+.landing-page .affiliate-cards-section--footer-a8,
+.landing-page .affiliate-stack__row--a8 {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+.landing-page .affiliate-stack__head--a8 {
+    margin-bottom: 14px !important;
+}
+
+.landing-page .affiliate-stack__label--a8 {
+    color: var(--brand-muted) !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+}
+
+.landing-page .affiliate-a8-banner {
+    width: min(100%, 760px) !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.landing-page .affiliate-a8-banner img,
+.landing-page .affiliate-a8-banner iframe {
+    display: block !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+}
+
+.landing-page .affiliate-stack__row--amazon {
+    border: 0 !important;
+    background: transparent !important;
+}
+
+.landing-page .content-grid--three.glossary-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: clamp(22px, 3vw, 34px) !important;
+    width: min(100%, 1120px) !important;
+    max-width: 1120px !important;
+    margin: clamp(44px, 5vw, 68px) auto !important;
+    align-items: start !important;
+}
+
+.landing-page .glossary-grid > .info-card {
+    border: 1px solid var(--brand-line) !important;
+    border-radius: 8px !important;
+    background: rgba(255, 252, 246, 0.92) !important;
+    box-shadow: none !important;
+    padding: clamp(24px, 3vw, 34px) !important;
+    min-width: 0 !important;
+    grid-column: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.landing-page .content-grid.content-grid--three.glossary-grid > .info-card,
+.landing-page .content-grid--three.glossary-grid > .info-card,
+.landing-page .content-grid--three.glossary-grid > .info-card:nth-last-child(2):nth-child(3n + 1),
+.landing-page .content-grid--three.glossary-grid > .info-card:last-child:nth-child(odd) {
+    grid-column: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.landing-page .glossary-grid > .info-card h2 {
+    margin: 0 0 clamp(18px, 2.2vw, 26px) !important;
+    padding-bottom: 12px !important;
+    border-bottom: 1px solid var(--brand-line) !important;
+    font-size: clamp(1.35rem, 2vw, 1.65rem) !important;
+}
+
+.landing-page .term-list {
+    display: grid !important;
+    grid-template-columns: minmax(120px, 0.72fr) minmax(0, 1.8fr) !important;
+    gap: 0 !important;
+    margin: 0 !important;
+}
+
+.landing-page .term-list dt,
+.landing-page .term-list dd {
+    margin: 0 !important;
+    min-width: 0 !important;
+    border-top: 1px solid rgba(215, 198, 170, 0.84) !important;
+    background: rgba(255, 252, 246, 0.62) !important;
+}
+
+.landing-page .term-list dt {
+    padding: 14px 14px 14px 16px !important;
+    border-left: 1px solid rgba(215, 198, 170, 0.84) !important;
+    color: var(--brand-brown) !important;
+    font-weight: 800 !important;
+}
+
+.landing-page .term-list dd {
+    padding: 14px 16px 14px 12px !important;
+    border-right: 1px solid rgba(215, 198, 170, 0.84) !important;
+    color: var(--brand-muted) !important;
+    line-height: 1.8 !important;
+}
+
+.landing-page .term-list dt:nth-last-of-type(1),
+.landing-page .term-list dd:last-child {
+    border-bottom: 1px solid rgba(215, 198, 170, 0.84) !important;
+}
+
+.landing-page .term-list dt:first-of-type {
+    border-top-left-radius: 8px !important;
+}
+
+.landing-page .term-list dd:nth-of-type(1) {
+    border-top-right-radius: 8px !important;
+}
+
+.landing-page .term-list dt:last-of-type {
+    border-bottom-left-radius: 8px !important;
+}
+
+.landing-page .term-list dd:last-child {
+    border-bottom-right-radius: 8px !important;
+}
+
+@media (max-width: 959px) {
+    .landing-page .tool-flow {
+        margin-bottom: clamp(44px, 7vw, 64px) !important;
+    }
+
+    .landing-page .tool-intro__steps {
+        grid-template-columns: repeat(2, minmax(220px, 1fr)) !important;
+    }
+
+    .landing-page .tool-note,
+    .landing-page .tool-affiliate-row {
+        margin-top: clamp(44px, 7vw, 66px) !important;
+        margin-bottom: clamp(44px, 7vw, 66px) !important;
+    }
+
+    .landing-page .content-grid--three.glossary-grid {
+        grid-template-columns: 1fr !important;
+        width: min(100%, 760px) !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .landing-page .tool-flow,
+    .landing-page .post-action-affiliate,
+    .landing-page .affiliate-context-a8,
+    .landing-page .glossary-grid > .info-card {
+        padding: clamp(20px, 5vw, 26px) !important;
+    }
+
+    .landing-page .tool-step-list li {
+        min-height: 0 !important;
+    }
+
+    .landing-page .tool-intro__steps {
+        grid-template-columns: 1fr !important;
+    }
+
+    .landing-page .term-list {
+        grid-template-columns: 1fr !important;
+    }
+
+    .landing-page .term-list dt,
+    .landing-page .term-list dd {
+        border-left: 1px solid rgba(215, 198, 170, 0.84) !important;
+        border-right: 1px solid rgba(215, 198, 170, 0.84) !important;
+    }
+
+    .landing-page .term-list dt {
+        padding-bottom: 6px !important;
+        border-bottom: 0 !important;
+    }
+
+    .landing-page .term-list dd {
+        padding-top: 4px !important;
+        border-top: 0 !important;
+    }
+
+    .landing-page .term-list dt:first-of-type {
+        border-top-right-radius: 8px !important;
+    }
+
+    .landing-page .term-list dd:nth-of-type(1) {
+        border-top-right-radius: 0 !important;
+    }
+
+    .landing-page .term-list dt:last-of-type {
+        border-bottom-left-radius: 0 !important;
+    }
+
+    .landing-page .term-list dd:last-child {
+        border-bottom-left-radius: 8px !important;
+    }
+}
