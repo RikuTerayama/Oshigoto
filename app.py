@@ -12,9 +12,9 @@ from datetime import datetime
 from collections import deque as _deque
 
 from werkzeug.exceptions import HTTPException, MethodNotAllowed, NotFound
-from flask import Flask, Response, g, has_request_context, jsonify, redirect, render_template, request
-from werkzeug.exceptions import MethodNotAllowed, NotFound
+from flask import Flask, Response, g, has_request_context, jsonify, redirect, render_template, request, send_file
 from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.utils import secure_filename
 
 from lib.seo import (
     build_breadcrumb_items,
@@ -40,14 +40,36 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-MEMORY_LIMIT_MB = int(os.getenv("MEMORY_LIMIT_MB", "450"))
-MEMORY_WARNING_MB = int(os.getenv("MEMORY_WARNING_MB", "400"))
+def _env_int(name, default, minimum=1):
+    """Read a positive integer environment variable with a safe fallback."""
+    try:
+        value = int(os.getenv(name, str(default)))
+    except (TypeError, ValueError):
+        return default
+    return max(minimum, value)
+
+
+MEMORY_LIMIT_MB = _env_int("MEMORY_LIMIT_MB", 450)
+MEMORY_WARNING_MB = _env_int("MEMORY_WARNING_MB", 400)
 if MEMORY_WARNING_MB >= MEMORY_LIMIT_MB:
     MEMORY_WARNING_MB = int(MEMORY_LIMIT_MB * 0.9)
-MAX_FILE_SIZE_MB = int(os.getenv("MAX_FILE_SIZE_MB", "10"))
+MAX_FILE_SIZE_MB = _env_int("MAX_FILE_SIZE_MB", 10)
+MAX_TOTAL_UPLOAD_MB = _env_int("MAX_TOTAL_UPLOAD_MB", 50)
+MAX_FILES_PER_REQUEST = _env_int("MAX_FILES_PER_REQUEST", 20)
+MAX_PDF_PAGES = _env_int("MAX_PDF_PAGES", 500)
+MAX_ACTIVE_PDF_JOBS = _env_int("MAX_ACTIVE_PDF_JOBS", 1)
+MAX_OUTPUT_SIZE_MB = _env_int("MAX_OUTPUT_SIZE_MB", 100)
+
+MAX_FILE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+MAX_TOTAL_UPLOAD_BYTES = MAX_TOTAL_UPLOAD_MB * 1024 * 1024
+MAX_OUTPUT_BYTES = MAX_OUTPUT_SIZE_MB * 1024 * 1024
+PDF_JOB_RETRY_AFTER_SEC = _env_int("PDF_JOB_RETRY_AFTER_SEC", 5)
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+app.config["MAX_CONTENT_LENGTH"] = MAX_TOTAL_UPLOAD_BYTES
+
+_PDF_JOB_SEMAPHORE = threading.BoundedSemaphore(MAX_ACTIVE_PDF_JOBS)
 
 # === In-memory rate limiting ===
 from collections import deque as _deque
@@ -60,7 +82,9 @@ def _rate_limit_path_group(path, method):
         return None
     if path.startswith('/api/'):
         if path.startswith('/api/seo/crawl-urls'):
-            return None  # SEO crawler has its own validation and timeout policy.
+            return 'seo_crawl'
+        if path.startswith('/api/pdf/'):
+            return 'pdf'
         return 'api'
     return None
 
@@ -71,9 +95,19 @@ class RateLimiter:
         self._data = {}
         self._lock = threading.Lock()
 
+    def _cleanup(self, now):
+        stale_after = self.window_sec * 2
+        stale_keys = [
+            key for key, q in self._data.items()
+            if not q or now - q[-1] > stale_after
+        ]
+        for key in stale_keys:
+            self._data.pop(key, None)
+
     def is_allowed(self, key, max_per_window):
         with self._lock:
             now = time.time()
+            self._cleanup(now)
             if key not in self._data:
                 self._data[key] = _deque(maxlen=max_per_window * 2)
             q = self._data[key]
@@ -84,9 +118,17 @@ class RateLimiter:
             q.append(now)
             return True, self.window_sec
 
-# Keep only the generic API bucket now that legacy upload/status routes are removed.
-_RATE_LIMITS = {'api': 60}
+_RATE_LIMITS = {
+    'api': _env_int("RATE_LIMIT_LIGHT_PER_MIN", 60),
+    'pdf': _env_int("RATE_LIMIT_PDF_PER_MIN", 10),
+    'seo_crawl': _env_int("RATE_LIMIT_SEO_PER_MIN", 8),
+}
 _rate_limiter = RateLimiter(window_sec=60)
+
+
+def _get_rate_limit_client_key():
+    """Use ProxyFix-normalized remote_addr without logging or storing request metadata."""
+    return request.remote_addr or 'unknown'
 
 @app.before_request
 def rate_limit_check():
@@ -96,8 +138,7 @@ def rate_limit_check():
     group = _rate_limit_path_group(path, method)
     if group is None:
         return None
-    client_ip = request.remote_addr or 'unknown'
-    key = f"{client_ip}:{group}"
+    key = f"{_get_rate_limit_client_key()}:{group}"
     max_per = _RATE_LIMITS.get(group, 60)
     allowed, window_sec = _rate_limiter.is_allowed(key, max_per)
     if not allowed:
@@ -115,18 +156,15 @@ def rate_limit_check():
 @app.before_request
 def before_request():
     """Attach request metadata and log public requests."""
-    
     g.start_time = time.time()
-    g.request_id = request.headers.get('X-Request-ID', str(uuid.uuid4())[:8])
-    
-    
-    # Log non-health requests with a short request id for production diagnostics.
+    g.request_id = uuid.uuid4().hex[:12]
+
     if not request.path.startswith(('/healthz', '/livez', '/readyz')):
-        ua = (request.headers.get('User-Agent') or '')[:200]
-        ref = (request.headers.get('Referer') or '')[:200]
         logger.info(
-            f"req_start rid={g.request_id} method={request.method} path={request.path} "
-            f"ip={request.remote_addr} ua={ua!r} ref={ref!r}"
+            "req_start rid=%s method=%s path=%s",
+            g.request_id,
+            request.method,
+            request.path,
         )
 
 @app.after_request
@@ -139,20 +177,25 @@ def after_request(response):
         if deploy_commit:
             response.headers['X-Deploy-Commit'] = deploy_commit[:12]
         
-        # 繝倥Ν繧ｹ繝√ぉ繝・け莉･螟悶・繝ｪ繧ｯ繧ｨ繧ｹ繝医ｒ繝ｭ繧ｰ
         if not request.path.startswith(('/healthz', '/livez', '/readyz')):
             level = logging.WARNING if duration_ms > 1000 else logging.INFO
             logger.log(
                 level,
-                f"req_end rid={g.request_id} method={request.method} path={request.path} "
-                f"status={response.status_code} ms={duration_ms:.1f}"
+                "req_end rid=%s method=%s path=%s status=%s ms=%.1f",
+                g.request_id,
+                request.method,
+                request.path,
+                response.status_code,
+                duration_ms,
             )
-            
-            # 驕・ｻｶ隴ｦ蜻・
             if duration_ms > 5000:
-                logger.warning(f"SLOW_REQUEST rid={g.request_id} path={request.path} ms={duration_ms:.1f}")
-    
-    # 繧ｭ繝｣繝・す繝･蟇ｾ遲・ text/html 縺ｮ縺ｿ no-store・磯撕逧・ヵ繧｡繧､繝ｫ縺ｫ縺ｯ驕ｩ逕ｨ縺励↑縺・ｼ・
+                logger.warning("slow_request rid=%s path=%s ms=%.1f", g.request_id, request.path, duration_ms)
+
+    response.headers.setdefault('X-Content-Type-Options', 'nosniff')
+    response.headers.setdefault('Referrer-Policy', 'strict-origin-when-cross-origin')
+    response.headers.setdefault('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()')
+    response.headers.setdefault('X-Frame-Options', 'SAMEORIGIN')
+
     if not request.path.startswith('/static/'):
         ct = response.content_type or ''
         if 'text/html' in ct:
@@ -193,15 +236,33 @@ def not_found(error):
     error_id = _generate_error_id()
     request_id = getattr(g, 'request_id', 'unknown')
     logger.warning(
-        "not_found error_id=%s rid=%s path=%s method=%s user_agent=%s error=%s",
+        "not_found error_id=%s rid=%s path=%s method=%s error_type=%s",
         error_id,
         request_id,
         request.path,
         request.method,
-        request.headers.get('User-Agent', 'Unknown'),
-        error,
+        type(error).__name__,
     )
     return _render_error_page(404, 'The requested page was not found.', error_id)
+
+
+@app.errorhandler(413)
+def payload_too_large(error):
+    """Handle upload payloads that exceed configured limits."""
+    error_id = _generate_error_id()
+    request_id = getattr(g, 'request_id', 'unknown')
+    path = request.path if request else 'unknown'
+    logger.warning(
+        "payload_too_large error_id=%s rid=%s path=%s method=%s error_type=%s",
+        error_id,
+        request_id,
+        path,
+        request.method if request else 'unknown',
+        type(error).__name__,
+    )
+    if path.startswith('/api/'):
+        return jsonify(success=False, error_code='payload_too_large', request_id=error_id), 413
+    return _render_error_page(413, 'The uploaded data is too large.', error_id)
 
 
 @app.errorhandler(500)
@@ -210,13 +271,12 @@ def internal_error(error):
     error_id = _generate_error_id()
     request_id = getattr(g, 'request_id', 'unknown')
     logger.exception(
-        "internal_server_error error_id=%s rid=%s path=%s method=%s user_agent=%s error=%s",
+        "internal_server_error error_id=%s rid=%s path=%s method=%s error_type=%s",
         error_id,
         request_id,
         request.path if request else 'unknown',
         request.method if request else 'unknown',
-        request.headers.get('User-Agent', 'Unknown') if request else 'Unknown',
-        error,
+        type(error).__name__,
     )
     return _render_error_page(500, 'An unexpected server error occurred. Please try again later.', error_id)
 
@@ -227,12 +287,12 @@ def service_unavailable(error):
     error_id = _generate_error_id()
     request_id = getattr(g, 'request_id', 'unknown')
     logger.exception(
-        "service_unavailable error_id=%s rid=%s path=%s method=%s error=%s",
+        "service_unavailable error_id=%s rid=%s path=%s method=%s error_type=%s",
         error_id,
         request_id,
         request.path if request else 'unknown',
         request.method if request else 'unknown',
-        error,
+        type(error).__name__,
     )
     return _render_error_page(503, 'The service is temporarily unavailable. Please try again later.', error_id)
 
@@ -245,14 +305,12 @@ def handle_exception(error):
     error_id = _generate_error_id()
     request_id = getattr(g, 'request_id', 'unknown')
     logger.exception(
-        "unhandled_exception error_id=%s rid=%s path=%s method=%s user_agent=%s remote_addr=%s error=%s",
+        "unhandled_exception error_id=%s rid=%s path=%s method=%s error_type=%s",
         error_id,
         request_id,
         request.path if request else 'unknown',
         request.method if request else 'unknown',
-        request.headers.get('User-Agent', 'Unknown') if request else 'Unknown',
-        request.remote_addr if request else 'unknown',
-        error,
+        type(error).__name__,
     )
     return _render_error_page(500, 'An unexpected server error occurred. Please try again later.', error_id)
 
@@ -547,6 +605,7 @@ def affiliate_top_slot_mode(path=None):
 
 AMAZON_RECENT_HISTORY_COOKIE = 'oshigoto_recent_affiliate_context'
 AMAZON_RECENT_HISTORY_LIMIT = 8
+AMAZON_RECENT_HISTORY_COOKIE_MAX_BYTES = 1800
 
 
 def _is_public_affiliate_html_path(path):
@@ -597,15 +656,12 @@ def _load_recent_affiliate_history():
         path = str(entry.get('path') or entry.get('p') or '').strip()
         if not path or not _is_public_affiliate_html_path(path):
             continue
-        page_type = str(entry.get('page_type') or entry.get('t') or '').strip()
-        keywords = entry.get('keywords') or entry.get('k') or []
-        if not isinstance(keywords, list):
-            keywords = []
-        keywords = _dedupe_keep_order([str(v) for v in keywords])[:4]
+        category = str(entry.get('category') or entry.get('c') or entry.get('page_type') or entry.get('t') or '').strip()
         cleaned.append({
             'path': path,
-            'page_type': page_type,
-            'keywords': keywords,
+            'page_type': category,
+            'category': category,
+            'keywords': [],
         })
     return cleaned
 
@@ -648,33 +704,36 @@ def _build_affiliate_page_tags(path, seo_defaults, products):
     return _dedupe_keep_order(tags)[:8]
 
 
-def _prepare_recent_affiliate_history_cookie(path, page_type, keywords, history):
+def _prepare_recent_affiliate_history_cookie(path, page_type, category, history):
     if not has_request_context():
         return
     if not _is_public_affiliate_html_path(path):
         return
 
     entry = {
-        'path': path,
-        'page_type': page_type,
-        'keywords': _dedupe_keep_order([str(v) for v in (keywords or [])])[:4],
+        'p': path,
+        'c': str(category or page_type or '')[:64],
     }
     updated = [entry]
     for item in history or []:
         if not isinstance(item, dict):
             continue
-        if item.get('path') == path:
+        item_path = str(item.get('path') or item.get('p') or '').strip()
+        if item_path == path:
             continue
         updated.append({
-            'path': str(item.get('path') or ''),
-            'page_type': str(item.get('page_type') or ''),
-            'keywords': _dedupe_keep_order([str(v) for v in (item.get('keywords') or [])])[:4],
+            'p': item_path,
+            'c': str(item.get('category') or item.get('c') or item.get('page_type') or '')[:64],
         })
         if len(updated) >= AMAZON_RECENT_HISTORY_LIMIT:
             break
 
     try:
-        g.amazon_recent_history_cookie = json.dumps(updated, separators=(',', ':'))
+        cookie_value = json.dumps(updated, separators=(',', ':'))
+        while len(cookie_value.encode('utf-8')) > AMAZON_RECENT_HISTORY_COOKIE_MAX_BYTES and len(updated) > 1:
+            updated.pop()
+            cookie_value = json.dumps(updated, separators=(',', ':'))
+        g.amazon_recent_history_cookie = cookie_value
     except Exception:
         g.amazon_recent_history_cookie = None
 
@@ -740,13 +799,16 @@ def persist_affiliate_history_cookie(response):
     cookie_value = getattr(g, 'amazon_recent_history_cookie', None) if has_request_context() else None
     if not cookie_value:
         return response
+    if len(cookie_value.encode('utf-8')) > AMAZON_RECENT_HISTORY_COOKIE_MAX_BYTES:
+        logger.warning("amazon_history_cookie_skipped reason=size_limit")
+        return response
     try:
         response.set_cookie(
             AMAZON_RECENT_HISTORY_COOKIE,
             cookie_value,
             max_age=60 * 60 * 24 * 14,
             secure=request.is_secure,
-            httponly=False,
+            httponly=True,
             samesite='Lax',
             path='/',
         )
@@ -843,7 +905,7 @@ def inject_env_vars():
         _prepare_recent_affiliate_history_cookie(
             path=current_path,
             page_type=affiliate_page_type,
-            keywords=amazon_affiliate.get('keywords'),
+            category=seo_defaults.get('category'),
             history=recent_affiliate_history,
         )
 
@@ -1217,64 +1279,105 @@ def tools_pdf():
     return render_template('tools/pdf.html', product=product)
 
 
-# PDF 繝ｭ繝・け莉倅ｸ・API・域｡・: 繧ｵ繝ｼ繝蝉ｽｵ逕ｨ・・
-# 繝代せ繝ｯ繝ｼ繝峨・繝ｭ繧ｰ繝ｻ豌ｸ邯壼喧縺励↑縺・・
-# 繧ｨ繝ｩ繝ｼ譎ゅ・ error_code 縺ｨ request_id 繧定ｿ斐☆・・essage 縺ｯ霑斐＆縺ｪ縺・ゅヱ繧ｹ繝ｯ繝ｼ繝峨・邨ｶ蟇ｾ縺ｫ蜃ｺ縺輔↑縺・ｼ峨・
-PDF_API_MAX_BYTES = 50 * 1024 * 1024  # 50MB
+# PDF lock API: request-scoped BytesIO only, no shared output directory.
+PDF_API_MAX_BYTES = MAX_FILE_BYTES
 
-def _pdf_api_error(error_code, status=400):
-    rid = uuid.uuid4().hex[:12]
-    return jsonify(success=False, error_code=error_code, request_id=rid), status
+
+def _pdf_api_error(error_code, status=400, retry_after=None):
+    rid = getattr(g, 'request_id', None) or uuid.uuid4().hex[:12]
+    response = jsonify(success=False, error_code=error_code, request_id=rid)
+    response.status_code = status
+    if retry_after is not None:
+        response.headers['Retry-After'] = str(int(retry_after))
+    return response
+
+
+def _read_upload_bytes(file_storage, max_bytes):
+    data = file_storage.stream.read(max_bytes + 1)
+    if len(data) > max_bytes:
+        raise ValueError('file_too_large')
+    if not data:
+        raise ValueError('empty_file')
+    return data
+
+
+def _safe_locked_pdf_name(filename):
+    safe_name = secure_filename(filename or 'document.pdf') or 'document.pdf'
+    base = safe_name[:-4] if safe_name.lower().endswith('.pdf') else safe_name
+    return f'{base}_locked.pdf'
 
 
 @app.route('/api/pdf/lock', methods=['POST'])
 def api_pdf_lock():
     """Encrypt an uploaded PDF with the supplied password."""
+    acquired = False
     try:
-        file = request.files.get('file')
+        if request.content_length and request.content_length > MAX_TOTAL_UPLOAD_BYTES:
+            return _pdf_api_error('total_upload_too_large', 413)
+        files = [f for f in request.files.getlist('file') if f and f.filename]
+        if len(files) > MAX_FILES_PER_REQUEST:
+            return _pdf_api_error('too_many_files', 413)
+        if len(files) > 1:
+            return _pdf_api_error('single_file_only', 400)
+        file = files[0] if files else None
         password = (request.form.get('password') or '').strip()
-        if not file or file.filename == '':
+        if not file:
             return _pdf_api_error('file_required')
         if not password:
             return _pdf_api_error('missing_password')
+
+        acquired = _PDF_JOB_SEMAPHORE.acquire(blocking=False)
+        if not acquired:
+            return _pdf_api_error('pdf_jobs_busy', 429, retry_after=PDF_JOB_RETRY_AFTER_SEC)
+
         try:
-            pdf_bytes = file.read()
+            pdf_bytes = _read_upload_bytes(file, PDF_API_MAX_BYTES)
+        except ValueError as e:
+            status = 413 if str(e) == 'file_too_large' else 400
+            return _pdf_api_error(str(e), status)
         except Exception:
-            return _pdf_api_error('read_failed')
-        if len(pdf_bytes) > PDF_API_MAX_BYTES:
-            return _pdf_api_error('file_too_large')
+            return _pdf_api_error('read_failed', 400)
+
         try:
             from lib.pdf_lock import encrypt_pdf
-            out_bytes = encrypt_pdf(pdf_bytes, password)
+            out_bytes = encrypt_pdf(
+                pdf_bytes,
+                password,
+                max_pages=MAX_PDF_PAGES,
+                max_output_bytes=MAX_OUTPUT_BYTES,
+            )
         except ValueError as e:
             err = str(e)
             if err == 'already_encrypted':
-                return _pdf_api_error('already_encrypted')
+                return _pdf_api_error('already_encrypted', 400)
             if err == 'corrupt_pdf':
-                return _pdf_api_error('corrupt_pdf')
+                return _pdf_api_error('corrupt_pdf', 422)
             if err == 'unsupported_pdf':
-                return _pdf_api_error('unsupported_pdf')
-            return _pdf_api_error('encrypt_failed')
+                return _pdf_api_error('unsupported_pdf', 422)
+            if err == 'too_many_pages':
+                return _pdf_api_error('too_many_pages', 413)
+            if err == 'output_too_large':
+                return _pdf_api_error('output_too_large', 413)
+            return _pdf_api_error('encrypt_failed', 400)
         except Exception as e:
-            rid = uuid.uuid4().hex[:12]
-            logging.getLogger(__name__).warning('pdf lock encrypt_failed request_id=%s %s', rid, type(e).__name__)
+            rid = getattr(g, 'request_id', None) or uuid.uuid4().hex[:12]
+            logging.getLogger(__name__).warning('pdf_lock_encrypt_failed request_id=%s error_type=%s', rid, type(e).__name__)
             logging.getLogger(__name__).debug('pdf lock encrypt_failed traceback', exc_info=True)
             return jsonify(success=False, error_code='encrypt_failed', request_id=rid), 400
         from io import BytesIO
-        name = file.filename or 'document.pdf'
-        if not name.lower().endswith('.pdf'):
-            name += '.pdf'
-        base = name[:-4] if name.lower().endswith('.pdf') else name
         return send_file(
             BytesIO(out_bytes),
             mimetype='application/pdf',
             as_attachment=True,
-            download_name=f'{base}_locked.pdf'
+            download_name=_safe_locked_pdf_name(file.filename),
         )
     except Exception as e:
-        rid = uuid.uuid4().hex[:12]
-        logging.getLogger(__name__).exception('pdf lock request_id=%s %s', rid, type(e).__name__)
+        rid = getattr(g, 'request_id', None) or uuid.uuid4().hex[:12]
+        logging.getLogger(__name__).exception('pdf_lock_failed request_id=%s error_type=%s', rid, type(e).__name__)
         return jsonify(success=False, error_code='unsupported', request_id=rid), 500
+    finally:
+        if acquired:
+            _PDF_JOB_SEMAPHORE.release()
 
 
 @app.route('/tools/image-cleanup')
@@ -1301,59 +1404,9 @@ def tools_csv():
     return render_template('tools/csv.html', product=product)
 
 
-# 邁｡譏薙Ξ繝ｼ繝亥宛髯・ /api/seo/crawl-urls 繧・IP 縺斐→縺ｫ 60 遘偵↓ 1 蝗槭∪縺ｧ
-_crawl_rate_by_ip = {}
-_crawl_rate_lock = threading.Lock()
-_CRAWL_RATE_SEC = 60
-
-
-def _is_valid_ip(s):
-    """Return True when the supplied value is a valid IP address."""
-    if not s or not isinstance(s, str):
-        return False
-    s = s.strip()
-    try:
-        import ipaddress
-        ipaddress.ip_address(s)
-        return True
-    except (ValueError, TypeError):
-        return False
-
-
-def _get_client_ip_for_crawl():
-    """Resolve a client IP from forwarded headers, falling back to remote_addr."""
-    candidates = []
-    if getattr(request, 'access_route', None):
-        candidates.extend(request.access_route)
-    xff = request.headers.get('X-Forwarded-For', '')
-    if xff:
-        candidates.extend(p.strip() for p in xff.split(',') if p.strip())
-    if request.remote_addr:
-        candidates.append(request.remote_addr)
-    for c in candidates:
-        if _is_valid_ip(c):
-            return c
-    return request.remote_addr or 'unknown'
-
-
 @app.route('/api/seo/crawl-urls', methods=['POST'])
 def api_seo_crawl_urls():
     """Crawl URLs from the same host and return discovered URLs for sitemap checks."""
-    client_ip = _get_client_ip_for_crawl()
-    now = time.time()
-    with _crawl_rate_lock:
-        last = _crawl_rate_by_ip.get(client_ip, 0)
-        if now - last < _CRAWL_RATE_SEC:
-            resp = jsonify(
-                success=False,
-                error='Please wait a moment before crawling URLs again.',
-                retry_after_sec=_CRAWL_RATE_SEC
-            )
-            resp.status_code = 429
-            resp.headers['Retry-After'] = str(_CRAWL_RATE_SEC)
-            return resp
-        _crawl_rate_by_ip[client_ip] = now
-
     try:
         data = request.get_json(force=True, silent=True) or {}
     except Exception:
