@@ -83,7 +83,7 @@
         @media (max-width: 768px) { .page-header h1 { font-size: 2em; } .container { padding: 20px 15px; } .mode-card-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
-<body class="landing-page">
+<body class="landing-page tool-page tool-page--pdf">
     {% from 'includes/tool_icons.html' import tool_icon %}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
@@ -97,7 +97,6 @@
         {% set tool_intro_what = 'PDFをまとめる、必要なページだけ取り出す、軽くする、画像にする作業をまとめて扱えます。' %}
         {% set tool_intro_steps = ['操作を選ぶ', 'PDFまたは画像を選ぶ', '必要な設定を入れる', '実行してダウンロード'] %}
         {% set tool_intro_notice = '大きなPDFやページ数の多いPDFは処理に時間がかかることがあります。' %}
-        {% include 'includes/tool_intro.html' %}
         <section class="tool-flow" aria-labelledby="pdf-flow-heading">
             <h2 id="pdf-flow-heading">使い方</h2>
             <ol class="tool-step-list">
@@ -259,6 +258,7 @@
                 {% with side_box_title='PDF・書類作業を整える', side_box_lead='処理の合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='pdf-side-box', side_box_category='pdf-documents' %}
                     {% include 'includes/affiliate_side_box.html' %}
                 {% endwith %}
+                {% include 'includes/tool_flow_side_box.html' %}
             </div>
         </div>
         </div>

@@ -1,0 +1,15 @@
+{% if tool_intro_steps is defined and tool_intro_steps %}
+<aside class="tool-flow-side-box" aria-label="作業の流れ">
+    <p class="tool-flow-side-box__eyebrow">使う前に確認</p>
+    <h3>作業の流れ</h3>
+    <p class="tool-flow-side-box__lead">1から順に進めると、迷わず作業できます。</p>
+    <ol class="tool-flow-side-box__steps">
+        {% for step in tool_intro_steps %}
+        <li><span>{{ step }}</span></li>
+        {% endfor %}
+    </ol>
+    {% if tool_intro_notice is defined and tool_intro_notice %}
+    <p class="tool-flow-side-box__note">{{ tool_intro_notice }}</p>
+    {% endif %}
+</aside>
+{% endif %}

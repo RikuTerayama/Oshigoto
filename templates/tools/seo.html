@@ -225,7 +225,7 @@
         }
     </style>
 </head>
-<body class="landing-page">
+<body class="landing-page tool-page tool-page--seo">
     {% from 'includes/tool_icons.html' import tool_icon %}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
@@ -239,7 +239,6 @@
         {% set tool_intro_what = 'HTMLやURLをもとに、SNS共有や検索結果で見える情報を確認できます。OGP画像やsitemap/robots作成も扱えます。' %}
         {% set tool_intro_steps = ['URLまたはHTMLを入力する', '確認したい項目を選ぶ', 'チェックする', '結果と修正ヒントを見る'] %}
         {% set tool_intro_notice = '外部URL確認には取得制限やタイムアウトがあります。取得できない場合はHTMLを貼り付けてください。' %}
-        {% include 'includes/tool_intro.html' %}
         <section class="tool-flow" aria-labelledby="seo-flow-heading">
             <h2 id="seo-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
@@ -586,6 +585,7 @@
                 {% with side_box_title='Web運用・マーケティングを学ぶ', side_box_lead='チェックの合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='seo-side-box', side_box_category='web-marketing' %}
                     {% include 'includes/affiliate_side_box.html' %}
                 {% endwith %}
+                {% include 'includes/tool_flow_side_box.html' %}
             </div>
         </div>
         </div>
