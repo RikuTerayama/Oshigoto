@@ -32,6 +32,14 @@ WEB_THREADS=1
 MEMORY_LIMIT_MB=450
 MEMORY_WARNING_MB=400
 MAX_FILE_SIZE_MB=10
+MAX_TOTAL_UPLOAD_MB=50
+MAX_FILES_PER_REQUEST=20
+MAX_PDF_PAGES=500
+MAX_ACTIVE_PDF_JOBS=1
+MAX_OUTPUT_SIZE_MB=100
+RATE_LIMIT_LIGHT_PER_MIN=60
+RATE_LIMIT_PDF_PER_MIN=10
+RATE_LIMIT_SEO_PER_MIN=8
 ```
 
 `AMAZON_ASSOCIATE_TAG` を設定すると、Amazonリンクにassociate tagが付与されます。タグ値は環境変数で管理し、READMEには実値を固定記載しません。
@@ -51,9 +59,20 @@ python app.py
 python scripts\smoke_test.py
 python scripts\smoke_test.py --deploy
 python scripts\adsense_preflight.py
+python scripts\test_multi_user_safety.py
 python scripts\generate_sitemap_lastmod_manifest.py --check
-python -m py_compile app.py lib\seo.py lib\products_catalog.py
+python -m compileall -q app.py lib scripts
 ```
+
+## 処理とプライバシー
+
+- アップロードされたファイルはリクエスト内のメモリで処理し、サーバーに保存しません。
+- PDF保護付与APIは同時処理数、ファイルサイズ、総アップロード量、ページ数、出力サイズを環境変数で制限します。
+- PDF処理が混雑している場合は `429` と `Retry-After` を返します。
+- APIのレート制限は軽量API、PDF、SEOクロールで分けています。現在は単一インスタンス内のメモリ制限です。
+- 本番ログにはIP、User-Agent、Referer、クエリ、フォーム値、ファイル名、ファイル内容を出さず、request id、path、status、duration、error typeを中心に記録します。
+- Amazonの補助Cookieは公開パスとカテゴリだけを短期間保持し、`SameSite=Lax`、HTTPS時 `Secure`、`HttpOnly` で送信します。
+- sitemap更新後は `python scripts\generate_sitemap_lastmod_manifest.py --write` と `--check` を実行し、`data/sitemap_lastmod.json` を必要に応じてcommitします。
 
 ## 確認ポイント
 
