@@ -309,7 +309,7 @@
         }
     </style>
 </head>
-<body class="landing-page">
+<body class="landing-page tool-page tool-page--image-cleanup">
     {% from 'includes/tool_icons.html' import tool_icon %}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
@@ -323,7 +323,6 @@
         {% set tool_intro_what = '余白を整える、背景を調整する、白背景化する、サイズや比率を揃える作業をまとめて行えます。' %}
         {% set tool_intro_steps = ['画像を選ぶ', '整え方を選ぶ', '仕上がりを確認する', '画像を書き出す'] %}
         {% set tool_intro_notice = '背景調整は画像の状態によって仕上がりが変わります。大切な画像は出力後に確認してください。' %}
-        {% include 'includes/tool_intro.html' %}
         <section class="tool-flow" aria-labelledby="image-cleanup-flow-heading">
             <h2 id="image-cleanup-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
@@ -530,6 +529,7 @@
                 {% with side_box_title='商品画像・資料画像を整える', side_box_lead='書き出しの合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='image-cleanup-side-box', side_box_category='image-cleanup' %}
                     {% include 'includes/affiliate_side_box.html' %}
                 {% endwith %}
+                {% include 'includes/tool_flow_side_box.html' %}
             </div>
         </div>
         </div>

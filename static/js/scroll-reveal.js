@@ -8,47 +8,116 @@
 (function() {
     'use strict';
 
-    // Mark HTML as JS-enabled (for CSS to know JS is available)
-    document.documentElement.classList.add('js');
+    const root = document.documentElement;
+    root.classList.add('js');
 
-    // Check for prefers-reduced-motion
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        // If user prefers reduced motion, reveal all elements immediately
-        document.addEventListener('DOMContentLoaded', function() {
-            const elements = document.querySelectorAll('[data-reveal], [data-reveal-stagger]');
-            elements.forEach(function(el) {
-                el.classList.add('revealed');
-            });
-        });
-        return;
+    const prefersReducedMotion = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function initScrollProgress() {
+        const progress = document.querySelector('.scroll-progress');
+        if (!progress) {
+            return;
+        }
+
+        const value = progress.querySelector('.scroll-progress__value');
+        let ticking = false;
+
+        function updateProgress() {
+            const maxScroll = Math.max(1, root.scrollHeight - window.innerHeight);
+            const currentScroll = Math.min(Math.max(window.scrollY || root.scrollTop || 0, 0), maxScroll);
+            const percent = Math.round((currentScroll / maxScroll) * 100);
+
+            progress.style.setProperty('--scroll-progress', percent + '%');
+            if (value) {
+                value.textContent = percent + '%';
+            }
+            ticking = false;
+        }
+
+        function requestUpdate() {
+            if (!ticking) {
+                ticking = true;
+                window.requestAnimationFrame(updateProgress);
+            }
+        }
+
+        window.addEventListener('scroll', requestUpdate, { passive: true });
+        window.addEventListener('resize', requestUpdate);
+        updateProgress();
     }
 
-    // IntersectionObserver options
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
+    function canReveal(el) {
+        return !el.closest(
+            '.affiliate-cards-section, .affiliate-context-a8, .affiliate-a8-banner, .adsbygoogle, [data-no-reveal]'
+        );
+    }
 
-    // Create IntersectionObserver
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('revealed');
-                // Unobserve after revealing to improve performance
-                observer.unobserve(entry.target);
-            }
+    function markRevealTargets() {
+        const singleSelectors = [
+            '.landing-page .page-header',
+            '.landing-page .hero-v2__copy',
+            '.landing-page .landing-hero__copy',
+            '.landing-page .tool-flow',
+            '.landing-page .tool-note',
+            '.landing-page .tool-flow-side-box',
+            '.landing-page .related-tools-heading',
+            '.landing-page .content-card',
+            '.landing-page .info-card'
+        ];
+
+        const staggerSelectors = [
+            '.landing-page .tool-card-grid',
+            '.landing-page .tool-step-list',
+            '.landing-page .tool-flow-side-box__steps',
+            '.landing-page .content-grid--three.glossary-grid',
+            '.landing-page .landing-use-grid'
+        ];
+
+        singleSelectors.forEach(function(selector) {
+            document.querySelectorAll(selector).forEach(function(el) {
+                if (canReveal(el) && !el.hasAttribute('data-reveal') && !el.hasAttribute('data-reveal-stagger')) {
+                    el.setAttribute('data-reveal', '');
+                }
+            });
         });
-    }, observerOptions);
 
-    // Initialize on DOMContentLoaded
-    function init() {
-        // Find all elements with data-reveal or data-reveal-stagger attributes
-        const revealElements = document.querySelectorAll('[data-reveal]');
-        const staggerElements = document.querySelectorAll('[data-reveal-stagger]');
+        staggerSelectors.forEach(function(selector) {
+            document.querySelectorAll(selector).forEach(function(el) {
+                if (canReveal(el) && !el.hasAttribute('data-reveal') && !el.hasAttribute('data-reveal-stagger')) {
+                    el.setAttribute('data-reveal-stagger', '');
+                }
+            });
+        });
+    }
 
-        // Observe single reveal elements
-        revealElements.forEach(function(el) {
-            // Apply custom delay if specified
+    function revealImmediately() {
+        document.querySelectorAll('[data-reveal], [data-reveal-stagger], .reveal-up').forEach(function(el) {
+            el.classList.add('revealed');
+        });
+    }
+
+    function initReveal() {
+        markRevealTargets();
+
+        if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+            revealImmediately();
+            return;
+        }
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('[data-reveal], .reveal-up').forEach(function(el) {
             const delay = el.getAttribute('data-reveal-delay');
             if (delay) {
                 el.style.setProperty('--reveal-delay', delay + 'ms');
@@ -56,17 +125,19 @@
             observer.observe(el);
         });
 
-        // Observe stagger container elements
-        staggerElements.forEach(function(el) {
+        document.querySelectorAll('[data-reveal-stagger]').forEach(function(el) {
             observer.observe(el);
         });
     }
 
-    // Initialize when DOM is ready
+    function init() {
+        initScrollProgress();
+        initReveal();
+    }
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
-        // DOM is already ready
         init();
     }
 })();

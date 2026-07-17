@@ -7,22 +7,29 @@
 /* Base reveal styles - Default: visible (JS disabled fallback) */
 /* no-js クラスが付いている時（JS無効時）は常に表示 */
 html.no-js [data-reveal],
-html:not(.js) [data-reveal] {
+html.no-js .reveal-up,
+html:not(.js) [data-reveal],
+html:not(.js) .reveal-up {
     opacity: 1;
     transform: none;
 }
 
 /* JS enabled: Hide initially, reveal on scroll */
-html.js [data-reveal] {
+html.js [data-reveal],
+html.js .reveal-up {
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(16px);
+    transition: opacity 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
 }
 
-html.js [data-reveal].revealed {
+html.js [data-reveal].revealed,
+html.js .reveal-up.revealed {
     opacity: 1;
     transform: translateY(0);
+    will-change: auto;
 }
 
 /* Stagger effect for child elements - Default: visible */
@@ -36,9 +43,10 @@ html:not(.js) [data-reveal-stagger] > * {
 /* JS enabled: Hide initially, reveal on scroll */
 html.js [data-reveal-stagger] > * {
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(14px);
+    transition: opacity 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
 }
 
 /* Stagger delays - Only when JS is enabled */
@@ -56,19 +64,23 @@ html.js [data-reveal-stagger].revealed > *:nth-child(10) { transition-delay: 450
 html.js [data-reveal-stagger].revealed > * {
     opacity: 1;
     transform: translateY(0);
+    will-change: auto;
 }
 
 /* Custom delay support */
-html.js [data-reveal][data-reveal-delay] {
+html.js [data-reveal][data-reveal-delay],
+html.js .reveal-up[data-reveal-delay] {
     transition-delay: calc(var(--reveal-delay, 0ms));
 }
 
 /* Accessibility: Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
     [data-reveal],
+    .reveal-up,
     [data-reveal-stagger] > * {
         opacity: 1 !important;
         transform: none !important;
         transition: none !important;
+        will-change: auto !important;
     }
 }

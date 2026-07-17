@@ -35,7 +35,7 @@
         .info-text { color: var(--brand-muted); font-size: 0.85em; margin-top: 5px; }
     </style>
 </head>
-<body class="landing-page">
+<body class="landing-page tool-page tool-page--csv">
     {% from 'includes/tool_icons.html' import tool_icon %}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
@@ -49,7 +49,6 @@
         {% set tool_intro_what = '表データの文字化け確認、CSVとExcelの変換、重複削除、列の整理をまとめて行えます。' %}
         {% set tool_intro_steps = ['CSVまたはExcelを選ぶ', 'やりたい操作を選ぶ', 'プレビューで確認する', '結果をダウンロードする'] %}
         {% set tool_intro_notice = '文字コードや区切り文字が合わない場合は、プレビューで確認してから保存してください。' %}
-        {% include 'includes/tool_intro.html' %}
         <section class="tool-flow" aria-labelledby="csv-flow-heading">
             <h2 id="csv-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
@@ -122,6 +121,7 @@
                 {% with side_box_title='表作業を少し楽にする', side_box_lead='処理の合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='csv-side-box', side_box_category='spreadsheet-desk' %}
                     {% include 'includes/affiliate_side_box.html' %}
                 {% endwith %}
+                {% include 'includes/tool_flow_side_box.html' %}
             </div>
         </div>
         </div>

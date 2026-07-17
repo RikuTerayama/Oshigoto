@@ -6791,3 +6791,253 @@ body {
         border-bottom-left-radius: 8px !important;
     }
 }
+
+/* Phase 8.17: motion, scroll progress, and final tool layout polish. */
+.scroll-progress {
+    --scroll-progress: 0%;
+    position: fixed;
+    right: clamp(14px, 2vw, 24px);
+    bottom: clamp(16px, 3vw, 28px);
+    z-index: 650;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+    color: var(--brand-ink, #231f1a);
+    background: conic-gradient(var(--brand-teal, #0e7c7b) var(--scroll-progress), rgba(215, 198, 170, 0.62) 0);
+    box-shadow: 0 10px 26px rgba(74, 54, 36, 0.16);
+}
+
+.scroll-progress::before {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border-radius: inherit;
+    background: rgba(255, 252, 246, 0.94);
+    border: 1px solid rgba(215, 198, 170, 0.62);
+}
+
+.scroll-progress__value {
+    position: relative;
+    z-index: 1;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 1;
+}
+
+.landing-page.tool-page .page-layout {
+    align-items: start !important;
+}
+
+.landing-page.tool-page .page-sidebar {
+    min-width: 0 !important;
+}
+
+.landing-page.tool-page .sticky-side-box {
+    display: grid !important;
+    gap: clamp(14px, 1.8vw, 20px) !important;
+    align-content: start !important;
+}
+
+.landing-page.tool-page .affiliate-side-box {
+    margin-bottom: 0 !important;
+}
+
+.landing-page.tool-page .tool-flow-side-box {
+    width: 100%;
+    padding: clamp(18px, 2vw, 24px);
+    border: 1px solid var(--brand-line);
+    border-radius: 8px;
+    background: rgba(255, 252, 246, 0.94);
+    box-shadow: none;
+    color: var(--brand-ink);
+}
+
+.landing-page.tool-page .tool-flow-side-box__eyebrow {
+    margin: 0 0 8px;
+    color: var(--brand-brown);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.landing-page.tool-page .tool-flow-side-box h3 {
+    margin: 0 0 10px;
+    font-size: clamp(1.08rem, 1.4vw, 1.25rem);
+    line-height: 1.35;
+}
+
+.landing-page.tool-page .tool-flow-side-box__lead,
+.landing-page.tool-page .tool-flow-side-box__note {
+    margin: 0;
+    color: var(--brand-muted);
+    font-size: 0.9rem;
+    line-height: 1.75;
+}
+
+.landing-page.tool-page .tool-flow-side-box__steps {
+    counter-reset: side-flow;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+    margin: 16px 0;
+    padding: 0;
+}
+
+.landing-page.tool-page .tool-flow-side-box__steps li {
+    counter-increment: side-flow;
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    align-items: start;
+    gap: 10px;
+    min-width: 0;
+    padding: 0 0 10px;
+    border-bottom: 1px solid rgba(215, 198, 170, 0.62);
+    writing-mode: horizontal-tb !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+}
+
+.landing-page.tool-page .tool-flow-side-box__steps li:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.landing-page.tool-page .tool-flow-side-box__steps li::before {
+    content: counter(side-flow);
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--brand-line);
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: var(--brand-brown);
+    background: rgba(255, 252, 246, 0.98);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.landing-page.tool-page .tool-flow-side-box__steps span {
+    min-width: 0;
+    color: var(--brand-ink);
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.65;
+}
+
+.landing-page.tool-page--csv .tool-main-panel,
+.landing-page.tool-page--image-batch .tool-main-panel,
+.landing-page.tool-page--image-cleanup .tool-main-panel {
+    order: 1 !important;
+}
+
+.landing-page.tool-page--csv .tool-operation-card,
+.landing-page.tool-page--image-batch .tool-operation-card,
+.landing-page.tool-page--image-cleanup .tool-operation-card {
+    order: 2 !important;
+}
+
+.landing-page.tool-page--seo .main-layout {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.92fr) !important;
+    gap: clamp(24px, 3vw, 36px) !important;
+    align-items: start !important;
+}
+
+.landing-page.tool-page--seo .tool-main-panel {
+    order: 1 !important;
+}
+
+.landing-page.tool-page--seo .tool-result-panel {
+    order: 2 !important;
+}
+
+.landing-page.tool-page .tool-affiliate-row {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.landing-page.tool-page .post-action-affiliate {
+    width: min(100%, 960px) !important;
+}
+
+.landing-page.tool-page .post-action-affiliate .affiliate-stack__rows,
+.landing-page.tool-page .post-action-affiliate .affiliate-stack__row--amazon,
+.landing-page.tool-page .affiliate-cards-section--footer-fallback .affiliate-stack__rows,
+.landing-page.tool-page .affiliate-cards-section--footer-fallback .affiliate-stack__row--amazon {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.landing-page.tool-page .post-action-affiliate .amazon-recommendation-card,
+.landing-page.tool-page .affiliate-cards-section--footer-fallback .amazon-recommendation-card {
+    border: 1px solid var(--brand-line) !important;
+}
+
+@media (min-width: 1240px) {
+    .landing-page.tool-page .page-layout {
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 340px) !important;
+        gap: clamp(28px, 3vw, 42px) !important;
+    }
+}
+
+@media (max-width: 1239px) {
+    .landing-page.tool-page .page-layout {
+        grid-template-columns: 1fr !important;
+    }
+
+    .landing-page.tool-page .page-sidebar {
+        width: min(100%, 760px) !important;
+        margin: clamp(22px, 4vw, 34px) auto 0 !important;
+    }
+
+    .landing-page.tool-page .sticky-side-box {
+        position: static !important;
+        top: auto !important;
+    }
+
+    .landing-page.tool-page--seo .main-layout {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .scroll-progress {
+        right: 12px;
+        bottom: 12px;
+        width: 42px;
+        height: 42px;
+        opacity: 0.9;
+    }
+
+    .scroll-progress::before {
+        inset: 4px;
+    }
+
+    .scroll-progress__value {
+        font-size: 0.58rem;
+    }
+
+    .landing-page.tool-page .tool-flow-side-box {
+        padding: 18px;
+    }
+
+    .landing-page.tool-page .tool-flow-side-box__steps li {
+        grid-template-columns: 26px minmax(0, 1fr);
+    }
+
+    .landing-page.tool-page .tool-flow-side-box__steps li::before {
+        width: 26px;
+        height: 26px;
+    }
+}
