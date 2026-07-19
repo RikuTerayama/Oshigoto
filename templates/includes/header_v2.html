@@ -11,7 +11,17 @@
                     <span class="site-logo__meta">小さな仕事を片づける軽量ツール集</span>
                 </span>
             </a>
-            <div class="site-nav__links">
+            <button type="button"
+                    class="site-nav__menu-toggle"
+                    aria-label="メニューを開く"
+                    aria-expanded="false"
+                    aria-controls="site-mobile-menu"
+                    data-mobile-menu-toggle>
+                <span class="site-nav__menu-bar" aria-hidden="true"></span>
+                <span class="site-nav__menu-bar" aria-hidden="true"></span>
+                <span class="site-nav__menu-bar" aria-hidden="true"></span>
+            </button>
+            <div class="site-nav__links" id="site-mobile-menu" data-mobile-menu data-mobile-menu-open="false">
                 {% for section in nav_sections|default([]) %}
                     {% if section.children is none or not section.children %}
                         <a href="{{ section.path|default('/') }}"
@@ -73,6 +83,17 @@
 {% endif %}
 <script>
 (function() {
+    var toggle = document.querySelector('[data-mobile-menu-toggle]');
+    var menu = document.querySelector('[data-mobile-menu]');
+
+    function setMobileMenu(open) {
+        if (!toggle || !menu) return;
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+        menu.setAttribute('data-mobile-menu-open', open ? 'true' : 'false');
+        document.documentElement.toggleAttribute('data-mobile-menu-open', open);
+    }
+
     function closeDropdown(wrap) {
         wrap.removeAttribute('data-open');
         var btn = wrap.querySelector('button');
@@ -115,9 +136,21 @@
     });
     document.addEventListener('keydown', function(e) {
         if (e.key !== 'Escape') return;
+        setMobileMenu(false);
         document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(closeDropdown);
     });
     document.addEventListener('click', function(e) {
+        if (toggle && toggle.contains(e.target)) {
+            e.preventDefault();
+            setMobileMenu(toggle.getAttribute('aria-expanded') !== 'true');
+            return;
+        }
+        if (menu && menu.contains(e.target)) {
+            if (e.target.closest('a')) setMobileMenu(false);
+            if (e.target.closest('[data-dropdown]')) return;
+            return;
+        }
+        setMobileMenu(false);
         if (e.target.closest('[data-dropdown]')) return;
         document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(closeDropdown);
     });
