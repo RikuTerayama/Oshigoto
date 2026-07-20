@@ -31,18 +31,21 @@
                             <span>{{ section.label }}</span>
                         </a>
                     {% else %}
+                        {% set _section_id = section.id|default(loop.index) %}
+                        {% set _mobile_panel_id = 'mobile-resources-menu' if _section_id == 'resource' else 'mobile-' ~ _section_id ~ '-menu' %}
                         <div class="site-nav__dropdown-wrap" data-dropdown>
                             <button type="button"
                                     class="site-nav__link site-nav__link--trigger {% if _current_path == section.path %}site-nav__link--active{% endif %}"
                                     aria-expanded="false"
                                     aria-haspopup="true"
-                                    aria-controls="dropdown-{{ section.id|default(loop.index) }}"
-                                    id="nav-{{ section.id|default(loop.index) }}">
+                                    aria-controls="{{ _mobile_panel_id }}"
+                                    data-mobile-accordion-trigger
+                                    id="nav-{{ _section_id }}">
                                 {% if section.id == 'tools' %}{{ icon('tools', 18, 'site-nav__icon') }}{% elif section.id == 'guide' %}{{ icon('book', 18, 'site-nav__icon') }}{% endif %}
                                 <span>{{ section.label }}</span>
                                 <span class="site-nav__chevron" aria-hidden="true">▾</span>
                             </button>
-                            <ul class="site-nav__dropdown" id="dropdown-{{ section.id|default(loop.index) }}" role="menu" aria-label="{{ section.label }}">
+                            <ul class="site-nav__dropdown" id="{{ _mobile_panel_id }}" role="menu" aria-label="{{ section.label }}" data-mobile-accordion-panel>
                                 {% for item in section.children %}
                                     {% if item.get('items') %}
                                         <li role="none" class="site-nav__group">
@@ -94,6 +97,7 @@
     function setMobileMenu(open) {
         if (!toggle || !menu) return;
         if (!isMobileMenuLayout()) open = false;
+        if (!open) resetMobileAccordions();
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         toggle.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
         menu.setAttribute('data-mobile-menu-open', open ? 'true' : 'false');
@@ -106,6 +110,11 @@
         wrap.removeAttribute('data-open');
         var btn = wrap.querySelector('button');
         if (btn) btn.setAttribute('aria-expanded', 'false');
+        var panel = btn ? document.getElementById(btn.getAttribute('aria-controls')) : null;
+        if (panel && isMobileMenuLayout()) {
+            panel.hidden = true;
+            panel.classList.remove('is-open');
+        }
     }
     function openDropdown(wrap) {
         document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(function(other) {
@@ -114,27 +123,41 @@
         wrap.setAttribute('data-open', 'true');
         var btn = wrap.querySelector('button');
         if (btn) btn.setAttribute('aria-expanded', 'true');
+        var panel = btn ? document.getElementById(btn.getAttribute('aria-controls')) : null;
+        if (panel && isMobileMenuLayout()) {
+            panel.hidden = false;
+            panel.classList.add('is-open');
+        }
+    }
+    function resetMobileAccordions() {
+        document.querySelectorAll('[data-dropdown]').forEach(closeDropdown);
     }
     document.querySelectorAll('[data-dropdown]').forEach(function(wrap) {
         var btn = wrap.querySelector('button');
-        var menu = wrap.querySelector('.site-nav__dropdown');
+        var dropdownMenu = wrap.querySelector('.site-nav__dropdown');
         var leaveTimer;
-        if (!btn || !menu) return;
+        if (!btn || !dropdownMenu) return;
         wrap.addEventListener('mouseenter', function() {
+            if (isMobileMenuLayout()) return;
             window.clearTimeout(leaveTimer);
             openDropdown(wrap);
         });
         wrap.addEventListener('mouseleave', function() {
+            if (isMobileMenuLayout()) return;
             leaveTimer = window.setTimeout(function() { closeDropdown(wrap); }, 120);
         });
-        wrap.addEventListener('focusin', function() { openDropdown(wrap); });
+        wrap.addEventListener('focusin', function() {
+            if (!isMobileMenuLayout()) openDropdown(wrap);
+        });
         wrap.addEventListener('focusout', function() {
+            if (isMobileMenuLayout()) return;
             window.setTimeout(function() {
                 if (!wrap.contains(document.activeElement)) closeDropdown(wrap);
             }, 0);
         });
         btn.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             if (wrap.getAttribute('data-open') === 'true') {
                 closeDropdown(wrap);
             } else {
@@ -162,20 +185,23 @@
     document.addEventListener('keydown', function(e) {
         if (e.key !== 'Escape') return;
         setMobileMenu(false);
-        document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(closeDropdown);
+        resetMobileAccordions();
     });
     document.addEventListener('click', function(e) {
         if (toggle && toggle.contains(e.target)) {
             return;
         }
         if (menu && menu.contains(e.target)) {
-            if (e.target.closest('a')) setMobileMenu(false);
-            if (e.target.closest('[data-dropdown]')) return;
+            if (e.target.closest('[data-mobile-accordion-trigger]')) return;
+            if (e.target.closest('a')) {
+                setMobileMenu(false);
+                return;
+            }
             return;
         }
         setMobileMenu(false);
         if (e.target.closest('[data-dropdown]')) return;
-        document.querySelectorAll('[data-dropdown][data-open="true"]').forEach(closeDropdown);
+        resetMobileAccordions();
     });
 })();
 </script>
