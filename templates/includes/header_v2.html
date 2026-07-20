@@ -21,7 +21,7 @@
                 <span class="site-nav__menu-bar" aria-hidden="true"></span>
                 <span class="site-nav__menu-bar" aria-hidden="true"></span>
             </button>
-            <div class="site-nav__links" id="site-mobile-menu" data-mobile-menu data-mobile-menu-open="false">
+            <div class="site-nav__links" id="site-mobile-menu" data-mobile-menu data-mobile-menu-panel data-mobile-menu-open="false">
                 {% for section in nav_sections|default([]) %}
                     {% if section.children is none or not section.children %}
                         <a href="{{ section.path|default('/') }}"
@@ -84,13 +84,21 @@
 <script>
 (function() {
     var toggle = document.querySelector('[data-mobile-menu-toggle]');
-    var menu = document.querySelector('[data-mobile-menu]');
+    var menu = document.querySelector('[data-mobile-menu-panel]');
+    var mobileQuery = window.matchMedia ? window.matchMedia('(max-width: 767px)') : null;
+
+    function isMobileMenuLayout() {
+        return !mobileQuery || mobileQuery.matches;
+    }
 
     function setMobileMenu(open) {
         if (!toggle || !menu) return;
+        if (!isMobileMenuLayout()) open = false;
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         toggle.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
         menu.setAttribute('data-mobile-menu-open', open ? 'true' : 'false');
+        menu.hidden = isMobileMenuLayout() ? !open : false;
+        menu.classList.toggle('is-open', open);
         document.documentElement.toggleAttribute('data-mobile-menu-open', open);
     }
 
@@ -134,6 +142,23 @@
             }
         });
     });
+    setMobileMenu(false);
+
+    if (mobileQuery) {
+        var onViewportChange = function() { setMobileMenu(false); };
+        if (mobileQuery.addEventListener) {
+            mobileQuery.addEventListener('change', onViewportChange);
+        } else if (mobileQuery.addListener) {
+            mobileQuery.addListener(onViewportChange);
+        }
+    }
+
+    toggle && toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        setMobileMenu(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
     document.addEventListener('keydown', function(e) {
         if (e.key !== 'Escape') return;
         setMobileMenu(false);
@@ -141,8 +166,6 @@
     });
     document.addEventListener('click', function(e) {
         if (toggle && toggle.contains(e.target)) {
-            e.preventDefault();
-            setMobileMenu(toggle.getAttribute('aria-expanded') !== 'true');
             return;
         }
         if (menu && menu.contains(e.target)) {
