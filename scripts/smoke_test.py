@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Smoke tests for the public Oshigoto routes."""
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -66,6 +67,24 @@ def run_with_test_client():
     if failed_business:
         print('FAIL: /business checks: ' + ', '.join(failed_business))
         return 1
+    pdf_body = client.get('/tools/pdf', follow_redirects=False).data.decode('utf-8', errors='replace')
+    browser_size = re.search(r'const BROWSER_PDF_MAX_FILE_SIZE_MB = (\d+);', pdf_body)
+    browser_pages = re.search(r'const BROWSER_PDF_MAX_PAGES = (\d+);', pdf_body)
+    lock_size = re.search(r'const PDF_LOCK_MAX_FILE_SIZE_MB = (\d+);', pdf_body)
+    lock_pages = re.search(r'const PDF_LOCK_MAX_PAGES = (\d+);', pdf_body)
+    browser_limit_copy = browser_size and browser_pages and f'ブラウザ内PDF処理: 1ファイル最大{browser_size.group(1)}MB・最大{browser_pages.group(1)}ページ' in pdf_body
+    server_limit_copy = lock_size and lock_pages and f'パスワード設定: 1ファイル最大{lock_size.group(1)}MB・最大{lock_pages.group(1)}ページ' in pdf_body
+    pdf_checks = {
+        'page_delete_mode': 'data-mode="page-delete"' in pdf_body and 'id="delete-range"' in pdf_body,
+        'page_rotate_mode': 'data-mode="page-rotate"' in pdf_body and 'id="rotate-angle"' in pdf_body,
+        'browser_limits': bool(browser_limit_copy),
+        'server_limits': bool(server_limit_copy),
+        'unlock_api_absent': '/api/pdf/unlock' not in pdf_body,
+    }
+    failed_pdf = [name for name, ok in pdf_checks.items() if not ok]
+    if failed_pdf:
+        print('FAIL: /tools/pdf checks: ' + ', '.join(failed_pdf))
+        return 1
     for path in ('/business/',):
         response = client.get(path, follow_redirects=False)
         if response.status_code != 301 or not (response.headers.get('Location') or '').endswith('/business'):
@@ -98,6 +117,10 @@ def run_deploy_verification():
     loc = (resp.headers.get('Location') or '').strip()
     if resp.status_code != 301 or '/tools/pdf' not in loc:
         failed.append(f"path=/tools/pdf/ expected 301 to /tools/pdf got {resp.status_code} {loc}")
+    pdf_body = client.get('/tools/pdf').data.decode('utf-8', errors='replace')
+    for marker in ('data-mode="page-delete"', 'data-mode="page-rotate"', 'PdfOps.deletePages', 'PdfOps.rotatePages'):
+        if marker not in pdf_body:
+            failed.append(f'path=/tools/pdf missing marker {marker}')
     if failed:
         for item in failed:
             print(f"FAIL: {item}")

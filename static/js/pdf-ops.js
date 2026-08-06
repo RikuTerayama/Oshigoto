@@ -22,9 +22,9 @@ async function loadPdfOrThrowUserMessage(arrayBuffer, filename) {
         return await PDFDocument.load(arrayBuffer);
     } catch (e) {
         if (isEncryptedPdfLibError(e)) {
-            throw new Error('このPDFはパスワード保護されています。保護を外したPDFを使用してください。');
+            throw new Error('このPDFはパスワード保護されているため処理できません。保護されていないPDFを使用してください。');
         }
-        throw e;
+        throw new Error('このPDFを読み込めません。ファイルが破損しているか、対応していない形式です。');
     }
 }
 
@@ -216,6 +216,86 @@ class PdfOps {
         return outputs;
     }
 
+    /** Create a new PDF containing every page except the selected pages. */
+    static async deletePages(file, pages, ctx) {
+        if (typeof PDFLib === 'undefined') {
+            throw new Error('PDFLibライブラリが読み込まれていません');
+        }
+        if (ctx.signal.cancelled) throw new Error('キャンセルされました');
+
+        const { PDFDocument } = PDFLib;
+        ctx.setTaskState(0, { status: 'running', message: 'ページを確認中...' });
+        ctx.setProgress(10);
+        const pdf = await loadPdfOrThrowUserMessage(await file.arrayBuffer(), file.name);
+        const totalPages = pdf.getPageCount();
+        const validation = PdfRange.validatePages(pages, totalPages);
+        if (!validation.valid) {
+            throw new Error(`このPDFは${totalPages}ページです。${validation.invalid[0]}ページ目は指定できません。`);
+        }
+
+        const uniquePages = new Set(pages);
+        if (uniquePages.size >= totalPages) {
+            throw new Error('全ページは削除できません。残すページを1ページ以上確保してください。');
+        }
+        if (ctx.signal.cancelled) throw new Error('キャンセルされました');
+
+        const remainingIndices = pdf.getPageIndices().filter(index => !uniquePages.has(index + 1));
+        const outputPdf = await PDFDocument.create();
+        const copiedPages = await outputPdf.copyPages(pdf, remainingIndices);
+        copiedPages.forEach(page => outputPdf.addPage(page));
+        ctx.setProgress(80);
+
+        const pdfBytes = await outputPdf.save();
+        const baseName = FileUtils.getFilenameWithoutExtension(file.name);
+        ctx.setProgress(100);
+        ctx.setTaskState(0, { status: 'success', message: '完了' });
+        return [{
+            blob: new Blob([pdfBytes], { type: 'application/pdf' }),
+            filename: FileValidation.sanitizeFilename(`${baseName}_pages-removed.pdf`),
+            mime: 'application/pdf'
+        }];
+    }
+
+    /** Rotate selected 1-based pages clockwise, preserving page order and size. */
+    static async rotatePages(file, pages, angle, ctx) {
+        if (typeof PDFLib === 'undefined') {
+            throw new Error('PDFLibライブラリが読み込まれていません');
+        }
+        if (![90, 180, 270].includes(angle)) {
+            throw new Error('回転角度は90度、180度、270度から選んでください。');
+        }
+        if (ctx.signal.cancelled) throw new Error('キャンセルされました');
+
+        const { degrees } = PDFLib;
+        ctx.setTaskState(0, { status: 'running', message: 'ページを回転中...' });
+        ctx.setProgress(10);
+        const pdf = await loadPdfOrThrowUserMessage(await file.arrayBuffer(), file.name);
+        const totalPages = pdf.getPageCount();
+        const validation = PdfRange.validatePages(pages, totalPages);
+        if (!pages.length) throw new Error('回転するページを指定してください。');
+        if (!validation.valid) {
+            throw new Error(`このPDFは${totalPages}ページです。${validation.invalid[0]}ページ目は指定できません。`);
+        }
+
+        pages.forEach(pageNumber => {
+            const page = pdf.getPage(pageNumber - 1);
+            const currentAngle = Number(page.getRotation()?.angle || 0);
+            page.setRotation(degrees(((currentAngle + angle) % 360 + 360) % 360));
+        });
+        if (ctx.signal.cancelled) throw new Error('キャンセルされました');
+        ctx.setProgress(80);
+
+        const pdfBytes = await pdf.save();
+        const baseName = FileUtils.getFilenameWithoutExtension(file.name);
+        ctx.setProgress(100);
+        ctx.setTaskState(0, { status: 'success', message: '完了' });
+        return [{
+            blob: new Blob([pdfBytes], { type: 'application/pdf' }),
+            filename: FileValidation.sanitizeFilename(`${baseName}_rotated-${angle}.pdf`),
+            mime: 'application/pdf'
+        }];
+    }
+
     /**
      * PDFの総ページ数を取得
      * @param {File} file - PDFファイル
@@ -229,4 +309,8 @@ class PdfOps {
         const pdf = await loadPdfOrThrowUserMessage(arrayBuffer, file.name);
         return pdf.getPageCount();
     }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { PdfOps, loadPdfOrThrowUserMessage };
 }

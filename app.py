@@ -53,10 +53,12 @@ MEMORY_LIMIT_MB = _env_int("MEMORY_LIMIT_MB", 450)
 MEMORY_WARNING_MB = _env_int("MEMORY_WARNING_MB", 400)
 if MEMORY_WARNING_MB >= MEMORY_LIMIT_MB:
     MEMORY_WARNING_MB = int(MEMORY_LIMIT_MB * 0.9)
-MAX_FILE_SIZE_MB = _env_int("MAX_FILE_SIZE_MB", 10)
+MAX_FILE_SIZE_MB = min(_env_int("MAX_FILE_SIZE_MB", 10), 10)
 MAX_TOTAL_UPLOAD_MB = _env_int("MAX_TOTAL_UPLOAD_MB", 50)
 MAX_FILES_PER_REQUEST = _env_int("MAX_FILES_PER_REQUEST", 20)
-MAX_PDF_PAGES = _env_int("MAX_PDF_PAGES", 500)
+MAX_PDF_PAGES = min(_env_int("MAX_PDF_PAGES", 500), 500)
+BROWSER_PDF_MAX_FILE_SIZE_MB = min(_env_int("BROWSER_PDF_MAX_FILE_SIZE_MB", 50), 50)
+BROWSER_PDF_MAX_PAGES = min(_env_int("BROWSER_PDF_MAX_PAGES", MAX_PDF_PAGES), 500)
 MAX_ACTIVE_PDF_JOBS = _env_int("MAX_ACTIVE_PDF_JOBS", 1)
 MAX_OUTPUT_SIZE_MB = _env_int("MAX_OUTPUT_SIZE_MB", 100)
 
@@ -1269,7 +1271,13 @@ def guide_image_batch():
 @app.route('/guide/pdf')
 def guide_pdf():
     """Render the PDF utility guide."""
-    return render_template('guide/pdf.html')
+    return render_template(
+        'guide/pdf.html',
+        browser_pdf_max_file_size_mb=BROWSER_PDF_MAX_FILE_SIZE_MB,
+        browser_pdf_max_pages=BROWSER_PDF_MAX_PAGES,
+        pdf_lock_max_file_size_mb=MAX_FILE_SIZE_MB,
+        pdf_lock_max_pages=MAX_PDF_PAGES,
+    )
 
 @app.route('/guide/image-cleanup')
 def guide_image_cleanup():
@@ -1299,7 +1307,14 @@ def tools_pdf():
     """Render the PDF utility tool."""
     from lib.routes import get_product_by_path
     product = get_product_by_path('/tools/pdf')
-    return render_template('tools/pdf.html', product=product)
+    return render_template(
+        'tools/pdf.html',
+        product=product,
+        browser_pdf_max_file_size_mb=BROWSER_PDF_MAX_FILE_SIZE_MB,
+        browser_pdf_max_pages=BROWSER_PDF_MAX_PAGES,
+        pdf_lock_max_file_size_mb=MAX_FILE_SIZE_MB,
+        pdf_lock_max_pages=MAX_PDF_PAGES,
+    )
 
 
 # PDF lock API: request-scoped BytesIO only, no shared output directory.

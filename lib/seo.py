@@ -23,13 +23,13 @@ SEO_DEFAULTS = {
         'description': 'PDF、CSV/Excel、画像、SEO/URL確認など、仕事で使う軽量ツールを選べます。',
         'og_type': 'website',
     },
-    '/tools/pdf': {'title': 'PDFツール | しごと道具箱', 'description': 'PDFの結合、分割、抽出、圧縮、画像変換、保護付与をブラウザで扱えます。', 'og_type': 'website'},
+    '/tools/pdf': {'title': 'PDF結合・分割・ページ削除・回転 | しごと道具箱', 'description': 'PDFの結合、抽出、分割、ページ削除、回転、圧縮、画像変換を扱える無料ツールです。ページ削除と回転はブラウザ内で処理します。', 'og_type': 'website'},
     '/tools/csv': {'title': 'CSV/Excelツール | しごと道具箱', 'description': 'CSVとXLSXの変換、文字コード確認、列の整理を手早く進められます。', 'og_type': 'website'},
     '/tools/image-batch': {'title': '画像一括変換 | しごと道具箱', 'description': '画像の形式変換、リサイズ、一括処理をブラウザで実行できます。', 'og_type': 'website'},
     '/tools/image-cleanup': {'title': '画像クリーンアップ | しごと道具箱', 'description': '画像の余白や背景を整え、資料に使いやすいPNG画像として出力できます。', 'og_type': 'website'},
     '/tools/seo': {'title': 'SEO/URL確認 | しごと道具箱', 'description': 'OGP、meta、sitemap、robots.txtなど公開ページの基本情報を確認できます。', 'og_type': 'website'},
     '/guide': {'title': 'ガイド | しごと道具箱', 'description': 'PDF、CSV/Excel、画像、SEO/URL確認を迷わず使うためのガイドです。', 'og_type': 'website', 'breadcrumb_title': 'ガイド'},
-    '/guide/pdf': {'title': 'PDFツールの使い方 | しごと道具箱', 'description': 'PDFの結合、分割、抽出、圧縮、保護付与を使い分けるためのガイドです。', 'og_type': 'article'},
+    '/guide/pdf': {'title': 'PDFツールの使い方 | しごと道具箱', 'description': 'PDFの結合、抽出、分割、ページ削除、回転、圧縮、画像変換、保護付与を使い分けるためのガイドです。', 'og_type': 'article'},
     '/guide/csv': {'title': 'CSV/Excelツールの使い方 | しごと道具箱', 'description': 'CSVとExcelファイルを扱う前に確認したい文字コード、列、変換のポイントをまとめます。', 'og_type': 'article'},
     '/guide/image-batch': {'title': '画像一括変換の使い方 | しごと道具箱', 'description': '画像形式変換やリサイズをまとめて進めるときの確認ポイントをまとめます。', 'og_type': 'article'},
     '/guide/image-cleanup': {'title': '画像クリーンアップの使い方 | しごと道具箱', 'description': '資料に使う画像の余白や背景を整えるときの考え方をまとめます。', 'og_type': 'article'},
@@ -54,7 +54,7 @@ SEO_DEFAULTS = {
 NOINDEX_PATHS = frozenset(path for path, config in SEO_DEFAULTS.items() if config.get('robots', '').startswith('noindex'))
 
 TOOL_APPLICATIONS = {
-    '/tools/pdf': {'name': 'PDFツール', 'category': 'UtilitiesApplication', 'feature_list': ['PDFの結合、分割、抽出、圧縮、画像変換、保護付与']},
+    '/tools/pdf': {'name': 'PDFツール', 'category': 'UtilitiesApplication', 'feature_list': ['PDFの結合、抽出、分割、ページ削除、ページ回転、圧縮、画像変換、保護付与']},
     '/tools/csv': {'name': 'CSV/Excelツール', 'category': 'BusinessApplication', 'feature_list': ['CSVとXLSXの変換、文字コード確認、列整理']},
     '/tools/image-batch': {'name': '画像一括変換', 'category': 'UtilitiesApplication', 'feature_list': ['画像の形式変換、リサイズ、一括処理']},
     '/tools/image-cleanup': {'name': '画像クリーンアップ', 'category': 'UtilitiesApplication', 'feature_list': ['画像の余白調整、背景整理、PNG出力']},
@@ -84,7 +84,7 @@ ARTICLE_SCHEMA_PAGES.update({
 
 RELATED_CONTENT = {
     '/': {'title': 'よく使う道具', 'intro': '必要な作業に合わせてツールを選べます。', 'links': [
-        {'path': '/tools/pdf', 'label': 'PDFツール', 'description': '結合、分割、抽出、圧縮、保護付与に対応します。'},
+        {'path': '/tools/pdf', 'label': 'PDFツール', 'description': '結合、抽出、分割、ページ削除、回転、圧縮、保護付与に対応します。'},
         {'path': '/tools/csv', 'label': 'CSV/Excelツール', 'description': 'CSVとExcelファイルの変換や確認に使えます。'},
         {'path': '/tools/image-batch', 'label': '画像一括変換', 'description': '画像の形式変換とリサイズをまとめて行えます。'},
         {'path': '/tools/seo', 'label': 'SEO/URL確認', 'description': 'OGP、meta、sitemap、robots.txtを確認できます。'},
@@ -109,7 +109,7 @@ RELATED_CONTENT = {
     ]},
     '/tools': {'title': '迷ったときはこちら', 'intro': '使い方や安全性もあわせて確認できます。', 'links': [
         {'path': '/guide', 'label': 'ガイド', 'description': 'ツールの選び方と使い方を確認できます。'},
-        {'path': '/tools/pdf', 'label': 'PDFツール', 'description': 'PDFの結合、分割、圧縮などに使えます。'},
+        {'path': '/tools/pdf', 'label': 'PDFツール', 'description': 'PDFの結合、ページ削除、回転、圧縮などに使えます。'},
         {'path': '/faq', 'label': 'FAQ', 'description': 'よくある質問を確認できます。'},
         {'path': '/privacy', 'label': 'プライバシーポリシー', 'description': 'ファイル処理と広告表示の考え方を確認できます。'},
     ]},
