@@ -1,8 +1,8 @@
 ﻿<!doctype html>
 <html lang="ja" class="no-js">
 <head>
-    {% set page_title = 'PDFツール - 結合・分割・抽出・圧縮・画像変換 | しごと道具箱' %}
-    {% set page_description = 'PDFの結合、分割、ページ抽出、圧縮、PDFから画像、画像からPDF、PDF保護付与を扱える無料ツールです。' %}
+    {% set page_title = 'PDF結合・分割・ページ削除・回転・圧縮｜無料PDFツール｜しごと道具箱' %}
+    {% set page_description = 'PDFの結合、抽出、分割、ページ削除、回転、圧縮、画像変換をブラウザで行える無料ツールです。ページ削除と回転はブラウザ内で処理します。' %}
     {% set breadcrumb_title = 'PDFツール' %}
     {% include 'includes/head_meta.html' %}
     {% if product %}
@@ -80,6 +80,10 @@
         .preset-buttons { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
         .preset-button { padding: 8px 16px; background: var(--brand-teal-soft); border: 1px solid rgba(14, 124, 123, 0.32); border-radius: 6px; color: var(--brand-primary-strong); cursor: pointer; font-size: 0.9em; transition: all 0.3s; }
         .preset-button:hover { background: rgba(14, 124, 123, 0.16); }
+        .inline-choice-group { display: flex; flex-wrap: wrap; gap: 12px 20px; margin: 4px 0 14px; }
+        .inline-choice { display: inline-flex !important; align-items: center; gap: 8px; min-height: 44px; margin: 0 !important; font-weight: 600 !important; }
+        .inline-choice input { width: auto; min-width: 18px; min-height: 18px; margin: 0; }
+        .browser-processing-note { padding: 12px 14px; border: 1px solid rgba(14, 124, 123, 0.2); border-radius: 8px; background: var(--brand-teal-soft); }
         @media (max-width: 768px) { .page-header h1 { font-size: 2em; } .container { padding: 20px 15px; } .mode-card-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -92,15 +96,15 @@
         <div class="page-header">
             <span class="icon-tile icon-tile--lg icon-tile--teal" aria-hidden="true">{{ tool_icon('pdf', 28) }}</span>
             <h1 data-reveal>PDFツール</h1>
-            <p data-reveal data-reveal-delay="50">結合、分割、抽出、圧縮、画像変換、保護付与まで、PDF作業をこのページでさっと片づけます。</p>
+            <p data-reveal data-reveal-delay="50">結合、抽出、分割、ページ削除、回転、圧縮、画像変換、保護付与をまとめて進められます。</p>
         </div>
-        {% set tool_intro_what = 'PDFをまとめる、必要なページだけ取り出す、軽くする、画像にする作業をまとめて扱えます。' %}
+        {% set tool_intro_what = 'PDFをまとめる、必要なページだけ残す、不要ページを削る、向きを直す作業をまとめて扱えます。' %}
         {% set tool_intro_steps = ['操作を選ぶ', 'PDFまたは画像を選ぶ', '必要な設定を入れる', '実行してダウンロード'] %}
         {% set tool_intro_notice = '大きなPDFやページ数の多いPDFは処理に時間がかかることがあります。' %}
         <section class="tool-flow" aria-labelledby="pdf-flow-heading">
             <h2 id="pdf-flow-heading">使い方</h2>
             <ol class="tool-step-list">
-                <li><strong>操作を選ぶ</strong><span>結合、分割、抽出、圧縮、保護付与、PDFから画像、画像からPDFから選びます。</span></li>
+                <li><strong>操作を選ぶ</strong><span>結合、抽出、分割、ページ削除、回転、圧縮、画像変換、保護付与から選びます。</span></li>
                 <li><strong>ファイルを選ぶ</strong><span>PDFまたは画像をドラッグ&ドロップ、またはクリックして選択します。</span></li>
                 <li><strong>必要な設定を入れる</strong><span>ページ範囲、品質、出力形式などを必要な場合だけ指定します。</span></li>
                 <li><strong>実行して保存する</strong><span>処理後にPDF、画像、ZIPをダウンロードできます。</span></li>
@@ -117,6 +121,8 @@
                     <button type="button" class="mode-card" data-mode="merge" aria-pressed="true"><span class="mode-card__label">結合</span><span class="mode-card__desc">複数のPDFを1つにまとめます。</span></button>
                     <button type="button" class="mode-card" data-mode="extract" aria-pressed="false"><span class="mode-card__label">ページ抽出</span><span class="mode-card__desc">必要なページだけ取り出します。</span></button>
                     <button type="button" class="mode-card" data-mode="split" aria-pressed="false"><span class="mode-card__label">分割</span><span class="mode-card__desc">指定した範囲ごとにPDFを分けます。</span></button>
+                    <button type="button" class="mode-card" data-mode="page-delete" aria-pressed="false"><span class="mode-card__label">ページを削除</span><span class="mode-card__desc">不要なページを除き、残りを元の順序で保存します。</span></button>
+                    <button type="button" class="mode-card" data-mode="page-rotate" aria-pressed="false"><span class="mode-card__label">ページを回転</span><span class="mode-card__desc">全ページまたは指定ページの向きを直します。</span></button>
                     <button type="button" class="mode-card" data-mode="compress" aria-pressed="false"><span class="mode-card__label">圧縮</span><span class="mode-card__desc">画像中心のPDFを軽くします。</span></button>
                     <button type="button" class="mode-card" data-mode="to-images" aria-pressed="false"><span class="mode-card__label">PDFから画像</span><span class="mode-card__desc">各ページをPNG/JPEGに変換します。</span></button>
                     <button type="button" class="mode-card" data-mode="images-to-pdf" aria-pressed="false"><span class="mode-card__label">画像からPDF</span><span class="mode-card__desc">画像を並べてPDFにします。</span></button>
@@ -128,6 +134,8 @@
                         <option value="merge">結合</option>
                         <option value="extract">抽出</option>
                         <option value="split">分割</option>
+                        <option value="page-delete">ページを削除</option>
+                        <option value="page-rotate">ページを回転</option>
                         <option value="to-images">PDFから画像</option>
                     </optgroup>
                     <optgroup label="拡張機能">
@@ -148,9 +156,10 @@
                 <div class="dropzone-mark" aria-hidden="true"></div>
                 <p style="color: var(--brand-ink); font-size: 1.1em; margin: 0 0 10px; font-weight: 700;">ファイルをトレイへ置く</p>
                 <p style="color: var(--brand-muted); font-size: 0.95em; margin: 0;">ドラッグ&ドロップ、またはクリックしてファイルを選択</p>
-                <p id="dropzone-hint" style="color: var(--brand-muted); font-size: 0.85em; margin: 15px 0 0;">対応形式: PDF（操作により最大10または20ファイル、1ファイル50MBまで）</p>
+                <p id="dropzone-hint" style="color: var(--brand-muted); font-size: 0.85em; margin: 15px 0 0;">対応形式: PDF（操作により最大10または20ファイル、1ファイル{{ browser_pdf_max_file_size_mb }}MBまで）</p>
                 <input type="file" id="file-input" accept="application/pdf" multiple style="display: none;">
             </div>
+            <p id="processing-limit-note" class="info-text browser-processing-note">ブラウザ内PDF処理: 1ファイル最大{{ browser_pdf_max_file_size_mb }}MB・最大{{ browser_pdf_max_pages }}ページ。パスワード設定: 1ファイル最大{{ pdf_lock_max_file_size_mb }}MB・最大{{ pdf_lock_max_pages }}ページ。端末性能により上限内でも処理できない場合があります。</p>
             <div id="file-list" class="file-list"></div>
             <div id="rejected-files" class="rejected-files" style="display: none;"></div>
         </div>
@@ -174,6 +183,30 @@
                 <label>グループ範囲（例: 1-3;4-6;7-10）</label>
                 <input type="text" id="split-range" placeholder="1-3;4-6;7-10">
                 <p class="info-text">セミコロンでグループを区切り、各グループ内はカンマでページ範囲を指定します。</p>
+            </div>
+            <div id="page-delete-options" class="option-group" style="display: none;">
+                <label for="delete-range">削除するページ（例: 2,4-6,9）</label>
+                <input type="text" id="delete-range" inputmode="numeric" placeholder="2,4-6,9" maxlength="2000" aria-describedby="delete-range-help">
+                <p id="delete-range-help" class="info-text">ページ番号は1から始まります。全ページの削除はできず、元ファイルは変更されません。</p>
+                <p class="info-text browser-processing-note">この処理はブラウザ内で行われ、PDFはサーバーへ送信されません。</p>
+            </div>
+            <div id="page-rotate-options" class="option-group" style="display: none;">
+                <fieldset style="border: 0; padding: 0; margin: 0 0 14px;">
+                    <legend style="font-weight: 700; margin-bottom: 8px;">対象ページ</legend>
+                    <div class="inline-choice-group">
+                        <label class="inline-choice" for="rotate-target-all"><input type="radio" id="rotate-target-all" name="rotate-target" value="all" checked>すべてのページ</label>
+                        <label class="inline-choice" for="rotate-target-range"><input type="radio" id="rotate-target-range" name="rotate-target" value="range">ページを指定</label>
+                    </div>
+                </fieldset>
+                <label for="rotate-range">回転するページ（例: 1,3-5）</label>
+                <input type="text" id="rotate-range" inputmode="numeric" placeholder="1,3-5" maxlength="2000" disabled aria-disabled="true" aria-describedby="rotate-range-help">
+                <p id="rotate-range-help" class="info-text">「ページを指定」を選んだ場合だけ入力します。</p>
+                <label for="rotate-angle" style="margin-top: 15px;">回転角度</label>
+                <select id="rotate-angle"><option value="90" selected>90度</option><option value="180">180度</option><option value="270">270度</option></select>
+                <label for="rotate-direction" style="margin-top: 15px;">回転方向</label>
+                <select id="rotate-direction"><option value="clockwise" selected>時計回り</option></select>
+                <p class="info-text">現在の向きから指定角度を加算します。元ファイルは変更されません。</p>
+                <p class="info-text browser-processing-note">この処理はブラウザ内で行われ、PDFはサーバーへ送信されません。</p>
             </div>
             <div id="to-images-options" class="option-group" style="display: none;">
                 <label>画像形式</label>
@@ -246,7 +279,7 @@
             </div>
         </div>
         <div id="output-section" class="tool-section tool-result-panel" style="display: none;"><h3>5. ダウンロードする</h3><div id="download-panel"></div></div>
-        <div id="error-section" class="tool-section" style="display: none;"><h3>エラー</h3><div id="error-message" class="error-message"></div></div>
+        <div id="error-section" class="tool-section" style="display: none;" aria-live="assertive"><h3>エラー</h3><div id="error-message" class="error-message"></div></div>
         </div>
         </div>
         <div class="page-sidebar">
@@ -334,6 +367,11 @@
         let toolRunner = null;
         let currentMode = 'merge';
         let pdfApiAbortController = null; // PDF API キャンセル用（パスワードは含めない）
+        const BROWSER_PDF_MAX_FILE_SIZE_MB = {{ browser_pdf_max_file_size_mb }};
+        const BROWSER_PDF_MAX_PAGES = {{ browser_pdf_max_pages }};
+        const PDF_LOCK_MAX_FILE_SIZE_MB = {{ pdf_lock_max_file_size_mb }};
+        const PDF_LOCK_MAX_PAGES = {{ pdf_lock_max_pages }};
+        const pdfPageCountCache = new WeakMap();
         
         // 初期化
         document.addEventListener('DOMContentLoaded', () => {
@@ -381,7 +419,22 @@
                     document.getElementById('extract-images-quality-value').textContent = extractImagesQualityInput.value;
                 });
             }
+
+            document.querySelectorAll('input[name="rotate-target"]').forEach(input => {
+                input.addEventListener('change', () => {
+                    updateRotateRangeState();
+                    updateRunButton();
+                });
+            });
+            updateRotateRangeState();
         });
+
+        function updateRotateRangeState() {
+            const rangeInput = document.getElementById('rotate-range');
+            const useRange = document.getElementById('rotate-target-range').checked;
+            rangeInput.disabled = !useRange;
+            rangeInput.setAttribute('aria-disabled', useRange ? 'false' : 'true');
+        }
         
         // ドロップゾーンの設定
         function setupDropzone() {
@@ -428,14 +481,24 @@
                     allowedExtensions: ['.png', '.jpg', '.jpeg', '.webp'],
                     allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp']
                 };
+            } else if (mode === 'lock-pdf') {
+                rules = {
+                    maxFiles: 1,
+                    maxFileSize: PDF_LOCK_MAX_FILE_SIZE_MB * 1024 * 1024,
+                    maxTotalSize: PDF_LOCK_MAX_FILE_SIZE_MB * 1024 * 1024,
+                    allowedExtensions: ['.pdf'],
+                    allowedMimeTypes: ['application/pdf']
+                };
             } else {
                 let maxFiles = 20;
                 if (mode === 'to-images' || mode === 'extract-images') {
                     maxFiles = 10;
+                } else if (['extract', 'split', 'page-delete', 'page-rotate', 'compress'].includes(mode)) {
+                    maxFiles = 1;
                 }
                 rules = {
                     maxFiles: maxFiles,
-                    maxFileSize: 50 * 1024 * 1024,
+                    maxFileSize: BROWSER_PDF_MAX_FILE_SIZE_MB * 1024 * 1024,
                     maxTotalSize: 300 * 1024 * 1024,
                     allowedExtensions: ['.pdf'],
                     allowedMimeTypes: ['application/pdf']
@@ -463,13 +526,21 @@
             toolRunner.selectedFiles.forEach((file, index) => {
                 const item = document.createElement('div');
                 item.className = 'file-item';
-                item.innerHTML = `
-                    <div class="file-item-info">
-                        <div class="file-item-name">${file.name}</div>
-                        <div class="file-item-size">${FileUtils.formatBytes(file.size)}</div>
-                    </div>
-                    <button class="file-item-remove" onclick="removeFile(${index})">削除</button>
-                `;
+                const info = document.createElement('div');
+                info.className = 'file-item-info';
+                const name = document.createElement('div');
+                name.className = 'file-item-name';
+                name.textContent = file.name;
+                const size = document.createElement('div');
+                size.className = 'file-item-size';
+                size.textContent = FileUtils.formatBytes(file.size);
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.className = 'file-item-remove';
+                removeButton.textContent = '削除';
+                removeButton.addEventListener('click', () => removeFile(index));
+                info.append(name, size);
+                item.append(info, removeButton);
                 fileList.appendChild(item);
             });
         }
@@ -503,6 +574,8 @@
             // すべてのオプションを非表示
             document.getElementById('extract-options').style.display = 'none';
             document.getElementById('split-options').style.display = 'none';
+            document.getElementById('page-delete-options').style.display = 'none';
+            document.getElementById('page-rotate-options').style.display = 'none';
             document.getElementById('to-images-options').style.display = 'none';
             document.getElementById('to-images-scale').style.display = 'none';
             document.getElementById('to-images-quality').style.display = 'none';
@@ -517,6 +590,11 @@
                 document.getElementById('extract-options').style.display = 'block';
             } else if (mode === 'split') {
                 document.getElementById('split-options').style.display = 'block';
+            } else if (mode === 'page-delete') {
+                document.getElementById('page-delete-options').style.display = 'block';
+            } else if (mode === 'page-rotate') {
+                document.getElementById('page-rotate-options').style.display = 'block';
+                updateRotateRangeState();
             } else if (mode === 'to-images') {
                 document.getElementById('to-images-options').style.display = 'block';
                 document.getElementById('to-images-scale').style.display = 'block';
@@ -537,11 +615,13 @@
             // ファイル入力のacceptと複数選択を更新
             const fileInput = document.getElementById('file-input');
             const dropzoneHint = document.getElementById('dropzone-hint');
+            const processingLimitNote = document.getElementById('processing-limit-note');
             
             if (mode === 'images-to-pdf') {
                 fileInput.setAttribute('accept', 'image/png,image/jpeg,image/webp');
                 fileInput.setAttribute('multiple', '');
                 dropzoneHint.textContent = '対応形式: PNG, JPG, WebP（最大100ファイル、1ファイル20MBまで）';
+                processingLimitNote.textContent = '画像からPDFへの変換はブラウザ内で行われます。端末性能により処理できない場合があります。';
             } else {
                 fileInput.setAttribute('accept', 'application/pdf');
                 if (mode === 'merge' || mode === 'to-images' || mode === 'extract-images') {
@@ -549,8 +629,12 @@
                 } else {
                     fileInput.removeAttribute('multiple');
                 }
-                const pdfMaxFiles = (mode === 'to-images' || mode === 'extract-images') ? 10 : 20;
-                dropzoneHint.textContent = `対応形式: PDF（最大${pdfMaxFiles}ファイル、1ファイル50MBまで）`;
+                const pdfMaxFiles = (mode === 'to-images' || mode === 'extract-images') ? 10 : (['extract', 'split', 'page-delete', 'page-rotate', 'compress', 'lock-pdf'].includes(mode) ? 1 : 20);
+                const maxSizeMb = mode === 'lock-pdf' ? PDF_LOCK_MAX_FILE_SIZE_MB : BROWSER_PDF_MAX_FILE_SIZE_MB;
+                dropzoneHint.textContent = `対応形式: PDF（最大${pdfMaxFiles}ファイル、1ファイル${maxSizeMb}MBまで）`;
+                processingLimitNote.textContent = mode === 'lock-pdf'
+                    ? `パスワード設定: 1ファイル最大${PDF_LOCK_MAX_FILE_SIZE_MB}MB・最大${PDF_LOCK_MAX_PAGES}ページ。処理のためサーバーへ送信されますが、保存しません。`
+                    : `ブラウザ内PDF処理: 1ファイル最大${BROWSER_PDF_MAX_FILE_SIZE_MB}MB・最大${BROWSER_PDF_MAX_PAGES}ページ。端末性能により上限内でも処理できない場合があります。`;
             }
             
             // 実行状態のみリセット（選択ファイルは維持）
@@ -580,6 +664,15 @@
                 const range = document.getElementById('split-range').value.trim();
                 disabled = files.length !== 1 || !range;
                 if (disabled) hint = files.length !== 1 ? '分割はPDFを1件選んでください。' : '分割するページ範囲を入力してください。';
+            } else if (mode === 'page-delete') {
+                const range = document.getElementById('delete-range').value.trim();
+                disabled = files.length !== 1 || !range;
+                if (disabled) hint = files.length !== 1 ? 'ページ削除はPDFを1件選んでください。' : '削除するページ番号を入力してください。';
+            } else if (mode === 'page-rotate') {
+                const useRange = document.getElementById('rotate-target-range').checked;
+                const range = document.getElementById('rotate-range').value.trim();
+                disabled = files.length !== 1 || (useRange && !range);
+                if (disabled) hint = files.length !== 1 ? 'ページ回転はPDFを1件選んでください。' : '回転するページ番号を入力してください。';
             } else if (mode === 'to-images') {
                 disabled = files.length < 1;
                 if (disabled) hint = '画像にしたいPDFを選んでください。';
@@ -594,8 +687,9 @@
                 if (disabled) hint = '画像を取り出したいPDFを選んでください。';
             } else if (mode === 'lock-pdf') {
                 const outPw = document.getElementById('output-pdf-password').value.trim();
-                disabled = files.length !== 1 || !outPw;
-                if (disabled) hint = files.length !== 1 ? '保護したいPDFを1件選んでください。' : '出力PDFに設定するパスワードを入力してください。';
+                const tooLarge = files.length === 1 && files[0].size > PDF_LOCK_MAX_FILE_SIZE_MB * 1024 * 1024;
+                disabled = files.length !== 1 || !outPw || tooLarge;
+                if (disabled) hint = files.length !== 1 ? '保護したいPDFを1件選んでください。' : (tooLarge ? `パスワード設定は${PDF_LOCK_MAX_FILE_SIZE_MB}MB以下のPDFを選んでください。` : '出力PDFに設定するパスワードを入力してください。');
             }
             
             button.disabled = disabled || toolRunner.isRunning;
@@ -606,11 +700,36 @@
         // 範囲入力の監視
         document.getElementById('extract-range')?.addEventListener('input', updateRunButton);
         document.getElementById('split-range')?.addEventListener('input', updateRunButton);
+        document.getElementById('delete-range')?.addEventListener('input', updateRunButton);
+        document.getElementById('rotate-range')?.addEventListener('input', updateRunButton);
         document.getElementById('output-pdf-password')?.addEventListener('input', updateRunButton);
         document.getElementById('input-pdf-password')?.addEventListener('input', updateRunButton);
         
+        async function getValidatedBrowserPdfPageCount(file) {
+            let pageCount = pdfPageCountCache.get(file);
+            if (!pageCount) {
+                pageCount = await PdfOps.getPageCount(file);
+                pdfPageCountCache.set(file, pageCount);
+            }
+            if (pageCount > BROWSER_PDF_MAX_PAGES) {
+                throw new Error(`ブラウザ内処理は最大${BROWSER_PDF_MAX_PAGES}ページです。ページ数を減らしてから再試行してください。`);
+            }
+            return pageCount;
+        }
+
+        async function validateBrowserPdfLimits(mode, files) {
+            if (mode === 'images-to-pdf' || mode === 'lock-pdf') return;
+            for (const file of files) {
+                if (file.size > BROWSER_PDF_MAX_FILE_SIZE_MB * 1024 * 1024) {
+                    throw new Error(`ブラウザ内処理は1ファイル最大${BROWSER_PDF_MAX_FILE_SIZE_MB}MBです。`);
+                }
+                await getValidatedBrowserPdfPageCount(file);
+            }
+        }
+
         // 操作実行
         async function runOperation() {
+            if (toolRunner.isRunning) return;
             const mode = document.getElementById('mode').value;
             const files = toolRunner.selectedFiles;
             
@@ -621,44 +740,48 @@
             document.getElementById('error-section').style.display = 'none';
             
             try {
+                await validateBrowserPdfLimits(mode, files);
                 if (mode === 'merge') {
                     await toolRunner.runBatch(async (files, ctx) => {
                         return await PdfOps.mergePdfs(files, ctx);
                     });
                 } else if (mode === 'extract') {
                     const rangeStr = document.getElementById('extract-range').value.trim();
-                    const pages = PdfRange.parseExtractRange(rangeStr);
-                    
-                    // 総ページ数を取得してバリデーション
-                    const pageCount = await PdfOps.getPageCount(files[0]);
-                    const validation = PdfRange.validatePages(pages, pageCount);
-                    if (!validation.valid) {
-                        throw new Error(`無効なページ番号: ${validation.invalid.join(', ')} (総ページ数: ${pageCount})`);
-                    }
+                    const pageCount = await getValidatedBrowserPdfPageCount(files[0]);
+                    const pages = PdfRange.parseExtractRange(rangeStr, { totalPages: pageCount, maxExpandedPages: BROWSER_PDF_MAX_PAGES });
+                    if (!pages.length) throw new Error('取り出すページ範囲を入力してください。');
                     
                     await toolRunner.runBatch(async (files, ctx) => {
                         return await PdfOps.extractPdf(files[0], pages, ctx);
                     });
                 } else if (mode === 'split') {
                     const rangeStr = document.getElementById('split-range').value.trim();
-                    const pageGroups = PdfRange.parseSplitRange(rangeStr);
-                    
+                    const pageCount = await getValidatedBrowserPdfPageCount(files[0]);
+                    const pageGroups = PdfRange.parseSplitRange(rangeStr, { totalPages: pageCount, maxExpandedPages: BROWSER_PDF_MAX_PAGES });
                     if (pageGroups.length === 0) {
-                        throw new Error('グループ範囲が無効です');
-                    }
-                    
-                    // 総ページ数を取得してバリデーション
-                    const pageCount = await PdfOps.getPageCount(files[0]);
-                    for (const group of pageGroups) {
-                        const validation = PdfRange.validatePages(group, pageCount);
-                        if (!validation.valid) {
-                            throw new Error(`無効なページ番号: ${validation.invalid.join(', ')} (総ページ数: ${pageCount})`);
-                        }
+                        throw new Error('分割するページ範囲を入力してください。');
                     }
                     
                     await toolRunner.runBatch(async (files, ctx) => {
                         return await PdfOps.splitPdf(files[0], pageGroups, ctx);
                     });
+                } else if (mode === 'page-delete') {
+                    const pageCount = await getValidatedBrowserPdfPageCount(files[0]);
+                    const pages = PdfRange.parsePageRange(document.getElementById('delete-range').value, { totalPages: pageCount, maxExpandedPages: BROWSER_PDF_MAX_PAGES });
+                    if (!pages.length) throw new Error('削除するページ番号を入力してください。');
+                    if (pages.length >= pageCount) throw new Error('全ページは削除できません。残すページを1ページ以上確保してください。');
+                    await toolRunner.runBatch(async (files, ctx) => PdfOps.deletePages(files[0], pages, ctx));
+                } else if (mode === 'page-rotate') {
+                    const pageCount = await getValidatedBrowserPdfPageCount(files[0]);
+                    const useRange = document.getElementById('rotate-target-range').checked;
+                    const pages = useRange
+                        ? PdfRange.parsePageRange(document.getElementById('rotate-range').value, { totalPages: pageCount, maxExpandedPages: BROWSER_PDF_MAX_PAGES })
+                        : Array.from({ length: pageCount }, (_, index) => index + 1);
+                    if (!pages.length) throw new Error('回転するページを指定してください。');
+                    const angle = Number(document.getElementById('rotate-angle').value);
+                    const direction = document.getElementById('rotate-direction').value;
+                    if (direction !== 'clockwise') throw new Error('回転方向を確認してください。');
+                    await toolRunner.runBatch(async (files, ctx) => PdfOps.rotatePages(files[0], pages, angle, ctx));
                 } else if (mode === 'to-images') {
                     const format = document.getElementById('image-format').value;
                     const scale = parseFloat(document.getElementById('image-scale').value);
@@ -737,7 +860,7 @@
                             const data = await res.json().catch(() => ({}));
                             const code = data.error_code || data.error;
                             const rid = data.request_id ? ` (request_id: ${data.request_id})` : '';
-                            const msgMap = { missing_password: '出力用パスワードを入力してください。', file_required: 'ファイルを選択してください。', file_too_large: 'ファイルが大きすぎます（50MB以下）。', read_failed: 'ファイルの読み込みに失敗しました。', already_encrypted: 'このPDFは既にパスワード保護されています。保護されていないPDFを選択してください。', corrupt_pdf: 'PDFの構造に問題があるか、対応していない形式です。', unsupported_pdf: 'このPDFは保護の追加に対応していません。', encrypt_failed: 'PDFの保護に失敗しました。PDFの形式やサイズを確認してください。', unsupported: 'PDFの保護に失敗しました。' };
+                            const msgMap = { missing_password: '出力用パスワードを入力してください。', file_required: 'ファイルを選択してください。', file_too_large: `ファイルが大きすぎます（${PDF_LOCK_MAX_FILE_SIZE_MB}MB以下）。`, too_many_pages: `パスワード設定は最大${PDF_LOCK_MAX_PAGES}ページです。`, read_failed: 'ファイルの読み込みに失敗しました。', already_encrypted: 'このPDFは既にパスワード保護されています。保護されていないPDFを選択してください。', corrupt_pdf: 'PDFの構造に問題があるか、対応していない形式です。', unsupported_pdf: 'このPDFは保護の追加に対応していません。', encrypt_failed: 'PDFの保護に失敗しました。PDFの形式やサイズを確認してください。', unsupported: 'PDFの保護に失敗しました。' };
                             const msg = msgMap[code] || 'PDFの保護に失敗しました。';
                             handleError(new Error(msg + rid));
                             return;
@@ -820,6 +943,7 @@
         function handleComplete({ outputs, errors, cancelled }) {
             document.getElementById('run-button').style.display = 'block';
             document.getElementById('cancel-button').style.display = 'none';
+            updateRunButton();
             
             if (cancelled) {
                 document.getElementById('progress-text').textContent = 'キャンセルされました';
@@ -871,21 +995,30 @@
         function showErrors(errors) {
             const errorSection = document.getElementById('error-section');
             const errorMessage = document.getElementById('error-message');
-            
-            errorMessage.innerHTML = '<strong>以下のファイルでエラーが発生しました：</strong><ul style="margin-top: 10px;">';
-            errors.forEach(({ sourceIndex, message }) => {
-                const file = toolRunner.selectedFiles[sourceIndex];
-                errorMessage.innerHTML += `<li>${file.name}: ${message}</li>`;
+
+            errorMessage.replaceChildren();
+            const heading = document.createElement('strong');
+            heading.textContent = '処理できなかった項目があります。';
+            const list = document.createElement('ul');
+            list.style.marginTop = '10px';
+            errors.forEach(({ message }) => {
+                const item = document.createElement('li');
+                item.textContent = message || '処理に失敗しました。';
+                list.appendChild(item);
             });
-            errorMessage.innerHTML += '</ul>';
-            
+            errorMessage.append(heading, list);
             errorSection.style.display = 'block';
         }
         
         // エラーハンドラ（パスワード関連エラー時は入力欄へフォーカス。パスワード文字列はログに出さない）
         function handleError(error) {
+            document.getElementById('run-button').style.display = 'block';
+            document.getElementById('cancel-button').style.display = 'none';
+            document.getElementById('progress-section').style.display = 'none';
             document.getElementById('error-section').style.display = 'block';
-            document.getElementById('error-message').textContent = `エラー: ${error.message}`;
+            const message = error?.message || '処理に失敗しました。入力内容とPDFを確認してください。';
+            document.getElementById('error-message').textContent = `エラー: ${message}`;
+            updateRunButton();
             if (error?.message && error.message.includes('パスワード')) {
                 const pwEl = document.getElementById('input-pdf-password');
                 if (pwEl && pwEl.offsetParent !== null) pwEl.focus();

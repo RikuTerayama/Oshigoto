@@ -100,6 +100,19 @@ def run_checks(get):
     landing_body = _body(get('/'))
     add('business_landing_link', '/', 'href="/business"' in landing_body and '企業向け支援を見る' in landing_body)
 
+    pdf_body = _body(get('/tools/pdf'))
+    browser_size = re.search(r'const BROWSER_PDF_MAX_FILE_SIZE_MB = (\d+);', pdf_body)
+    browser_pages = re.search(r'const BROWSER_PDF_MAX_PAGES = (\d+);', pdf_body)
+    lock_size = re.search(r'const PDF_LOCK_MAX_FILE_SIZE_MB = (\d+);', pdf_body)
+    lock_pages = re.search(r'const PDF_LOCK_MAX_PAGES = (\d+);', pdf_body)
+    browser_limit_copy = browser_size and browser_pages and f'ブラウザ内PDF処理: 1ファイル最大{browser_size.group(1)}MB・最大{browser_pages.group(1)}ページ' in pdf_body
+    server_limit_copy = lock_size and lock_pages and f'パスワード設定: 1ファイル最大{lock_size.group(1)}MB・最大{lock_pages.group(1)}ページ' in pdf_body
+    add('pdf_page_delete_mode', '/tools/pdf', 'data-mode="page-delete"' in pdf_body and 'id="delete-range"' in pdf_body)
+    add('pdf_page_rotate_mode', '/tools/pdf', 'data-mode="page-rotate"' in pdf_body and 'id="rotate-angle"' in pdf_body)
+    add('pdf_browser_limits', '/tools/pdf', bool(browser_limit_copy))
+    add('pdf_server_limits', '/tools/pdf', bool(server_limit_copy))
+    add('pdf_no_unlock_endpoint', '/tools/pdf', '/api/pdf/unlock' not in pdf_body)
+
 
     for path in ADSENSE_HEAD_PATHS:
         body = _body(get(path))
@@ -119,9 +132,6 @@ def run_checks(get):
     for path in MAJOR_PATHS + TOOL_PATHS + GUIDE_PATHS:
         body = _body(get(path))
         leaks = [s for s in FORBIDDEN_PUBLIC_STRINGS if s in body]
-        # PDF password protection is allowed; only unlock/decrypt surfaces are forbidden.
-        if path == '/tools/pdf':
-            leaks = [s for s in leaks if s not in ('unlock', 'decrypt')]
         add('public_copy', path, not leaks, ','.join(leaks))
 
     sitemap = _body(get('/sitemap.xml'))

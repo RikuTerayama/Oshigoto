@@ -7,14 +7,14 @@ PRODUCTS = [
     {
         'id': 'pdf',
         'name': 'PDFツール',
-        'description': 'PDFの結合、分割、抽出、圧縮、画像変換、保護をまとめて扱えます。',
+        'description': 'PDFの結合、抽出、分割、ページ削除、回転、圧縮、画像変換、保護付与をまとめて扱えます。',
         'path': '/tools/pdf',
         'guide_path': '/guide/pdf',
         'status': 'available',
         'icon': 'PDF',
         'category': '書類',
         'tags': ['PDF', '書類'],
-        'features': ['結合', '分割', '抽出', '圧縮', '保護'],
+        'features': ['結合', '抽出', '分割', 'ページ削除', 'ページ回転', '圧縮', '画像変換', '保護付与'],
     },
     {
         'id': 'csv',
