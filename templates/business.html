@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ja" class="no-js">
+<head>
+    {% set page_title = '企業向け業務効率化支援｜小さなWebツール・定型作業の自動化｜しごと道具箱' %}
+    {% set page_description = 'Excel・CSV、PDF、画像、Web確認などの定型業務を、小規模なWebツールや自動化処理へ落とし込む企業向け支援です。業務整理から試作、検証、導入までご相談いただけます。' %}
+    {% set breadcrumb_title = '企業向け支援' %}
+    {% set canonical_url = BASE_URL|default('https://oshigoto.onrender.com') ~ '/business' %}
+    {% include 'includes/head_meta.html' %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "企業向け業務効率化支援",
+      "description": "Excel・CSV、PDF、画像、Web確認などの定型業務を、小規模なWebツールや自動化処理へ落とし込む企業向け支援です。",
+      "url": "{{ canonical_url }}",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "しごと道具箱",
+        "url": "{{ BASE_URL|default('https://oshigoto.onrender.com') }}"
+      }
+    }
+    </script>
+</head>
+<body class="landing-page business-page">
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+
+    <main class="landing-shell business-shell">
+        <section class="business-hero" aria-labelledby="business-hero-heading" data-reveal>
+            <div class="business-hero__copy">
+                <p class="section-kicker">企業向け業務効率化支援</p>
+                <h1 id="business-hero-heading">
+                    <span>企業の定型業務を、</span>
+                    <span>小さなツールから効率化</span>
+                </h1>
+                <p class="business-hero__lead">日々繰り返しているExcel・PDF・画像・Web確認などの作業を整理し、現場で使える小規模なWebツールや自動化処理へ落とし込みます。</p>
+                <div class="business-actions">
+                    <a class="btn btn-primary" href="/contact">企業向け支援について相談する</a>
+                    <a class="btn btn-secondary" href="/tools">無料ツールを見る</a>
+                </div>
+            </div>
+            <aside class="business-hero__note" aria-label="支援の考え方">
+                <p class="business-hero__note-label">Small start</p>
+                <p>業務全体を一度に変えるのではなく、手順と入出力が明確な作業から対象を絞って検討します。</p>
+            </aside>
+        </section>
+
+        <section class="section-block business-section" aria-labelledby="business-challenges-heading">
+            <div class="section-heading">
+                <p class="section-kicker">Challenges</p>
+                <h2 id="business-challenges-heading">このような課題に対応します</h2>
+                <p>定型作業に、時間を取られていませんか。</p>
+            </div>
+            <div class="business-grid business-grid--three" data-reveal-stagger>
+                <article class="business-card"><h3>表データの手作業</h3><p>Excel・CSVの加工や並べ替えを、毎回同じ手順で行っている。</p></article>
+                <article class="business-card"><h3>PDFの繰り返し処理</h3><p>PDFの結合・分割・帳票整理に、都度手間がかかっている。</p></article>
+                <article class="business-card"><h3>画像の定型調整</h3><p>形式変換やサイズ調整を、複数ファイルに繰り返している。</p></article>
+                <article class="business-card"><h3>Webページの確認</h3><p>複数URLやページ情報を、人の目で一件ずつ確認している。</p></article>
+                <article class="business-card"><h3>社内用の小さな道具</h3><p>限られた担当者だけで使える、単機能のツールがほしい。</p></article>
+                <article class="business-card"><h3>SaaS導入前の改善</h3><p>大きな仕組みを導入する前に、一部の作業から効率化したい。</p></article>
+            </div>
+        </section>
+
+        <section class="section-block business-section" aria-labelledby="business-support-heading">
+            <div class="section-heading">
+                <p class="section-kicker">Support</p>
+                <h2 id="business-support-heading">業務に合わせて、小さく設計します</h2>
+                <p>現在の手順と利用環境を確認し、対応範囲を絞って検討します。</p>
+            </div>
+            <div class="business-grid business-grid--support" data-reveal-stagger>
+                <article class="business-card"><p class="business-card__label">Excel・CSV</p><h3>表データの加工</h3><p>形式変換、重複除去、列の整理、定型フォーマットへの変換。</p></article>
+                <article class="business-card"><p class="business-card__label">PDF・書類</p><h3>書類作業の整理</h3><p>結合、分割、抽出、帳票整理、定型的なファイル処理。</p></article>
+                <article class="business-card"><p class="business-card__label">画像</p><h3>画像処理の効率化</h3><p>形式変換、一括リサイズ、圧縮、資料やWeb掲載向けの調整。</p></article>
+                <article class="business-card"><p class="business-card__label">Web確認</p><h3>確認作業の自動化</h3><p>URL一覧、meta・OGP、sitemap、robots.txtなどの定型確認。</p></article>
+                <article class="business-card"><p class="business-card__label">社内向け</p><h3>小規模Webツール</h3><p>入力・変換・出力を一画面にまとめた、限定用途の試作。</p></article>
+            </div>
+        </section>
+
+        <section class="section-block business-section" aria-labelledby="business-process-heading">
+            <div class="section-heading">
+                <p class="section-kicker">Process</p>
+                <h2 id="business-process-heading">小さく作り、実際の業務で確かめます</h2>
+            </div>
+            <ol class="business-process" data-reveal-stagger>
+                <li><span>1</span><div><h3>業務を確認する</h3><p>現在の手順、使用ファイル、作業頻度、困っている点を整理します。</p></div></li>
+                <li><span>2</span><div><h3>対象を絞る</h3><p>効果と実現性を確認し、最初にツール化する範囲を決めます。</p></div></li>
+                <li><span>3</span><div><h3>試作する</h3><p>実際の業務を想定した、小規模なプロトタイプを作成します。</p></div></li>
+                <li><span>4</span><div><h3>検証・調整する</h3><p>操作結果を確認し、必要な修正や運用方法を整理します。</p></div></li>
+            </ol>
+        </section>
+
+        <section class="section-block business-section" aria-labelledby="business-examples-heading">
+            <div class="section-heading">
+                <p class="section-kicker">Examples</p>
+                <h2 id="business-examples-heading">たとえば、このような形にできます</h2>
+                <p>以下は対応イメージです。特定企業への導入実績を示すものではありません。</p>
+            </div>
+            <ul class="business-example-list" data-reveal-stagger>
+                <li>毎月届くCSVを、指定のExcel形式へ変換するツール</li>
+                <li>複数のPDFを、決めたルールに沿って整理するツール</li>
+                <li>大量の画像を、同じ形式とサイズへ変換するツール</li>
+                <li>URL一覧から、ページ情報をまとめて確認するツール</li>
+                <li>社内の定型入力を、一画面で処理できる簡易ツール</li>
+            </ul>
+        </section>
+
+        <section class="section-block business-section business-section--split" aria-labelledby="business-security-heading">
+            <div>
+                <p class="section-kicker">Information handling</p>
+                <h2 id="business-security-heading">扱う情報を確認しながら設計します</h2>
+                <p>業務で使用するファイルやデータの性質を確認し、保存の要否、処理場所、アクセス範囲、利用人数などを整理したうえで設計します。機密性の高い情報を扱う場合は、利用環境や社内ルールに応じた対応方法を相談します。</p>
+            </div>
+            <ul class="business-check-list">
+                <li>公開中の無料ツールでは、処理後のファイルを原則として長期保存しません。</li>
+                <li>企業向けの個別対応では、要件により設計や確認事項が異なります。</li>
+                <li>すべてのデータを無条件に安全と判断することはありません。</li>
+                <li>認証取得や監査対応を、根拠なく保証する表現は行いません。</li>
+            </ul>
+            <p class="business-policy-links"><a href="/privacy">プライバシーポリシー</a><a href="/terms">利用規約</a></p>
+        </section>
+
+        <section class="section-block business-section" aria-labelledby="business-scope-heading">
+            <div class="section-heading">
+                <p class="section-kicker">Scope</p>
+                <h2 id="business-scope-heading">まずは、小規模な業務から</h2>
+            </div>
+            <div class="business-scope-grid">
+                <div><h3>検討しやすい業務</h3><ul><li>入力と出力が明確</li><li>毎週・毎月繰り返す</li><li>手順がある程度決まっている</li><li>少人数または部署内で利用する</li></ul></div>
+                <div><h3>個別確認が必要な業務</h3><ul><li>大規模基幹システムとの統合</li><li>高度な権限・認証管理</li><li>法令上の保存要件があるデータ</li><li>大量アクセスや複雑な外部API連携</li></ul></div>
+            </div>
+            <p class="business-scope__note">対応可否を先に断定せず、現在の手順と条件を確認してから判断します。</p>
+        </section>
+
+        <section class="section-block business-section" aria-labelledby="business-faq-heading">
+            <div class="section-heading">
+                <p class="section-kicker">FAQ</p>
+                <h2 id="business-faq-heading">よくある質問</h2>
+            </div>
+            <div class="business-faq">
+                <details><summary>どのような業務を相談できますか。</summary><p>Excel・CSV、PDF、画像、Web確認など、入力と出力が比較的明確な定型作業を中心に相談できます。</p></details>
+                <details><summary>まだ要件が決まっていなくても相談できますか。</summary><p>現在の作業手順や困っている点を確認し、対象範囲を整理するところから進めます。</p></details>
+                <details><summary>既存の無料ツールを企業向けに変更できますか。</summary><p>必要な操作や出力形式を確認したうえで、個別対応の可否を検討します。</p></details>
+                <details><summary>機密情報を扱うツールも相談できますか。</summary><p>情報の種類、保存要否、利用環境、社内ルールを確認し、対応方法を検討します。</p></details>
+                <details><summary>大規模なシステム開発にも対応していますか。</summary><p>現時点では、小規模な業務ツールやプロトタイプを中心としています。内容を確認したうえで判断します。</p></details>
+            </div>
+        </section>
+
+        <section class="business-final-cta" aria-labelledby="business-final-heading" data-reveal>
+            <p class="section-kicker">Contact</p>
+            <h2 id="business-final-heading">繰り返している作業を、一度整理してみませんか。</h2>
+            <p>現在の作業内容や困っている点をお送りください。ツール化に向いているか、どの範囲から始めるとよいかを確認します。</p>
+            <div class="business-actions">
+                <a class="btn btn-primary" href="/contact">企業向け支援について相談する</a>
+                <a class="btn btn-secondary" href="/tools">公開中の無料ツールを見る</a>
+            </div>
+        </section>
+    </main>
+
+    {% include 'includes/footer.html' %}
+</body>
+</html>

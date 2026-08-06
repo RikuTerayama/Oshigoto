@@ -32,7 +32,7 @@
             {% set affiliate_mid_amazon_rendered = true %}
         {% endif %}
 
-        {% if not affiliate_a8_rendered|default(false) %}
+        {% if can_render_affiliate and not affiliate_a8_rendered|default(false) %}
             {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--footer-a8', affiliate_section_tier='context-a8', affiliate_section_placement='global-footer-a8', affiliate_section_category='related-services', affiliate_a8_label='PR' %}
                 {% include 'includes/affiliate_cards_section.html' %}
             {% endwith %}

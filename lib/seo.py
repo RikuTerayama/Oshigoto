@@ -38,6 +38,12 @@ SEO_DEFAULTS = {
     '/blog/excel-format-mistakes-and-design': {'title': 'CSV/Excelで崩れやすい形式と整え方 | しごと道具箱', 'description': 'CSV/Excelの形式崩れを減らすために、文字コード、日付、列名、空欄の扱いを整理します。', 'og_type': 'article'},
     '/glossary': {'title': '用語集 | しごと道具箱', 'description': 'PDF、CSV、画像、SEO/URL確認でよく出てくる用語を短く整理します。', 'og_type': 'website'},
     '/about': {'title': 'このサイトについて | しごと道具箱', 'description': '仕事でたまに必要になる小さな作業を軽く片づけるための公開ツール集です。', 'og_type': 'website'},
+    '/business': {
+        'title': '企業向け業務効率化支援｜小さなWebツール・定型作業の自動化｜しごと道具箱',
+        'description': 'Excel・CSV、PDF、画像、Web確認などの定型業務を、小規模なWebツールや自動化処理へ落とし込む企業向け支援です。業務整理から試作、検証、導入までご相談いただけます。',
+        'og_type': 'website',
+        'breadcrumb_title': '企業向け支援',
+    },
     '/faq': {'title': 'FAQ | しごと道具箱', 'description': 'しごと道具箱の使い方、ファイル処理、PDF保護、SEO/URL確認、affiliate表示についてのFAQです。', 'og_type': 'website', 'breadcrumb_title': 'FAQ'},
     '/privacy': {'title': 'プライバシーポリシー | しごと道具箱', 'description': 'しごと道具箱のファイル処理、アクセス解析、広告、Cookieの扱いについて説明します。', 'og_type': 'website', 'robots': 'noindex,follow'},
     '/terms': {'title': '利用規約 | しごと道具箱', 'description': 'しごと道具箱を利用する際の注意事項、免責事項、禁止事項について説明します。', 'og_type': 'website', 'robots': 'noindex,follow'},

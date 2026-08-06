@@ -35,7 +35,7 @@ def url_path_to_template_rel(url_path):
 
 def get_sitemap_url_paths():
     fixed = [
-        "/", "/about", "/privacy", "/terms", "/contact", "/faq", "/glossary",
+        "/", "/about", "/business", "/privacy", "/terms", "/contact", "/faq", "/glossary",
         "/guide", "/guide/csv", "/guide/image-batch", "/guide/image-cleanup", "/guide/pdf", "/guide/seo",
         "/tools", "/blog", "/blog/excel-format-mistakes-and-design",
     ]

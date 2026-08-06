@@ -10,15 +10,19 @@ from urllib.parse import parse_qs, urlparse
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 BASE_URL_DEFAULT = 'https://oshigoto.onrender.com'
-MAJOR_PATHS = ['/', '/tools', '/privacy', '/terms', '/contact', '/about', '/faq', '/guide', '/blog', '/glossary', '/best-practices']
+MAJOR_PATHS = ['/', '/tools', '/business', '/privacy', '/terms', '/contact', '/about', '/faq', '/guide', '/blog', '/glossary', '/best-practices']
 TOOL_PATHS = ['/tools/pdf', '/tools/csv', '/tools/image-batch', '/tools/image-cleanup', '/tools/seo']
 GUIDE_PATHS = ['/guide/pdf', '/guide/csv', '/guide/image-batch', '/guide/image-cleanup', '/guide/seo']
-INDEXABLE_PATHS = ['/', '/tools', '/guide', '/blog', '/glossary'] + TOOL_PATHS + GUIDE_PATHS
+INDEXABLE_PATHS = ['/', '/tools', '/business', '/guide', '/blog', '/glossary'] + TOOL_PATHS + GUIDE_PATHS
 PUBLIC_AFFILIATE_PATHS = ['/', '/tools'] + TOOL_PATHS
 ADSENSE_SCRIPT_SRC = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4232725615106709'
 ADSENSE_HEAD_PATHS = ['/', '/tools', '/tools/pdf']
 A8_SCRIPT_SRC = 'https://rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js'
-A8_PUBLIC_PATHS = MAJOR_PATHS + TOOL_PATHS + GUIDE_PATHS
+NO_VISIBLE_AFFILIATE_PATHS = ['/business', '/contact', '/privacy', '/terms']
+A8_PUBLIC_PATHS = [
+    path for path in MAJOR_PATHS + TOOL_PATHS + GUIDE_PATHS
+    if path not in NO_VISIBLE_AFFILIATE_PATHS
+]
 FORBIDDEN_PUBLIC_STRINGS = [
     'Jobcan',
     'AutoFill',
@@ -83,6 +87,19 @@ def run_checks(get):
     resp = get('/api/pdf/unlock')
     add('pdf_unlock_404', '/api/pdf/unlock', _status(resp) == 404, f'status={_status(resp)}')
 
+    business_body = _body(get('/business'))
+    add('business_title', '/business', '企業向け業務効率化支援' in business_body)
+    add('business_h1', '/business', '企業の定型業務を' in business_body and '小さなツールから効率化' in business_body)
+    add('business_canonical', '/business', 'https://oshigoto.onrender.com/business' in business_body)
+    add('business_contact_cta', '/business', 'href="/contact"' in business_body)
+    add('business_tools_cta', '/business', 'href="/tools"' in business_body)
+    add('business_header_link', '/business', 'href="/business"' in business_body and '企業向け' in business_body)
+    add('business_no_unverified_claims', '/business', not any(term in business_body for term in (
+        '無料相談', '必ず削減', '必ず効率化', '導入事例', 'ISO認証', 'SOC2', 'ISMS', 'aggregateRating', 'reviewCount'
+    )))
+    landing_body = _body(get('/'))
+    add('business_landing_link', '/', 'href="/business"' in landing_body and '企業向け支援を見る' in landing_body)
+
 
     for path in ADSENSE_HEAD_PATHS:
         body = _body(get(path))
@@ -120,6 +137,12 @@ def run_checks(get):
         body = _body(get(path))
         a8_count = body.count(A8_SCRIPT_SRC)
         add('a8_present_once', path, a8_count == 1, f'count={a8_count}')
+
+    for path in NO_VISIBLE_AFFILIATE_PATHS:
+        body = _body(get(path))
+        add('affiliate_excluded_a8', path, A8_SCRIPT_SRC not in body)
+        add('affiliate_excluded_amazon', path, not _amazon_urls(body))
+        add('affiliate_excluded_wrapper', path, 'affiliate-cards-section' not in body and 'affiliate-context-block' not in body)
 
     for path in PUBLIC_AFFILIATE_PATHS:
         body = _body(get(path))

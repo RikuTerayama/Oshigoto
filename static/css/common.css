@@ -7621,9 +7621,9 @@ body {
         text-align: center !important;
     }
 
-    .landing-page .affiliate-context-card__cta,
-    .landing-page .amazon-recommendation-card__cta,
-    .landing-page .affiliate-link-card__cta {
+.landing-page .affiliate-context-card__cta,
+.landing-page .amazon-recommendation-card__cta,
+.landing-page .affiliate-link-card__cta {
         margin-left: auto !important;
         margin-right: auto !important;
         width: fit-content !important;
@@ -7649,6 +7649,403 @@ body {
 
     .scroll-progress__value {
         font-size: 0.54rem !important;
+    }
+}
+
+/* Phase 9.1: quiet editorial layout for business support. */
+.business-page .business-shell {
+    display: grid;
+    gap: clamp(28px, 5vw, 56px);
+    padding-top: clamp(24px, 4vw, 48px);
+}
+
+.business-page .business-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(260px, 0.65fr);
+    gap: clamp(24px, 5vw, 64px);
+    align-items: end;
+    padding: clamp(32px, 6vw, 76px);
+    border: 1px solid var(--brand-line);
+    border-radius: 24px;
+    background: linear-gradient(135deg, #fffdf9 0%, #f4efe5 100%);
+    box-shadow: var(--shadow-soft);
+}
+
+.business-page .business-hero__copy {
+    min-width: 0;
+}
+
+.business-page .business-hero h1 {
+    max-width: 820px;
+    margin: 12px 0 20px;
+    color: var(--brand-ink);
+    font-size: clamp(2.25rem, 5.8vw, 4rem);
+    line-height: 1.08;
+    letter-spacing: -0.045em;
+}
+
+.business-page .business-hero h1 span {
+    display: block;
+}
+
+.business-page .business-hero__lead {
+    max-width: 720px;
+    margin: 0;
+    color: var(--brand-muted);
+    font-size: clamp(1rem, 1.6vw, 1.18rem);
+    line-height: 1.9;
+}
+
+.business-page .business-hero__note {
+    padding: 24px;
+    border-left: 3px solid var(--brand-primary);
+    background: rgba(255, 255, 255, 0.64);
+}
+
+.business-page .business-hero__note p {
+    margin: 0;
+    color: var(--brand-muted);
+    line-height: 1.75;
+}
+
+.business-page .business-hero__note-label {
+    margin-bottom: 10px !important;
+    color: var(--brand-primary-strong) !important;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.business-page .business-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.business-page .business-section {
+    margin: 0;
+    padding: clamp(28px, 5vw, 56px);
+}
+
+.business-page .section-heading {
+    max-width: 760px;
+    margin: 0 0 28px;
+    text-align: left;
+}
+
+.business-page .section-heading h2,
+.business-page .business-section--split h2,
+.business-page .business-final-cta h2 {
+    margin: 8px 0 10px;
+    color: var(--brand-ink);
+    font-size: clamp(1.65rem, 3vw, 2.6rem);
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+}
+
+.business-page .section-heading > p:last-child,
+.business-page .business-section--split > div > p:last-child,
+.business-page .business-final-cta > p:not(.section-kicker) {
+    color: var(--brand-muted);
+    line-height: 1.85;
+}
+
+.business-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.business-grid--three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.business-grid--support {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.business-grid--support > :nth-child(1),
+.business-grid--support > :nth-child(2),
+.business-grid--support > :nth-child(3) {
+    grid-column: span 2;
+}
+
+.business-grid--support > :nth-child(4),
+.business-grid--support > :nth-child(5) {
+    grid-column: span 3;
+}
+
+.business-card {
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid var(--brand-line);
+    border-radius: 14px;
+    background: #fffdf9;
+}
+
+.business-card h3 {
+    margin: 0 0 8px;
+    color: var(--brand-ink);
+    font-size: 1.05rem;
+    line-height: 1.5;
+}
+
+.business-card p {
+    margin: 0;
+    color: var(--brand-muted);
+    line-height: 1.75;
+}
+
+.business-card__label {
+    margin-bottom: 10px !important;
+    color: var(--brand-primary-strong) !important;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.business-process {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.business-process li {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    min-width: 0;
+    padding: 20px;
+    border-top: 1px solid var(--brand-line);
+}
+
+.business-process li > span {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--brand-teal-soft);
+    color: var(--brand-primary-strong);
+    font-weight: 800;
+}
+
+.business-process h3,
+.business-scope-grid h3 {
+    margin: 2px 0 8px;
+    color: var(--brand-ink);
+    font-size: 1rem;
+}
+
+.business-process p {
+    margin: 0;
+    color: var(--brand-muted);
+    line-height: 1.7;
+}
+
+.business-example-list,
+.business-check-list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.business-example-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.business-example-list li,
+.business-check-list li {
+    position: relative;
+    padding: 16px 18px 16px 44px;
+    border: 1px solid var(--brand-line);
+    border-radius: 12px;
+    background: #fffdf9;
+    color: var(--brand-muted);
+    line-height: 1.65;
+}
+
+.business-example-list li::before,
+.business-check-list li::before {
+    content: "";
+    position: absolute;
+    top: 23px;
+    left: 20px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--brand-primary);
+}
+
+.business-section--split {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(24px, 5vw, 56px);
+    align-items: start;
+}
+
+.business-policy-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+.business-policy-links a {
+    font-weight: 700;
+}
+
+.business-scope-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.business-scope-grid > div {
+    padding: 22px;
+    border-left: 3px solid var(--brand-primary);
+    background: #fffdf9;
+}
+
+.business-scope-grid ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: var(--brand-muted);
+    line-height: 1.8;
+}
+
+.business-scope__note {
+    margin: 20px 0 0;
+    color: var(--brand-muted);
+}
+
+.business-faq {
+    display: grid;
+    gap: 10px;
+}
+
+.business-faq details {
+    border-top: 1px solid var(--brand-line);
+    padding: 18px 4px;
+}
+
+.business-faq summary {
+    color: var(--brand-ink);
+    cursor: pointer;
+    font-weight: 750;
+    line-height: 1.6;
+}
+
+.business-faq details p {
+    max-width: 820px;
+    margin: 12px 0 0;
+    color: var(--brand-muted);
+    line-height: 1.8;
+}
+
+.business-final-cta {
+    padding: clamp(32px, 6vw, 64px);
+    border: 1px solid var(--brand-line);
+    border-radius: 20px;
+    background: #eee8dc;
+}
+
+.business-teaser {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.business-teaser__copy {
+    max-width: 760px;
+}
+
+.business-teaser__copy h2 {
+    margin: 8px 0;
+    color: var(--brand-ink);
+    font-size: clamp(1.45rem, 2.6vw, 2.2rem);
+    letter-spacing: -0.02em;
+}
+
+.business-teaser__copy p:last-child {
+    margin: 0;
+    color: var(--brand-muted);
+    line-height: 1.8;
+}
+
+@media (max-width: 1020px) {
+    .business-page .business-hero,
+    .business-page .business-section--split {
+        grid-template-columns: 1fr;
+    }
+
+    .business-grid--three,
+    .business-process {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 720px) {
+    .business-page .business-shell {
+        gap: 24px;
+    }
+
+    .business-page .business-hero,
+    .business-page .business-section,
+    .business-page .business-final-cta {
+        padding: 24px 18px;
+    }
+
+    .business-page .business-hero h1 {
+        font-size: clamp(2rem, 11vw, 3rem);
+        letter-spacing: -0.035em;
+    }
+
+    .business-page .business-actions,
+    .business-policy-links,
+    .business-teaser {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .business-page .business-actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .business-grid--three,
+    .business-grid--support,
+    .business-process,
+    .business-example-list,
+    .business-scope-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .business-grid--support > :nth-child(n) {
+        grid-column: auto;
+    }
+
+    .business-card,
+    .business-process li,
+    .business-example-list li,
+    .business-check-list li,
+    .business-scope-grid > div,
+    .business-faq details {
+        min-width: 0;
+        max-width: 100%;
+        writing-mode: horizontal-tb;
+        word-break: normal;
+        overflow-wrap: anywhere;
     }
 }
 
