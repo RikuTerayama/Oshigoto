@@ -9,6 +9,7 @@ PDF、CSV、画像、ページ確認など、仕事でたまに必要になる�
 - PDFツール: 結合、分割、抽出、圧縮、画像変換、保護付与
 - CSV/Excelツール: CSV/XLSX変換、文字コード確認、列整理
 - 画像一括変換: 形式変換、リサイズ、一括処理
+- 画像圧縮: JPEG・PNG・WebPの品質・寸法調整、容量比較、ZIP保存
 - 画像クリーンアップ: 余白調整、背景整理、PNG出力
 - SEO/URL確認: OGP、meta、sitemap、robots.txt確認
 
@@ -34,6 +35,11 @@ MEMORY_WARNING_MB=400
 MAX_FILE_SIZE_MB=10
 BROWSER_PDF_MAX_FILE_SIZE_MB=50
 BROWSER_PDF_MAX_PAGES=500
+BROWSER_IMAGE_COMPRESS_MAX_FILES=20
+BROWSER_IMAGE_COMPRESS_MAX_FILE_SIZE_MB=20
+BROWSER_IMAGE_COMPRESS_MAX_TOTAL_SIZE_MB=100
+BROWSER_IMAGE_COMPRESS_MAX_PIXELS=40000000
+BROWSER_IMAGE_COMPRESS_MAX_LONG_EDGE=16384
 MAX_TOTAL_UPLOAD_MB=50
 MAX_FILES_PER_REQUEST=20
 MAX_PDF_PAGES=500
@@ -45,6 +51,8 @@ RATE_LIMIT_SEO_PER_MIN=8
 ```
 
 ブラウザ内PDF処理は最大50MB・500ページ、サーバー側のパスワード設定は最大10MB・500ページです。各上限は環境変数で引き下げられますが、安全上の上限を超えて引き上げることはできません。
+
+画像圧縮はブラウザ内で1件ずつ処理します。最大20件、1件20MB、合計100MB、1画像40メガピクセル、長辺16,384pxが安全上限です。環境変数では引き下げのみ可能で、上限を超えて引き上げることはできません。
 
 `AMAZON_ASSOCIATE_TAG` を設定すると、Amazonリンクにassociate tagが付与されます。タグ値は環境変数で管理し、READMEには実値を固定記載しません。
 
@@ -64,6 +72,7 @@ python scripts\smoke_test.py
 python scripts\smoke_test.py --deploy
 python scripts\adsense_preflight.py
 python scripts\test_multi_user_safety.py
+node scripts\test_image_compress.js
 python scripts\generate_sitemap_lastmod_manifest.py --check
 python -m compileall -q app.py lib scripts
 ```
@@ -81,12 +90,12 @@ python -m compileall -q app.py lib scripts
 ## 確認ポイント
 
 - `/` と `/tools` が200で表示される
-- 5つのツールrouteが200で表示される
+- 6つのツールrouteが200で表示される
 - `/autofill` は `/tools` へ301 redirectする
 - PDFの保護解除系UI/APIは公開しない
 - `/api/pdf/lock` はPDF保護付与APIとして維持する
 - `/api/seo/crawl-urls` はURL制限とtimeoutを維持する
-- sitemapに5ツールが含まれる
+- sitemapに6ツールが含まれる
 - sitemapに `/autofill` が含まれない
 - Amazon/A8/AdSenseの開示と安全条件を維持する
 - 実績風の数値表示や順位づけを行わない

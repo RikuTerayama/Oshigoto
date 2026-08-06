@@ -184,12 +184,12 @@ class ImageCleanup {
             padToAspect = false,
             aspectRatio = 'original',
             aspectFit = 'pad',
-            style = { paddingPx: 0, borderWidthPx: 0, borderColor: '#000000', radiusPx: 0, bgColor: '#ffffff' },
+            style: defaultStyle = { paddingPx: 0, borderWidthPx: 0, borderColor: '#000000', radiusPx: 0, bgColor: '#ffffff' },
             backgroundRemoval = { enabled: false, quality: 'medium' },
             outputFormat = 'jpeg',
             quality = 0.9,
             filename = null,
-            style = {}
+            style = defaultStyle
         } = options;
         const {
             paddingPx = 0,

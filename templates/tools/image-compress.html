@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ja" class="no-js">
+<head>
+    {% set page_title = '画像圧縮｜JPEG・PNG・WebPをブラウザで軽量化｜しごと道具箱' %}
+    {% set page_description = 'JPEG・PNG・WebP画像の品質やサイズを調整し、ブラウザ内で軽量化できる無料ツールです。圧縮前後の容量を比較し、複数画像はZIPで保存できます。' %}
+    {% set breadcrumb_title = '画像圧縮' %}
+    {% include 'includes/head_meta.html' %}
+    {% if product %}{% include 'includes/structured_data.html' %}{% endif %}
+    <style>
+        .image-compress-page { background: var(--brand-bg); color: var(--brand-ink); }
+        .compress-shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 42px 0 72px; }
+        .compress-hero { max-width: 760px; margin: 0 auto 32px; text-align: center; }
+        .compress-hero__kicker { margin: 0 0 10px; color: var(--brand-primary-strong); font-size: .78rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+        .compress-hero h1 { margin: 0 0 14px; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.15; letter-spacing: -.04em; }
+        .compress-hero p { margin: 0; color: var(--brand-muted); font-size: 1.02rem; line-height: 1.9; }
+        .compress-privacy { display: inline-flex; align-items: center; min-height: 44px; margin-top: 18px; padding: 10px 16px; border: 1px solid rgba(14,124,123,.28); border-radius: 999px; background: rgba(14,124,123,.07); color: var(--brand-primary-strong); font-size: .9rem; font-weight: 650; }
+        .compress-app { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(300px, .88fr); gap: 24px; align-items: start; }
+        .compress-panel { min-width: 0; padding: clamp(20px, 4vw, 34px); border: 1px solid var(--brand-line); border-radius: 20px; background: var(--brand-surface); box-shadow: var(--shadow-soft); }
+        .compress-panel h2 { margin: 0 0 20px; font-size: 1.3rem; }
+        .compress-step { display: flex; gap: 13px; align-items: flex-start; margin-bottom: 22px; }
+        .compress-step__number { display: grid; place-items: center; flex: 0 0 32px; height: 32px; border-radius: 50%; background: var(--brand-ink); color: #fff; font-size: .82rem; font-weight: 700; }
+        .compress-step__copy h2 { margin: 2px 0 5px; font-size: 1.08rem; }
+        .compress-step__copy p { margin: 0; color: var(--brand-muted); font-size: .9rem; line-height: 1.65; }
+        .compress-dropzone { display: grid; place-items: center; min-height: 172px; padding: 26px; border: 1px dashed rgba(14,124,123,.42); border-radius: 16px; background: var(--brand-paper); text-align: center; cursor: pointer; transition: border-color .2s, background .2s, transform .2s; }
+        .compress-dropzone:hover, .compress-dropzone.is-dragging { border-color: var(--brand-primary); background: var(--brand-teal-soft); transform: translateY(-1px); }
+        .compress-dropzone:focus-visible { outline: 3px solid rgba(14,124,123,.3); outline-offset: 3px; }
+        .compress-dropzone strong { display: block; margin-bottom: 8px; font-size: 1.05rem; }
+        .compress-dropzone span { color: var(--brand-muted); font-size: .88rem; line-height: 1.7; }
+        .compress-file-input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+        .compress-file-list { display: grid; gap: 8px; margin-top: 14px; }
+        .compress-file-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid var(--brand-line); border-radius: 12px; background: #fff; }
+        .compress-file-row__copy { min-width: 0; display: grid; gap: 3px; }
+        .compress-file-row__copy strong { overflow-wrap: anywhere; font-size: .9rem; }
+        .compress-file-row__copy span { color: var(--brand-muted); font-size: .78rem; }
+        .compress-file-row__remove { min-height: 44px; padding: 0 13px; border: 1px solid rgba(155,44,44,.25); border-radius: 10px; background: transparent; color: #8b2f2f; cursor: pointer; }
+        .compress-settings { display: grid; gap: 18px; }
+        .compress-field { display: grid; gap: 8px; }
+        .compress-field label, .compress-field legend { color: var(--brand-ink); font-size: .9rem; font-weight: 700; }
+        .compress-field select, .compress-field input[type="number"] { width: 100%; min-height: 48px; padding: 10px 12px; border: 1px solid var(--brand-line); border-radius: 10px; background: #fff; color: var(--brand-ink); font: inherit; }
+        .compress-field input[type="range"] { width: 100%; min-height: 44px; accent-color: var(--brand-primary); }
+        .compress-field small { color: var(--brand-muted); line-height: 1.65; }
+        .compress-dimensions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .compress-actions { display: grid; gap: 10px; margin-top: 22px; }
+        .compress-actions .btn { min-height: 50px; }
+        .compress-status { min-height: 26px; margin: 14px 0 0; color: var(--brand-muted); font-size: .9rem; text-align: center; }
+        .compress-errors { margin-top: 16px; padding: 16px 18px; border: 1px solid rgba(155,44,44,.26); border-radius: 12px; background: rgba(155,44,44,.06); color: #7b2929; }
+        .compress-errors ul { margin: 8px 0 0; padding-left: 20px; }
+        .compress-limits { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--brand-line); color: var(--brand-muted); font-size: .82rem; line-height: 1.75; }
+        .compress-results-section { margin-top: 28px; }
+        .compress-results-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+        .compress-results-head h2 { margin: 0; }
+        .compress-results-head .btn { min-height: 44px; }
+        .compress-results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .compress-result-card { min-width: 0; display: flex; flex-direction: column; padding: 18px; border: 1px solid var(--brand-line); border-radius: 16px; background: var(--brand-surface); }
+        .compress-result-card__preview { width: 100%; aspect-ratio: 16 / 10; object-fit: contain; border-radius: 10px; background: repeating-conic-gradient(#eef0ed 0 25%, #fff 0 50%) 0 / 16px 16px; }
+        .compress-result-card h3 { margin: 14px 0 10px; overflow-wrap: anywhere; font-size: 1rem; }
+        .compress-result-card__details { display: grid; gap: 8px; margin: 0; }
+        .compress-result-card__details div { display: grid; grid-template-columns: 48px minmax(0,1fr); gap: 8px; font-size: .84rem; }
+        .compress-result-card__details dt { color: var(--brand-muted); }
+        .compress-result-card__details dd { margin: 0; overflow-wrap: anywhere; }
+        .compress-result-card__change { margin: 14px 0 0; font-weight: 750; }
+        .compress-result-card__change--reduced { color: #176b51; }
+        .compress-result-card__change--same { color: var(--brand-muted); }
+        .compress-result-card__change--increased { color: #8b572a; }
+        .compress-result-card__hint { margin: 7px 0 0; color: var(--brand-muted); font-size: .82rem; line-height: 1.65; }
+        .compress-result-card__download { width: 100%; min-height: 46px; margin-top: auto; padding-top: 12px; padding-bottom: 12px; }
+        .compress-content { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; margin-top: 42px; }
+        .compress-content article { padding: 24px; border: 1px solid var(--brand-line); border-radius: 16px; background: var(--brand-surface); }
+        .compress-content h2, .compress-content h3 { margin-top: 0; }
+        .compress-content p, .compress-content li { color: var(--brand-muted); line-height: 1.85; }
+        .compress-wide { grid-column: 1 / -1; }
+        .compress-guide-link { display: flex; justify-content: center; margin-top: 28px; }
+        .compress-guide-link a { min-height: 44px; display: inline-flex; align-items: center; }
+        .image-compress-page .post-action-affiliate { margin-top: 44px; }
+        button:disabled, input:disabled, select:disabled { opacity: .55; cursor: not-allowed; }
+        @media (max-width: 780px) {
+            .compress-shell { width: min(100% - 24px, 680px); padding-top: 28px; }
+            .compress-app, .compress-content { grid-template-columns: 1fr; }
+            .compress-results { grid-template-columns: 1fr; }
+            .compress-wide { grid-column: auto; }
+        }
+        @media (max-width: 430px) {
+            .compress-shell { width: min(100% - 16px, 680px); }
+            .compress-panel { padding: 18px 14px; border-radius: 15px; }
+            .compress-dimensions { grid-template-columns: 1fr; }
+            .compress-results-head { align-items: stretch; flex-direction: column; }
+            .compress-file-row { align-items: flex-start; }
+        }
+    </style>
+</head>
+<body class="landing-page image-compress-page">
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <main class="compress-shell">
+        <header class="compress-hero">
+            <p class="compress-hero__kicker">Browser image tool</p>
+            <h1>画像を軽くする</h1>
+            <p>JPEG・PNG・WebP画像の品質やサイズを調整し、ブラウザ内で軽量化します。圧縮前後の容量を比較して保存できます。</p>
+            <p class="compress-privacy">画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。</p>
+        </header>
+
+        <div
+            id="image-compress-app"
+            class="compress-app"
+            data-max-files="{{ image_compress_max_files }}"
+            data-max-file-mb="{{ image_compress_max_file_size_mb }}"
+            data-max-total-mb="{{ image_compress_max_total_size_mb }}"
+            data-max-pixels="{{ image_compress_max_pixels }}"
+            data-max-long-edge="{{ image_compress_max_long_edge }}"
+        >
+            <section class="compress-panel" aria-labelledby="compress-input-title">
+                <div class="compress-step">
+                    <span class="compress-step__number" aria-hidden="true">1</span>
+                    <div class="compress-step__copy"><h2 id="compress-input-title">画像を選択</h2><p>静止画のJPEG・PNG・WebPをまとめて選べます。</p></div>
+                </div>
+                <div id="compress-dropzone" class="compress-dropzone" role="button" tabindex="0" aria-controls="compress-files">
+                    <div><strong>画像を選ぶ、またはここへドロップ</strong><span>最大{{ image_compress_max_files }}件・1件{{ image_compress_max_file_size_mb }}MB・合計{{ image_compress_max_total_size_mb }}MB</span></div>
+                </div>
+                <input id="compress-files" class="compress-file-input" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple>
+                <div id="compress-file-list" class="compress-file-list" aria-live="polite"></div>
+                <p class="compress-limits">1画像は最大{{ '{:,}'.format(image_compress_max_pixels) }}画素、長辺{{ '{:,}'.format(image_compress_max_long_edge) }}pxまでです。アニメーション画像は処理できません。</p>
+            </section>
+
+            <section class="compress-panel" aria-labelledby="compress-settings-title">
+                <div class="compress-step">
+                    <span class="compress-step__number" aria-hidden="true">2</span>
+                    <div class="compress-step__copy"><h2 id="compress-settings-title">圧縮方法を設定</h2><p>形式、品質、最大寸法を必要な範囲だけ変更します。</p></div>
+                </div>
+                <div class="compress-settings">
+                    <div class="compress-field">
+                        <label for="compress-output-format">出力形式</label>
+                        <select id="compress-output-format">
+                            <option value="original" selected>元の形式</option>
+                            <option value="jpeg">JPEG</option>
+                            <option value="webp">WebP</option>
+                            <option value="png">PNG</option>
+                        </select>
+                    </div>
+                    <div class="compress-field">
+                        <label for="compress-quality">品質 <output id="compress-quality-value" for="compress-quality">80</output></label>
+                        <input id="compress-quality" type="range" min="1" max="100" value="80" aria-describedby="compress-quality-help">
+                        <small id="compress-quality-help">JPEGとWebPへ適用します。</small>
+                    </div>
+                    <div class="compress-dimensions">
+                        <div class="compress-field"><label for="compress-max-width">最大幅</label><input id="compress-max-width" type="number" min="1" max="{{ image_compress_max_long_edge }}" step="1" inputmode="numeric" placeholder="変更しない"><small>px</small></div>
+                        <div class="compress-field"><label for="compress-max-height">最大高さ</label><input id="compress-max-height" type="number" min="1" max="{{ image_compress_max_long_edge }}" step="1" inputmode="numeric" placeholder="変更しない"><small>px</small></div>
+                    </div>
+                    <small>片方だけでも指定できます。縦横比を保ち、元画像より拡大しません。</small>
+                    <small>JPEG出力では透明部分を白背景にします。PNG・WebPはブラウザが対応する範囲で透明を保ちます。</small>
+                    <small>Canvasで再生成するため位置情報などのメタデータは通常引き継がれませんが、すべての環境での完全な除去は保証しません。</small>
+                </div>
+                <div class="compress-step" style="margin-top: 26px;">
+                    <span class="compress-step__number" aria-hidden="true">3</span>
+                    <div class="compress-step__copy"><h2>圧縮を実行</h2><p>画像を1件ずつ処理し、完了した結果から保存できます。</p></div>
+                </div>
+                <div class="compress-actions">
+                    <button id="compress-run" type="button" class="btn btn-primary" disabled>圧縮を実行</button>
+                    <button id="compress-cancel" type="button" class="btn btn-secondary" hidden>処理をキャンセル</button>
+                </div>
+                <p id="compress-progress" class="compress-status" aria-live="polite">画像を選択してください。</p>
+                <div id="compress-errors" class="compress-errors" role="alert" aria-live="assertive" hidden></div>
+            </section>
+        </div>
+
+        <section id="compress-results-section" class="compress-results-section" aria-labelledby="compress-results-title" hidden>
+            <div class="compress-results-head"><h2 id="compress-results-title">4. 結果を確認・保存</h2><button id="compress-zip" type="button" class="btn btn-secondary" hidden>まとめてZIPでダウンロード</button></div>
+            <div id="compress-results" class="compress-results"></div>
+        </section>
+
+        <section class="compress-content" aria-label="画像圧縮について">
+            <article class="compress-wide"><h2>画像圧縮とは</h2><p>画質を調整する、縦横の寸法を小さくする、出力形式を変える、画像を再生成してメタデータを引き継がない、といった方法で容量を整えます。画像の内容や設定によっては元より大きくなるため、結果カードの容量を確認してください。</p></article>
+            <article><h3>JPEG</h3><p>写真向けの形式です。品質値で容量を調整できますが、透明部分は保持できません。</p></article>
+            <article><h3>PNG</h3><p>透過画像や図版に向きます。品質値では容量を調整できないため、寸法の縮小やWebPへの変換が有効な場合があります。再生成後に元より大きくなることもあります。</p></article>
+            <article><h3>WebP</h3><p>写真と透過画像の両方に使え、品質値を調整できます。保存後に利用先の対応状況を確認してください。</p></article>
+            <article><h3>注意</h3><ul><li>容量が必ず小さくなるとは限りません。</li><li>印刷用途では寸法や品質を下げすぎないでください。</li><li>大きな画像は端末性能により処理できない場合があります。</li><li>静止画のみ対応し、アニメーション画像は処理しません。</li></ul></article>
+        </section>
+
+        <div class="compress-guide-link"><a href="/guide/image-compress">画像圧縮の使い方と用途別の目安を見る</a></div>
+
+        <section class="tool-affiliate-row" aria-label="画像作業に関連する仕事道具">
+            {% set affiliate_context_links = [
+                {'label': '画像・素材整理の道具を見る', 'description': '画像や資料を整理する作業まわりの道具を探せます。', 'href': amazon_search_url('画像 素材整理 仕事道具'), 'category': 'image-organization', 'cta': '画像整理の道具を見る'},
+                {'label': '資料作成に役立つ本を見る', 'description': '画像を使った資料づくりに関係する本を探せます。', 'href': amazon_search_url('資料作成 デザイン 本'), 'category': 'material-books', 'cta': '資料作成の本を見る'}
+            ] %}
+            {% with affiliate_context_title='画像・資料作成まわりを整える', affiliate_context_lead='画像を軽くしたあと、素材整理や資料作成に使う道具も必要なときだけ確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='image-materials', affiliate_context_placement='image-compress-post-content', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='画像・資料作成に近いサービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
+                {% include 'includes/affiliate_context_block.html' %}
+            {% endwith %}
+            {% set affiliate_upper_amazon_rendered = true %}
+            {% set affiliate_mid_amazon_rendered = true %}
+            {% set affiliate_a8_rendered = true %}
+            {% set affiliate_disclosure_rendered = true %}
+        </section>
+    </main>
+
+    {% include 'includes/related_tools.html' %}
+    {% include 'includes/footer.html' %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="{{ url_for('static', filename='js/file-utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/image-convert.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/zip-utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/image-compress-core.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/image-compress.js') }}"></script>
+</body>
+</html>

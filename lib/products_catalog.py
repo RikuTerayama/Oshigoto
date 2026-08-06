@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 """Public tool catalog for しごと道具箱."""
 
-PUBLIC_TOOL_IDS = ('pdf', 'csv', 'image-batch', 'image-cleanup', 'seo')
+PUBLIC_TOOL_IDS = ('pdf', 'csv', 'image-batch', 'image-compress', 'image-cleanup', 'seo')
 
 PRODUCTS = [
     {
@@ -39,6 +39,18 @@ PRODUCTS = [
         'category': '画像',
         'tags': ['画像', '変換'],
         'features': ['形式変換', 'リサイズ', '一括処理'],
+    },
+    {
+        'id': 'image-compress',
+        'name': '画像圧縮',
+        'description': 'JPEG、PNG、WebPの品質やサイズを調整し、圧縮前後の容量を比較できます。',
+        'path': '/tools/image-compress',
+        'guide_path': '/guide/image-compress',
+        'status': 'available',
+        'icon': 'CMP',
+        'category': '画像',
+        'tags': ['画像', '圧縮', '軽量化'],
+        'features': ['品質調整', 'リサイズ', '容量比較', 'ZIP保存'],
     },
     {
         'id': 'image-cleanup',

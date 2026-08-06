@@ -75,8 +75,8 @@ class ImageBatchConvert {
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
             canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
+            const fallbackContext = canvas.getContext('2d');
+            fallbackContext.drawImage(img, 0, 0);
             imageBitmap = await createImageBitmap(canvas);
         }
 
@@ -102,8 +102,8 @@ class ImageBatchConvert {
         const canvas = document.createElement('canvas');
         canvas.width = outputWidth;
         canvas.height = outputHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(imageBitmap, 0, 0, outputWidth, outputHeight);
+        const outputContext = canvas.getContext('2d');
+        outputContext.drawImage(imageBitmap, 0, 0, outputWidth, outputHeight);
 
         // MIMEタイプと品質設定
         let mimeType;

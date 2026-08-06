@@ -31,9 +31,11 @@ def run_with_test_client():
         '/tools/pdf': 200,
         '/tools/csv': 200,
         '/tools/image-batch': 200,
+        '/tools/image-compress': 200,
         '/tools/image-cleanup': 200,
         '/tools/seo': 200,
         '/guide': 200,
+        '/guide/image-compress': 200,
         '/blog': 200,
         '/glossary': 200,
         '/healthz': 200,
@@ -85,6 +87,18 @@ def run_with_test_client():
     if failed_pdf:
         print('FAIL: /tools/pdf checks: ' + ', '.join(failed_pdf))
         return 1
+    image_body = client.get('/tools/image-compress', follow_redirects=False).data.decode('utf-8', errors='replace')
+    image_checks = {
+        'h1': '<h1>画像を軽くする</h1>' in image_body,
+        'browser_only': 'Oshigotoのサーバーへ送信されません' in image_body,
+        'formats': all(marker in image_body for marker in ('image/jpeg', 'image/png', 'image/webp')),
+        'core_script': 'js/image-compress-core.js' in image_body and 'js/image-compress.js' in image_body,
+        'canonical': 'https://oshigoto.onrender.com/tools/image-compress' in image_body,
+    }
+    failed_image = [name for name, ok in image_checks.items() if not ok]
+    if failed_image:
+        print('FAIL: /tools/image-compress checks: ' + ', '.join(failed_image))
+        return 1
     for path in ('/business/',):
         response = client.get(path, follow_redirects=False)
         if response.status_code != 301 or not (response.headers.get('Location') or '').endswith('/business'):
@@ -99,7 +113,7 @@ def run_deploy_verification():
     app.config['TESTING'] = True
     client = app.test_client()
     failed = []
-    for path in ['/', '/business', '/tools', '/tools/seo', '/tools/csv', '/tools/pdf', '/tools/image-batch', '/tools/image-cleanup', '/guide/csv']:
+    for path in ['/', '/business', '/tools', '/tools/seo', '/tools/csv', '/tools/pdf', '/tools/image-batch', '/tools/image-compress', '/tools/image-cleanup', '/guide/csv', '/guide/image-compress']:
         resp = client.get(path, follow_redirects=False)
         body = resp.data.decode('utf-8', errors='replace')
         if resp.status_code != 200:
@@ -121,6 +135,10 @@ def run_deploy_verification():
     for marker in ('data-mode="page-delete"', 'data-mode="page-rotate"', 'PdfOps.deletePages', 'PdfOps.rotatePages'):
         if marker not in pdf_body:
             failed.append(f'path=/tools/pdf missing marker {marker}')
+    image_body = client.get('/tools/image-compress').data.decode('utf-8', errors='replace')
+    for marker in ('<h1>画像を軽くする</h1>', 'data-max-files="20"', 'js/image-compress.js', 'Oshigotoのサーバーへ送信されません'):
+        if marker not in image_body:
+            failed.append(f'path=/tools/image-compress missing marker {marker}')
     if failed:
         for item in failed:
             print(f"FAIL: {item}")
