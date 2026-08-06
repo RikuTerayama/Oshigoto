@@ -56,6 +56,7 @@ def get_nav_sections():
         {'id': 'tools', 'label': 'ツール', 'path': '/tools', 'children': tool_links},
         {'id': 'guide', 'label': 'ガイド', 'path': '/guide', 'children': guide_links},
         {'id': 'resource', 'label': 'リソース', 'path': '/faq', 'children': resource_links},
+        {'id': 'business', 'label': '企業向け', 'path': '/business', 'children': None},
     ]
 
 
@@ -78,6 +79,7 @@ def get_nav_sections_fallback():
             {'name': '利用規約', 'path': '/terms', 'icon': ''},
             {'name': 'お問い合わせ', 'path': '/contact', 'icon': ''},
         ]},
+        {'id': 'business', 'label': '企業向け', 'path': '/business', 'children': None},
     ]
 
 
@@ -107,6 +109,9 @@ def get_footer_columns():
             {'name': 'ブログ', 'path': '/blog'},
             {'name': 'サイトについて', 'path': '/about'},
             {'name': 'サイトマップ', 'path': '/sitemap.html'},
+        ]},
+        {'title': 'サービス', 'links': [
+            {'name': '企業向け業務効率化支援', 'path': '/business'},
         ]},
         {'title': '法務情報', 'links': [
             {'name': 'プライバシーポリシー', 'path': '/privacy'},

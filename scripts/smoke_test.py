@@ -25,6 +25,7 @@ def run_with_test_client():
         '/': 200,
         '/autofill': 301,
         '/about': 200,
+        '/business': 200,
         '/tools': 200,
         '/tools/pdf': 200,
         '/tools/csv': 200,
@@ -50,6 +51,26 @@ def run_with_test_client():
             print(f"FAIL: {item}")
         print(f"Total failures: {len(failed)}")
         return 1
+    business = client.get('/business', follow_redirects=False)
+    business_body = business.data.decode('utf-8', errors='replace')
+    business_checks = {
+        'title': '企業向け業務効率化支援' in business_body,
+        'h1': '企業の定型業務を' in business_body and '小さなツールから効率化' in business_body,
+        'canonical': 'https://oshigoto.onrender.com/business' in business_body,
+        'contact_cta': 'href="/contact"' in business_body,
+        'tools_cta': 'href="/tools"' in business_body,
+        'no_a8': 'rot3.a8.net' not in business_body,
+        'no_amazon': 'amazon.co.jp' not in business_body,
+    }
+    failed_business = [name for name, ok in business_checks.items() if not ok]
+    if failed_business:
+        print('FAIL: /business checks: ' + ', '.join(failed_business))
+        return 1
+    for path in ('/business/',):
+        response = client.get(path, follow_redirects=False)
+        if response.status_code != 301 or not (response.headers.get('Location') or '').endswith('/business'):
+            print(f'FAIL: {path} expected 301 to /business got {response.status_code} {response.headers.get("Location")}')
+            return 1
     print(f"OK: {len(expected)} paths x 10 requests = expected statuses, no error page")
     return 0
 
@@ -59,7 +80,7 @@ def run_deploy_verification():
     app.config['TESTING'] = True
     client = app.test_client()
     failed = []
-    for path in ['/', '/tools', '/tools/seo', '/tools/csv', '/tools/pdf', '/tools/image-batch', '/tools/image-cleanup', '/guide/csv']:
+    for path in ['/', '/business', '/tools', '/tools/seo', '/tools/csv', '/tools/pdf', '/tools/image-batch', '/tools/image-cleanup', '/guide/csv']:
         resp = client.get(path, follow_redirects=False)
         body = resp.data.decode('utf-8', errors='replace')
         if resp.status_code != 200:

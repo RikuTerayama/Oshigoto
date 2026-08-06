@@ -424,6 +424,12 @@ PUBLIC_AFFILIATE_PAGE_TYPES = frozenset((
 NON_UI_AFFILIATE_PATH_PREFIXES = ('/api/', '/admin/', '/static/')
 NON_UI_AFFILIATE_PATHS = frozenset((
 ))
+AFFILIATE_HARD_EXCLUDED_PATHS = frozenset((
+    '/business',
+    '/contact',
+    '/privacy',
+    '/terms',
+))
 
 
 def get_affiliate_page_type(path):
@@ -444,6 +450,8 @@ def get_affiliate_page_type(path):
         return 'guide'
     if normalized_path in ('/about', '/faq', '/glossary', '/best-practices'):
         return 'info'
+    if normalized_path == '/business':
+        return 'business'
     if normalized_path == '/tools':
         return 'tool_index'
     if normalized_path.startswith('/tools/'):
@@ -464,7 +472,7 @@ def get_affiliate_settings():
         'network': _normalize_affiliate_network(os.getenv('AFFILIATE_NETWORK', 'a8_rotation')),
         'exclude_paths': tuple(_env_list(
             'AFFILIATE_EXCLUDE_PATHS',
-            ()
+            AFFILIATE_HARD_EXCLUDED_PATHS
         )),
         'allowed_page_types': tuple(_env_list(
             'AFFILIATE_ALLOWED_PAGE_TYPES',
@@ -497,14 +505,23 @@ def affiliate_is_path_excluded(path=None):
         return True
     if normalized_path in NON_UI_AFFILIATE_PATHS:
         return True
+    if normalized_path in AFFILIATE_HARD_EXCLUDED_PATHS:
+        return True
+    if any(_path_matches_rule(normalized_path, rule) for rule in settings['exclude_paths']):
+        return True
     if get_affiliate_page_type(normalized_path) in PUBLIC_AFFILIATE_PAGE_TYPES:
         return False
-    return any(_path_matches_rule(normalized_path, rule) for rule in settings['exclude_paths'])
+    return True
 
 
 def affiliate_can_render_textlinks(path=None):
     settings = get_affiliate_settings()
-    return settings['enabled'] and settings['textlinks_enabled']
+    normalized_path = path or (request.path if has_request_context() else '/')
+    return (
+        settings['enabled']
+        and settings['textlinks_enabled']
+        and not affiliate_is_path_excluded(normalized_path)
+    )
 
 
 def affiliate_get_slot_config(slot_id, path=None):
@@ -1221,6 +1238,12 @@ def contact():
     """Render the contact page."""
     return render_template('contact.html')
 
+
+@app.route('/business')
+def business():
+    """Render the business efficiency support page."""
+    return render_template('business.html')
+
 @app.route('/guide')
 def guide_index():
     """Render the public guide index."""
@@ -1703,6 +1726,7 @@ def sitemap():
         # 荳ｻ隕√・繝ｼ繧ｸ
         ('/', 'daily', '1.0', today),
         ('/about', 'monthly', '0.8', today),
+        ('/business', 'monthly', '0.8', today),
         ('/privacy', 'monthly', '0.5', today),
         ('/terms', 'monthly', '0.5', today),
         ('/contact', 'monthly', '0.5', today),
