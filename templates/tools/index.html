@@ -51,7 +51,7 @@
 </head>
 <body class="landing-page">
     {% from 'includes/tool_icons.html' import tool_icon %}
-    {% set icon_tint_by_id = {'pdf': 'teal', 'csv': 'blue', 'image-batch': 'amber', 'image-cleanup': 'teal', 'seo': 'blue'} %}
+    {% set icon_tint_by_id = {'pdf': 'teal', 'csv': 'blue', 'image-batch': 'amber', 'image-compress': 'amber', 'image-cleanup': 'teal', 'seo': 'blue'} %}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
 
@@ -82,7 +82,7 @@
                          data-tags="{{ (product.tags or [])|join(',') }}"
                          data-status="{{ product.status }}">
                     <a href="{{ product.path }}">
-                        <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
+                        <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-compress','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
                         <h3>{{ product.name }}</h3>
                         <div class="pill-row">
                             {% if product.status == 'available' %}

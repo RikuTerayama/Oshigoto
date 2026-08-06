@@ -59,6 +59,11 @@ MAX_FILES_PER_REQUEST = _env_int("MAX_FILES_PER_REQUEST", 20)
 MAX_PDF_PAGES = min(_env_int("MAX_PDF_PAGES", 500), 500)
 BROWSER_PDF_MAX_FILE_SIZE_MB = min(_env_int("BROWSER_PDF_MAX_FILE_SIZE_MB", 50), 50)
 BROWSER_PDF_MAX_PAGES = min(_env_int("BROWSER_PDF_MAX_PAGES", MAX_PDF_PAGES), 500)
+BROWSER_IMAGE_COMPRESS_MAX_FILES = min(_env_int("BROWSER_IMAGE_COMPRESS_MAX_FILES", 20), 20)
+BROWSER_IMAGE_COMPRESS_MAX_FILE_SIZE_MB = min(_env_int("BROWSER_IMAGE_COMPRESS_MAX_FILE_SIZE_MB", 20), 20)
+BROWSER_IMAGE_COMPRESS_MAX_TOTAL_SIZE_MB = min(_env_int("BROWSER_IMAGE_COMPRESS_MAX_TOTAL_SIZE_MB", 100), 100)
+BROWSER_IMAGE_COMPRESS_MAX_PIXELS = min(_env_int("BROWSER_IMAGE_COMPRESS_MAX_PIXELS", 40_000_000), 40_000_000)
+BROWSER_IMAGE_COMPRESS_MAX_LONG_EDGE = min(_env_int("BROWSER_IMAGE_COMPRESS_MAX_LONG_EDGE", 16_384), 16_384)
 MAX_ACTIVE_PDF_JOBS = _env_int("MAX_ACTIVE_PDF_JOBS", 1)
 MAX_OUTPUT_SIZE_MB = _env_int("MAX_OUTPUT_SIZE_MB", 100)
 
@@ -1268,6 +1273,19 @@ def guide_image_batch():
     """Render the image batch conversion guide."""
     return render_template('guide/image-batch.html')
 
+
+@app.route('/guide/image-compress')
+def guide_image_compress():
+    """Render the browser-based image compression guide."""
+    return render_template(
+        'guide/image-compress.html',
+        image_compress_max_files=BROWSER_IMAGE_COMPRESS_MAX_FILES,
+        image_compress_max_file_size_mb=BROWSER_IMAGE_COMPRESS_MAX_FILE_SIZE_MB,
+        image_compress_max_total_size_mb=BROWSER_IMAGE_COMPRESS_MAX_TOTAL_SIZE_MB,
+        image_compress_max_pixels=BROWSER_IMAGE_COMPRESS_MAX_PIXELS,
+        image_compress_max_long_edge=BROWSER_IMAGE_COMPRESS_MAX_LONG_EDGE,
+    )
+
 @app.route('/guide/pdf')
 def guide_pdf():
     """Render the PDF utility guide."""
@@ -1301,6 +1319,22 @@ def tools_image_batch():
     from lib.routes import get_product_by_path
     product = get_product_by_path('/tools/image-batch')
     return render_template('tools/image-batch.html', product=product)
+
+
+@app.route('/tools/image-compress')
+def tools_image_compress():
+    """Render the browser-only JPEG, PNG, and WebP compression tool."""
+    from lib.routes import get_product_by_path
+    product = get_product_by_path('/tools/image-compress')
+    return render_template(
+        'tools/image-compress.html',
+        product=product,
+        image_compress_max_files=BROWSER_IMAGE_COMPRESS_MAX_FILES,
+        image_compress_max_file_size_mb=BROWSER_IMAGE_COMPRESS_MAX_FILE_SIZE_MB,
+        image_compress_max_total_size_mb=BROWSER_IMAGE_COMPRESS_MAX_TOTAL_SIZE_MB,
+        image_compress_max_pixels=BROWSER_IMAGE_COMPRESS_MAX_PIXELS,
+        image_compress_max_long_edge=BROWSER_IMAGE_COMPRESS_MAX_LONG_EDGE,
+    )
 
 @app.route('/tools/pdf')
 def tools_pdf():
@@ -1349,6 +1383,7 @@ def _safe_locked_pdf_name(filename):
 def api_pdf_lock():
     """Encrypt an uploaded PDF with the supplied password."""
     acquired = False
+    files = []
     try:
         if request.content_length and request.content_length > MAX_TOTAL_UPLOAD_BYTES:
             return _pdf_api_error('total_upload_too_large', 413)
@@ -1416,6 +1451,11 @@ def api_pdf_lock():
     finally:
         if acquired:
             _PDF_JOB_SEMAPHORE.release()
+        for upload in files:
+            try:
+                upload.close()
+            except Exception:
+                pass
 
 
 @app.route('/tools/image-cleanup')

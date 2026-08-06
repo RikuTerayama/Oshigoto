@@ -7,7 +7,7 @@
 </head>
 <body class="landing-page">
     {% from 'includes/tool_icons.html' import tool_icon %}
-    {% set icon_tint_by_id = {'pdf': 'teal', 'csv': 'blue', 'image-batch': 'amber', 'image-cleanup': 'teal', 'seo': 'blue'} %}
+    {% set icon_tint_by_id = {'pdf': 'teal', 'csv': 'blue', 'image-batch': 'amber', 'image-compress': 'amber', 'image-cleanup': 'teal', 'seo': 'blue'} %}
     {% include 'includes/header.html' %}
     <main class="landing-shell">
         <section class="hero-v2" aria-labelledby="landing-hero-heading">
@@ -24,8 +24,8 @@
                     <a href="/guide" class="btn btn-secondary">使い方を見る</a>
                 </div>
             </div>
-            <aside class="hero-v2__panel hero-tool-panel" aria-label="5つの道具">
-                <div class="hero-v2__panel-header">5つの道具</div>
+            <aside class="hero-v2__panel hero-tool-panel" aria-label="6つの道具">
+                <div class="hero-v2__panel-header">6つの道具</div>
                 <div class="hero-tool-stack" role="list">
                     <a class="hero-tool-card hero-tool-card--pdf" href="/tools/pdf" role="listitem">
                         <span class="icon-tile icon-tile--teal" aria-hidden="true">{{ tool_icon('pdf', 18) }}</span>
@@ -38,6 +38,10 @@
                     <a class="hero-tool-card hero-tool-card--image" href="/tools/image-batch" role="listitem">
                         <span class="icon-tile icon-tile--amber" aria-hidden="true">{{ tool_icon('image-batch', 18) }}</span>
                         <span><strong>画像一括変換</strong><em>形式変換・リサイズ・まとめて処理</em></span>
+                    </a>
+                    <a class="hero-tool-card hero-tool-card--image" href="/tools/image-compress" role="listitem">
+                        <span class="icon-tile icon-tile--amber" aria-hidden="true">{{ tool_icon('image-compress', 18) }}</span>
+                        <span><strong>画像圧縮</strong><em>品質・サイズ調整・容量比較</em></span>
                     </a>
                     <a class="hero-tool-card hero-tool-card--cleanup" href="/tools/image-cleanup" role="listitem">
                         <span class="icon-tile icon-tile--teal" aria-hidden="true">{{ tool_icon('image-cleanup', 18) }}</span>
@@ -55,12 +59,12 @@
             <div class="section-heading section-heading--centered">
                 <p class="section-kicker">Tools</p>
                 <h2>必要な作業を選ぶ</h2>
-                <p>よくある作業を5つに分けました。目的に近いカードから、そのまま作業に進めます。</p>
+                <p>よくある作業を6つに分けました。目的に近いカードから、そのまま作業に進めます。</p>
             </div>
-            <div class="tool-card-grid cards-grid--balanced cards-grid--five-balanced">
+            <div class="tool-card-grid cards-grid--balanced cards-grid--three-balanced">
                 {% for product in public_products|default(products) %}
                 <article class="tool-card-v2">
-                    <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} tool-card-v2__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
+                    <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} tool-card-v2__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-compress','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
                     <p class="tool-card-v2__eyebrow">{{ product.category|default('ツール') }}</p>
                     <h3>{{ product.name }}</h3>
                     <p>{{ product.description }}</p>

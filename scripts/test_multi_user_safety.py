@@ -45,11 +45,14 @@ def make_pdf(width=72, height=72, pages=1, encrypted=False, password="secret"):
 
 def post_lock(pdf_bytes, password, filename="document.pdf"):
     with app_module.app.test_client() as client:
-        return client.post(
+        response = client.post(
             "/api/pdf/lock",
             data={"file": (io.BytesIO(pdf_bytes), filename), "password": password},
             content_type="multipart/form-data",
         )
+        response.get_data()
+        response.close()
+        return response
 
 
 def assert_locked_pdf(pdf_bytes, password, expected_width, expected_height):

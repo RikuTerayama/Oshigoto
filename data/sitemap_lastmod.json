@@ -9,8 +9,9 @@
   "guide/csv.html": "2026-07-10",
   "guide/image-batch.html": "2026-07-10",
   "guide/image-cleanup.html": "2026-07-10",
+  "guide/image-compress.html": "2026-08-07",
   "guide/index.html": "2026-07-15",
-  "guide/pdf.html": "2026-07-10",
+  "guide/pdf.html": "2026-08-07",
   "guide/seo.html": "2026-07-10",
   "landing.html": "2026-08-07",
   "privacy.html": "2026-07-10",
@@ -18,7 +19,8 @@
   "tools/csv.html": "2026-07-17",
   "tools/image-batch.html": "2026-07-17",
   "tools/image-cleanup.html": "2026-07-17",
+  "tools/image-compress.html": "2026-08-07",
   "tools/index.html": "2026-07-16",
-  "tools/pdf.html": "2026-07-17",
+  "tools/pdf.html": "2026-08-07",
   "tools/seo.html": "2026-07-17"
 }

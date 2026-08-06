@@ -11,12 +11,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 BASE_URL_DEFAULT = 'https://oshigoto.onrender.com'
 MAJOR_PATHS = ['/', '/tools', '/business', '/privacy', '/terms', '/contact', '/about', '/faq', '/guide', '/blog', '/glossary', '/best-practices']
-TOOL_PATHS = ['/tools/pdf', '/tools/csv', '/tools/image-batch', '/tools/image-cleanup', '/tools/seo']
-GUIDE_PATHS = ['/guide/pdf', '/guide/csv', '/guide/image-batch', '/guide/image-cleanup', '/guide/seo']
+TOOL_PATHS = ['/tools/pdf', '/tools/csv', '/tools/image-batch', '/tools/image-compress', '/tools/image-cleanup', '/tools/seo']
+GUIDE_PATHS = ['/guide/pdf', '/guide/csv', '/guide/image-batch', '/guide/image-compress', '/guide/image-cleanup', '/guide/seo']
 INDEXABLE_PATHS = ['/', '/tools', '/business', '/guide', '/blog', '/glossary'] + TOOL_PATHS + GUIDE_PATHS
 PUBLIC_AFFILIATE_PATHS = ['/', '/tools'] + TOOL_PATHS
 ADSENSE_SCRIPT_SRC = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4232725615106709'
-ADSENSE_HEAD_PATHS = ['/', '/tools', '/tools/pdf']
+ADSENSE_HEAD_PATHS = ['/', '/tools', '/tools/pdf', '/tools/image-compress']
 A8_SCRIPT_SRC = 'https://rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js'
 NO_VISIBLE_AFFILIATE_PATHS = ['/business', '/contact', '/privacy', '/terms']
 A8_PUBLIC_PATHS = [
@@ -112,6 +112,41 @@ def run_checks(get):
     add('pdf_browser_limits', '/tools/pdf', bool(browser_limit_copy))
     add('pdf_server_limits', '/tools/pdf', bool(server_limit_copy))
     add('pdf_no_unlock_endpoint', '/tools/pdf', '/api/pdf/unlock' not in pdf_body)
+
+    image_body = _body(get('/tools/image-compress'))
+    image_guide_body = _body(get('/guide/image-compress'))
+    max_files = re.search(r'data-max-files="(\d+)"', image_body)
+    max_file_mb = re.search(r'data-max-file-mb="(\d+)"', image_body)
+    max_total_mb = re.search(r'data-max-total-mb="(\d+)"', image_body)
+    max_pixels = re.search(r'data-max-pixels="(\d+)"', image_body)
+    max_long_edge = re.search(r'data-max-long-edge="(\d+)"', image_body)
+    add('image_compress_h1', '/tools/image-compress', '<h1>画像を軽くする</h1>' in image_body)
+    add('image_compress_canonical', '/tools/image-compress', 'https://oshigoto.onrender.com/tools/image-compress' in image_body)
+    add('image_compress_guide_canonical', '/guide/image-compress', 'https://oshigoto.onrender.com/guide/image-compress' in image_guide_body)
+    add('image_compress_browser_only', '/tools/image-compress', 'Oshigotoのサーバーへ送信されません' in image_body)
+    add('image_compress_static_formats', '/tools/image-compress', all(term in image_body for term in ('image/jpeg', 'image/png', 'image/webp')))
+    add('image_compress_limits_present', '/tools/image-compress', all((max_files, max_file_mb, max_total_mb, max_pixels, max_long_edge)))
+    if all((max_files, max_file_mb, max_total_mb, max_pixels, max_long_edge)):
+        limit_copy_ok = (
+            f'最大{max_files.group(1)}件' in image_body
+            and f'1件{max_file_mb.group(1)}MB' in image_body
+            and f'合計{max_total_mb.group(1)}MB' in image_body
+            and f'最大{int(max_pixels.group(1)):,}画素' in image_body
+            and f'長辺{int(max_long_edge.group(1)):,}px' in image_body
+        )
+        add('image_compress_limit_copy', '/tools/image-compress', limit_copy_ok)
+    add('image_compress_no_false_support', '/tools/image-compress', not any(term in image_body for term in (
+        'GIF対応', 'HEIC対応', 'SVG対応', 'TIFF対応', 'OCR対応', '背景削除に対応'
+    )))
+    affiliate_blocks = re.findall(r'<section\b[^>]*class="[^"]*\baffiliate-context-block\b', image_body, flags=re.I | re.S)
+    add('image_compress_affiliate_block_limit', '/tools/image-compress', len(affiliate_blocks) <= 1, f'count={len(affiliate_blocks)}')
+    script_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static', 'js', 'image-compress.js')
+    with open(script_path, encoding='utf-8') as handle:
+        image_script = handle.read()
+    add('image_compress_no_upload_api', 'static/js/image-compress.js', not any(term in image_script for term in (
+        'fetch(', 'XMLHttpRequest', 'FormData', 'localStorage', 'sessionStorage', 'indexedDB'
+    )))
+    add('image_compress_safe_dom', 'static/js/image-compress.js', 'innerHTML' not in image_script and 'console.log' not in image_script and 'console.debug' not in image_script)
 
 
     for path in ADSENSE_HEAD_PATHS:
