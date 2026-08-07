@@ -6,7 +6,8 @@ class ImageBatchConvert {
     /**
      * 最大ピクセル数（幅 x 高さ）
      */
-    static MAX_PIXELS = 80000000; // 80,000,000ピクセル
+    static MAX_PIXELS = 40000000;
+    static MAX_LONG_EDGE = 16384;
 
     /**
      * 画像のサイズを取得
@@ -14,15 +15,11 @@ class ImageBatchConvert {
      * @returns {Promise<{width: number, height: number}>}
      */
     static async getImageSize(file) {
+        const decoded = await ImageFormatCore.decodeImageFile(file);
         try {
-            const bitmap = await createImageBitmap(file);
-            const size = { width: bitmap.width, height: bitmap.height };
-            bitmap.close();
-            return size;
-        } catch (e) {
-            // フォールバック: HTMLImageElementを使用
-            const img = await ImageConverter.loadImageElement(file);
-            return { width: img.width, height: img.height };
+            return { width: decoded.width, height: decoded.height };
+        } finally {
+            decoded.release();
         }
     }
 
@@ -33,8 +30,12 @@ class ImageBatchConvert {
      * @returns {boolean}
      */
     static validatePixelCount(width, height) {
-        const pixels = width * height;
-        return pixels <= this.MAX_PIXELS;
+        try {
+            ImageFormatCore.validateImageLimits(width, height, this.MAX_PIXELS, this.MAX_LONG_EDGE);
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 
     /**
@@ -57,97 +58,61 @@ class ImageBatchConvert {
             preventUpscale = false
         } = options;
 
-        // 画像サイズを取得（ピクセル上限チェック用）
-        const originalSize = await this.getImageSize(file);
-        
-        // ピクセル上限チェック
-        if (!this.validatePixelCount(originalSize.width, originalSize.height)) {
-            throw new Error(`画像サイズが大きすぎます（${originalSize.width}x${originalSize.height}）。最大80,000,000ピクセルまで対応しています。`);
+        const normalizedFormat = outputFormat.toLowerCase() === 'jpg' ? 'jpeg' : outputFormat.toLowerCase();
+        if (!['jpeg', 'png', 'webp', 'avif'].includes(normalizedFormat)) {
+            throw new Error(`未対応の出力形式: ${outputFormat}`);
         }
-
-        // 画像を読み込み
-        let imageBitmap;
+        let decoded;
+        let canvas;
         try {
-            imageBitmap = await createImageBitmap(file);
-        } catch (e) {
-            // フォールバック: HTMLImageElementを使用
-            const img = await this.loadImageElement(file);
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const fallbackContext = canvas.getContext('2d');
-            fallbackContext.drawImage(img, 0, 0);
-            imageBitmap = await createImageBitmap(canvas);
-        }
+            if (ctx.signal && ctx.signal.cancelled) throw new Error('キャンセルされました');
+            decoded = await ImageFormatCore.decodeImageFile(file);
+            ImageFormatCore.validateImageLimits(decoded.width, decoded.height, this.MAX_PIXELS, this.MAX_LONG_EDGE);
 
-        // リサイズ計算
-        let targetWidth = variant.width || 0;
-        let outputWidth = imageBitmap.width;
-        let outputHeight = imageBitmap.height;
+            // リサイズ計算
+            let targetWidth = variant.width || 0;
+            let outputWidth = decoded.width;
+            let outputHeight = decoded.height;
 
-        if (targetWidth > 0) {
-            // アップスケール抑止
-            if (preventUpscale && imageBitmap.width <= targetWidth) {
-                targetWidth = 0; // リサイズなし
+            if (targetWidth > 0) {
+                if (preventUpscale && decoded.width <= targetWidth) targetWidth = 0;
+
+                if (targetWidth > 0 && decoded.width > targetWidth) {
+                    const ratio = targetWidth / decoded.width;
+                    outputWidth = targetWidth;
+                    outputHeight = Math.max(1, Math.round(decoded.height * ratio));
+                }
             }
+            ImageFormatCore.validateImageLimits(outputWidth, outputHeight, this.MAX_PIXELS, this.MAX_LONG_EDGE);
+            if (ctx.signal && ctx.signal.cancelled) throw new Error('キャンセルされました');
 
-            if (targetWidth > 0 && imageBitmap.width > targetWidth) {
-                const ratio = targetWidth / imageBitmap.width;
-                outputWidth = targetWidth;
-                outputHeight = Math.round(imageBitmap.height * ratio);
+            canvas = document.createElement('canvas');
+            canvas.width = outputWidth;
+            canvas.height = outputHeight;
+            const outputContext = canvas.getContext('2d');
+            if (!outputContext) throw new Error('画像変換を開始できませんでした。');
+            if (normalizedFormat === 'jpeg') {
+                outputContext.fillStyle = '#ffffff';
+                outputContext.fillRect(0, 0, outputWidth, outputHeight);
+            }
+            outputContext.drawImage(decoded.source, 0, 0, outputWidth, outputHeight);
+
+            const mimeType = ImageFormatCore.FORMAT_MIME[normalizedFormat];
+            const blob = await new Promise((resolve, reject) => {
+                canvas.toBlob((result) => {
+                    if (result) resolve(result);
+                    else reject(new Error(normalizedFormat === 'avif' ? 'このブラウザではAVIF形式で保存できません。' : '画像変換に失敗しました'));
+                }, mimeType, normalizedFormat === 'png' ? undefined : quality);
+            });
+            ImageFormatCore.validateEncodedBuffer(await blob.slice(0, 4096).arrayBuffer(), normalizedFormat, blob.type);
+            return { blob, mime: mimeType, width: outputWidth, height: outputHeight };
+        } finally {
+            if (decoded) decoded.release();
+            if (canvas) {
+                canvas.width = 0;
+                canvas.height = 0;
             }
         }
-
-        // Canvasに描画
-        const canvas = document.createElement('canvas');
-        canvas.width = outputWidth;
-        canvas.height = outputHeight;
-        const outputContext = canvas.getContext('2d');
-        outputContext.drawImage(imageBitmap, 0, 0, outputWidth, outputHeight);
-
-        // MIMEタイプと品質設定
-        let mimeType;
-        let blobOptions = {};
-        switch (outputFormat.toLowerCase()) {
-            case 'jpeg':
-            case 'jpg':
-                mimeType = 'image/jpeg';
-                blobOptions.quality = quality;
-                break;
-            case 'webp':
-                mimeType = 'image/webp';
-                blobOptions.quality = quality;
-                break;
-            case 'png':
-                mimeType = 'image/png';
-                break;
-            default:
-                throw new Error(`未対応の出力形式: ${outputFormat}`);
-        }
-
-        // Blobに変換
-        const blob = await new Promise((resolve, reject) => {
-            canvas.toBlob(
-                (blob) => {
-                    if (blob) {
-                        resolve(blob);
-                    } else {
-                        reject(new Error('画像変換に失敗しました'));
-                    }
-                },
-                mimeType,
-                blobOptions.quality
-            );
-        });
-
-        imageBitmap.close();
-
-        return {
-            blob,
-            mime: mimeType,
-            width: outputWidth,
-            height: outputHeight
-        };
     }
 
     /**
@@ -187,4 +152,3 @@ class ImageBatchConvert {
 if (typeof window !== 'undefined') {
     window.ImageBatchConvert = ImageBatchConvert;
 }
-console.debug('[image-batch-convert] loaded', typeof window !== 'undefined' ? !!window.ImageBatchConvert : 'no-window');

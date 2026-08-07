@@ -1,8 +1,8 @@
 ﻿<!doctype html>
 <html lang="ja" class="no-js">
 <head>
-    {% set page_title = '画像をまとめて変換 - PNG/JPG/WebP変換・リサイズ | しごと道具箱' %}
-    {% set page_description = '複数の画像をまとめてPNG、JPG、WebPへ変換し、サイズや品質を指定できる無料ツール。ブラウザ内で処理します。' %}
+    {% set page_title = '画像変換｜JPEG・PNG・WebPを一括変換・リサイズ｜しごと道具箱' %}
+    {% set page_description = 'JPEG・PNG・WebP画像の形式変換とリサイズをブラウザ内でまとめて実行できます。対応ブラウザでは静止GIF、BMP、AVIFの入力にも対応します。' %}
     {% set breadcrumb_title = '画像をまとめて変換' %}
     {% include 'includes/head_meta.html' %}
     {# P1-4: SoftwareApplication構造化データ #}
@@ -348,6 +348,20 @@
             margin-top: 5px;
         }
 
+        .format-capability {
+            margin: 14px 0 0;
+            padding: 12px 14px;
+            border: 1px solid var(--brand-line);
+            border-radius: 8px;
+            background: var(--brand-paper);
+            color: var(--brand-muted);
+            font-size: 0.86em;
+        }
+
+        .format-capability p { margin: 3px 0; overflow-wrap: anywhere; }
+        .format-capability strong { color: var(--brand-ink); }
+        .file-item-name { overflow-wrap: anywhere; }
+
         @media (max-width: 768px) {
             .page-header h1 {
                 font-size: 2em;
@@ -378,7 +392,12 @@
         }
     </style>
 </head>
-<body class="landing-page tool-page tool-page--image-batch">
+<body class="landing-page tool-page tool-page--image-batch"
+      data-max-files="50"
+      data-max-file-mb="20"
+      data-max-total-mb="200"
+      data-max-pixels="40000000"
+      data-max-long-edge="16384">
     {% from 'includes/tool_icons.html' import tool_icon %}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
@@ -387,16 +406,16 @@
         <div class="page-header">
             <span class="icon-tile icon-tile--lg icon-tile--amber" aria-hidden="true">{{ tool_icon('image-batch', 28) }}</span>
             <h1 data-reveal>画像をまとめて変換</h1>
-            <p data-reveal data-reveal-delay="50">複数の画像を一度に形式変換。PNG、JPG、WebPへの書き出しとサイズ調整をまとめて行えます。</p>
+            <p data-reveal data-reveal-delay="50">JPEG・PNG・WebPの形式変換とサイズ調整を、ブラウザ内でまとめて行えます。</p>
         </div>
         {% set tool_intro_what = '画像をまとめて選び、形式・サイズ・品質を指定して一括で書き出せます。' %}
         {% set tool_intro_steps = ['画像をまとめて選ぶ', '変換形式を選ぶ', 'サイズや品質を指定する', '一括変換してダウンロード'] %}
-        {% set tool_intro_notice = 'HEICなど未対応の形式は選択できません。PNG、JPG、WebPの画像を使ってください。' %}
+        {% set tool_intro_notice = 'BMP・静止GIF・AVIFの入力対応とAVIF出力はブラウザによって異なります。選択後に実データを確認します。' %}
         <section class="tool-flow" aria-labelledby="image-batch-flow-heading">
             <h2 id="image-batch-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
-                <li><strong>画像をまとめて選ぶ</strong><span>PNG、JPG、WebPを最大50ファイルまで選べます。</span></li>
-                <li><strong>変換形式を選ぶ</strong><span>PNG、JPG、WebPから出力形式を指定します。</span></li>
+                <li><strong>画像をまとめて選ぶ</strong><span>JPEG、PNG、WebPを最大50ファイルまで選べます。追加形式はブラウザ対応時のみ使えます。</span></li>
+                <li><strong>変換形式を選ぶ</strong><span>JPEG、PNG、WebPと、このブラウザで利用できる場合はAVIFを選べます。</span></li>
                 <li><strong>サイズや品質を決める</strong><span>用途に合わせてプリセットや幅、品質を調整します。</span></li>
                 <li><strong>一括変換する</strong><span>複数出力はZIPでまとめて保存できます。</span></li>
             </ol>
@@ -415,9 +434,14 @@
                     またはクリックしてファイルを選択
                 </p>
                 <p style="color: var(--brand-muted); font-size: 0.85em; margin: 15px 0 0 0;">
-                    対応形式: PNG, JPG, WebP（最大50ファイル、1ファイル20MBまで）
+                    正式対応: JPEG, PNG, WebP。静止GIF, BMP, AVIFはブラウザ対応時のみ（最大50ファイル、1ファイル20MBまで）
                 </p>
-                <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" multiple style="display: none;">
+                <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif" multiple style="display: none;">
+            </div>
+            <div class="format-capability" id="format-capability" aria-live="polite">
+                <p><strong>正式対応:</strong> JPEG・PNG・WebP</p>
+                <p><strong>このブラウザで入力可能:</strong> <span id="capability-inputs">判定中</span></p>
+                <p><strong>このブラウザで出力可能:</strong> <span id="capability-outputs">JPEG・PNG・WebP（AVIFを判定中）</span></p>
             </div>
             <div id="file-list" class="file-list"></div>
             <div id="rejected-files" class="rejected-files" style="display: none;"></div>
@@ -450,13 +474,14 @@
                     <option value="jpeg">JPEG</option>
                     <option value="webp">WebP</option>
                     <option value="png">PNG</option>
+                    <option value="avif" id="output-avif-option" disabled hidden>AVIF（このブラウザで利用可能）</option>
                 </select>
             </div>
             
             <div class="option-group">
-                <label>品質 <span id="quality-value" style="color: var(--brand-muted); margin-left: 10px;">0.9</span></label>
-                <input type="range" id="quality" min="0.1" max="1.0" step="0.1" value="0.9">
-                <p class="info-text">JPEG/WebPの品質設定（PNGの場合は無視されます）</p>
+                <label>品質 <span id="quality-value" style="color: var(--brand-muted); margin-left: 10px;">90</span></label>
+                <input type="range" id="quality" min="1" max="100" step="1" value="90">
+                <p class="info-text" id="quality-help">JPEG・WebP・AVIFの品質設定です。PNGでは品質値を指定できません。</p>
             </div>
             
             <div class="option-group">
@@ -517,6 +542,7 @@
                 {% endwith %}
                 {% include 'includes/tool_flow_side_box.html' %}
             </div>
+            <p class="info-text">JPEGでは透明部分が白色になります。</p>
         </div>
         </div>
 
@@ -548,6 +574,7 @@
     <!-- 共通ライブラリ -->
     <script src="{{ url_for('static', filename='js/file-validation.js') }}"></script>
     <script src="{{ url_for('static', filename='js/file-utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/image-format-core.js') }}"></script>
     <script src="{{ url_for('static', filename='js/image-convert.js') }}"></script>
     <script src="{{ url_for('static', filename='js/image-batch-presets.js') }}"></script>
     <script src="{{ url_for('static', filename='js/image-batch-convert.js') }}"></script>
@@ -572,6 +599,7 @@
             setupInputs();
             renderVariants();
             updateOutputCount();
+            updateFormatCapability();
         });
         
         // ドロップゾーンの設定
@@ -605,16 +633,56 @@
         }
         
         // ファイル処理
-        function handleFiles(files) {
-            const rules = {
-                maxFiles: 50,
-                maxFileSize: 20 * 1024 * 1024,
-                maxTotalSize: 200 * 1024 * 1024,
-                allowedExtensions: ['.png', '.jpg', '.jpeg', '.webp'],
-                allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp']
-            };
-            
-            const { okFiles, rejected } = FileValidation.validateFiles(files, rules);
+        async function handleFiles(files) {
+            const okFiles = [];
+            const rejected = [];
+            const candidates = [];
+            let selectedCount = toolRunner.selectedFiles.length;
+            let selectedBytes = toolRunner.selectedFiles.reduce((sum, file) => sum + file.size, 0);
+            for (const file of files) {
+                if (selectedCount >= 50) {
+                    rejected.push({ file, reason: '選択できる画像は最大50件です。' });
+                } else if (!file.size) {
+                    rejected.push({ file, reason: '0 byteのファイルは処理できません。' });
+                } else if (file.size > 20 * 1024 * 1024) {
+                    rejected.push({ file, reason: '1ファイル20MB以下の画像を選択してください。' });
+                } else if (selectedBytes + file.size > 200 * 1024 * 1024) {
+                    rejected.push({ file, reason: '選択中の画像を含む合計容量は200MB以下にしてください。' });
+                } else {
+                    candidates.push(file);
+                    selectedCount += 1;
+                    selectedBytes += file.size;
+                }
+            }
+            for (const file of candidates) {
+                try {
+                    const buffer = await file.arrayBuffer();
+                    const format = ImageFormatCore.validateFileIdentity(file.name, file.type, buffer, {
+                        allowedFormats: ['jpeg', 'png', 'webp', 'gif', 'bmp', 'avif']
+                    });
+                    const decoded = await ImageFormatCore.decodeImageFile(file);
+                    try {
+                        ImageFormatCore.validateImageLimits(
+                            decoded.width,
+                            decoded.height,
+                            ImageBatchConvert.MAX_PIXELS,
+                            ImageBatchConvert.MAX_LONG_EDGE
+                        );
+                    } finally {
+                        decoded.release();
+                    }
+                    file.imageFormat = format;
+                    okFiles.push(file);
+                } catch (error) {
+                    const extension = ImageFormatCore.getExtension(file.name);
+                    let reason = error && error.message ? error.message : '画像を確認できませんでした。';
+                    if (reason.includes('このブラウザでは画像を読み込めません')) {
+                        if (extension === 'avif') reason = 'このブラウザではAVIF画像を読み込めません。';
+                        if (extension === 'bmp') reason = 'このBMPは、このブラウザでは読み込めません。';
+                    }
+                    rejected.push({ file, reason });
+                }
+            }
             
             if (okFiles.length > 0) {
                 toolRunner.addFiles(okFiles);
@@ -631,18 +699,26 @@
         // ファイル一覧を更新
         function updateFileList() {
             const fileList = document.getElementById('file-list');
-            fileList.innerHTML = '';
+            fileList.replaceChildren();
             
             toolRunner.selectedFiles.forEach((file, index) => {
                 const item = document.createElement('div');
                 item.className = 'file-item';
-                item.innerHTML = `
-                    <div class="file-item-info">
-                        <div class="file-item-name">${file.name}</div>
-                        <div class="file-item-size">${FileUtils.formatBytes(file.size)}</div>
-                    </div>
-                    <button class="file-item-remove" onclick="removeFile(${index})">削除</button>
-                `;
+                const info = document.createElement('div');
+                info.className = 'file-item-info';
+                const name = document.createElement('div');
+                name.className = 'file-item-name';
+                name.textContent = file.name;
+                const size = document.createElement('div');
+                size.className = 'file-item-size';
+                size.textContent = `${FileUtils.formatBytes(file.size)} / ${(file.imageFormat || 'image').toUpperCase()}`;
+                const remove = document.createElement('button');
+                remove.className = 'file-item-remove';
+                remove.type = 'button';
+                remove.textContent = '削除';
+                remove.addEventListener('click', () => removeFile(index));
+                info.append(name, size);
+                item.append(info, remove);
                 fileList.appendChild(item);
             });
         }
@@ -659,7 +735,10 @@
         function showRejectedFiles(rejected) {
             const container = document.getElementById('rejected-files');
             container.style.display = 'block';
-            container.innerHTML = '<strong>以下のファイルは処理できませんでした：</strong>';
+            container.replaceChildren();
+            const heading = document.createElement('strong');
+            heading.textContent = '以下のファイルは処理できませんでした：';
+            container.appendChild(heading);
             
             rejected.forEach(({ file, reason }) => {
                 const div = document.createElement('div');
@@ -672,33 +751,81 @@
         // 入力設定
         function setupInputs() {
             const qualityInput = document.getElementById('quality');
+            const outputFormat = document.getElementById('output-format');
             
             qualityInput.addEventListener('input', () => {
                 document.getElementById('quality-value').textContent = qualityInput.value;
             });
+            outputFormat.addEventListener('change', updateQualityState);
             
             // ファイル数やバリアント数の変更を監視
             const fileInput = document.getElementById('file-input');
             fileInput.addEventListener('change', updateOutputCount);
+            updateQualityState();
+        }
+
+        function updateQualityState() {
+            const isPng = document.getElementById('output-format').value === 'png';
+            const qualityInput = document.getElementById('quality');
+            qualityInput.disabled = isPng;
+            document.getElementById('quality-help').textContent = isPng
+                ? 'PNGでは品質値を指定できません。寸法を調整してください。'
+                : 'JPEG・WebP・AVIFでは1〜100の品質値を使用します。';
+        }
+
+        async function updateFormatCapability() {
+            const inputEl = document.getElementById('capability-inputs');
+            const outputEl = document.getElementById('capability-outputs');
+            const avifOption = document.getElementById('output-avif-option');
+            try {
+                const [gif, bmp, avif] = await Promise.all([
+                    ImageFormatCore.detectRuntimeInputSupport('gif'),
+                    ImageFormatCore.detectRuntimeInputSupport('bmp'),
+                    ImageFormatCore.detectAvifEncodeSupport()
+                ]);
+                const inputs = ['JPEG', 'PNG', 'WebP'];
+                if (gif) inputs.push('静止GIF');
+                if (bmp) inputs.push('BMP');
+                if (avif) inputs.push('AVIF');
+                inputEl.textContent = `${inputs.join('・')}（AVIFは選択時にも確認）`;
+                outputEl.textContent = avif ? 'JPEG・PNG・WebP・AVIF' : 'JPEG・PNG・WebP（AVIF出力は未対応）';
+                avifOption.disabled = !avif;
+                avifOption.hidden = !avif;
+            } catch (error) {
+                inputEl.textContent = 'JPEG・PNG・WebP（追加形式は選択時に確認）';
+                outputEl.textContent = 'JPEG・PNG・WebP';
+                avifOption.disabled = true;
+                avifOption.hidden = true;
+            }
         }
         
         // バリアントを描画
         function renderVariants() {
             const container = document.getElementById('variants-list');
-            container.innerHTML = '';
+            container.replaceChildren();
             
             variants.forEach((variant, index) => {
                 const item = document.createElement('div');
                 item.className = 'variant-item';
-                item.innerHTML = `
-                    <input type="number" class="width-input" value="${variant.width}" min="0" 
-                           placeholder="0 = リサイズなし" 
-                           onchange="updateVariant(${index}, 'width', parseInt(this.value) || 0)">
-                    <input type="text" class="suffix-input" value="${variant.suffix || ''}" 
-                           placeholder="サフィックス（空なら自動）" 
-                           onchange="updateVariant(${index}, 'suffix', this.value)">
-                    <button class="variant-item-remove" onclick="removeVariant(${index})">削除</button>
-                `;
+                const width = document.createElement('input');
+                width.type = 'number';
+                width.className = 'width-input';
+                width.value = String(variant.width);
+                width.min = '0';
+                width.placeholder = '0 = リサイズなし';
+                width.addEventListener('change', () => updateVariant(index, 'width', parseInt(width.value, 10) || 0));
+                const suffix = document.createElement('input');
+                suffix.type = 'text';
+                suffix.className = 'suffix-input';
+                suffix.value = variant.suffix || '';
+                suffix.placeholder = 'サフィックス（空なら自動）';
+                suffix.addEventListener('change', () => updateVariant(index, 'suffix', suffix.value));
+                const remove = document.createElement('button');
+                remove.type = 'button';
+                remove.className = 'variant-item-remove';
+                remove.textContent = '削除';
+                remove.addEventListener('click', () => removeVariant(index));
+                item.append(width, suffix, remove);
                 container.appendChild(item);
             });
             
@@ -742,12 +869,14 @@
             const options = preset.defaultOptions;
             variants = options.variants.map(v => ({ ...v }));
             document.getElementById('output-format').value = options.format;
-            document.getElementById('quality').value = options.quality;
-            document.getElementById('quality-value').textContent = options.quality;
+            const presetQuality = Math.round(options.quality * 100);
+            document.getElementById('quality').value = presetQuality;
+            document.getElementById('quality-value').textContent = presetQuality;
             document.getElementById('prevent-upscale').checked = options.preventUpscale;
             document.getElementById('rename-template').value = options.renameTemplate;
             
             renderVariants();
+            updateQualityState();
         }
         
         // 出力見込み件数を更新
@@ -804,9 +933,14 @@
             }
             
             const outputFormat = document.getElementById('output-format').value;
-            const quality = parseFloat(document.getElementById('quality').value);
+            const quality = parseInt(document.getElementById('quality').value, 10) / 100;
+            if (outputFormat === 'avif' && document.getElementById('output-avif-option').disabled) {
+                alert('このブラウザではAVIF形式で保存できません。');
+                return;
+            }
             const preventUpscale = document.getElementById('prevent-upscale').checked;
             const renameTemplate = document.getElementById('rename-template').value.trim() || '{name}_{suffix}_{index}.{ext}';
+            const usedOutputNames = new Set();
             
             document.getElementById('run-button').style.display = 'none';
             document.getElementById('cancel-button').style.display = 'block';
@@ -816,7 +950,7 @@
             
             const processor = async (file, ctx) => {
                 const nameWithoutExt = FileUtils.getFilenameWithoutExtension(file.name);
-                const ext = outputFormat === 'jpg' ? 'jpeg' : outputFormat;
+                const ext = ImageFormatCore.FORMAT_EXTENSION[outputFormat];
                 const outputs = [];
                 const variantErrors = [];
                 
@@ -844,7 +978,7 @@
                         const suffix = variant.suffix || ImageBatchConvert.generateSuffix(variant.width);
                         
                         // ファイル名を生成
-                        const outputFilename = ImageConverter.applyRenameTemplate(
+                        const templatedFilename = ImageConverter.applyRenameTemplate(
                             renameTemplate,
                             {
                                 name: nameWithoutExt,
@@ -854,6 +988,7 @@
                                 ext: ext
                             }
                         );
+                        const outputFilename = ImageFormatCore.ensureOutputFilename(templatedFilename, outputFormat, usedOutputNames);
                         
                         outputs.push({
                             blob: result.blob,
@@ -872,9 +1007,6 @@
                 // バリアントエラーがあった場合はエラーとして扱う（ただし成功分は出力に含める）
                 if (variantErrors.length > 0 && outputs.length === 0) {
                     throw new Error(`すべてのバリアントでエラー: ${variantErrors.map(e => `${e.variant}: ${e.message}`).join(', ')}`);
-                } else if (variantErrors.length > 0) {
-                    // 一部成功の場合は警告として記録
-                    console.warn(`${file.name}: 一部バリアントでエラー`, variantErrors);
                 }
                 
                 return outputs;
@@ -904,7 +1036,7 @@
             document.getElementById('progress-bar-fill').style.width = `${progress.progress}%`;
             
             const taskList = document.getElementById('task-list');
-            taskList.innerHTML = '';
+            taskList.replaceChildren();
             
             progress.tasksState.forEach(([index, state]) => {
                 const file = toolRunner.selectedFiles[index];
@@ -937,10 +1069,14 @@
         // ダウンロードパネルを表示
         function showDownloadPanel(outputs) {
             const panel = document.getElementById('download-panel');
-            panel.innerHTML = '';
+            panel.replaceChildren();
             
             const totalSize = outputs.reduce((sum, o) => sum + o.blob.size, 0);
-            panel.innerHTML += `<p style="color: var(--brand-muted); margin-bottom: 15px;">変換が完了しました。下のボタンから保存してください。出力: ${outputs.length}件（合計: ${FileUtils.formatBytes(totalSize)}）</p>`;
+            const summary = document.createElement('p');
+            summary.style.color = 'var(--brand-muted)';
+            summary.style.marginBottom = '15px';
+            summary.textContent = `変換が完了しました。下のボタンから保存してください。出力: ${outputs.length}件（合計: ${FileUtils.formatBytes(totalSize)}）`;
+            panel.appendChild(summary);
             
             if (outputs.length === 1) {
                 const button = document.createElement('button');
@@ -974,13 +1110,21 @@
                 outputs.forEach((output, index) => {
                     const item = document.createElement('div');
                     item.className = 'file-item';
-                    item.innerHTML = `
-                        <div class="file-item-info">
-                            <div class="file-item-name">${output.filename}</div>
-                            <div class="file-item-size">${FileUtils.formatBytes(output.blob.size)}</div>
-                        </div>
-                        <button class="preset-button" onclick="toolRunner.downloadSingle(${index})">ダウンロード</button>
-                    `;
+                    const info = document.createElement('div');
+                    info.className = 'file-item-info';
+                    const name = document.createElement('div');
+                    name.className = 'file-item-name';
+                    name.textContent = output.filename;
+                    const size = document.createElement('div');
+                    size.className = 'file-item-size';
+                    size.textContent = FileUtils.formatBytes(output.blob.size);
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'preset-button';
+                    button.textContent = 'ダウンロード';
+                    button.addEventListener('click', () => toolRunner.downloadSingle(index));
+                    info.append(name, size);
+                    item.append(info, button);
                     panel.appendChild(item);
                 });
             }
@@ -992,13 +1136,18 @@
         function showErrors(errors) {
             const errorSection = document.getElementById('error-section');
             const errorMessage = document.getElementById('error-message');
-            
-            errorMessage.innerHTML = '<strong>以下のファイルでエラーが発生しました：</strong><ul style="margin-top: 10px;">';
+            errorMessage.replaceChildren();
+            const heading = document.createElement('strong');
+            heading.textContent = '以下のファイルでエラーが発生しました：';
+            const list = document.createElement('ul');
+            list.style.marginTop = '10px';
             errors.forEach(({ sourceIndex, message }) => {
                 const file = toolRunner.selectedFiles[sourceIndex];
-                errorMessage.innerHTML += `<li>${file.name}: ${message}</li>`;
+                const item = document.createElement('li');
+                item.textContent = `${file.name}: ${message}`;
+                list.appendChild(item);
             });
-            errorMessage.innerHTML += '</ul>';
+            errorMessage.append(heading, list);
             
             errorSection.style.display = 'block';
         }
@@ -1008,6 +1157,12 @@
             document.getElementById('error-section').style.display = 'block';
             document.getElementById('error-message').textContent = `処理できませんでした。${error.message}`;
         }
+
+        window.addEventListener('pagehide', () => {
+            if (!toolRunner) return;
+            toolRunner.cancel();
+            toolRunner.clearFiles();
+        });
     </script>
 </body>
 </html>

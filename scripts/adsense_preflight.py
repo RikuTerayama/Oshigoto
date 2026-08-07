@@ -148,6 +148,37 @@ def run_checks(get):
     )))
     add('image_compress_safe_dom', 'static/js/image-compress.js', 'innerHTML' not in image_script and 'console.log' not in image_script and 'console.debug' not in image_script)
 
+    batch_body = _body(get('/tools/image-batch'))
+    batch_guide_body = _body(get('/guide/image-batch'))
+    batch_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    batch_script_paths = [
+        os.path.join(batch_root, 'static', 'js', 'image-format-core.js'),
+        os.path.join(batch_root, 'static', 'js', 'image-batch-convert.js'),
+    ]
+    batch_scripts = ''
+    for batch_script_path in batch_script_paths:
+        with open(batch_script_path, encoding='utf-8') as handle:
+            batch_scripts += handle.read()
+    add('image_batch_canonical', '/tools/image-batch', 'https://oshigoto.onrender.com/tools/image-batch' in batch_body)
+    add('image_batch_guaranteed_formats', '/tools/image-batch', all(term in batch_body for term in ('JPEG', 'PNG', 'WebP')))
+    add('image_batch_conditional_formats', '/tools/image-batch', all(term in batch_body for term in ('静止GIF', 'BMP', 'AVIF', 'ブラウザ')))
+    add('image_batch_runtime_avif', '/tools/image-batch', 'detectAvifEncodeSupport' in batch_body and 'output-avif-option' in batch_body)
+    add('image_batch_limits', '/tools/image-batch', all(term in batch_body for term in (
+        'data-max-files="50"', 'data-max-file-mb="20"', 'data-max-total-mb="200"',
+        'data-max-pixels="40000000"', 'data-max-long-edge="16384"'
+    )))
+    add('image_batch_guide_scope', '/guide/image-batch', all(term in batch_guide_body for term in (
+        '正式対応する入力形式', 'ブラウザ依存の入力形式', '非対応形式', 'アニメーションGIF'
+    )))
+    add('image_batch_no_false_claims', '/tools/image-batch', not any(term in batch_body for term in (
+        '全形式対応', 'すべての形式', 'どの形式にも対応', 'あらゆる画像形式', 'HEIC対応', 'TIFF対応', 'SVG対応', 'アニメーションGIF対応'
+    )))
+    add('image_batch_no_upload_api', 'image batch scripts', not any(term in batch_scripts for term in (
+        'fetch(', 'XMLHttpRequest', 'FormData', 'localStorage', 'sessionStorage', 'indexedDB'
+    )))
+    add('image_batch_output_verification', 'static/js/image-format-core.js', 'validateEncodedBuffer' in batch_scripts and 'blob.type' in batch_scripts)
+    add('image_batch_no_debug_logging', 'image batch scripts', 'console.log' not in batch_scripts and 'console.debug' not in batch_scripts)
+
 
     for path in ADSENSE_HEAD_PATHS:
         body = _body(get(path))
