@@ -2,14 +2,17 @@
  * Pure validation and naming helpers for browser-based image compression.
  */
 (function (root, factory) {
-    const api = factory();
+    let shared = root && root.ImageFormatCore;
+    if (!shared && typeof module !== 'undefined' && module.exports) shared = require('./image-format-core.js');
+    const api = factory(shared);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.ImageCompressCore = api;
-})(typeof window !== 'undefined' ? window : globalThis, function () {
+})(typeof window !== 'undefined' ? window : globalThis, function (FormatCore) {
     'use strict';
 
-    const FORMAT_MIME = Object.freeze({ jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' });
-    const FORMAT_EXTENSION = Object.freeze({ jpeg: 'jpg', png: 'png', webp: 'webp' });
+    if (!FormatCore) throw new Error('ImageFormatCore is required.');
+    const FORMAT_MIME = Object.freeze({ jpeg: FormatCore.FORMAT_MIME.jpeg, png: FormatCore.FORMAT_MIME.png, webp: FormatCore.FORMAT_MIME.webp });
+    const FORMAT_EXTENSION = Object.freeze({ jpeg: FormatCore.FORMAT_EXTENSION.jpeg, png: FormatCore.FORMAT_EXTENSION.png, webp: FormatCore.FORMAT_EXTENSION.webp });
     const EXTENSION_FORMAT = Object.freeze({ jpg: 'jpeg', jpeg: 'jpeg', png: 'png', webp: 'webp' });
     const MIME_FORMAT = Object.freeze({ 'image/jpeg': 'jpeg', 'image/png': 'png', 'image/webp': 'webp' });
 
@@ -22,50 +25,19 @@
     }
 
     function getExtension(filename) {
-        const safe = String(filename || '').replace(/\\/g, '/').split('/').pop();
-        const dot = safe.lastIndexOf('.');
-        return dot > 0 ? safe.slice(dot + 1).toLowerCase() : '';
+        return FormatCore.getExtension(filename);
     }
 
     function detectFileFormat(buffer) {
-        const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer || 0);
-        if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'jpeg';
-        if (bytes.length >= 8 && bytesToAscii(bytes, 1, 3) === 'PNG' && bytes[0] === 0x89 && bytes[4] === 0x0d && bytes[5] === 0x0a && bytes[6] === 0x1a && bytes[7] === 0x0a) return 'png';
-        if (bytes.length >= 12 && bytesToAscii(bytes, 0, 4) === 'RIFF' && bytesToAscii(bytes, 8, 4) === 'WEBP') return 'webp';
-        if (bytes.length >= 6 && (bytesToAscii(bytes, 0, 6) === 'GIF87a' || bytesToAscii(bytes, 0, 6) === 'GIF89a')) return 'gif';
-        return null;
+        return FormatCore.detectFileFormat(buffer);
     }
 
     function detectApng(buffer) {
-        const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer || 0);
-        if (detectFileFormat(bytes) !== 'png') return false;
-        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-        let offset = 8;
-        while (offset + 12 <= bytes.length) {
-            const length = view.getUint32(offset, false);
-            if (length > bytes.length - offset - 12) return false;
-            const type = bytesToAscii(bytes, offset + 4, 4);
-            if (type === 'acTL') return true;
-            if (type === 'IEND') return false;
-            offset += 12 + length;
-        }
-        return false;
+        return FormatCore.detectApng(buffer);
     }
 
     function detectAnimatedWebp(buffer) {
-        const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer || 0);
-        if (detectFileFormat(bytes) !== 'webp') return false;
-        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-        let offset = 12;
-        while (offset + 8 <= bytes.length) {
-            const type = bytesToAscii(bytes, offset, 4);
-            const length = view.getUint32(offset + 4, true);
-            if (length > bytes.length - offset - 8) return false;
-            if (type === 'ANIM') return true;
-            if (type === 'VP8X' && length >= 1 && (bytes[offset + 8] & 0x02) !== 0) return true;
-            offset += 8 + length + (length % 2);
-        }
-        return false;
+        return FormatCore.detectAnimatedWebp(buffer);
     }
 
     function validateIdentity(filename, mime, buffer) {

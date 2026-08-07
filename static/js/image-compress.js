@@ -185,16 +185,8 @@
     }
 
     async function decodeImage(file) {
-        if (typeof createImageBitmap === 'function') {
-            try {
-                const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
-                return { source: bitmap, width: bitmap.width, height: bitmap.height, close: () => bitmap.close() };
-            } catch (_) {
-                // Fall back to HTMLImageElement for browsers without the option.
-            }
-        }
-        const image = await ImageConverter.loadImageElement(file);
-        return { source: image, width: image.naturalWidth || image.width, height: image.naturalHeight || image.height, close: () => {} };
+        const decoded = await ImageFormatCore.decodeImageFile(file);
+        return { source: decoded.source, width: decoded.width, height: decoded.height, close: decoded.release };
     }
 
     function canvasToBlob(canvas, mime, quality) {
@@ -228,6 +220,7 @@
             }
             context.drawImage(decoded.source, 0, 0, dimensions.width, dimensions.height);
             const blob = await canvasToBlob(canvas, Core.FORMAT_MIME[outputFormat], quality);
+            ImageFormatCore.validateEncodedBuffer(await blob.slice(0, 4096).arrayBuffer(), outputFormat, blob.type);
             if (state.cancelled) throw new Error('キャンセルされました。');
             const filename = Core.generateOutputFilename(file.name, outputFormat, usedNames);
             return {

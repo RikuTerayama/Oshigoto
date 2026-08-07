@@ -35,6 +35,7 @@ def run_with_test_client():
         '/tools/image-cleanup': 200,
         '/tools/seo': 200,
         '/guide': 200,
+        '/guide/image-batch': 200,
         '/guide/image-compress': 200,
         '/blog': 200,
         '/glossary': 200,
@@ -99,6 +100,19 @@ def run_with_test_client():
     if failed_image:
         print('FAIL: /tools/image-compress checks: ' + ', '.join(failed_image))
         return 1
+    batch_body = client.get('/tools/image-batch').data.decode('utf-8', errors='replace')
+    batch_checks = {
+        'format_core': 'js/image-format-core.js' in batch_body,
+        'guaranteed_formats': all(marker in batch_body for marker in ('JPEG', 'PNG', 'WebP')),
+        'conditional_formats': all(marker in batch_body for marker in ('静止GIF', 'BMP', 'AVIF', 'ブラウザ')),
+        'runtime_avif': 'id="output-avif-option" disabled hidden' in batch_body and 'detectAvifEncodeSupport' in batch_body,
+        'limits': all(marker in batch_body for marker in ('data-max-pixels="40000000"', 'data-max-long-edge="16384"')),
+        'safe_dom': 'innerHTML' not in batch_body,
+    }
+    failed_batch = [name for name, ok in batch_checks.items() if not ok]
+    if failed_batch:
+        print('FAIL: /tools/image-batch checks: ' + ', '.join(failed_batch))
+        return 1
     for path in ('/business/',):
         response = client.get(path, follow_redirects=False)
         if response.status_code != 301 or not (response.headers.get('Location') or '').endswith('/business'):
@@ -113,7 +127,7 @@ def run_deploy_verification():
     app.config['TESTING'] = True
     client = app.test_client()
     failed = []
-    for path in ['/', '/business', '/tools', '/tools/seo', '/tools/csv', '/tools/pdf', '/tools/image-batch', '/tools/image-compress', '/tools/image-cleanup', '/guide/csv', '/guide/image-compress']:
+    for path in ['/', '/business', '/tools', '/tools/seo', '/tools/csv', '/tools/pdf', '/tools/image-batch', '/tools/image-compress', '/tools/image-cleanup', '/guide/csv', '/guide/image-batch', '/guide/image-compress']:
         resp = client.get(path, follow_redirects=False)
         body = resp.data.decode('utf-8', errors='replace')
         if resp.status_code != 200:
@@ -139,6 +153,10 @@ def run_deploy_verification():
     for marker in ('<h1>画像を軽くする</h1>', 'data-max-files="20"', 'js/image-compress.js', 'Oshigotoのサーバーへ送信されません'):
         if marker not in image_body:
             failed.append(f'path=/tools/image-compress missing marker {marker}')
+    batch_body = client.get('/tools/image-batch').data.decode('utf-8', errors='replace')
+    for marker in ('js/image-format-core.js', 'id="output-avif-option" disabled hidden', 'data-max-pixels="40000000"', '静止GIF'):
+        if marker not in batch_body:
+            failed.append(f'path=/tools/image-batch missing marker {marker}')
     if failed:
         for item in failed:
             print(f"FAIL: {item}")

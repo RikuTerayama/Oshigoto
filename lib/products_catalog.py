@@ -31,14 +31,14 @@ PRODUCTS = [
     {
         'id': 'image-batch',
         'name': '画像一括変換',
-        'description': 'PNG、JPG、WebPなどの画像形式変換とリサイズをまとめて実行できます。',
+        'description': 'JPEG、PNG、WebPの形式変換と複数サイズのリサイズをブラウザ内でまとめて実行できます。',
         'path': '/tools/image-batch',
         'guide_path': '/guide/image-batch',
         'status': 'available',
         'icon': 'IMG',
         'category': '画像',
         'tags': ['画像', '変換'],
-        'features': ['形式変換', 'リサイズ', '一括処理'],
+        'features': ['JPEG・PNG・WebP変換', '複数サイズ', 'リネーム', 'ZIP保存'],
     },
     {
         'id': 'image-compress',
