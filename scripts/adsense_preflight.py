@@ -83,6 +83,24 @@ def run_checks(get):
         except Exception as exc:
             add('route_200', path, False, str(exc))
 
+    for path in ('/tools/ocr', '/guide/ocr', '/api/ocr', '/_internal/ocr-spike'):
+        resp = get(path)
+        add('ocr_not_public', path, _status(resp) == 404, f'status={_status(resp)}')
+
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    public_ocr_files = (
+        os.path.join(repo_root, 'lib', 'products_catalog.py'),
+        os.path.join(repo_root, 'lib', 'nav.py'),
+        os.path.join(repo_root, 'lib', 'seo.py'),
+        os.path.join(repo_root, 'templates', 'landing.html'),
+        os.path.join(repo_root, 'templates', 'tools', 'index.html'),
+        os.path.join(repo_root, 'templates', 'guide', 'index.html'),
+    )
+    for path in public_ocr_files:
+        with open(path, encoding='utf-8') as handle:
+            text = handle.read().lower()
+        add('ocr_absent_from_public_config', path, '/tools/ocr' not in text and '/guide/ocr' not in text)
+
     resp = get('/autofill')
     add('autofill_redirect', '/autofill', _status(resp) == 301 and (_headers(resp).get('Location') or '').endswith('/tools'), f'status={_status(resp)} loc={_headers(resp).get("Location")}')
     resp = get('/api/pdf/unlock')
@@ -251,6 +269,9 @@ def run_checks(get):
         add('public_copy', path, not leaks, ','.join(leaks))
 
     sitemap = _body(get('/sitemap.xml'))
+    add('sitemap_excludes_ocr', '/sitemap.xml', '/tools/ocr' not in sitemap and '/guide/ocr' not in sitemap)
+    landing = _body(get('/'))
+    add('landing_excludes_ocr', '/', '/tools/ocr' not in landing and '/guide/ocr' not in landing)
     for path in TOOL_PATHS + GUIDE_PATHS + ['/faq', '/privacy']:
         add('sitemap_required', path, path in sitemap)
     add('sitemap_excludes_autofill', '/autofill', '/autofill' not in sitemap)

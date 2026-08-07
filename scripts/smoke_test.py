@@ -43,6 +43,12 @@ def run_with_test_client():
         '/glossary': 200,
         '/healthz': 200,
     }
+    private_ocr_paths = (
+        '/tools/ocr',
+        '/guide/ocr',
+        '/api/ocr',
+        '/_internal/ocr-spike',
+    )
     failed = []
     for path, expected_status in expected.items():
         for i in range(10):
@@ -52,6 +58,10 @@ def run_with_test_client():
                 failed.append(f"path={path} run={i+1} expected={expected_status} status={response.status_code}")
             elif path != '/healthz' and _looks_like_error_page(body):
                 failed.append(f"path={path} run={i+1} body contains error page")
+    for path in private_ocr_paths:
+        response = client.get(path, follow_redirects=False)
+        if response.status_code != 404:
+            failed.append(f"path={path} expected=404 status={response.status_code}")
     if failed:
         for item in failed:
             print(f"FAIL: {item}")
@@ -182,6 +192,10 @@ def run_deploy_verification():
     for marker in ('<h1>QRコードを作る</h1>', 'value="wifi"', '1,000 bytes', 'vendor/qrcode/1.5.4/qrcode.min.js', 'js/qr-code-core.js', 'PNGで保存', 'SVGで保存'):
         if marker not in qr_body:
             failed.append(f'path=/tools/qr-code missing marker {marker}')
+    for path in ('/tools/ocr', '/guide/ocr', '/api/ocr', '/_internal/ocr-spike'):
+        resp = client.get(path, follow_redirects=False)
+        if resp.status_code != 404:
+            failed.append(f'path={path} expected 404 got {resp.status_code}')
     if failed:
         for item in failed:
             print(f"FAIL: {item}")
