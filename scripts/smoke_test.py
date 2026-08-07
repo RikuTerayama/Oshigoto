@@ -32,11 +32,13 @@ def run_with_test_client():
         '/tools/csv': 200,
         '/tools/image-batch': 200,
         '/tools/image-compress': 200,
+        '/tools/qr-code': 200,
         '/tools/image-cleanup': 200,
         '/tools/seo': 200,
         '/guide': 200,
         '/guide/image-batch': 200,
         '/guide/image-compress': 200,
+        '/guide/qr-code': 200,
         '/blog': 200,
         '/glossary': 200,
         '/healthz': 200,
@@ -113,6 +115,25 @@ def run_with_test_client():
     if failed_batch:
         print('FAIL: /tools/image-batch checks: ' + ', '.join(failed_batch))
         return 1
+    qr_body = client.get('/tools/qr-code').data.decode('utf-8', errors='replace')
+    qr_guide_body = client.get('/guide/qr-code').data.decode('utf-8', errors='replace')
+    qr_checks = {
+        'h1': '<h1>QRコードを作る</h1>' in qr_body,
+        'five_types': all(f'value="{value}"' in qr_body for value in ('url', 'text', 'email', 'phone', 'wifi')),
+        'local_vendor': 'vendor/qrcode/1.5.4/qrcode.min.js' in qr_body and 'cdn.' not in qr_body,
+        'scripts': 'js/qr-code-core.js' in qr_body and 'js/qr-code.js' in qr_body,
+        'browser_only': 'Oshigotoのサーバーへ送信されません' in qr_body,
+        'wifi_warning': 'Wi-Fi用QRコードには接続パスワードが含まれます' in qr_body,
+        'byte_limit': '1,000 bytes' in qr_body,
+        'outputs': 'PNGで保存' in qr_body and 'SVGで保存' in qr_body,
+        'guide': '基本の手順' in qr_guide_body and '読み取りやすくするために' in qr_guide_body,
+        'guide_faq': qr_guide_body.count('<details>') == 7 and '"@type": "FAQPage"' in qr_guide_body,
+        'canonical': 'https://oshigoto.onrender.com/tools/qr-code' in qr_body,
+    }
+    failed_qr = [name for name, ok in qr_checks.items() if not ok]
+    if failed_qr:
+        print('FAIL: /tools/qr-code checks: ' + ', '.join(failed_qr))
+        return 1
     for path in ('/business/',):
         response = client.get(path, follow_redirects=False)
         if response.status_code != 301 or not (response.headers.get('Location') or '').endswith('/business'):
@@ -127,7 +148,7 @@ def run_deploy_verification():
     app.config['TESTING'] = True
     client = app.test_client()
     failed = []
-    for path in ['/', '/business', '/tools', '/tools/seo', '/tools/csv', '/tools/pdf', '/tools/image-batch', '/tools/image-compress', '/tools/image-cleanup', '/guide/csv', '/guide/image-batch', '/guide/image-compress']:
+    for path in ['/', '/business', '/tools', '/tools/seo', '/tools/csv', '/tools/pdf', '/tools/image-batch', '/tools/image-compress', '/tools/qr-code', '/tools/image-cleanup', '/guide/csv', '/guide/image-batch', '/guide/image-compress', '/guide/qr-code']:
         resp = client.get(path, follow_redirects=False)
         body = resp.data.decode('utf-8', errors='replace')
         if resp.status_code != 200:
@@ -157,6 +178,10 @@ def run_deploy_verification():
     for marker in ('js/image-format-core.js', 'id="output-avif-option" disabled hidden', 'data-max-pixels="40000000"', '静止GIF'):
         if marker not in batch_body:
             failed.append(f'path=/tools/image-batch missing marker {marker}')
+    qr_body = client.get('/tools/qr-code').data.decode('utf-8', errors='replace')
+    for marker in ('<h1>QRコードを作る</h1>', 'value="wifi"', '1,000 bytes', 'vendor/qrcode/1.5.4/qrcode.min.js', 'js/qr-code-core.js', 'PNGで保存', 'SVGで保存'):
+        if marker not in qr_body:
+            failed.append(f'path=/tools/qr-code missing marker {marker}')
     if failed:
         for item in failed:
             print(f"FAIL: {item}")

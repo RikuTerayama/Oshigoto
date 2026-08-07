@@ -16,7 +16,7 @@
                 {% if product.path == current_path %}
                 <span class="related-tools-card__badge" aria-label="現在のページ">表示中</span>
                 {% endif %}
-                <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} related-tools-card__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-compress','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
+                <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} related-tools-card__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-compress','qr-code','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
                 <h3 class="related-tools-card__title">{{ product.name|default('') }}</h3>
                 <p class="related-tools-card__desc">{{ product.description|default('') }}</p>
                 <div class="related-tools-card__actions">

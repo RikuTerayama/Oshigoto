@@ -1,0 +1,129 @@
+{% set qr_faqs = [
+    {'question': 'QRコードの内容はサーバーへ送られますか？', 'answer': 'いいえ。作成処理は表示中のブラウザ内で行い、入力内容をOshigotoのサーバーへ送信しません。'},
+    {'question': 'PNGとSVGの違いは何ですか？', 'answer': 'PNGは文書やチャットへ貼り付けやすい画像形式です。SVGは拡大しても輪郭を保ちやすく、印刷物などに向きます。'},
+    {'question': '読み取れない場合はどうすればよいですか？', 'answer': '入力内容を短くし、出力サイズや余白、誤り訂正を見直してください。利用前に実際の端末と利用サイズで確認してください。'},
+    {'question': 'Wi-Fiパスワードは保存されますか？', 'answer': '保存しません。ただし、作成したWi-Fi用QRコードの画像自体には接続情報が含まれるため、共有範囲に注意してください。'},
+    {'question': '作成したQRコードに有効期限はありますか？', 'answer': 'このツールが期限を設定することはありません。URLなど格納先のサービスが利用できるかどうかは別途確認してください。'},
+    {'question': 'URLの安全性を確認できますか？', 'answer': '確認できません。入力されたURLをそのまま格納するため、配布前にURLとリンク先を利用者自身で確認してください。'},
+    {'question': 'QRコードへロゴを入れられますか？', 'answer': '初版では対応していません。QRコードの一部を加工すると読み取りに影響する場合があります。'}
+] %}
+<!doctype html>
+<html lang="ja" class="no-js">
+<head>
+    {% set page_title = 'QRコード作成の使い方｜しごと道具箱' %}
+    {% set page_description = 'URL、テキスト、メール、電話番号、Wi-Fi接続情報からQRコードを作り、PNG・SVGで保存する手順と注意点を説明します。' %}
+    {% set breadcrumb_title = 'QRコード作成の使い方' %}
+    {% include 'includes/head_meta.html' %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {% for item in qr_faqs %}
+        {
+          "@type": "Question",
+          "name": {{ item.question|tojson }},
+          "acceptedAnswer": {"@type": "Answer", "text": {{ item.answer|tojson }}}
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]
+    }
+    </script>
+    <style>
+        .qr-guide-page { background: var(--brand-bg); color: var(--brand-ink); }
+        .qr-guide-shell { width: min(960px, calc(100% - 32px)); margin: 0 auto; padding: 42px 0 72px; }
+        .qr-guide-hero { max-width: 760px; margin: 0 auto 32px; text-align: center; }
+        .qr-guide-hero__kicker { margin: 0 0 10px; color: var(--brand-primary-strong); font-size: .78rem; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; }
+        .qr-guide-hero h1 { margin: 0 0 14px; font-size: clamp(2rem, 6vw, 3.2rem); letter-spacing: -.04em; }
+        .qr-guide-hero p { margin: 0; color: var(--brand-muted); line-height: 1.85; }
+        .qr-guide-actions { display: flex; justify-content: center; margin-top: 22px; }
+        .qr-guide-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+        .qr-guide-card { min-width: 0; padding: clamp(22px, 4vw, 32px); border: 1px solid var(--brand-line); border-radius: 18px; background: var(--brand-surface); box-shadow: var(--shadow-soft); }
+        .qr-guide-card--wide { grid-column: 1 / -1; }
+        .qr-guide-card h2 { margin: 0 0 14px; font-size: 1.3rem; }
+        .qr-guide-card h3 { margin: 22px 0 8px; font-size: 1rem; }
+        .qr-guide-card p, .qr-guide-card li { color: var(--brand-muted); line-height: 1.85; }
+        .qr-guide-card ul, .qr-guide-card ol { margin-bottom: 0; padding-left: 22px; }
+        .qr-guide-note { padding: 14px 16px; border-left: 3px solid #9a6b19; border-radius: 8px; background: #fff8e7; color: #674713 !important; }
+        .qr-guide-faq { border-top: 1px solid var(--brand-line); }
+        .qr-guide-faq details { padding: 16px 0; border-bottom: 1px solid var(--brand-line); }
+        .qr-guide-faq summary { min-height: 44px; cursor: pointer; font-weight: 750; line-height: 1.6; }
+        .qr-guide-faq p { margin: 8px 0 0; }
+        .qr-guide-steps { counter-reset: step; list-style: none; padding: 0 !important; }
+        .qr-guide-steps li { position: relative; min-height: 42px; padding: 5px 0 18px 48px; }
+        .qr-guide-steps li::before { counter-increment: step; content: counter(step); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--brand-ink); color: #fff; font-size: .82rem; font-weight: 750; }
+        @media (max-width: 700px) { .qr-guide-grid { grid-template-columns: 1fr; } .qr-guide-card--wide { grid-column: auto; } }
+        @media (max-width: 390px) { .qr-guide-shell { width: min(100% - 16px, 680px); padding-top: 28px; } .qr-guide-card { padding: 20px 16px; } }
+    </style>
+</head>
+<body class="landing-page qr-guide-page">
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <main class="qr-guide-shell">
+        <header class="qr-guide-hero">
+            <p class="qr-guide-hero__kicker">QR code guide</p>
+            <h1>QRコード作成の使い方</h1>
+            <p>5種類の入力からQRコードを作成し、PNGまたはSVGで保存するまでの手順と注意点をまとめます。</p>
+            <p class="qr-guide-actions"><a class="btn btn-primary" href="/tools/qr-code">QRコードを作る</a></p>
+        </header>
+
+        <div class="qr-guide-grid">
+            <article class="qr-guide-card">
+                <h2>基本の手順</h2>
+                <ol class="qr-guide-steps">
+                    <li>URL、テキスト、メール、電話番号、Wi-Fiから種類を選びます。</li>
+                    <li>QRコードに入れる内容を入力します。</li>
+                    <li>必要に応じて誤り訂正、サイズ、余白を調整します。</li>
+                    <li>「QRコードを作成」を押してプレビューを確認します。</li>
+                    <li>PNGまたはSVGで保存し、実際の端末で読み取りを確認します。</li>
+                </ol>
+            </article>
+            <article class="qr-guide-card">
+                <h2>入力できる内容</h2>
+                <ul>
+                    <li><strong>URL:</strong> http:// または https:// のアドレス</li>
+                    <li><strong>テキスト:</strong> 日本語、英語、絵文字、改行を含む文章</li>
+                    <li><strong>メール:</strong> 宛先と、任意の件名・本文</li>
+                    <li><strong>電話番号:</strong> 3〜20桁の番号</li>
+                    <li><strong>Wi-Fi:</strong> SSID、セキュリティ方式、パスワード、非公開設定</li>
+                </ul>
+                <p>最終的なQRコード内容はUTF-8で1,000バイトまでです。</p>
+            </article>
+            <article class="qr-guide-card">
+                <h2>保存形式の選び方</h2>
+                <h3>PNG</h3><p>文書やチャットへ貼り付けるときに扱いやすい画像形式です。256px、512px、1024pxから選べます。</p>
+                <h3>SVG</h3><p>印刷や資料作成で拡大して使いたいときに向くベクター形式です。保存後も実際の利用サイズで読み取り確認をしてください。</p>
+            </article>
+            <article class="qr-guide-card">
+                <h2>読み取りやすくするために</h2>
+                <ul>
+                    <li>前景は黒、背景は白に固定し、コントラストを保っています。</li>
+                    <li>周囲の余白は削らず、標準の4を基準にします。</li>
+                    <li>小さく印刷するときは、実寸で読み取れるか確認します。</li>
+                    <li>誤り訂正を上げると耐性は増えますが、必ず読めることを保証するものではありません。</li>
+                </ul>
+            </article>
+            <article class="qr-guide-card qr-guide-card--wide">
+                <h2>プライバシーと安全上の注意</h2>
+                <p>QRコードはブラウザ内で作成され、入力内容はOshigotoのサーバーへ送信されません。Cookieやブラウザストレージへの保存も行いません。</p>
+                <p class="qr-guide-note">Wi-Fi用QRコードには接続パスワードが含まれます。画像ファイルを共有すると、受け取った人が接続情報を読み取れる可能性があります。</p>
+                <p>URL用QRコードは入力されたURLを符号化するだけです。リンク先の内容や安全性を確認する機能ではありません。重要な配布物へ載せる前にURLと読み取り結果を確認してください。</p>
+            </article>
+            <article class="qr-guide-card qr-guide-card--wide">
+                <h2>よくある質問</h2>
+                <div class="qr-guide-faq">
+                    {% for item in qr_faqs %}
+                    <details>
+                        <summary>{{ item.question }}</summary>
+                        <p>{{ item.answer }}</p>
+                    </details>
+                    {% endfor %}
+                </div>
+            </article>
+        </div>
+        {% set current_path = '/guide/qr-code' %}
+        {% include 'includes/related_tools.html' %}
+    </main>
+    {% include 'includes/footer.html' %}
+</body>
+</html>
