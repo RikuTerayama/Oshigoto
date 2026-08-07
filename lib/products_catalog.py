@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 """Public tool catalog for しごと道具箱."""
 
-PUBLIC_TOOL_IDS = ('pdf', 'csv', 'image-batch', 'image-compress', 'image-cleanup', 'seo')
+PUBLIC_TOOL_IDS = ('pdf', 'csv', 'image-batch', 'image-compress', 'qr-code', 'image-cleanup', 'seo')
 
 PRODUCTS = [
     {
@@ -51,6 +51,18 @@ PRODUCTS = [
         'category': '画像',
         'tags': ['画像', '圧縮', '軽量化'],
         'features': ['品質調整', 'リサイズ', '容量比較', 'ZIP保存'],
+    },
+    {
+        'id': 'qr-code',
+        'name': 'QRコード作成',
+        'description': 'URL、テキスト、メール、電話番号、Wi-Fi接続情報からQRコードをブラウザ内で作成できます。',
+        'path': '/tools/qr-code',
+        'guide_path': '/guide/qr-code',
+        'status': 'available',
+        'icon': 'QR',
+        'category': '共有',
+        'tags': ['QRコード', 'URL', 'Wi-Fi', '共有'],
+        'features': ['URL', 'テキスト', 'メール', '電話番号', 'Wi-Fi', 'PNG・SVG保存'],
     },
     {
         'id': 'image-cleanup',

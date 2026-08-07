@@ -1286,6 +1286,12 @@ def guide_image_compress():
         image_compress_max_long_edge=BROWSER_IMAGE_COMPRESS_MAX_LONG_EDGE,
     )
 
+@app.route('/guide/qr-code')
+def guide_qr_code():
+    """Render the browser-only QR code generator guide."""
+    return render_template('guide/qr-code.html')
+
+
 @app.route('/guide/pdf')
 def guide_pdf():
     """Render the PDF utility guide."""
@@ -1335,6 +1341,14 @@ def tools_image_compress():
         image_compress_max_pixels=BROWSER_IMAGE_COMPRESS_MAX_PIXELS,
         image_compress_max_long_edge=BROWSER_IMAGE_COMPRESS_MAX_LONG_EDGE,
     )
+
+@app.route('/tools/qr-code')
+def tools_qr_code():
+    """Render the browser-only QR code generator."""
+    from lib.routes import get_product_by_path
+    product = get_product_by_path('/tools/qr-code')
+    return render_template('tools/qr-code.html', product=product)
+
 
 @app.route('/tools/pdf')
 def tools_pdf():

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ja" class="no-js">
+<head>
+    {% set page_title = 'QRコード作成｜URL・テキスト・Wi-FiをブラウザでQR化｜しごと道具箱' %}
+    {% set page_description = 'URL、テキスト、メール、電話番号、Wi-Fi接続情報からQRコードをブラウザ内で作成し、PNGまたはSVGで保存できます。' %}
+    {% set breadcrumb_title = 'QRコード作成' %}
+    {% include 'includes/head_meta.html' %}
+    <style>
+        .qr-page { background: var(--brand-bg); color: var(--brand-ink); }
+        .qr-shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 42px 0 72px; }
+        .qr-hero { max-width: 780px; margin: 0 auto 30px; text-align: center; }
+        .qr-hero__kicker { margin: 0 0 10px; color: var(--brand-primary-strong); font-size: .78rem; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; }
+        .qr-hero h1 { margin: 0 0 14px; font-size: clamp(2rem, 6vw, 3.35rem); line-height: 1.14; letter-spacing: -.04em; }
+        .qr-hero__lead { margin: 0; color: var(--brand-muted); line-height: 1.85; }
+        .qr-privacy { display: inline-flex; margin: 18px auto 0; padding: 10px 16px; border: 1px solid rgba(14,124,123,.28); border-radius: 999px; background: rgba(14,124,123,.07); color: var(--brand-primary-strong); font-size: .9rem; font-weight: 700; }
+        .qr-app { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr); gap: 24px; align-items: start; }
+        .qr-panel { min-width: 0; padding: clamp(20px, 4vw, 34px); border: 1px solid var(--brand-line); border-radius: 20px; background: var(--brand-surface); box-shadow: var(--shadow-soft); }
+        .qr-section-title { margin: 0 0 6px; font-size: 1.25rem; }
+        .qr-section-lead { margin: 0 0 20px; color: var(--brand-muted); font-size: .9rem; line-height: 1.7; }
+        .qr-types { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 0 0 24px; padding: 0; border: 0; }
+        .qr-type { position: relative; min-width: 0; }
+        .qr-type input { position: absolute; inset: 0; opacity: 0; }
+        .qr-type span { display: grid; place-items: center; min-height: 48px; padding: 8px; border: 1px solid var(--brand-line); border-radius: 11px; color: var(--brand-muted); font-size: .82rem; font-weight: 700; text-align: center; cursor: pointer; }
+        .qr-type input:checked + span { border-color: var(--brand-primary); background: var(--brand-teal-soft); color: var(--brand-primary-strong); }
+        .qr-type input:focus-visible + span { outline: 3px solid rgba(14,124,123,.28); outline-offset: 2px; }
+        .qr-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+        .qr-fields { display: grid; gap: 16px; }
+        .qr-field { display: grid; gap: 8px; min-width: 0; }
+        .qr-field label, .qr-field legend { font-size: .9rem; font-weight: 750; }
+        .qr-field input, .qr-field textarea, .qr-field select { width: 100%; min-height: 48px; padding: 11px 12px; border: 1px solid var(--brand-line); border-radius: 10px; background: #fff; color: var(--brand-ink); font: inherit; }
+        .qr-field textarea { min-height: 112px; resize: vertical; line-height: 1.6; }
+        .qr-field small { color: var(--brand-muted); line-height: 1.65; }
+        .qr-field.is-disabled { opacity: .56; }
+        .qr-check { display: flex; align-items: center; gap: 10px; min-height: 44px; font-weight: 650; }
+        .qr-check input { width: 20px; height: 20px; accent-color: var(--brand-primary); }
+        .qr-byte-count { margin: 12px 0 0; color: var(--brand-muted); font-size: .84rem; text-align: right; }
+        .qr-byte-count.is-over { color: #9b2c2c; font-weight: 750; }
+        .qr-warning { margin: 18px 0 0; padding: 13px 15px; border-left: 3px solid #9a6b19; border-radius: 8px; background: #fff8e7; color: #674713; font-size: .86rem; line-height: 1.7; }
+        .qr-settings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        .qr-action { width: 100%; min-height: 52px; margin-top: 22px; }
+        .qr-status { min-height: 28px; margin: 14px 0 0; color: #7b2929; font-size: .9rem; line-height: 1.65; text-align: center; }
+        .qr-output { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--brand-line); text-align: center; }
+        .qr-output[hidden] { display: none; }
+        .qr-preview-frame { display: grid; place-items: center; width: min(100%, 560px); min-height: 290px; margin: 0 auto; padding: 20px; border: 1px solid var(--brand-line); border-radius: 16px; background: #fff; }
+        .qr-preview-frame canvas { display: block; width: min(100%, 512px) !important; height: auto !important; image-rendering: pixelated; }
+        .qr-output-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; margin: 16px 0; text-align: left; }
+        .qr-output-details div { min-width: 0; padding: 10px 12px; border-radius: 10px; background: var(--brand-bg); }
+        .qr-output-details dt { color: var(--brand-muted); font-size: .75rem; font-weight: 700; }
+        .qr-output-details dd { margin: 4px 0 0; overflow-wrap: anywhere; font-size: .9rem; font-weight: 700; }
+        .qr-downloads { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .qr-downloads .btn { min-height: 48px; }
+        .qr-output-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; }
+        .qr-output-actions .btn { min-height: 44px; }
+        .qr-notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 40px; }
+        .qr-notes article { padding: 24px; border: 1px solid var(--brand-line); border-radius: 16px; background: var(--brand-surface); }
+        .qr-notes h2 { margin-top: 0; font-size: 1.15rem; }
+        .qr-notes p, .qr-notes li { color: var(--brand-muted); line-height: 1.8; }
+        .qr-guide-link { display: flex; justify-content: center; margin-top: 28px; }
+        [hidden] { display: none !important; }
+        button:disabled, input:disabled, select:disabled, textarea:disabled { opacity: .55; cursor: not-allowed; }
+        @media (max-width: 860px) {
+            .qr-app { grid-template-columns: 1fr; }
+            .qr-types { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+        @media (max-width: 620px) {
+            .qr-shell { width: min(100% - 24px, 680px); padding-top: 28px; }
+            .qr-settings, .qr-notes { grid-template-columns: 1fr; }
+            .qr-types { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 390px) {
+            .qr-shell { width: min(100% - 16px, 680px); }
+            .qr-panel { padding: 18px 14px; border-radius: 15px; }
+            .qr-output-details, .qr-downloads { grid-template-columns: 1fr; }
+            .qr-preview-frame { min-height: 248px; padding: 12px; }
+        }
+    </style>
+</head>
+<body class="landing-page qr-page">
+    {% include 'includes/header.html' %}
+    {% include 'includes/breadcrumb.html' %}
+    <main class="qr-shell">
+        <header class="qr-hero">
+            <p class="qr-hero__kicker">Browser QR tool</p>
+            <h1>QRコードを作る</h1>
+            <p class="qr-hero__lead">URL、テキスト、メール、電話番号、Wi-Fi接続情報をQRコードにして、PNGまたはSVGで保存できます。</p>
+            <p class="qr-privacy">入力内容と生成処理はブラウザ内に留まり、Oshigotoのサーバーへ送信されません。</p>
+        </header>
+
+        <div id="qr-code-app" class="qr-app">
+            <form id="qr-code-form" class="qr-panel" novalidate>
+                <h2 class="qr-section-title">1. QRの種類を選ぶ</h2>
+                <p class="qr-section-lead">作成する内容に合う種類を選びます。</p>
+                <fieldset class="qr-types">
+                    <legend class="qr-visually-hidden">QRコードの種類</legend>
+                    <label class="qr-type"><input type="radio" name="qr-type" value="url" checked><span>URL</span></label>
+                    <label class="qr-type"><input type="radio" name="qr-type" value="text"><span>テキスト</span></label>
+                    <label class="qr-type"><input type="radio" name="qr-type" value="email"><span>メール</span></label>
+                    <label class="qr-type"><input type="radio" name="qr-type" value="phone"><span>電話番号</span></label>
+                    <label class="qr-type"><input type="radio" name="qr-type" value="wifi"><span>Wi-Fi</span></label>
+                </fieldset>
+
+                <h2 class="qr-section-title">2. 内容を入力する</h2>
+                <p class="qr-section-lead">QRコードに格納する内容を入力します。</p>
+
+                <div class="qr-fields" data-qr-panel="url">
+                    <div class="qr-field"><label for="qr-url">URL</label><input id="qr-url" type="url" inputmode="url" placeholder="https://example.com/path?ref=qr" autocomplete="url"><small>http:// または https:// のURLだけを使用できます。リンク先の安全性はこのツールでは確認しません。</small></div>
+                </div>
+                <div class="qr-fields" data-qr-panel="text" hidden aria-hidden="true">
+                    <div class="qr-field"><label for="qr-text">テキスト</label><textarea id="qr-text" placeholder="案内文や共有したいテキスト"></textarea><small>日本語、英語、絵文字、改行を含められます。</small></div>
+                </div>
+                <div class="qr-fields" data-qr-panel="email" hidden aria-hidden="true">
+                    <div class="qr-field"><label for="qr-email-address">メールアドレス</label><input id="qr-email-address" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com"></div>
+                    <div class="qr-field"><label for="qr-email-subject">件名（任意）</label><input id="qr-email-subject" type="text" autocomplete="off"></div>
+                    <div class="qr-field"><label for="qr-email-body">本文（任意）</label><textarea id="qr-email-body"></textarea></div>
+                </div>
+                <div class="qr-fields" data-qr-panel="phone" hidden aria-hidden="true">
+                    <div class="qr-field"><label for="qr-phone">電話番号</label><input id="qr-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+81 90-1234-5678"><small>数字、先頭の+、空白、ハイフン、丸括弧を入力できます。QRコードを作るだけで、発信はしません。</small></div>
+                </div>
+                <div class="qr-fields" data-qr-panel="wifi" hidden aria-hidden="true">
+                    <div class="qr-field"><label for="qr-wifi-ssid">ネットワーク名（SSID）</label><input id="qr-wifi-ssid" type="text" autocomplete="off" maxlength="128"></div>
+                    <div class="qr-field"><label for="qr-wifi-security">セキュリティ</label><select id="qr-wifi-security"><option value="WPA">WPA / WPA2 / WPA3</option><option value="WEP">WEP</option><option value="nopass">パスワードなし</option></select></div>
+                    <div id="qr-wifi-password-field" class="qr-field"><label for="qr-wifi-password">Wi-Fiパスワード</label><input id="qr-wifi-password" type="password" autocomplete="new-password" maxlength="256"><small>パスワードは表示、保存、送信しません。</small></div>
+                    <label class="qr-check"><input id="qr-wifi-hidden" type="checkbox">非公開ネットワーク</label>
+                    <p class="qr-warning">Wi-Fi用QRコードには接続パスワードが含まれます。共有先と保存場所を確認してから使用してください。</p>
+                </div>
+                <p id="qr-byte-count" class="qr-byte-count" aria-live="polite">0 / 1,000 bytes</p>
+
+                <h2 class="qr-section-title" style="margin-top: 28px;">3. サイズと誤り訂正を設定する</h2>
+                <p class="qr-section-lead">標準設定のままでも作成できます。読み取りやすさは端末や印刷状態でも変わります。</p>
+                <div class="qr-settings">
+                    <div class="qr-field"><label for="qr-error-level">誤り訂正</label><select id="qr-error-level"><option value="L">L</option><option value="M" selected>M（標準）</option><option value="Q">Q</option><option value="H">H</option></select></div>
+                    <div class="qr-field"><label for="qr-output-size">画像サイズ</label><select id="qr-output-size"><option value="256">256px</option><option value="512" selected>512px</option><option value="1024">1024px</option></select></div>
+                    <div class="qr-field"><label for="qr-margin">余白</label><select id="qr-margin"><option value="2">2</option><option value="4" selected>4（標準）</option><option value="8">8</option></select></div>
+                </div>
+                <p class="qr-section-lead" style="margin-top: 14px;">読み取りやすさを優先し、前景は黒、背景は白で固定しています。</p>
+                <h2 class="qr-section-title" style="margin-top: 28px;">4. QRコードを作成する</h2>
+                <button id="qr-generate" class="btn btn-primary qr-action" type="submit">QRコードを作成</button>
+                <p id="qr-status" class="qr-status" role="status" aria-live="polite"></p>
+            </form>
+
+            <section class="qr-panel" aria-labelledby="qr-preview-heading">
+                <h2 id="qr-preview-heading" class="qr-section-title">5. 確認して保存する</h2>
+                <p class="qr-section-lead">作成後にプレビューが表示されます。利用前に実機で読み取りを確認してください。</p>
+                <div id="qr-output" class="qr-output" hidden>
+                    <div class="qr-preview-frame"><canvas id="qr-preview-canvas" width="512" height="512" role="img" aria-label="作成したQRコードのプレビュー"></canvas></div>
+                    <dl class="qr-output-details">
+                        <div><dt>種類</dt><dd id="qr-output-type"></dd></div>
+                        <div><dt>内容の概要</dt><dd id="qr-output-summary"></dd></div>
+                        <div><dt>誤り訂正</dt><dd id="qr-output-level"></dd></div>
+                        <div><dt>出力サイズ</dt><dd id="qr-output-dimensions"></dd></div>
+                    </dl>
+                    <div class="qr-downloads"><a id="qr-download-png" class="btn btn-primary">PNGで保存</a><a id="qr-download-svg" class="btn btn-secondary">SVGで保存</a></div>
+                    <div class="qr-output-actions"><button id="qr-recreate" class="btn btn-secondary" type="button">作り直す</button><button id="qr-clear" class="btn btn-secondary" type="button">入力をクリア</button></div>
+                </div>
+                <noscript><p class="qr-warning">このツールを使うにはJavaScriptを有効にしてください。</p></noscript>
+            </section>
+        </div>
+
+        <section class="qr-notes" aria-label="QRコード作成の注意事項">
+            <article><h2>ブラウザ内で完結</h2><p>入力内容をアップロードせず、表示中のブラウザでQRコードを作成します。入力内容はCookieやブラウザストレージへ保存しません。</p></article>
+            <article><h2>使用前に読み取り確認</h2><p>読み取りやすさは、端末、印刷サイズ、色、汚れなどで変わります。重要な案内に使う前に、実際の端末で確認してください。</p></article>
+        </section>
+        <p class="qr-guide-link"><a class="btn btn-secondary" href="/guide/qr-code">詳しい使い方と注意点を見る</a></p>
+        {% set current_path = '/tools/qr-code' %}
+        {% include 'includes/related_tools.html' %}
+    </main>
+    {% include 'includes/footer.html' %}
+    <script src="{{ url_for('static', filename='vendor/qrcode/1.5.4/qrcode.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/qr-code-core.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/qr-code.js') }}"></script>
+</body>
+</html>

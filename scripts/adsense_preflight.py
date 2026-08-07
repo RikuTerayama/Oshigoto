@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Public preflight checks for AdSense, affiliate, SEO, and removed legacy surfaces."""
 import argparse
+import hashlib
 import os
 import re
 import sys
@@ -11,12 +12,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 BASE_URL_DEFAULT = 'https://oshigoto.onrender.com'
 MAJOR_PATHS = ['/', '/tools', '/business', '/privacy', '/terms', '/contact', '/about', '/faq', '/guide', '/blog', '/glossary', '/best-practices']
-TOOL_PATHS = ['/tools/pdf', '/tools/csv', '/tools/image-batch', '/tools/image-compress', '/tools/image-cleanup', '/tools/seo']
-GUIDE_PATHS = ['/guide/pdf', '/guide/csv', '/guide/image-batch', '/guide/image-compress', '/guide/image-cleanup', '/guide/seo']
+TOOL_PATHS = ['/tools/pdf', '/tools/csv', '/tools/image-batch', '/tools/image-compress', '/tools/qr-code', '/tools/image-cleanup', '/tools/seo']
+GUIDE_PATHS = ['/guide/pdf', '/guide/csv', '/guide/image-batch', '/guide/image-compress', '/guide/qr-code', '/guide/image-cleanup', '/guide/seo']
 INDEXABLE_PATHS = ['/', '/tools', '/business', '/guide', '/blog', '/glossary'] + TOOL_PATHS + GUIDE_PATHS
 PUBLIC_AFFILIATE_PATHS = ['/', '/tools'] + TOOL_PATHS
 ADSENSE_SCRIPT_SRC = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4232725615106709'
-ADSENSE_HEAD_PATHS = ['/', '/tools', '/tools/pdf', '/tools/image-compress']
+ADSENSE_HEAD_PATHS = ['/', '/tools', '/tools/pdf', '/tools/image-compress', '/tools/qr-code']
 A8_SCRIPT_SRC = 'https://rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js'
 NO_VISIBLE_AFFILIATE_PATHS = ['/business', '/contact', '/privacy', '/terms']
 A8_PUBLIC_PATHS = [
@@ -178,6 +179,55 @@ def run_checks(get):
     )))
     add('image_batch_output_verification', 'static/js/image-format-core.js', 'validateEncodedBuffer' in batch_scripts and 'blob.type' in batch_scripts)
     add('image_batch_no_debug_logging', 'image batch scripts', 'console.log' not in batch_scripts and 'console.debug' not in batch_scripts)
+
+    qr_body = _body(get('/tools/qr-code'))
+    qr_guide_body = _body(get('/guide/qr-code'))
+    qr_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    qr_core_path = os.path.join(qr_root, 'static', 'js', 'qr-code-core.js')
+    qr_ui_path = os.path.join(qr_root, 'static', 'js', 'qr-code.js')
+    qr_vendor_path = os.path.join(qr_root, 'static', 'vendor', 'qrcode', '1.5.4', 'qrcode.min.js')
+    qr_license_path = os.path.join(qr_root, 'static', 'vendor', 'qrcode', '1.5.4', 'LICENSE')
+    qr_notice_path = os.path.join(qr_root, 'THIRD_PARTY_NOTICES.md')
+    with open(qr_core_path, encoding='utf-8') as handle:
+        qr_core = handle.read()
+    with open(qr_ui_path, encoding='utf-8') as handle:
+        qr_ui = handle.read()
+    with open(qr_vendor_path, 'rb') as handle:
+        qr_vendor = handle.read()
+    with open(qr_license_path, encoding='utf-8') as handle:
+        qr_license = handle.read()
+    with open(qr_notice_path, encoding='utf-8') as handle:
+        qr_notice = handle.read()
+    add('qr_h1', '/tools/qr-code', '<h1>QRコードを作る</h1>' in qr_body)
+    add('qr_canonical', '/tools/qr-code', 'https://oshigoto.onrender.com/tools/qr-code' in qr_body)
+    add('qr_guide_canonical', '/guide/qr-code', 'https://oshigoto.onrender.com/guide/qr-code' in qr_guide_body)
+    add('qr_web_application_schema', '/tools/qr-code', '"@type": "WebApplication"' in qr_body and 'QRコード作成' in qr_body)
+    add('qr_guide_article_schema', '/guide/qr-code', '"@type": "Article"' in qr_guide_body)
+    add('qr_guide_faq_schema', '/guide/qr-code', '"@type": "FAQPage"' in qr_guide_body and qr_guide_body.count('"@type": "Question"') == 7)
+    add('qr_five_types_only', '/tools/qr-code', qr_body.count('name="qr-type"') == 5 and all(f'value="{value}"' in qr_body for value in ('url', 'text', 'email', 'phone', 'wifi')))
+    add('qr_browser_only', '/tools/qr-code', 'Oshigotoのサーバーへ送信されません' in qr_body and '/api/qr' not in qr_body)
+    add('qr_byte_limit', '/tools/qr-code', '1,000 bytes' in qr_body and 'MAX_PAYLOAD_BYTES = 1000' in qr_core)
+    add('qr_wifi_warning', '/tools/qr-code', 'Wi-Fi用QRコードには接続パスワードが含まれます' in qr_body)
+    add('qr_no_url_safety_claim', '/tools/qr-code', 'リンク先の安全性はこのツールでは確認しません' in qr_body)
+    add('qr_png_svg_outputs', '/tools/qr-code', all(marker in qr_body for marker in ('PNGで保存', 'SVGで保存')) and all(marker in qr_ui for marker in ('verifyPng', 'verifySvg')))
+    add('qr_blob_cleanup', 'static/js/qr-code.js', 'revokeObjectURL' in qr_ui and 'pagehide' in qr_ui and 'clearOutput' in qr_ui)
+    add('qr_no_upload_or_storage', 'QR scripts', not any(term in qr_core + qr_ui for term in (
+        'fetch(', 'XMLHttpRequest', 'FormData', 'WebSocket', 'sendBeacon', 'localStorage', 'sessionStorage', 'indexedDB', 'document.cookie'
+    )))
+    add('qr_safe_dom', 'QR scripts', 'innerHTML' not in qr_core + qr_ui and 'insertAdjacentHTML' not in qr_core + qr_ui)
+    add('qr_no_debug_logging', 'QR scripts', 'console.log' not in qr_core + qr_ui and 'console.debug' not in qr_core + qr_ui)
+    add('qr_no_extra_features', '/tools/qr-code', not any(term in qr_body + qr_guide_body for term in (
+        'QRコードを読み取る', 'QRコードスキャナー', 'カメラで読み取る', '動的QR', 'アクセス解析QR', '決済QR', 'vCard', '短縮URL', 'ロゴ埋め込み'
+    )))
+    add('qr_local_vendor', '/tools/qr-code', 'vendor/qrcode/1.5.4/qrcode.min.js' in qr_body and not any(term in qr_body for term in ('unpkg.com/qrcode', 'cdn.jsdelivr.net/npm/qrcode')))
+    add('qr_vendor_checksum', qr_vendor_path, hashlib.sha256(qr_vendor).hexdigest() == '7706f84597d8466955504c52eab2e9dd9c345626509ea13476863649d01f81dd')
+    add('qr_vendor_license', qr_license_path, 'The MIT License (MIT)' in qr_license and 'Copyright (c) 2012 Ryan Day' in qr_license)
+    add('qr_vendor_notice', qr_notice_path, all(marker in qr_notice for marker in ('qrcode 1.5.4', '3848ed2c17de5bcdead487417dbf14c5dd017f8d', '0c7274f0c299f39c2fddf54a2e0039b785977b0173c02d0b3f65fad68923e2b0')))
+    qr_template_path = os.path.join(qr_root, 'templates', 'tools', 'qr-code.html')
+    with open(qr_template_path, encoding='utf-8') as handle:
+        qr_template = handle.read()
+    add('qr_no_inline_affiliate_near_controls', qr_template_path, 'affiliate_' not in qr_template and "includes/footer.html" in qr_template)
+    add('qr_fixed_colors', qr_template_path, 'type="color"' not in qr_template and '#000000' in qr_ui and '#FFFFFF' in qr_ui)
 
 
     for path in ADSENSE_HEAD_PATHS:

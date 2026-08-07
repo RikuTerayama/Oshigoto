@@ -82,7 +82,7 @@
                          data-tags="{{ (product.tags or [])|join(',') }}"
                          data-status="{{ product.status }}">
                     <a href="{{ product.path }}">
-                        <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-compress','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
+                        <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-compress','qr-code','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
                         <h3>{{ product.name }}</h3>
                         <div class="pill-row">
                             {% if product.status == 'available' %}
@@ -167,8 +167,6 @@
             }
 
             searchInput.addEventListener('input', applyFilters);
-            });
-
             setNoResultsVisible(false);
         });
     </script>

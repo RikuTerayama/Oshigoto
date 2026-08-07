@@ -27,6 +27,7 @@ SEO_DEFAULTS = {
     '/tools/csv': {'title': 'CSV/Excelツール | しごと道具箱', 'description': 'CSVとXLSXの変換、文字コード確認、列の整理を手早く進められます。', 'og_type': 'website'},
     '/tools/image-batch': {'title': '画像変換｜JPEG・PNG・WebPを一括変換・リサイズ｜しごと道具箱', 'description': 'JPEG・PNG・WebP画像の形式変換とリサイズをブラウザ内でまとめて実行できます。対応ブラウザでは静止GIF、BMP、AVIFの入力にも対応します。', 'og_type': 'website'},
     '/tools/image-compress': {'title': '画像圧縮｜JPEG・PNG・WebPをブラウザで軽量化｜しごと道具箱', 'description': 'JPEG・PNG・WebP画像の品質やサイズを調整し、ブラウザ内で軽量化できる無料ツールです。圧縮前後の容量を比較し、複数画像はZIPで保存できます。', 'og_type': 'website'},
+    '/tools/qr-code': {'title': 'QRコード作成｜URL・テキスト・Wi-FiをブラウザでQR化｜しごと道具箱', 'description': 'URL、テキスト、メール、電話番号、Wi-Fi接続情報からQRコードをブラウザ内で作成し、PNGまたはSVGで保存できます。', 'og_type': 'website'},
     '/tools/image-cleanup': {'title': '画像クリーンアップ | しごと道具箱', 'description': '画像の余白や背景を整え、資料に使いやすいPNG画像として出力できます。', 'og_type': 'website'},
     '/tools/seo': {'title': 'SEO/URL確認 | しごと道具箱', 'description': 'OGP、meta、sitemap、robots.txtなど公開ページの基本情報を確認できます。', 'og_type': 'website'},
     '/guide': {'title': 'ガイド | しごと道具箱', 'description': 'PDF、CSV/Excel、画像、SEO/URL確認を迷わず使うためのガイドです。', 'og_type': 'website', 'breadcrumb_title': 'ガイド'},
@@ -34,6 +35,7 @@ SEO_DEFAULTS = {
     '/guide/csv': {'title': 'CSV/Excelツールの使い方 | しごと道具箱', 'description': 'CSVとExcelファイルを扱う前に確認したい文字コード、列、変換のポイントをまとめます。', 'og_type': 'article'},
     '/guide/image-batch': {'title': '画像一括変換の使い方 | しごと道具箱', 'description': 'JPEG・PNG・WebPの一括変換と、ブラウザ依存の静止GIF・BMP・AVIF入力を安全に使い分ける方法を説明します。', 'og_type': 'article'},
     '/guide/image-compress': {'title': '画像圧縮の使い方 | しごと道具箱', 'description': 'JPEG・PNG・WebP画像の品質、最大寸法、出力形式を調整し、容量を比較して保存する手順を説明します。', 'og_type': 'article'},
+    '/guide/qr-code': {'title': 'QRコード作成の使い方 | しごと道具箱', 'description': 'URL、テキスト、メール、電話番号、Wi-Fi接続情報からQRコードを作り、PNG・SVGで保存する手順と注意点を説明します。', 'og_type': 'article'},
     '/guide/image-cleanup': {'title': '画像クリーンアップの使い方 | しごと道具箱', 'description': '資料に使う画像の余白や背景を整えるときの考え方をまとめます。', 'og_type': 'article'},
     '/guide/seo': {'title': 'SEO/URL確認の使い方 | しごと道具箱', 'description': '公開前に確認したいOGP、sitemap、robots.txt、meta情報の見方をまとめます。', 'og_type': 'article'},
     '/blog': {'title': 'ブログ | しごと道具箱', 'description': 'PDF、CSV、画像、Web確認など、仕事の小さな作業を軽くするメモを掲載します。', 'og_type': 'website', 'breadcrumb_title': 'ブログ'},
@@ -60,6 +62,7 @@ TOOL_APPLICATIONS = {
     '/tools/csv': {'name': 'CSV/Excelツール', 'category': 'BusinessApplication', 'feature_list': ['CSVとXLSXの変換、文字コード確認、列整理']},
     '/tools/image-batch': {'name': '画像一括変換', 'category': 'UtilitiesApplication', 'feature_list': ['JPEG・PNG・WebPの形式変換、複数サイズ、リネーム、ZIP保存。追加入力形式とAVIF出力は対応ブラウザのみ']},
     '/tools/image-compress': {'name': '画像圧縮', 'category': 'UtilitiesApplication', 'feature_list': ['JPEG・PNG・WebPの品質調整、リサイズ、容量比較、個別・ZIP保存']},
+    '/tools/qr-code': {'name': 'QRコード作成', 'category': 'UtilitiesApplication', 'feature_list': ['URL、テキスト、メール、電話番号、Wi-Fi接続情報からのQRコード作成、PNG・SVG保存']},
     '/tools/image-cleanup': {'name': '画像クリーンアップ', 'category': 'UtilitiesApplication', 'feature_list': ['画像の余白調整、背景整理、PNG出力']},
     '/tools/seo': {'name': 'SEO/URL確認', 'category': 'BusinessApplication', 'feature_list': ['OGP、meta、sitemap、robots.txtの確認']},
 }
@@ -82,6 +85,7 @@ ARTICLE_SCHEMA_PAGES.update({
     '/guide/csv': {'title': 'CSV/Excelツールの使い方', 'description': SEO_DEFAULTS['/guide/csv']['description'], 'section': 'ガイド'},
     '/guide/image-batch': {'title': '画像一括変換の使い方', 'description': SEO_DEFAULTS['/guide/image-batch']['description'], 'section': 'ガイド'},
     '/guide/image-compress': {'title': '画像圧縮の使い方', 'description': SEO_DEFAULTS['/guide/image-compress']['description'], 'section': 'ガイド'},
+    '/guide/qr-code': {'title': 'QRコード作成の使い方', 'description': SEO_DEFAULTS['/guide/qr-code']['description'], 'section': 'ガイド'},
     '/guide/image-cleanup': {'title': '画像クリーンアップの使い方', 'description': SEO_DEFAULTS['/guide/image-cleanup']['description'], 'section': 'ガイド'},
     '/guide/seo': {'title': 'SEO/URL確認の使い方', 'description': SEO_DEFAULTS['/guide/seo']['description'], 'section': 'ガイド'},
 })
