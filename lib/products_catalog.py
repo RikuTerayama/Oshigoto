@@ -67,14 +67,14 @@ PRODUCTS = [
     {
         'id': 'image-cleanup',
         'name': '画像クリーンアップ',
-        'description': '余白や背景を整え、資料に使いやすいPNG画像として出力できます。',
+        'description': '白背景化や余白調整を行い、資料に使いやすい画像として出力できます。',
         'path': '/tools/image-cleanup',
         'guide_path': '/guide/image-cleanup',
         'status': 'available',
         'icon': 'CLR',
         'category': '画像',
         'tags': ['画像', '整える'],
-        'features': ['余白調整', '背景整理', 'PNG出力'],
+        'features': ['白背景化', '余白調整', '比率調整', 'PNG・JPEG・WebP出力'],
     },
     {
         'id': 'seo',

@@ -2,7 +2,7 @@
 <html lang="ja" class="no-js">
 <head>
     {% set page_title = '画像を見やすくする - 余白調整・白背景化・比率整理 | しごと道具箱' %}
-    {% set page_description = '画像の余白、背景、白背景化、サイズや比率を整える無料ツール。EC画像、資料画像、添付画像をブラウザ内で処理します。' %}
+    {% set page_description = '画像の白背景化、余白、サイズや比率を整える無料ツール。EC画像、資料画像、添付画像をブラウザ内で処理します。' %}
     {% set breadcrumb_title = '画像を見やすくする' %}
     {% include 'includes/head_meta.html' %}
     {# P1-4: SoftwareApplication構造化データ #}
@@ -320,7 +320,7 @@
             <h1 data-reveal>画像を見やすくする</h1>
             <p data-reveal data-reveal-delay="50">余白、背景、比率、枠まわりを整えて、資料や添付画像に使いやすい見た目にします。</p>
         </div>
-        {% set tool_intro_what = '余白を整える、背景を調整する、白背景化する、サイズや比率を揃える作業をまとめて行えます。' %}
+        {% set tool_intro_what = '透明部分の白背景化、余白調整、サイズや比率を揃える作業をまとめて行えます。' %}
         {% set tool_intro_steps = ['画像を選ぶ', '整え方を選ぶ', '仕上がりを確認する', '画像を書き出す'] %}
         {% set tool_intro_notice = '背景調整は画像の状態によって仕上がりが変わります。大切な画像は出力後に確認してください。' %}
         <section class="tool-flow" aria-labelledby="image-cleanup-flow-heading">
@@ -356,25 +356,6 @@
         
         <div class="tool-section tool-operation-card">
             <h3>2・3・4. 整え方を選んで書き出す</h3>
-            
-            <!-- v2: 背景除去 -->
-            <div class="option-group">
-                <div class="checkbox-group">
-                    <input type="checkbox" id="background-removal" onchange="updateSubOptions()">
-                    <label for="background-removal">背景を調整する</label>
-                </div>
-                <div id="background-removal-options" class="sub-option" style="display: none;">
-                    <label>品質</label>
-                    <select id="bg-removal-quality">
-                        <option value="low">低（高速）</option>
-                        <option value="medium" selected>中（バランス）</option>
-                        <option value="high">高（高品質、時間がかかります）</option>
-                    </select>
-                    <p class="info-text" style="color: #9a5b00; margin-top: 10px;">
-                        ⚠️ 初回はモデル読み込みがあるため少し時間がかかります。背景によっては手直しが必要です。
-                    </p>
-                </div>
-            </div>
             
             <div class="option-group">
                 <div class="checkbox-group">
@@ -486,8 +467,8 @@
             
             <div class="option-group">
                 <label>ファイル名テンプレート（任意）</label>
-                <input type="text" id="filename-template" value="{name}_{bg}_{index}.{ext}" placeholder="{name}_{bg}_{index}.{ext}">
-                <p class="info-text">利用可能変数: {name}（元のファイル名）, {index}（連番）, {bg}（背景除去時: bgremoved）, {ext}（拡張子）</p>
+                <input type="text" id="filename-template" value="{name}_clean_{index}.{ext}" placeholder="{name}_clean_{index}.{ext}">
+                <p class="info-text">利用可能変数: {name}（元のファイル名）, {index}（連番）, {ext}（拡張子）</p>
             </div>
             
             <button id="run-button" class="action-button" onclick="runCleanup()">画像を書き出す</button>
@@ -536,7 +517,7 @@
 
         <section class="tool-note" aria-label="画像補正時の注意">
             <h3>確認のポイント</h3>
-            <p>背景の自動調整は、被写体と背景が近い色だときれいに分かれない場合があります。EC画像や資料画像は、出力後に余白と輪郭を確認してください。</p>
+            <p>白背景化は元画像の透明部分を白で合成します。被写体を推定して背景を削除する機能ではありません。EC画像や資料画像は、出力後に余白と輪郭を確認してください。</p>
         </section>
         <section class="tool-affiliate-row" aria-label="画像補正に関連する仕事道具">
             {% set affiliate_context_links = [
@@ -569,7 +550,6 @@
     <script src="{{ url_for('static', filename='js/image-style.js') }}"></script>
     <script src="{{ url_for('static', filename='js/image-cleanup.js') }}"></script>
     <script src="{{ url_for('static', filename='js/image-style-preview.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/image-background-removal.js') }}"></script>
     <script src="{{ url_for('static', filename='js/image-aspect.js') }}"></script>
     
     <script>
@@ -585,13 +565,10 @@
             const custom = document.getElementById('style-bg-color-custom');
             custom.style.display = sel.value === 'custom' ? 'inline-block' : 'none';
         }
-        // 初期化（読み込み状態の確認用: パスワードは一切出さない）
+        // 初期化
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('[image-cleanup] load check: globalThis.ImageCleanup', typeof globalThis.ImageCleanup);
-            // 背景除去ONのときはconcurrencyを1に設定
-            const bgRemovalEnabled = document.getElementById('background-removal').checked;
             toolRunner = new ToolRunner({
-                maxConcurrency: bgRemovalEnabled ? 1 : 2,
+                maxConcurrency: 2,
                 onProgress: updateProgress,
                 onComplete: handleComplete,
                 onError: handleError
@@ -636,14 +613,10 @@
         
         // ファイル処理
         function handleFiles(files) {
-            const bgRemovalEnabled = document.getElementById('background-removal').checked;
-            const maxFiles = bgRemovalEnabled ? 20 : 50; // 背景除去ONのときは20に制限
-            const maxTotalSize = bgRemovalEnabled ? 100 * 1024 * 1024 : 200 * 1024 * 1024; // 背景除去ONのときは100MBに制限
-            
             const rules = {
-                maxFiles: maxFiles,
+                maxFiles: 50,
                 maxFileSize: 20 * 1024 * 1024,
-                maxTotalSize: maxTotalSize,
+                maxTotalSize: 200 * 1024 * 1024,
                 allowedExtensions: ['.png', '.jpg', '.jpeg', '.webp'],
                 allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp']
             };
@@ -654,44 +627,39 @@
                 toolRunner.addFiles(okFiles);
                 updateFileList();
                 updateRunButton();
-                
-                // 背景除去ONで合計サイズが大きい場合は警告
-                if (bgRemovalEnabled) {
-                    const totalSize = okFiles.reduce((sum, f) => sum + f.size, 0);
-                    if (totalSize > 100 * 1024 * 1024) {
-                        alert('背景除去は重い処理のため、合計サイズが大きいと時間がかかります。');
-                    }
-                }
             }
             
             if (rejected.length > 0) {
                 showRejectedFiles(rejected);
             }
             
-            // ヒントを更新
-            const hint = document.getElementById('dropzone-hint');
-            if (bgRemovalEnabled) {
-                hint.textContent = '対応形式: PNG, JPG, WebP（最大20ファイル、1ファイル20MBまで、背景除去は重い処理です）';
-            } else {
-                hint.textContent = '対応形式: PNG, JPG, WebP（最大50ファイル、1ファイル20MBまで）';
-            }
+            document.getElementById('dropzone-hint').textContent =
+                '対応形式: PNG, JPG, WebP（最大50ファイル、1ファイル20MBまで）';
         }
         
         // ファイル一覧を更新
         function updateFileList() {
             const fileList = document.getElementById('file-list');
-            fileList.innerHTML = '';
+            fileList.replaceChildren();
             
             toolRunner.selectedFiles.forEach((file, index) => {
                 const item = document.createElement('div');
                 item.className = 'file-item';
-                item.innerHTML = `
-                    <div class="file-item-info">
-                        <div class="file-item-name">${file.name}</div>
-                        <div class="file-item-size">${FileUtils.formatBytes(file.size)}</div>
-                    </div>
-                    <button class="file-item-remove" onclick="removeFile(${index})">削除</button>
-                `;
+                const info = document.createElement('div');
+                info.className = 'file-item-info';
+                const name = document.createElement('div');
+                name.className = 'file-item-name';
+                name.textContent = file.name;
+                const size = document.createElement('div');
+                size.className = 'file-item-size';
+                size.textContent = FileUtils.formatBytes(file.size);
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.className = 'file-item-remove';
+                removeButton.textContent = '削除';
+                removeButton.addEventListener('click', () => removeFile(index));
+                info.append(name, size);
+                item.append(info, removeButton);
                 fileList.appendChild(item);
             });
         }
@@ -707,7 +675,10 @@
         function showRejectedFiles(rejected) {
             const container = document.getElementById('rejected-files');
             container.style.display = 'block';
-            container.innerHTML = '<strong>以下のファイルは処理できませんでした：</strong>';
+            container.replaceChildren();
+            const heading = document.createElement('strong');
+            heading.textContent = '以下のファイルは処理できませんでした：';
+            container.appendChild(heading);
             
             rejected.forEach(({ file, reason }) => {
                 const div = document.createElement('div');
@@ -719,26 +690,16 @@
         
         // サブオプションを更新
         function updateSubOptions() {
-            const bgRemovalChecked = document.getElementById('background-removal').checked;
             const trimChecked = document.getElementById('trim-margins').checked;
             const aspectChecked = document.getElementById('pad-aspect').checked;
             const outputFormat = document.getElementById('output-format').value;
             
-            document.getElementById('background-removal-options').style.display = bgRemovalChecked ? 'block' : 'none';
             document.getElementById('trim-options').style.display = trimChecked ? 'block' : 'none';
             document.getElementById('aspect-options').style.display = aspectChecked ? 'block' : 'none';
             
-            // 背景除去ONのときはconcurrencyを1に設定
-            if (toolRunner) {
-                toolRunner.maxConcurrency = bgRemovalChecked ? 1 : 2;
-            }
-            
             // 出力形式に応じた警告表示
             const formatWarning = document.getElementById('format-warning');
-            if (outputFormat === 'jpeg' && bgRemovalChecked) {
-                formatWarning.style.display = 'block';
-                formatWarning.textContent = '⚠️ JPEG出力の場合、透明部分は白背景になります（背景除去後も透明は保持できません）';
-            } else if (outputFormat === 'jpeg') {
+            if (outputFormat === 'jpeg') {
                 formatWarning.style.display = 'block';
                 formatWarning.textContent = '⚠️ JPEG出力の場合、透明部分は白背景になります';
             } else {
@@ -778,8 +739,6 @@
                 return;
             }
             
-            const bgRemovalEnabled = document.getElementById('background-removal').checked;
-            const bgRemovalQuality = document.getElementById('bg-removal-quality').value;
             const whiteBackground = document.getElementById('white-background').checked;
             const trimMargins = document.getElementById('trim-margins').checked;
             const trimTolerance = parseInt(document.getElementById('trim-tolerance').value);
@@ -809,9 +768,8 @@
                     console.error('[image-cleanup] globalThis.ImageCleanup not available; check Network tab for /static/js/image-cleanup.js (200 expected)');
                     throw new Error('画像クリーンアップ機能の読み込みに失敗しました。ページを再読み込みしてください。');
                 }
-                const bgRemoved = bgRemovalEnabled;
                 const filename = filenameTemplate 
-                    ? Cleanup.generateFilename(file.name, outputFormat === 'jpg' ? 'jpg' : outputFormat, ctx.index + 1, filenameTemplate, bgRemoved)
+                    ? Cleanup.generateFilename(file.name, outputFormat === 'jpg' ? 'jpg' : outputFormat, ctx.index + 1, filenameTemplate)
                     : null;
                 
                 return await Cleanup.runCleanupPipeline(file, {
@@ -827,10 +785,6 @@
                         borderWidthPx: styleBorderWidth,
                         borderColor: styleBorderColor,
                         bgColor: styleBgColor
-                    },
-                    backgroundRemoval: {
-                        enabled: bgRemovalEnabled,
-                        quality: bgRemovalQuality
                     },
                     outputFormat,
                     quality,
@@ -862,7 +816,7 @@
             document.getElementById('progress-bar-fill').style.width = `${progress.progress}%`;
             
             const taskList = document.getElementById('task-list');
-            taskList.innerHTML = '';
+            taskList.replaceChildren();
             
             progress.tasksState.forEach(([index, state]) => {
                 const file = toolRunner.selectedFiles[index];
@@ -895,10 +849,14 @@
         // ダウンロードパネルを表示
         function showDownloadPanel(outputs) {
             const panel = document.getElementById('download-panel');
-            panel.innerHTML = '';
+            panel.replaceChildren();
             
             const totalSize = outputs.reduce((sum, o) => sum + o.blob.size, 0);
-            panel.innerHTML += `<p style="color: var(--brand-muted); margin-bottom: 15px;">書き出しが完了しました。下のボタンから保存してください。出力: ${outputs.length}件（合計: ${FileUtils.formatBytes(totalSize)}）</p>`;
+            const summary = document.createElement('p');
+            summary.style.color = 'var(--brand-muted)';
+            summary.style.marginBottom = '15px';
+            summary.textContent = `書き出しが完了しました。下のボタンから保存してください。出力: ${outputs.length}件（合計: ${FileUtils.formatBytes(totalSize)}）`;
+            panel.appendChild(summary);
             
             if (outputs.length === 1) {
                 const button = document.createElement('button');
@@ -929,12 +887,19 @@
             const errorSection = document.getElementById('error-section');
             const errorMessage = document.getElementById('error-message');
             
-            errorMessage.innerHTML = '<strong>以下のファイルでエラーが発生しました：</strong><ul style="margin-top: 10px;">';
+            errorMessage.replaceChildren();
+            const heading = document.createElement('strong');
+            heading.textContent = '以下のファイルでエラーが発生しました：';
+            const list = document.createElement('ul');
+            list.style.marginTop = '10px';
             errors.forEach(({ sourceIndex, message }) => {
                 const file = toolRunner.selectedFiles[sourceIndex];
-                errorMessage.innerHTML += `<li>${file.name}: ${message}</li>`;
+                const item = document.createElement('li');
+                const filename = file ? file.name : '不明なファイル';
+                item.textContent = `${filename}: ${message}`;
+                list.appendChild(item);
             });
-            errorMessage.innerHTML += '</ul>';
+            errorMessage.append(heading, list);
             
             errorSection.style.display = 'block';
         }
