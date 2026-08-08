@@ -10,6 +10,12 @@ from urllib.parse import parse_qs, urlparse
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from lib.a8_affiliate_catalog import (  # noqa: E402
+    A8_ELIGIBLE_EXACT_PATHS,
+    A8_HARD_EXCLUDED_PATHS,
+    load_a8_creative_catalog,
+)
+
 BASE_URL_DEFAULT = 'https://oshigoto.onrender.com'
 MAJOR_PATHS = ['/', '/tools', '/business', '/privacy', '/terms', '/contact', '/about', '/faq', '/guide', '/blog', '/glossary', '/best-practices']
 TOOL_PATHS = ['/tools/pdf', '/tools/csv', '/tools/image-batch', '/tools/image-compress', '/tools/qr-code', '/tools/image-cleanup', '/tools/seo']
@@ -18,12 +24,19 @@ INDEXABLE_PATHS = ['/', '/tools', '/business', '/guide', '/blog', '/glossary'] +
 PUBLIC_AFFILIATE_PATHS = ['/', '/tools'] + TOOL_PATHS
 ADSENSE_SCRIPT_SRC = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4232725615106709'
 ADSENSE_HEAD_PATHS = ['/', '/tools', '/tools/pdf', '/tools/image-compress', '/tools/qr-code']
-A8_SCRIPT_SRC = 'https://rot3.a8.net/jsa/fdf80b714de10cbdd802fd2333444e15/c6f057b86584942e415435ffb1fa93d4.js'
-NO_VISIBLE_AFFILIATE_PATHS = ['/business', '/contact', '/privacy', '/terms']
-A8_PUBLIC_PATHS = [
-    path for path in MAJOR_PATHS + TOOL_PATHS + GUIDE_PATHS
-    if path not in NO_VISIBLE_AFFILIATE_PATHS
-]
+A8_LEGACY_SCRIPT_HOST = 'rot3.a8.net'
+A8_LINK_SRC = 'https://px.a8.net/svt/ejp'
+A8_TRACKER_PATTERN = re.compile(r'https://www\d+\.a8\.net/0\.gif\?a8mat=')
+A8_SLOT_MARKER = 'data-a8-creative-id="'
+NO_VISIBLE_AFFILIATE_PATHS = sorted(A8_HARD_EXCLUDED_PATHS)
+A8_PUBLIC_PATHS = sorted(A8_ELIGIBLE_EXACT_PATHS)
+A8_EXPECTED_PARAMETERS = {
+    'a8-01': ('4B3SMZ+5RSAWI+5B0Y+63WO1', '260517563349', 's00000024757001026000', 'www26', 'www10'),
+    'a8-02': ('4B3SMZ+5RSAWI+5B0Y+5ZU29', '260517563349', 's00000024757001007000', 'www20', 'www14'),
+    'a8-03': ('4B3SMZ+61B8KY+5O7E+BXYE9', '260517563365', 's00000026465002006000', 'www22', 'www11'),
+    'a8-04': ('4AZMKE+EF60AA+5OEW+5ZEMP', '260323070872', 's00000026492001005000', 'www26', 'www19'),
+    'a8-05': ('4AZMKE+EF60AA+5OEW+601S1', '260323070872', 's00000026492001008000', 'www21', 'www12'),
+}
 FORBIDDEN_PUBLIC_STRINGS = [
     'Jobcan',
     'AutoFill',
@@ -302,14 +315,41 @@ def run_checks(get):
     add('robots_sitemap', '/robots.txt', 'https://oshigoto.onrender.com/sitemap.xml' in robots or '/sitemap.xml' in robots)
     add('robots_autofill_disallow', '/robots.txt', 'Disallow: /autofill' in robots)
 
+    catalog = load_a8_creative_catalog()
+    add('a8_catalog_exact_count', 'data/a8_creative_catalog.json', len(catalog) == 5, f'count={len(catalog)}')
+    add('a8_catalog_unique_ids', 'data/a8_creative_catalog.json', len({item.get("id") for item in catalog}) == 5)
+    for item in catalog:
+        creative_id = item['id']
+        creative_path = os.path.join(repo_root, 'templates', *item['template'].split('/'))
+        with open(creative_path, 'rb') as handle:
+            creative_bytes = handle.read()
+        creative = creative_bytes.decode('utf-8')
+        a8mat, aid, mid, banner_host, tracker_host = A8_EXPECTED_PARAMETERS[creative_id]
+        exact_markers = (
+            f'https://px.a8.net/svt/ejp?a8mat={a8mat}',
+            f'https://{banner_host}.a8.net/svt/bgt?aid={aid}&wid=001&eno=01&mid={mid}&mc=1',
+            f'https://{tracker_host}.a8.net/0.gif?a8mat={a8mat}',
+            'width="300" height="250" alt=""',
+            'width="1" height="1"',
+            'rel="nofollow"',
+        )
+        add('a8_creative_checksum', creative_id, hashlib.sha256(creative_bytes).hexdigest() == item['sha256'])
+        add('a8_creative_exact_code', creative_id, all(marker in creative for marker in exact_markers))
+        add('a8_creative_not_modified', creative_id, 'sponsored' not in creative and 'loading=' not in creative and 'referrerpolicy=' not in creative)
+
     for path in A8_PUBLIC_PATHS:
         body = _body(get(path))
-        a8_count = body.count(A8_SCRIPT_SRC)
+        a8_count = body.count(A8_SLOT_MARKER)
         add('a8_present_once', path, a8_count == 1, f'count={a8_count}')
+        add('a8_direct_link_once', path, body.count(A8_LINK_SRC) == 1, f'count={body.count(A8_LINK_SRC)}')
+        add('a8_banner_once', path, body.count('width="300" height="250"') == 1)
+        add('a8_tracker_once', path, len(A8_TRACKER_PATTERN.findall(body)) == 1)
+        add('a8_legacy_script_absent', path, A8_LEGACY_SCRIPT_HOST not in body)
+        add('a8_pr_label_present', path, 'a8-creative-slot__label">PR<' in body)
 
     for path in NO_VISIBLE_AFFILIATE_PATHS:
         body = _body(get(path))
-        add('affiliate_excluded_a8', path, A8_SCRIPT_SRC not in body)
+        add('affiliate_excluded_a8', path, A8_SLOT_MARKER not in body and A8_LINK_SRC not in body and A8_LEGACY_SCRIPT_HOST not in body)
         add('affiliate_excluded_amazon', path, not _amazon_urls(body))
         add('affiliate_excluded_wrapper', path, 'affiliate-cards-section' not in body and 'affiliate-context-block' not in body)
 

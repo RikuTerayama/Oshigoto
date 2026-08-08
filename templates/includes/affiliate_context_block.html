@@ -46,13 +46,14 @@
         </a>
         {% endfor %}
     </div>
-    {% if affiliate_context_show_a8 %}
+    {% set context_a8_placement = affiliate_context_placement ~ '-a8' %}
+    {% if affiliate_context_show_a8 and selected_a8_creative and a8_can_render_placement(context_a8_placement) %}
     <div class="affiliate-context-a8">
         <div class="affiliate-context-a8__copy">
             <strong>{{ affiliate_context_a8_title }}</strong>
             <span>{{ affiliate_context_a8_lead }}</span>
         </div>
-        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8', affiliate_section_tier='context-a8', affiliate_a8_label='PR' %}
+        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8', affiliate_section_tier='context-a8', affiliate_section_placement=context_a8_placement, affiliate_a8_label='PR' %}
             {% include 'includes/affiliate_cards_section.html' %}
         {% endwith %}
         {% set affiliate_a8_rendered = true %}

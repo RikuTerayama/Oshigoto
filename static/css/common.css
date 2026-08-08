@@ -8060,3 +8060,48 @@ body {
         display: flex !important;
     }
 }
+
+/* Phase 9.8: frame the unchanged 300x250 A8 creative without styling it. */
+.affiliate-stack__rows,
+.affiliate-stack__row--a8 {
+    min-width: 0;
+}
+
+.a8-creative-slot {
+    position: relative;
+    left: 50%;
+    width: 302px;
+    margin: 32px 0;
+    box-sizing: border-box;
+    overflow: visible;
+    transform: translateX(-50%);
+    justify-self: start;
+    border: 1px solid rgba(120, 104, 76, 0.22);
+    background: #fbf7ed;
+    color: #50483d;
+    text-align: center;
+}
+
+.a8-creative-slot__label {
+    display: block;
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(120, 104, 76, 0.18);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+}
+
+.a8-creative-slot__creative {
+    display: flex;
+    width: 300px;
+    flex-direction: column;
+    align-items: center;
+    line-height: 0;
+}
+
+.affiliate-stack__row--a8 .a8-creative-slot {
+    left: auto;
+    margin-left: calc((100% - 302px) / 2);
+    transform: none;
+}
