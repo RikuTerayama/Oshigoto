@@ -7,6 +7,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from lib.a8_affiliate_catalog import A8_ELIGIBLE_EXACT_PATHS, A8_HARD_EXCLUDED_PATHS  # noqa: E402
+
 
 def _looks_like_error_page(body):
     lowered = body.lower()
@@ -16,6 +18,30 @@ def _looks_like_error_page(body):
         or 'internal server error' in lowered
         or 'traceback (most recent call last)' in lowered
     )
+
+
+def _check_a8_catalog_rendering(client, failed):
+    eligible_paths = sorted(A8_ELIGIBLE_EXACT_PATHS) + ['/blog/excel-format-mistakes-and-design']
+    for path in eligible_paths:
+        response = client.get(path, follow_redirects=False)
+        body = response.data.decode('utf-8', errors='replace')
+        if response.status_code != 200:
+            failed.append(f'A8 path={path} expected=200 status={response.status_code}')
+            continue
+        checks = {
+            'slot_once': body.count('data-a8-creative-id="') == 1,
+            'link_once': body.count('https://px.a8.net/svt/ejp') == 1,
+            'banner_once': body.count('width="300" height="250"') == 1,
+            'tracker_once': len(re.findall(r'https://www\d+\.a8\.net/0\.gif\?a8mat=', body)) == 1,
+            'legacy_absent': 'rot3.a8.net' not in body,
+        }
+        for name, ok in checks.items():
+            if not ok:
+                failed.append(f'A8 path={path} failed={name}')
+    for path in sorted(A8_HARD_EXCLUDED_PATHS):
+        body = client.get(path, follow_redirects=False).data.decode('utf-8', errors='replace')
+        if any(marker in body for marker in ('data-a8-creative-id="', 'https://px.a8.net/svt/ejp', 'rot3.a8.net')):
+            failed.append(f'A8 excluded path={path} contains affiliate creative')
 
 
 def run_with_test_client():
@@ -75,6 +101,7 @@ def run_with_test_client():
     cleanup_body = client.get('/tools/image-cleanup', follow_redirects=False).data.decode('utf-8', errors='replace')
     if 'id="background-removal"' in cleanup_body or 'js/image-background-removal.js' in cleanup_body:
         failed.append('path=/tools/image-cleanup exposes unsupported AI background removal')
+    _check_a8_catalog_rendering(client, failed)
     if failed:
         for item in failed:
             print(f"FAIL: {item}")
@@ -216,6 +243,7 @@ def run_deploy_verification():
     cleanup_body = client.get('/tools/image-cleanup').data.decode('utf-8', errors='replace')
     if 'id="background-removal"' in cleanup_body or 'js/image-background-removal.js' in cleanup_body:
         failed.append('path=/tools/image-cleanup exposes unsupported AI background removal')
+    _check_a8_catalog_rendering(client, failed)
     if failed:
         for item in failed:
             print(f"FAIL: {item}")

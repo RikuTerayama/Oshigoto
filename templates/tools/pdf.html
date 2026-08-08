@@ -316,6 +316,9 @@
     </div>
 
     {% include 'includes/related_tools.html' %}
+    {% with a8_slot_placement='tool-after-explanation' %}
+        {% include 'includes/a8_creative_slot.html' %}
+    {% endwith %}
     {% include 'includes/footer.html' %}
 
     <script>

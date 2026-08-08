@@ -31,6 +31,11 @@ from lib.amazon_creators import (
     build_rotating_theme_cards as build_amazon_rotating_theme_cards,
     get_recommendations as get_amazon_recommendations,
 )
+from lib.a8_affiliate_catalog import (
+    a8_can_render_placement as catalog_a8_can_render_placement,
+    get_a8_placement,
+    select_a8_creative,
+)
 
 
 logging.basicConfig(
@@ -432,6 +437,7 @@ NON_UI_AFFILIATE_PATH_PREFIXES = ('/api/', '/admin/', '/static/')
 NON_UI_AFFILIATE_PATHS = frozenset((
 ))
 AFFILIATE_HARD_EXCLUDED_PATHS = frozenset((
+    '/about',
     '/business',
     '/contact',
     '/privacy',
@@ -582,6 +588,8 @@ def affiliate_can_render_slot(slot_id, path=None):
 
     normalized_path = path or (request.path if has_request_context() else '/')
     if affiliate_is_path_excluded(normalized_path):
+        return False
+    if get_a8_placement(normalized_path) is not None:
         return False
 
     return affiliate_get_slot_config(slot_id, normalized_path) is not None
@@ -860,6 +868,13 @@ def inject_env_vars():
         affiliate_settings = get_affiliate_settings()
         current_path = request.path if has_request_context() else '/'
         affiliate_page_type = get_affiliate_page_type(current_path)
+        selected_a8_creative = None
+        if (
+            affiliate_settings['enabled']
+            and affiliate_settings['banners_enabled']
+            and not affiliate_is_path_excluded(current_path)
+        ):
+            selected_a8_creative = select_a8_creative(current_path)
         recent_affiliate_history = _load_recent_affiliate_history()
         seo_defaults = get_seo_defaults(current_path)
         base_url = os.getenv('BASE_URL', 'https://oshigoto.onrender.com').rstrip('/')
@@ -988,7 +1003,10 @@ def inject_env_vars():
             'affiliate_side_rail_enabled': affiliate_side_rail_enabled(current_path),
             'affiliate_can_render_textlinks': affiliate_can_render_textlinks,
             'affiliate_can_render_slot': affiliate_can_render_slot,
-            'affiliate_get_slot_config': affiliate_get_slot_config
+            'affiliate_get_slot_config': affiliate_get_slot_config,
+            'selected_a8_creative': selected_a8_creative,
+            'a8_can_render_placement': lambda placement: catalog_a8_can_render_placement(current_path, placement),
+            'a8_page_placement': get_a8_placement(current_path),
         }
     except Exception as e:
         request_id = getattr(g, 'request_id', 'unknown') if hasattr(g, 'request_id') else 'unknown'
@@ -1050,7 +1068,10 @@ def inject_env_vars():
             'affiliate_side_rail_enabled': affiliate_side_rail_enabled(current_path),
             'affiliate_can_render_textlinks': affiliate_can_render_textlinks,
             'affiliate_can_render_slot': affiliate_can_render_slot,
-            'affiliate_get_slot_config': affiliate_get_slot_config
+            'affiliate_get_slot_config': affiliate_get_slot_config,
+            'selected_a8_creative': None,
+            'a8_can_render_placement': lambda placement: False,
+            'a8_page_placement': None,
         }
 
 

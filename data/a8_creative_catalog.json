@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "creatives": [
+    {
+      "id": "a8-01",
+      "enabled": true,
+      "size": "300x250",
+      "template": "includes/a8/creative_01.html",
+      "sha256": "63cb848baaddaeb5f4be77f4a56cdec9eeb8a2f6882f46f64f2e5b179c07c8b8",
+      "source": "user_supplied_a8_material",
+      "weight": 1
+    },
+    {
+      "id": "a8-02",
+      "enabled": true,
+      "size": "300x250",
+      "template": "includes/a8/creative_02.html",
+      "sha256": "96cc5c6909169ceb8de511b572118149dc11b37315a20460096c5562afe8ab05",
+      "source": "user_supplied_a8_material",
+      "weight": 1
+    },
+    {
+      "id": "a8-03",
+      "enabled": true,
+      "size": "300x250",
+      "template": "includes/a8/creative_03.html",
+      "sha256": "e6d9f2692a1a94e1ed6e1939ab2598369ff12c91838cc94adf60c58abd6f016c",
+      "source": "user_supplied_a8_material",
+      "weight": 1
+    },
+    {
+      "id": "a8-04",
+      "enabled": true,
+      "size": "300x250",
+      "template": "includes/a8/creative_04.html",
+      "sha256": "acb6adb31d5d0662fb5d14a9a8d8c8a09fe1c754022f061ebfd416e971265a29",
+      "source": "user_supplied_a8_material",
+      "weight": 1
+    },
+    {
+      "id": "a8-05",
+      "enabled": true,
+      "size": "300x250",
+      "template": "includes/a8/creative_05.html",
+      "sha256": "035c1ed40219ac565559bfe1a9f4550bd8b86d3a51f68ea6ad2f1ce2039f93b9",
+      "source": "user_supplied_a8_material",
+      "weight": 1
+    }
+  ]
+}
