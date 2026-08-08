@@ -3,9 +3,9 @@
  * 注意: この方式は文字検索やテキスト選択ができなくなります（ページが画像になります）
  */
 
-const ENCRYPTED_PDF_USER_MESSAGE = 'このPDFはパスワード保護されています。正しいパスワードを入力してください。';
+const PDF_COMPRESS_ENCRYPTED_USER_MESSAGE = 'このPDFはパスワード保護されています。正しいパスワードを入力してください。';
 
-function isEncryptedPdfJsError(e) {
+function isPdfCompressEncryptedError(e) {
     const msg = String(e?.message || '').toLowerCase();
     const name = String(e?.name || '').toLowerCase();
     return name.includes('password') || msg.includes('password') || msg.includes('encrypted');
@@ -60,8 +60,8 @@ class PdfCompress {
             const loadingTask = pdfjs.getDocument({ data: arrayBuffer, password });
             pdf = await loadingTask.promise;
         } catch (e) {
-            if (isEncryptedPdfJsError(e)) {
-                throw new Error(ENCRYPTED_PDF_USER_MESSAGE);
+            if (isPdfCompressEncryptedError(e)) {
+                throw new Error(PDF_COMPRESS_ENCRYPTED_USER_MESSAGE);
             }
             console.error('[PdfCompress] load_failed', { fileName: file.name });
             throw e;

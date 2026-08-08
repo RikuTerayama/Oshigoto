@@ -1,40 +1,76 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-デプロイ前ガード: manifest の鮮度チェックと preflight を順に実行する。
-失敗時は非ゼロで終了。成功時は短いメッセージを出力。
-"""
+"""Run the deterministic checks required before deploying Oshigoto."""
+
+from __future__ import annotations
+
 import os
+import shutil
 import subprocess
 import sys
-
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-def run(cmd, env=None):
-    """サブプロセス実行。戻り値が非ゼロなら (False, code)、ゼロなら (True, 0)"""
-    env = env or os.environ.copy()
-    result = subprocess.run(cmd, cwd=REPO_ROOT, env=env)
-    return (result.returncode == 0, result.returncode)
+import tempfile
+from pathlib import Path
 
 
-def main():
-    ok, code = run([sys.executable, "scripts/generate_sitemap_lastmod_manifest.py", "--check"])
-    if not ok:
-        if code == 2:
-            print("FAIL: manifest check skipped (git unavailable). Run --write locally and commit.", file=sys.stderr)
-        else:
-            print("FAIL: manifest stale. Run: python scripts/generate_sitemap_lastmod_manifest.py --write", file=sys.stderr)
-        return code if code != 0 else 1
+ROOT = Path(__file__).resolve().parents[1]
 
-    ok, code = run([sys.executable, "scripts/adsense_preflight.py"])
-    if not ok:
-        print("FAIL: adsense_preflight.py failed.", file=sys.stderr)
-        return code if code != 0 else 1
+PYTHON_CHECKS = (
+    ("manifest", "scripts/generate_sitemap_lastmod_manifest.py", "--check"),
+    ("smoke", "scripts/smoke_test.py"),
+    ("deploy smoke", "scripts/smoke_test.py", "--deploy"),
+    ("release candidate", "scripts/test_release_candidate.py"),
+    ("AdSense preflight", "scripts/adsense_preflight.py"),
+    ("A8 catalog", "scripts/test_a8_creative_catalog.py"),
+    ("Amazon single recommendation", "scripts/test_amazon_single_recommendation.py"),
+)
 
-    print("OK: manifest up-to-date, preflight passed")
+NODE_CHECKS = (
+    ("PDF page operations", "scripts/test_pdf_page_ops.js"),
+    ("PDF shared script scope", "scripts/test_pdf_script_scope.js"),
+    ("image compression", "scripts/test_image_compress.js"),
+    ("image format core", "scripts/test_image_format_core.js"),
+    ("QR code", "scripts/test_qr_code.js"),
+    ("OCR NO-GO", "scripts/test_ocr_spike.js"),
+    ("background removal NO-GO", "scripts/test_background_removal_spike.js"),
+)
+
+
+def run(label: str, command: list[str], env: dict[str, str]) -> bool:
+    print(f"\n== {label} ==", flush=True)
+    result = subprocess.run(command, cwd=ROOT, env=env)
+    if result.returncode:
+        print(f"FAIL: {label} (exit {result.returncode})", file=sys.stderr)
+        return False
+    return True
+
+
+def main() -> int:
+    env = os.environ.copy()
+    env.setdefault("AMAZON_AFFILIATE_ENABLED", "true")
+    env.setdefault("AMAZON_ASSOCIATE_TAG", "predeploy-check-22")
+    env.setdefault("AFFILIATE_ENABLED", "true")
+    env.setdefault("AFFILIATE_BANNERS_ENABLED", "true")
+    env.setdefault("PYTHONPYCACHEPREFIX", str(Path(tempfile.gettempdir()) / "oshigoto-predeploy-pycache"))
+
+    if not run("Python compile", [sys.executable, "-m", "compileall", "-q", "app.py", "lib", "scripts"], env):
+        return 1
+    if not run("application import", [sys.executable, "-c", "import app; print('app imports successfully')"], env):
+        return 1
+
+    for label, script, *args in PYTHON_CHECKS:
+        if not run(label, [sys.executable, script, *args], env):
+            return 1
+
+    node = shutil.which("node")
+    if not node:
+        print("FAIL: Node.js is required for browser-tool contract tests.", file=sys.stderr)
+        return 1
+    for label, script in NODE_CHECKS:
+        if not run(label, [node, script], env):
+            return 1
+
+    print("\nOK: all predeploy checks passed")
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())
