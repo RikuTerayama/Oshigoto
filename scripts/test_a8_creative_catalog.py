@@ -121,7 +121,7 @@ def _assert_invalid_catalog_fails_closed():
 
 def _assert_placement_spacing():
     footer = (ROOT / "templates" / "includes" / "footer.html").read_text(encoding="utf-8")
-    amazon_block = footer.index("{% if footer_needs_mid_amazon %}")
+    amazon_block = footer.index("{% if amazon_single_recommendation|default(none)")
     navigation_block = footer.index("{% for col in footer_columns|default([]) %}")
     a8_block = footer.index("{% if selected_a8_creative and a8_can_render_placement('global-footer-a8') %}")
     assert amazon_block < navigation_block < a8_block

@@ -1,8 +1,103 @@
 ﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Route and page-type keyword mapping for Amazon recommendations."""
+"""Route policy and approved themes for Amazon recommendations."""
 
 from typing import Dict, List, Tuple
+
+
+VISIBLE_AMAZON_MAX_PER_PAGE = 1
+
+AMAZON_HARD_EXCLUDED_PATHS = frozenset(
+    ("/about", "/business", "/contact", "/privacy", "/terms")
+)
+
+AMAZON_ELIGIBLE_EXACT_PATHS = frozenset(
+    (
+        "/",
+        "/tools",
+        "/tools/pdf",
+        "/tools/csv",
+        "/tools/image-batch",
+        "/tools/image-compress",
+        "/tools/image-cleanup",
+        "/tools/qr-code",
+        "/tools/seo",
+        "/guide",
+        "/guide/pdf",
+        "/guide/csv",
+        "/guide/image-batch",
+        "/guide/image-compress",
+        "/guide/image-cleanup",
+        "/guide/qr-code",
+        "/guide/seo",
+        "/faq",
+        "/glossary",
+        "/best-practices",
+        "/blog",
+    )
+)
+
+AMAZON_ELIGIBLE_PREFIXES = ("/blog/",)
+
+AMAZON_CONTENT_PATHS = frozenset(
+    (
+        "/",
+        "/tools",
+        "/tools/pdf",
+        "/tools/csv",
+        "/tools/image-batch",
+        "/tools/image-compress",
+        "/tools/image-cleanup",
+        "/tools/seo",
+    )
+)
+
+AMAZON_ICON_ALLOWLIST = frozenset(
+    ("book", "document", "spreadsheet", "image", "desk", "stationery", "web")
+)
+
+AMAZON_THEME_ICON_MAP = {
+    "kindle-productivity": "book",
+    "kindle-excel": "spreadsheet",
+    "kindle-seo-marketing": "web",
+    "kindle-writing-documents": "document",
+    "pdf-document-work": "document",
+    "spreadsheet-desk-work": "spreadsheet",
+    "image-material-work": "image",
+    "desk-organization": "desk",
+    "office-stationery": "stationery",
+    "desk-focus-environment": "desk",
+}
+
+
+def normalize_amazon_path(path: str | None) -> str:
+    normalized = str(path or "/").split("?", 1)[0].split("#", 1)[0]
+    if not normalized.startswith("/"):
+        normalized = f"/{normalized}"
+    if normalized != "/":
+        normalized = normalized.rstrip("/")
+    return normalized
+
+
+def get_amazon_page_policy(path: str | None) -> Dict[str, object] | None:
+    """Return the sole allowed Amazon placement for a public page."""
+    normalized = normalize_amazon_path(path)
+    if normalized in AMAZON_HARD_EXCLUDED_PATHS:
+        return None
+    if normalized not in AMAZON_ELIGIBLE_EXACT_PATHS and not any(
+        normalized.startswith(prefix) for prefix in AMAZON_ELIGIBLE_PREFIXES
+    ):
+        return None
+
+    if normalized == "/":
+        return {"enabled": True, "render_target": "content", "placement": "top-late-amazon"}
+    if normalized == "/tools":
+        return {"enabled": True, "render_target": "content", "placement": "tools-after-grid"}
+    if normalized in AMAZON_CONTENT_PATHS:
+        return {"enabled": True, "render_target": "content", "placement": "tool-post-content"}
+    if normalized.startswith("/blog/"):
+        return {"enabled": True, "render_target": "content", "placement": "article-mid-late"}
+    return {"enabled": True, "render_target": "footer", "placement": "after-page-content"}
 
 AMAZON_THEME_POOL: List[Dict[str, object]] = [
     {
@@ -126,7 +221,10 @@ PATH_KEYWORD_RULES: List[Tuple[str, List[str]]] = [
     ("/guide/csv", ["Kindle Excel", "Excel 表計算 Kindle", "デスク作業 文房具"]),
     ("/tools/image-cleanup", ["Kindle 画像編集", "撮影 小物 仕事道具", "資料作成 文房具"]),
     ("/tools/image-batch", ["Kindle 画像編集", "資料作成 Kindle", "画像整理 文房具"]),
+    ("/tools/image-compress", ["画像 素材整理 仕事道具", "資料作成 デザイン 本", "画像編集 Kindle"]),
     ("/guide/image", ["Kindle 画像編集", "資料作成 Kindle", "撮影 小物 仕事道具"]),
+    ("/tools/qr-code", ["文房具 オフィス用品", "書類整理 オフィス用品", "デスク整理 収納"]),
+    ("/guide/qr-code", ["文房具 オフィス用品", "資料作成 Kindle", "書類整理 文房具"]),
     ("/tools/seo", ["Kindle SEO", "Kindle Webマーケティング", "SNS運用 Kindle"]),
     ("/guide/seo", ["Kindle SEO", "Kindle Webマーケティング", "文章術 Kindle"]),
     ("/tools", ["Kindle 仕事効率化", "Kindle Excel", "Kindle SEO", "デスク整理 文房具"]),
