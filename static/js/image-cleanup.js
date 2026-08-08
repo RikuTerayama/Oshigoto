@@ -161,9 +161,6 @@ class ImageCleanup {
      * @param {string} options.style.borderColor - 枠の色
      * @param {number} options.style.radiusPx - 角丸半径（0〜）
      * @param {string} options.style.bgColor - 余白・角丸用背景色
-     * @param {Object} options.backgroundRemoval - 背景除去オプション
-     * @param {boolean} options.backgroundRemoval.enabled - 背景除去を有効化
-     * @param {string} options.backgroundRemoval.quality - 品質（'low' | 'medium' | 'high'）
      * @param {string} options.outputFormat - 出力形式（'jpeg', 'webp', 'png'）
      * @param {number} options.quality - 品質（0.1-1.0）
      * @param {string} options.filename - 出力ファイル名
@@ -185,7 +182,6 @@ class ImageCleanup {
             aspectRatio = 'original',
             aspectFit = 'pad',
             style: defaultStyle = { paddingPx: 0, borderWidthPx: 0, borderColor: '#000000', radiusPx: 0, bgColor: '#ffffff' },
-            backgroundRemoval = { enabled: false, quality: 'medium' },
             outputFormat = 'jpeg',
             quality = 0.9,
             filename = null,
@@ -221,23 +217,7 @@ class ImageCleanup {
             throw new Error('キャンセルされました');
         }
 
-        // (2) 背景除去（v2、ONの場合）
-        if (backgroundRemoval && backgroundRemoval.enabled) {
-            try {
-                canvas = await ImageBackgroundRemoval.removeBackgroundFromCanvas(canvas, {
-                    quality: backgroundRemoval.quality || 'medium'
-                }, ctx);
-            } catch (error) {
-                throw new Error(`背景除去に失敗しました: ${error.message}`);
-            }
-        }
-
-        if (ctx.signal && ctx.signal.cancelled) {
-            throw new Error('キャンセルされました');
-        }
-
-        // (3) 透過→白背景（必要な場合、またはJPEG出力の場合）
-        // 背景除去後は透明背景になっているため、JPEG出力時は必ず白背景化が必要
+        // (2) 透過→白背景（必要な場合、またはJPEG出力の場合）
         if (whiteBackground || outputFormat === 'jpeg' || outputFormat === 'jpg') {
             if (ctx.setTaskState) {
                 ctx.setTaskState(ctx.index || 0, { status: 'running', message: '白背景化中...' });
@@ -249,8 +229,7 @@ class ImageCleanup {
             throw new Error('キャンセルされました');
         }
 
-        // (4) 余白トリム（必要な場合）
-        // 背景除去後は透明背景になっているため、alpha判定が効く
+        // (3) 余白トリム（必要な場合）
         if (trimMargins) {
             if (ctx.setTaskState) {
                 ctx.setTaskState(ctx.index || 0, { status: 'running', message: '余白トリム中...' });
@@ -330,8 +309,7 @@ class ImageCleanup {
         const blob = await ImageExport.canvasToBlob(canvas, mimeType, quality);
 
         // ファイル名を決定
-        const bgRemoved = backgroundRemoval && backgroundRemoval.enabled;
-        const baseName = filename || this.generateFilename(file.name, ext, ctx.index + 1, null, bgRemoved);
+        const baseName = filename || this.generateFilename(file.name, ext, ctx.index + 1);
         const outputFilename = FileValidation.sanitizeFilename(baseName);
 
         if (ctx.setTaskState) {
@@ -350,11 +328,10 @@ class ImageCleanup {
      * @param {string} originalName - 元のファイル名
      * @param {string} ext - 拡張子
      * @param {number} index - インデックス（1始まり）
-     * @param {string} template - テンプレート（例: "{name}_{bg}_{index}.{ext}"）
-     * @param {boolean} bgRemoved - 背景除去が適用されたか
+     * @param {string} template - テンプレート（例: "{name}_clean_{index}.{ext}"）
      * @returns {string}
      */
-    static generateFilename(originalName, ext, index = 1, template = null, bgRemoved = false) {
+    static generateFilename(originalName, ext, index = 1, template = null) {
         const nameWithoutExt = FileUtils.getFilenameWithoutExtension(originalName);
         
         if (template) {
@@ -362,7 +339,6 @@ class ImageCleanup {
             result = result.replace(/{name}/g, nameWithoutExt);
             result = result.replace(/{index}/g, String(index));
             result = result.replace(/{ext}/g, ext);
-            result = result.replace(/{bg}/g, bgRemoved ? 'bgremoved' : '');
             // 連続アンダースコアを1つに正規化
             result = result.replace(/_+/g, '_');
             if (!result.includes('.')) {
@@ -371,8 +347,7 @@ class ImageCleanup {
             return result;
         }
         
-        const bgSuffix = bgRemoved ? '_bgremoved' : '';
-        return `${nameWithoutExt}_clean${bgSuffix}_${index}.${ext}`;
+        return `${nameWithoutExt}_clean_${index}.${ext}`;
     }
 }
 
