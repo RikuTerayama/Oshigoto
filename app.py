@@ -29,8 +29,6 @@ from lib.seo import (
 from lib.amazon_creators import (
     build_search_url as build_amazon_search_url,
     build_single_amazon_recommendation,
-    build_rotating_theme_cards as build_amazon_rotating_theme_cards,
-    get_recommendations as get_amazon_recommendations,
 )
 from lib.a8_affiliate_catalog import (
     a8_can_render_placement as catalog_a8_can_render_placement,
@@ -636,24 +634,6 @@ def affiliate_top_slot_mode(path=None):
     return 'header'
 
 
-AMAZON_RECENT_HISTORY_COOKIE = 'oshigoto_recent_affiliate_context'
-AMAZON_RECENT_HISTORY_LIMIT = 8
-AMAZON_RECENT_HISTORY_COOKIE_MAX_BYTES = 1800
-
-
-def _is_public_affiliate_html_path(path):
-    normalized_path = path or '/'
-    if normalized_path.startswith(NON_UI_AFFILIATE_PATH_PREFIXES):
-        return False
-    if normalized_path in NON_UI_AFFILIATE_PATHS:
-        return False
-    if normalized_path in ('/robots.txt', '/sitemap.xml', '/ads.txt'):
-        return False
-    if normalized_path.startswith(('/health', '/ready', '/live', '/ping')):
-        return False
-    return True
-
-
 def _dedupe_keep_order(values):
     seen = set()
     output = []
@@ -667,36 +647,6 @@ def _dedupe_keep_order(values):
         seen.add(key)
         output.append(cleaned)
     return output
-
-
-def _load_recent_affiliate_history():
-    if not has_request_context():
-        return []
-    raw = (request.cookies.get(AMAZON_RECENT_HISTORY_COOKIE) or '').strip()
-    if not raw:
-        return []
-    try:
-        parsed = json.loads(raw)
-    except (TypeError, ValueError):
-        return []
-    if not isinstance(parsed, list):
-        return []
-
-    cleaned = []
-    for entry in parsed[:AMAZON_RECENT_HISTORY_LIMIT]:
-        if not isinstance(entry, dict):
-            continue
-        path = str(entry.get('path') or entry.get('p') or '').strip()
-        if not path or not _is_public_affiliate_html_path(path):
-            continue
-        category = str(entry.get('category') or entry.get('c') or entry.get('page_type') or entry.get('t') or '').strip()
-        cleaned.append({
-            'path': path,
-            'page_type': category,
-            'category': category,
-            'keywords': [],
-        })
-    return cleaned
 
 
 def _build_affiliate_page_tags(path, seo_defaults, products):
@@ -737,68 +687,6 @@ def _build_affiliate_page_tags(path, seo_defaults, products):
     return _dedupe_keep_order(tags)[:8]
 
 
-def _prepare_recent_affiliate_history_cookie(path, page_type, category, history):
-    if not has_request_context():
-        return
-    if not _is_public_affiliate_html_path(path):
-        return
-
-    entry = {
-        'p': path,
-        'c': str(category or page_type or '')[:64],
-    }
-    updated = [entry]
-    for item in history or []:
-        if not isinstance(item, dict):
-            continue
-        item_path = str(item.get('path') or item.get('p') or '').strip()
-        if item_path == path:
-            continue
-        updated.append({
-            'p': item_path,
-            'c': str(item.get('category') or item.get('c') or item.get('page_type') or '')[:64],
-        })
-        if len(updated) >= AMAZON_RECENT_HISTORY_LIMIT:
-            break
-
-    try:
-        cookie_value = json.dumps(updated, separators=(',', ':'))
-        while len(cookie_value.encode('utf-8')) > AMAZON_RECENT_HISTORY_COOKIE_MAX_BYTES and len(updated) > 1:
-            updated.pop()
-            cookie_value = json.dumps(updated, separators=(',', ':'))
-        g.amazon_recent_history_cookie = cookie_value
-    except Exception:
-        g.amazon_recent_history_cookie = None
-
-
-def _safe_get_amazon_affiliate(path, page_type, title, tags, recent_history):
-    try:
-        result = get_amazon_recommendations(
-            path=path,
-            page_type=page_type,
-            title=title,
-            tags=tags,
-            recent_history=recent_history,
-        )
-    except Exception as exc:
-        logger.warning("amazon_affiliate_unexpected_error type=%s detail=%s", type(exc).__name__, str(exc))
-        result = None
-
-    if not isinstance(result, dict):
-        return {
-            'enabled': False,
-            'items': [],
-            'keywords': [],
-            'error': 'invalid_response',
-            'source': 'none',
-        }
-    if not isinstance(result.get('items'), list):
-        result['items'] = []
-    if not isinstance(result.get('keywords'), list):
-        result['keywords'] = []
-    return result
-
-
 def split_visible_sentences(text):
     """Visible copy only: split long Japanese text into sentence-level lines."""
     if not text:
@@ -825,29 +713,6 @@ def split_visible_sentences(text):
 
 def affiliate_side_rail_enabled(path=None):
     return False
-
-
-@app.after_request
-def persist_affiliate_history_cookie(response):
-    cookie_value = getattr(g, 'amazon_recent_history_cookie', None) if has_request_context() else None
-    if not cookie_value:
-        return response
-    if len(cookie_value.encode('utf-8')) > AMAZON_RECENT_HISTORY_COOKIE_MAX_BYTES:
-        logger.warning("amazon_history_cookie_skipped reason=size_limit")
-        return response
-    try:
-        response.set_cookie(
-            AMAZON_RECENT_HISTORY_COOKIE,
-            cookie_value,
-            max_age=60 * 60 * 24 * 14,
-            secure=request.is_secure,
-            httponly=True,
-            samesite='Lax',
-            path='/',
-        )
-    except Exception as exc:
-        logger.warning("amazon_history_cookie_write_error type=%s detail=%s", type(exc).__name__, str(exc))
-    return response
 
 
 # 迺ｰ蠅・､画焚繧偵ユ繝ｳ繝励Ξ繝ｼ繝医さ繝ｳ繝・く繧ｹ繝医↓豕ｨ蜈･・・dSense / Affiliate 險ｭ螳夂畑・・
@@ -916,14 +781,6 @@ def inject_env_vars():
             title=seo_defaults.get('title', ''),
             tags=amazon_tags,
         )
-        amazon_affiliate = {
-            'enabled': bool(amazon_single_recommendation),
-            'items': [amazon_single_recommendation] if amazon_single_recommendation else [],
-            'keywords': [],
-            'error': None if amazon_single_recommendation else 'not_rendered',
-            'source': 'theme',
-        }
-
         from lib.nav import get_nav_sections, get_footer_columns
         nav_sections = get_nav_sections()
         footer_columns = get_footer_columns()
@@ -965,12 +822,7 @@ def inject_env_vars():
             'AFFILIATE_WIDGET_MOBILE_ENABLED': affiliate_settings['widget_mobile_enabled'],
             'AFFILIATE_ROTATION_BANNER_ENABLED': affiliate_settings['rotation_banner_enabled'],
             'AMAZON_AFFILIATE_ENABLED': bool(amazon_single_recommendation),
-            'amazon_affiliate': amazon_affiliate,
             'amazon_single_recommendation': amazon_single_recommendation,
-            'amazon_affiliate_items': [],
-            'amazon_affiliate_purpose_items': [],
-            'amazon_affiliate_upper_items': [],
-            'amazon_affiliate_mid_items': [],
             'amazon_search_url': build_amazon_search_url,
             'affiliate_page_type': affiliate_page_type,
             'affiliate_path_excluded': affiliate_is_path_excluded(current_path),
@@ -1031,12 +883,7 @@ def inject_env_vars():
             'AFFILIATE_WIDGET_MOBILE_ENABLED': affiliate_settings['widget_mobile_enabled'],
             'AFFILIATE_ROTATION_BANNER_ENABLED': affiliate_settings['rotation_banner_enabled'],
             'AMAZON_AFFILIATE_ENABLED': False,
-            'amazon_affiliate': {'enabled': False, 'items': [], 'keywords': [], 'error': 'context_fallback', 'source': 'none'},
             'amazon_single_recommendation': None,
-            'amazon_affiliate_items': [],
-            'amazon_affiliate_purpose_items': [],
-            'amazon_affiliate_upper_items': [],
-            'amazon_affiliate_mid_items': [],
             'amazon_search_url': build_amazon_search_url,
             'affiliate_page_type': get_affiliate_page_type(current_path),
             'affiliate_path_excluded': affiliate_is_path_excluded(current_path),
@@ -1795,9 +1642,6 @@ def sitemap():
         ('/', 'daily', '1.0', today),
         ('/about', 'monthly', '0.8', today),
         ('/business', 'monthly', '0.8', today),
-        ('/privacy', 'monthly', '0.5', today),
-        ('/terms', 'monthly', '0.5', today),
-        ('/contact', 'monthly', '0.5', today),
         ('/faq', 'weekly', '0.8', today),
         ('/glossary', 'monthly', '0.7', today),
         ('/best-practices', 'monthly', '0.7', today),

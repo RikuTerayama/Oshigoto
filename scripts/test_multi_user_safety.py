@@ -19,9 +19,11 @@ os.environ.setdefault("MAX_OUTPUT_SIZE_MB", "2")
 os.environ.setdefault("RATE_LIMIT_PDF_PER_MIN", "60")
 
 _TEMP_ROOT = Path(tempfile.mkdtemp(prefix="oshigoto-safety-"))
-os.environ["TMP"] = str(_TEMP_ROOT)
-os.environ["TEMP"] = str(_TEMP_ROOT)
-tempfile.tempdir = str(_TEMP_ROOT)
+# Do not replace tempfile.tempdir here. Werkzeug spools multipart bodies larger
+# than 500 KB through TemporaryFile, which can block on Windows when pointed at
+# a newly created process-local subdirectory. The application itself keeps PDF
+# lock input/output in request-scoped memory, so this directory remains only a
+# sentinel for unexpected application-created files.
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -44,15 +46,19 @@ def make_pdf(width=72, height=72, pages=1, encrypted=False, password="secret"):
 
 
 def post_lock(pdf_bytes, password, filename="document.pdf"):
-    with app_module.app.test_client() as client:
-        response = client.post(
-            "/api/pdf/lock",
-            data={"file": (io.BytesIO(pdf_bytes), filename), "password": password},
-            content_type="multipart/form-data",
-        )
-        response.get_data()
-        response.close()
-        return response
+    upload = io.BytesIO(pdf_bytes)
+    try:
+        with app_module.app.test_client() as client:
+            response = client.post(
+                "/api/pdf/lock",
+                data={"file": (upload, filename), "password": password},
+                content_type="multipart/form-data",
+            )
+            response.get_data()
+            response.close()
+            return response
+    finally:
+        upload.close()
 
 
 def assert_locked_pdf(pdf_bytes, password, expected_width, expected_height):

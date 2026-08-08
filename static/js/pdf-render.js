@@ -2,10 +2,10 @@
  * PDF→画像レンダリングユーティリティ（pdfjs-dist使用）
  */
 
-const ENCRYPTED_PDF_USER_MESSAGE = 'このPDFはパスワード保護されています。正しいパスワードを入力してください。';
+const PDF_RENDER_ENCRYPTED_USER_MESSAGE = 'このPDFはパスワード保護されています。正しいパスワードを入力してください。';
 
 /** pdf.js の暗号化/パスワード系エラーかどうか判定 */
-function isEncryptedPdfJsError(e) {
+function isPdfRenderEncryptedError(e) {
     const msg = String(e?.message || '').toLowerCase();
     const name = String(e?.name || '').toLowerCase();
     return name.includes('password') || msg.includes('password') || msg.includes('encrypted');
@@ -95,8 +95,8 @@ class PdfRender {
             const loadingTask = pdfjs.getDocument({ data: arrayBuffer, password });
             pdf = await loadingTask.promise;
         } catch (e) {
-            if (isEncryptedPdfJsError(e)) {
-                throw new Error(ENCRYPTED_PDF_USER_MESSAGE);
+            if (isPdfRenderEncryptedError(e)) {
+                throw new Error(PDF_RENDER_ENCRYPTED_USER_MESSAGE);
             }
             console.error('[PdfRender] load_failed', { fileName: file.name, format });
             throw e;

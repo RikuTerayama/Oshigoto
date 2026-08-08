@@ -311,8 +311,10 @@ def run_checks(get):
     add('sitemap_excludes_background_removal', '/sitemap.xml', '/tools/background-removal' not in sitemap and '/guide/background-removal' not in sitemap)
     landing = _body(get('/'))
     add('landing_excludes_ocr', '/', '/tools/ocr' not in landing and '/guide/ocr' not in landing)
-    for path in TOOL_PATHS + GUIDE_PATHS + ['/faq', '/privacy']:
+    for path in TOOL_PATHS + GUIDE_PATHS + ['/faq']:
         add('sitemap_required', path, path in sitemap)
+    for path in ['/privacy', '/terms', '/contact']:
+        add('sitemap_excludes_noindex', path, path not in sitemap)
     add('sitemap_excludes_autofill', '/autofill', '/autofill' not in sitemap)
 
     robots = _body(get('/robots.txt'))
