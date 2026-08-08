@@ -15,20 +15,24 @@ from lib.a8_affiliate_catalog import (  # noqa: E402
     A8_HARD_EXCLUDED_PATHS,
     load_a8_creative_catalog,
 )
+from lib.amazon_affiliate_map import (  # noqa: E402
+    AMAZON_ELIGIBLE_EXACT_PATHS,
+    AMAZON_HARD_EXCLUDED_PATHS,
+)
 
 BASE_URL_DEFAULT = 'https://oshigoto.onrender.com'
 MAJOR_PATHS = ['/', '/tools', '/business', '/privacy', '/terms', '/contact', '/about', '/faq', '/guide', '/blog', '/glossary', '/best-practices']
 TOOL_PATHS = ['/tools/pdf', '/tools/csv', '/tools/image-batch', '/tools/image-compress', '/tools/qr-code', '/tools/image-cleanup', '/tools/seo']
 GUIDE_PATHS = ['/guide/pdf', '/guide/csv', '/guide/image-batch', '/guide/image-compress', '/guide/qr-code', '/guide/image-cleanup', '/guide/seo']
 INDEXABLE_PATHS = ['/', '/tools', '/business', '/guide', '/blog', '/glossary'] + TOOL_PATHS + GUIDE_PATHS
-PUBLIC_AFFILIATE_PATHS = ['/', '/tools'] + TOOL_PATHS
+PUBLIC_AFFILIATE_PATHS = sorted(AMAZON_ELIGIBLE_EXACT_PATHS)
 ADSENSE_SCRIPT_SRC = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4232725615106709'
 ADSENSE_HEAD_PATHS = ['/', '/tools', '/tools/pdf', '/tools/image-compress', '/tools/qr-code']
 A8_LEGACY_SCRIPT_HOST = 'rot3.a8.net'
 A8_LINK_SRC = 'https://px.a8.net/svt/ejp'
 A8_TRACKER_PATTERN = re.compile(r'https://www\d+\.a8\.net/0\.gif\?a8mat=')
 A8_SLOT_MARKER = 'data-a8-creative-id="'
-NO_VISIBLE_AFFILIATE_PATHS = sorted(A8_HARD_EXCLUDED_PATHS)
+NO_VISIBLE_AFFILIATE_PATHS = sorted(A8_HARD_EXCLUDED_PATHS | AMAZON_HARD_EXCLUDED_PATHS)
 A8_PUBLIC_PATHS = sorted(A8_ELIGIBLE_EXACT_PATHS)
 A8_EXPECTED_PARAMETERS = {
     'a8-01': ('4B3SMZ+5RSAWI+5B0Y+63WO1', '260517563349', 's00000024757001026000', 'www26', 'www10'),
@@ -366,10 +370,31 @@ def run_checks(get):
                     missing.append(url)
                 if len(tags) > 1:
                     duplicate.append(url)
+            add('amazon_single_link', path, len(urls) == 1, f'count={len(urls)}')
             add('amazon_tag', path, not missing and not duplicate, f'missing={len(missing)} duplicate={len(duplicate)}')
+            add('amazon_single_card', path, body.count('class="amazon-single-card"') == 1)
+            add('amazon_single_cta', path, body.count('class="amazon-single-card__cta"') == 1)
+            add('amazon_neutral_icon', path, body.count('class="amazon-single-card__icon"') == 1)
+            add('amazon_legacy_grid_absent', path, 'class="amazon-recommendation-grid"' not in body)
+            add('amazon_side_box_absent', path, 'class="affiliate-side-box"' not in body)
+            amazon_card_match = re.search(
+                r'<section\b[^>]*class="[^"]*amazon-single-card[^"]*"[\s\S]*?</section>',
+                body,
+                re.IGNORECASE,
+            )
+            amazon_card_html = amazon_card_match.group(0) if amazon_card_match else ''
+            add(
+                'amazon_product_media_absent',
+                path,
+                bool(amazon_card_html)
+                and 'amazon-recommendation-card__media' not in amazon_card_html
+                and '<img' not in amazon_card_html.lower(),
+            )
+            add('amazon_link_semantics', path, 'rel="nofollow sponsored noopener"' in body and 'target="_blank"' in body)
         else:
-            add('amazon_tag_unset', path, True, 'tag not required when unset')
-        add('affiliate_disclosure', path, 'Amazon' in body or 'affiliate' in body.lower())
+            add('amazon_tag_unset_fails_closed', path, len(urls) == 0 and 'class="amazon-single-card"' not in body)
+        if AMAZON_EXPECTED_ASSOCIATE_TAG:
+            add('affiliate_disclosure', path, 'PR / Amazon affiliate' in body and '当サイトではアフィリエイト広告を利用しています。' in body)
 
     for name, target, result, _ in rows:
         print(f'[{name}] {target}: {result}')

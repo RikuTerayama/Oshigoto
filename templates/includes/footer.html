@@ -1,13 +1,7 @@
 ﻿<footer style="background: var(--color-bg-primary, #121212); padding: var(--spacing-xl, 48px) var(--spacing-md, 16px); margin-top: var(--spacing-xl, 48px); border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));">
     <div style="max-width: 1200px; margin: 0 auto;">
         {% set can_render_affiliate = affiliate_can_render_textlinks() %}
-        {% set footer_amazon_upper_items = amazon_affiliate_upper_items|default([]) %}
-        {% set footer_amazon_mid_items = amazon_affiliate_mid_items|default([]) %}
-        {% set has_amazon_upper_items = AMAZON_AFFILIATE_ENABLED|default(false) and (footer_amazon_upper_items|length > 0) %}
-        {% set has_amazon_mid_items = AMAZON_AFFILIATE_ENABLED|default(false) and (footer_amazon_mid_items|length > 0) %}
         {% set affiliate_disclosure_rendered = affiliate_disclosure_rendered|default(false) %}
-        {% set footer_needs_upper_amazon = can_render_affiliate and has_amazon_upper_items and not affiliate_upper_amazon_rendered|default(false) %}
-        {% set footer_needs_mid_amazon = can_render_affiliate and has_amazon_mid_items and not affiliate_mid_amazon_rendered|default(false) and not footer_needs_upper_amazon %}
         {% if related_content_section %}
             {% include 'includes/related_content.html' %}
         {% endif %}
@@ -17,19 +11,10 @@
                 {% include 'includes/affiliate_slot.html' %}
             {% endwith %}
         {% endif %}
-        {% if footer_needs_upper_amazon %}
-            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=(not affiliate_disclosure_rendered), affiliate_section_class='affiliate-cards-section--upper affiliate-cards-section--footer-fallback', affiliate_section_tier='upper-amazon', amazon_items_override=footer_amazon_upper_items[:3], amazon_section_title='仕事道具を整える Amazon おすすめ' %}
-                {% include 'includes/affiliate_cards_section.html' %}
-            {% endwith %}
-            {% set affiliate_upper_amazon_rendered = true %}
-            {% set affiliate_disclosure_rendered = true %}
-        {% endif %}
-
-        {% if footer_needs_mid_amazon %}
-            {% with affiliate_networks=['amazon'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--upper-mid affiliate-cards-section--footer-fallback', affiliate_section_tier='mid-amazon', amazon_items_override=footer_amazon_mid_items[:3], amazon_section_title='作業環境・ビジネス書の Amazon おすすめ' %}
-                {% include 'includes/affiliate_cards_section.html' %}
-            {% endwith %}
-            {% set affiliate_mid_amazon_rendered = true %}
+        {% if amazon_single_recommendation|default(none) and amazon_single_recommendation.render_target == 'footer' %}
+            <div class="amazon-single-placement amazon-single-placement--footer">
+                {% include 'includes/amazon_single_card.html' %}
+            </div>
         {% endif %}
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; text-align: left;">

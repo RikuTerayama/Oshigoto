@@ -28,6 +28,7 @@ from lib.seo import (
 )
 from lib.amazon_creators import (
     build_search_url as build_amazon_search_url,
+    build_single_amazon_recommendation,
     build_rotating_theme_cards as build_amazon_rotating_theme_cards,
     get_recommendations as get_amazon_recommendations,
 )
@@ -875,7 +876,6 @@ def inject_env_vars():
             and not affiliate_is_path_excluded(current_path)
         ):
             selected_a8_creative = select_a8_creative(current_path)
-        recent_affiliate_history = _load_recent_affiliate_history()
         seo_defaults = get_seo_defaults(current_path)
         base_url = os.getenv('BASE_URL', 'https://oshigoto.onrender.com').rstrip('/')
         seo_page_description = seo_defaults.get('description', '')
@@ -910,43 +910,19 @@ def inject_env_vars():
         public_products = get_public_products()
         products_catalog = public_products
         amazon_tags = _build_affiliate_page_tags(current_path, seo_defaults, products_list)
-        amazon_affiliate = _safe_get_amazon_affiliate(
+        amazon_single_recommendation = build_single_amazon_recommendation(
             path=current_path,
             page_type=affiliate_page_type,
             title=seo_defaults.get('title', ''),
             tags=amazon_tags,
-            recent_history=recent_affiliate_history,
         )
-        amazon_affiliate_upper_items = build_amazon_rotating_theme_cards(
-            path=current_path,
-            page_type=affiliate_page_type,
-            title=seo_defaults.get('title', ''),
-            tags=amazon_tags,
-            recent_history=recent_affiliate_history,
-            slot_id='upper-amazon',
-            count=3,
-        )
-        upper_theme_ids = [
-            str(item.get('theme_id'))
-            for item in amazon_affiliate_upper_items
-            if isinstance(item, dict) and item.get('theme_id')
-        ]
-        amazon_affiliate_mid_items = build_amazon_rotating_theme_cards(
-            path=current_path,
-            page_type=affiliate_page_type,
-            title=seo_defaults.get('title', ''),
-            tags=amazon_tags,
-            recent_history=recent_affiliate_history,
-            slot_id='mid-amazon',
-            count=3,
-            exclude_theme_ids=upper_theme_ids,
-        )
-        _prepare_recent_affiliate_history_cookie(
-            path=current_path,
-            page_type=affiliate_page_type,
-            category=seo_defaults.get('category'),
-            history=recent_affiliate_history,
-        )
+        amazon_affiliate = {
+            'enabled': bool(amazon_single_recommendation),
+            'items': [amazon_single_recommendation] if amazon_single_recommendation else [],
+            'keywords': [],
+            'error': None if amazon_single_recommendation else 'not_rendered',
+            'source': 'theme',
+        }
 
         from lib.nav import get_nav_sections, get_footer_columns
         nav_sections = get_nav_sections()
@@ -988,12 +964,13 @@ def inject_env_vars():
             'AFFILIATE_WIDGET_TABLET_ENABLED': affiliate_settings['widget_tablet_enabled'],
             'AFFILIATE_WIDGET_MOBILE_ENABLED': affiliate_settings['widget_mobile_enabled'],
             'AFFILIATE_ROTATION_BANNER_ENABLED': affiliate_settings['rotation_banner_enabled'],
-            'AMAZON_AFFILIATE_ENABLED': bool(amazon_affiliate.get('enabled')),
+            'AMAZON_AFFILIATE_ENABLED': bool(amazon_single_recommendation),
             'amazon_affiliate': amazon_affiliate,
-            'amazon_affiliate_items': amazon_affiliate.get('items', []),
-            'amazon_affiliate_purpose_items': amazon_affiliate_upper_items,
-            'amazon_affiliate_upper_items': amazon_affiliate_upper_items,
-            'amazon_affiliate_mid_items': amazon_affiliate_mid_items,
+            'amazon_single_recommendation': amazon_single_recommendation,
+            'amazon_affiliate_items': [],
+            'amazon_affiliate_purpose_items': [],
+            'amazon_affiliate_upper_items': [],
+            'amazon_affiliate_mid_items': [],
             'amazon_search_url': build_amazon_search_url,
             'affiliate_page_type': affiliate_page_type,
             'affiliate_path_excluded': affiliate_is_path_excluded(current_path),
@@ -1055,6 +1032,7 @@ def inject_env_vars():
             'AFFILIATE_ROTATION_BANNER_ENABLED': affiliate_settings['rotation_banner_enabled'],
             'AMAZON_AFFILIATE_ENABLED': False,
             'amazon_affiliate': {'enabled': False, 'items': [], 'keywords': [], 'error': 'context_fallback', 'source': 'none'},
+            'amazon_single_recommendation': None,
             'amazon_affiliate_items': [],
             'amazon_affiliate_purpose_items': [],
             'amazon_affiliate_upper_items': [],

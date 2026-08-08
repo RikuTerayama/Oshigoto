@@ -8105,3 +8105,148 @@ body {
     margin-left: calc((100% - 302px) / 2);
     transform: none;
 }
+
+/* Phase 9.9: one editorial Amazon recommendation per eligible page. */
+.amazon-single-placement {
+    width: min(100%, 920px);
+    margin: clamp(34px, 6vw, 72px) auto;
+}
+
+.amazon-single-placement--footer {
+    margin-top: 0;
+    margin-bottom: clamp(32px, 5vw, 56px);
+}
+
+.amazon-single-card {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: clamp(18px, 3vw, 28px);
+    align-items: center;
+    padding: clamp(20px, 3vw, 30px);
+    border: 1px solid rgba(68, 83, 75, 0.2);
+    border-radius: 18px;
+    background: #fbf7ed;
+    color: #26312c;
+    box-shadow: 0 12px 30px rgba(39, 49, 44, 0.07);
+}
+
+.amazon-single-card__icon {
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    border: 1px solid rgba(14, 124, 123, 0.2);
+    border-radius: 16px;
+    background: #f2eee3;
+    color: #0e7c7b;
+}
+
+.amazon-single-card__icon svg {
+    width: 46px;
+    height: 46px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.4;
+}
+
+.amazon-single-card__body {
+    min-width: 0;
+}
+
+.amazon-single-card__kicker,
+.amazon-single-card__category,
+.amazon-single-card__title,
+.amazon-single-card__lead {
+    margin: 0;
+}
+
+.amazon-single-card__kicker {
+    color: #7d7467;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.amazon-single-card__category {
+    margin-top: 7px;
+    color: #0e6d6c;
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+.amazon-single-card__title {
+    margin-top: 4px;
+    color: #26312c;
+    font-size: clamp(1.15rem, 2vw, 1.42rem);
+    line-height: 1.45;
+    letter-spacing: 0;
+}
+
+.amazon-single-card__lead {
+    margin-top: 8px;
+    color: #5d675f;
+    font-size: 0.94rem;
+    line-height: 1.7;
+}
+
+.landing-page .amazon-single-card__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin-top: 16px;
+    padding: 10px 18px;
+    border: 1px solid #0e7c7b;
+    border-radius: 10px;
+    background: #0e7c7b;
+    color: #fff;
+    font-weight: 700;
+    line-height: 1.35;
+    text-decoration: none;
+}
+
+.landing-page .amazon-single-card__cta:hover {
+    background: #0a6665;
+    color: #fff;
+    text-decoration: none;
+}
+
+.landing-page .amazon-single-card__cta:focus-visible {
+    outline: 3px solid rgba(14, 124, 123, 0.28);
+    outline-offset: 3px;
+}
+
+.amazon-single-card .affiliate-disclosure {
+    margin: 12px 0 0;
+    color: #766f64;
+    font-size: 0.76rem;
+}
+
+@media (max-width: 640px) {
+    .amazon-single-placement {
+        margin: 32px auto;
+    }
+
+    .amazon-single-card {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 20px;
+    }
+
+    .amazon-single-card__icon {
+        width: 56px;
+        height: 56px;
+    }
+
+    .amazon-single-card__icon svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    .amazon-single-card__cta {
+        width: 100%;
+    }
+}

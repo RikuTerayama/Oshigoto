@@ -13,7 +13,14 @@ from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 import requests
 from zoneinfo import ZoneInfo
 
-from lib.amazon_affiliate_map import AMAZON_THEME_POOL, PAGE_TYPE_KEYWORDS, PATH_KEYWORD_RULES
+from lib.amazon_affiliate_map import (
+    AMAZON_ICON_ALLOWLIST,
+    AMAZON_THEME_ICON_MAP,
+    AMAZON_THEME_POOL,
+    PAGE_TYPE_KEYWORDS,
+    PATH_KEYWORD_RULES,
+    get_amazon_page_policy,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -372,6 +379,59 @@ def build_purpose_genre_cards(
         slot_id="upper-amazon",
         count=3,
     )
+
+
+def build_single_amazon_recommendation(
+    path: str,
+    page_type: str,
+    title: str = "",
+    tags: Optional[Iterable[str]] = None,
+    slot_id: str = "amazon-single",
+) -> Optional[dict]:
+    """Build the only Amazon recommendation allowed on a public page."""
+    settings = get_settings()
+    associate_tag = _current_associate_tag(settings)
+    policy = get_amazon_page_policy(path)
+    if not settings.get("enabled") or not associate_tag or not policy:
+        return None
+
+    cards = build_rotating_theme_cards(
+        path=path,
+        page_type=page_type,
+        title=title,
+        tags=tags,
+        recent_history=None,
+        slot_id=slot_id,
+        count=1,
+    )
+    if len(cards) != 1:
+        return None
+
+    card = dict(cards[0])
+    parsed = urlparse(str(card.get("url") or ""))
+    query_pairs = parse_qsl(parsed.query, keep_blank_values=True)
+    tag_values = [value for key, value in query_pairs if key.lower() == "tag"]
+    if (
+        parsed.scheme != "https"
+        or not parsed.netloc.lower().endswith("amazon.co.jp")
+        or tag_values != [associate_tag]
+    ):
+        return None
+
+    theme_id = str(card.get("theme_id") or "")
+    icon_key = AMAZON_THEME_ICON_MAP.get(theme_id, "document")
+    if icon_key not in AMAZON_ICON_ALLOWLIST:
+        icon_key = "document"
+
+    card.update(
+        {
+            "icon_key": icon_key,
+            "lead": "このページの作業に近いテーマの本や仕事道具をAmazonで探せます。",
+            "placement": str(policy["placement"]),
+            "render_target": str(policy["render_target"]),
+        }
+    )
+    return card
 
 
 def _make_cache_key(settings: Dict[str, object], keywords: List[str]) -> str:
