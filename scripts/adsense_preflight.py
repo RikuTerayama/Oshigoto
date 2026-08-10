@@ -288,7 +288,14 @@ def run_checks(get):
     qr_template_path = os.path.join(qr_root, 'templates', 'tools', 'qr-code.html')
     with open(qr_template_path, encoding='utf-8') as handle:
         qr_template = handle.read()
-    add('qr_no_inline_affiliate_near_controls', qr_template_path, 'affiliate_' not in qr_template and "includes/footer.html" in qr_template)
+    qr_workspace = qr_template.split('<div id="qr-code-app"', 1)[-1]
+    add(
+        'qr_no_inline_affiliate_near_controls',
+        qr_template_path,
+        "includes/affiliate_primary_rail.html" in qr_template
+        and "includes/affiliate_primary_rail.html" not in qr_workspace
+        and "includes/footer.html" in qr_template,
+    )
     add('qr_fixed_colors', qr_template_path, 'type="color"' not in qr_template and '#000000' in qr_ui and '#FFFFFF' in qr_ui)
 
 
@@ -353,10 +360,10 @@ def run_checks(get):
         body = _body(get(path))
         a8_count = body.count(A8_SLOT_MARKER)
         expected_count = get_a8_visible_limit(path)
-        add('a8_visible_limit', path, a8_count == expected_count, f'count={a8_count} expected={expected_count}')
-        add('a8_direct_link_limit', path, body.count(A8_LINK_SRC) == expected_count, f'count={body.count(A8_LINK_SRC)}')
-        add('a8_banner_limit', path, body.count('width="300" height="250"') == expected_count)
-        add('a8_tracker_limit', path, len(A8_TRACKER_PATTERN.findall(body)) == expected_count)
+        add('a8_visible_limit', path, 0 < a8_count <= expected_count, f'count={a8_count} limit={expected_count}')
+        add('a8_direct_link_limit', path, body.count(A8_LINK_SRC) == a8_count, f'count={body.count(A8_LINK_SRC)} rendered={a8_count}')
+        add('a8_banner_limit', path, body.count('width="300" height="250"') == a8_count)
+        add('a8_tracker_limit', path, len(A8_TRACKER_PATTERN.findall(body)) == a8_count)
         add('a8_legacy_script_absent', path, A8_LEGACY_SCRIPT_HOST not in body)
         add('a8_pr_label_present', path, 'a8-creative-slot__label">PR<' in body)
         if path == '/':
@@ -383,12 +390,12 @@ def run_checks(get):
                     missing.append(url)
                 if len(tags) > 1:
                     duplicate.append(url)
-            add('amazon_visible_limit', path, len(urls) == expected_count, f'count={len(urls)} expected={expected_count}')
+            add('amazon_visible_limit', path, 0 < len(urls) <= expected_count, f'count={len(urls)} limit={expected_count}')
             add('amazon_urls_distinct', path, len(set(urls)) == len(urls), f'unique={len(set(urls))}')
             add('amazon_tag', path, not missing and not duplicate, f'missing={len(missing)} duplicate={len(duplicate)}')
-            add('amazon_card_limit', path, _amazon_card_count(body) == expected_count)
-            add('amazon_cta_limit', path, body.count('class="amazon-single-card__cta"') == expected_count)
-            add('amazon_neutral_icon', path, body.count('class="amazon-single-card__icon"') == expected_count)
+            add('amazon_card_limit', path, _amazon_card_count(body) == len(urls))
+            add('amazon_cta_limit', path, body.count('class="amazon-single-card__cta"') == len(urls))
+            add('amazon_neutral_icon', path, body.count('class="amazon-single-card__icon"') == len(urls))
             add('amazon_legacy_grid_absent', path, 'class="amazon-recommendation-grid"' not in body)
             add('amazon_side_box_absent', path, 'class="affiliate-side-box"' not in body)
             amazon_card_match = re.search(

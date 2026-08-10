@@ -59,7 +59,8 @@
 <body class="landing-page qr-guide-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <main class="qr-guide-shell">
+    <main class="qr-guide-shell page-with-affiliate-rail">
+        <div class="page-with-affiliate-rail__content">
         <header class="qr-guide-hero">
             <p class="qr-guide-hero__kicker">QR code guide</p>
             <h1>QRコード作成の使い方</h1>
@@ -121,8 +122,16 @@
                 </div>
             </article>
         </div>
+        {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-guide-qr-title' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
         {% set current_path = '/guide/qr-code' %}
         {% include 'includes/related_tools.html' %}
+        {% with inline_affiliate_provider='a8' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+        </div>
+        {% include 'includes/affiliate_primary_rail.html' %}
     </main>
     {% include 'includes/footer.html' %}
 </body>

@@ -22,6 +22,8 @@
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
     <div class="container">
+        <div class="tool-intro-layout">
+        <div class="tool-intro-layout__content">
         <div class="page-header">
             <span class="icon-tile icon-tile--lg icon-tile--blue" aria-hidden="true">{{ tool_icon('table', 28) }}</span>
             <h1 data-reveal>表を整える</h1>
@@ -40,6 +42,9 @@
                 <li><strong>保存する</strong><span>CSV、Excel、またはZIPでダウンロードします。</span></li>
             </ol>
         </section>
+        </div>
+        {% include 'includes/affiliate_primary_rail.html' %}
+        </div>
         <div class="page-layout">
         <div class="page-main">
         <div class="tool-workspace">
@@ -127,7 +132,7 @@
         {% include 'includes/tool_content_blocks.html' %}
     </div>
     {% include 'includes/related_tools.html' %}
-    {% with a8_slot_placement='tool-after-explanation' %}
+    {% with selected_a8_creative=secondary_a8_creative, a8_slot_placement='content-lower-a8' %}
         {% include 'includes/a8_creative_slot.html' %}
     {% endwith %}
     <script src="{{ url_for('static', filename='js/file-validation.js') }}"></script>

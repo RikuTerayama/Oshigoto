@@ -106,16 +106,16 @@ def get_a8_allowed_placements(path: str | None) -> tuple[str, ...]:
     ):
         return ()
     if normalized == "/":
-        return ("top-lower-a8", "landing-lower-a8")
+        return ("top-primary-a8", "landing-lower-a8")
     if normalized == "/tools":
         return ("tools-primary-a8", "tools-lower-a8")
     if normalized in A8_AFTER_EXPLANATION_PATHS:
-        return ("tool-after-explanation", "content-lower-a8")
+        return ("global-primary-a8", "content-lower-a8")
     if normalized in A8_HIGH_CONTENT_EXACT_PATHS or any(
         normalized.startswith(prefix) for prefix in A8_HIGH_CONTENT_PREFIXES
     ):
-        return ("global-footer-a8", "content-lower-a8")
-    return ("global-footer-a8",)
+        return ("global-primary-a8", "content-lower-a8")
+    return ("global-primary-a8",)
 
 
 def get_a8_placement(path: str | None) -> str | None:

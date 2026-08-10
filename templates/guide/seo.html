@@ -27,6 +27,8 @@
 <body class="landing-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
+    <div class="page-with-affiliate-rail">
+    <div class="page-with-affiliate-rail__content">
     <div class="container">
         <h1>🔍 Web/SEOユーティリティガイド</h1>
         <p><strong>できること:</strong> OGP画像生成、PageSpeedチェックリスト、メタタグ検査、sitemap.xml/robots.txt生成。OGP・チェックリスト・sitemap/robotsはブラウザ内完結。メタタグ検査はURL入力でHTML取得。URLクロール機能のみ、入力したURLをサーバー経由でアクセスしリンク一覧を返します。</p>
@@ -143,14 +145,25 @@
             <li><strong>クロール結果が空になる</strong>: 開始URLのHTMLに同一オリジンのリンクが含まれていない、またはタイムアウトの可能性があります。URLとネットワークを確認してください。</li>
         </ul>
 
+        {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-guide-seo-title' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+
         {% set tool_path = '/tools/seo' %}
         {% set tool_name = 'Web/SEOユーティリティ' %}
         {% include 'guide/_partials/guide_related_links.html' %}
+
+        {% with inline_affiliate_provider='a8' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
 
         <div class="nav-links">
             <a href="/tools/seo" class="nav-link">← Web/SEOユーティリティに戻る</a>
             <a href="/tools" class="nav-link">← ツール一覧へ</a>
         </div>
+    </div>
+    </div>
+    {% include 'includes/affiliate_primary_rail.html' %}
     </div>
     {% include 'guide/_partials/guide_faq_jsonld.html' %}
     {% include 'includes/footer.html' %}

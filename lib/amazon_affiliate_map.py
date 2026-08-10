@@ -116,14 +116,14 @@ def get_amazon_page_policy(path: str | None) -> Dict[str, object] | None:
         return None
 
     if normalized == "/":
-        return {"enabled": True, "render_target": "content", "placement": "top-late-amazon"}
+        return {"enabled": True, "render_target": "content", "placement": "top-primary-amazon"}
     if normalized == "/tools":
         return {"enabled": True, "render_target": "content", "placement": "tools-primary-amazon"}
     if normalized in AMAZON_CONTENT_PATHS:
-        return {"enabled": True, "render_target": "content", "placement": "tool-post-content"}
+        return {"enabled": True, "render_target": "content", "placement": "tool-primary-amazon"}
     if normalized.startswith("/blog/"):
-        return {"enabled": True, "render_target": "content", "placement": "article-mid-late"}
-    return {"enabled": True, "render_target": "footer", "placement": "after-page-content"}
+        return {"enabled": True, "render_target": "content", "placement": "article-primary-amazon"}
+    return {"enabled": True, "render_target": "content", "placement": "content-primary-amazon"}
 
 
 def get_amazon_visible_limit(path: str | None) -> int:

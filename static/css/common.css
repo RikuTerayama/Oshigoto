@@ -8510,6 +8510,209 @@ body {
     }
 }
 
+/* Post-release UX Hotfix 5: primary affiliates live outside content surfaces. */
+.page-with-affiliate-rail,
+.tool-intro-layout {
+    width: min(calc(100% - 32px), 1540px);
+    margin-inline: auto;
+    min-width: 0;
+}
+
+.page-with-affiliate-rail__content,
+.tool-intro-layout__content,
+.global-affiliate-rail {
+    min-width: 0;
+}
+
+.global-affiliate-rail {
+    width: min(100%, 920px);
+    margin: 28px auto 0;
+}
+
+.global-affiliate-rail__inner {
+    display: grid;
+    gap: 22px;
+    min-width: 0;
+}
+
+.global-affiliate-rail .amazon-single-placement,
+.global-affiliate-rail .affiliate-cards-section {
+    width: 100%;
+    margin: 0;
+}
+
+.global-affiliate-rail .amazon-single-card {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 18px;
+}
+
+.global-affiliate-rail .amazon-single-card__icon {
+    width: 50px;
+    height: 50px;
+}
+
+.global-affiliate-rail .amazon-single-card__icon svg {
+    width: 31px;
+    height: 31px;
+}
+
+.global-affiliate-rail .amazon-single-card__lead {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.global-affiliate-rail .amazon-single-card__cta {
+    width: 100%;
+}
+
+.global-affiliate-rail__publisher {
+    display: grid;
+    gap: 9px;
+    padding: 18px;
+    border: 1px solid var(--brand-line);
+    border-radius: 13px;
+    background: rgba(255, 252, 246, 0.9);
+}
+
+.global-affiliate-rail__publisher .section-kicker,
+.global-affiliate-rail__publisher h2 {
+    margin: 0;
+}
+
+.global-affiliate-rail__publisher h2 {
+    font-size: 1.05rem;
+    line-height: 1.45;
+}
+
+.global-affiliate-rail__publisher a {
+    color: var(--brand-primary-strong);
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.global-affiliate-rail__publisher a:hover {
+    text-decoration: underline;
+}
+
+.global-affiliate-rail__a8 .affiliate-spotlight__header {
+    margin-bottom: 8px;
+}
+
+.inline-affiliate-break {
+    width: min(100%, 980px);
+    margin: clamp(44px, 6vw, 72px) auto;
+    padding-block: clamp(28px, 4vw, 42px);
+    border-block: 1px solid rgba(74, 81, 75, 0.16);
+}
+
+.inline-affiliate-break .amazon-single-placement,
+.inline-affiliate-break .affiliate-cards-section {
+    margin: 0 auto;
+}
+
+.amazon-single-card .amazon-single-card__cta,
+.amazon-single-card .amazon-single-card__cta:visited,
+.amazon-single-card .amazon-single-card__cta:hover,
+.amazon-single-card .amazon-single-card__cta:focus-visible {
+    min-height: 44px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.amazon-single-card .amazon-single-card__cta:hover,
+.amazon-single-card .amazon-single-card__cta:focus-visible {
+    background: #095c5b;
+}
+
+.landing-page .landing-tools-layout {
+    align-items: start;
+    margin-top: clamp(48px, 6vw, 72px);
+}
+
+.landing-page .landing-tools-layout .landing-tools-zone {
+    width: 100%;
+    margin: 0;
+}
+
+.landing-page .landing-tools-zone__body {
+    display: block;
+}
+
+.tools-index-page .tools-main-layout {
+    align-items: start;
+    margin-top: 28px;
+}
+
+.tools-index-page .tools-catalog-panel {
+    min-width: 0;
+    padding: clamp(22px, 3vw, 34px);
+    border: 1px solid rgba(74, 81, 75, 0.16);
+    border-radius: 18px;
+    background: var(--surface-paper, #fbf8f2);
+}
+
+.tools-index-page .tools-catalog-panel .tools-search {
+    margin-top: 0;
+}
+
+@media (min-width: 1240px) {
+    .page-with-affiliate-rail,
+    .tool-intro-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: clamp(28px, 3vw, 36px);
+        align-items: start;
+    }
+
+    .global-affiliate-rail {
+        width: 320px;
+        margin: 0;
+    }
+
+    .landing-page .landing-tools-zone__body {
+        display: block;
+    }
+}
+
+@media (min-width: 1280px) and (min-height: 800px) {
+    .page-with-affiliate-rail > .global-affiliate-rail .global-affiliate-rail__inner,
+    .tool-intro-layout > .global-affiliate-rail .global-affiliate-rail__inner {
+        position: sticky;
+        top: 92px;
+        max-height: calc(100vh - 116px);
+        padding-right: 4px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-gutter: stable;
+    }
+}
+
+@media (max-width: 1239px) {
+    .page-with-affiliate-rail,
+    .tool-intro-layout {
+        width: min(calc(100% - 24px), 1180px);
+    }
+
+    .global-affiliate-rail {
+        position: static;
+    }
+}
+
+@media (max-width: 640px) {
+    .tools-index-page .tools-catalog-panel {
+        padding: 18px 14px;
+        border-radius: 14px;
+    }
+
+    .inline-affiliate-break {
+        padding-block: 28px;
+    }
+}
+
 /* Post-release UX Hotfix 4: compact tools catalog and route-aware affiliate flow. */
 .tools-index-page .tools-page-shell {
     width: min(calc(100% - 32px), 1520px);
@@ -9433,5 +9636,25 @@ body {
     .landing-page .landing-section-surface,
     .landing-page .landing-monetization-band__publisher .related-content {
         padding: 30px 20px !important;
+    }
+}
+
+/* Keep Hotfix 5 surfaces authoritative over the earlier page-specific rail rules. */
+.landing-page .landing-tools-layout .landing-tools-zone {
+    width: 100%;
+    margin: 0;
+}
+
+.landing-page .landing-tools-layout .landing-tools-zone__body {
+    display: block;
+}
+
+@media (min-width: 1240px) {
+    .landing-page .landing-tools-layout,
+    .tools-index-page .tools-main-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: clamp(28px, 3vw, 36px);
+        align-items: start;
     }
 }

@@ -79,12 +79,17 @@
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
     <main class="qr-shell">
+        <div class="tool-intro-layout">
+        <div class="tool-intro-layout__content">
         <header class="qr-hero">
             <p class="qr-hero__kicker">Browser QR tool</p>
             <h1>QRコードを作る</h1>
             <p class="qr-hero__lead">URL、テキスト、メール、電話番号、Wi-Fi接続情報をQRコードにして、PNGまたはSVGで保存できます。</p>
             <p class="qr-privacy">入力内容と生成処理はブラウザ内に留まり、Oshigotoのサーバーへ送信されません。</p>
         </header>
+        </div>
+        {% include 'includes/affiliate_primary_rail.html' %}
+        </div>
 
         <div id="qr-code-app" class="qr-app">
             <form id="qr-code-form" class="qr-panel" novalidate>
@@ -156,6 +161,10 @@
             </section>
         </div>
 
+        {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-qr-title' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+
         <section class="qr-notes" aria-label="QRコード作成の注意事項">
             <article><h2>ブラウザ内で完結</h2><p>入力内容をアップロードせず、表示中のブラウザでQRコードを作成します。入力内容はCookieやブラウザストレージへ保存しません。</p></article>
             <article><h2>使用前に読み取り確認</h2><p>読み取りやすさは、端末、印刷サイズ、色、汚れなどで変わります。重要な案内に使う前に、実際の端末で確認してください。</p></article>
@@ -164,6 +173,9 @@
         {% set current_path = '/tools/qr-code' %}
         {% include 'includes/related_tools.html' %}
     </main>
+    {% with inline_affiliate_provider='a8' %}
+        {% include 'includes/affiliate_inline_secondary.html' %}
+    {% endwith %}
     {% include 'includes/footer.html' %}
     <script src="{{ url_for('static', filename='vendor/qrcode/1.5.4/qrcode.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/qr-code-core.js') }}"></script>

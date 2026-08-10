@@ -31,7 +31,8 @@
 <body class="landing-page compress-guide-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <main class="compress-guide">
+    <main class="compress-guide page-with-affiliate-rail">
+        <div class="page-with-affiliate-rail__content">
         <header class="compress-guide__hero">
             <p>Image compression guide</p>
             <h1>画像圧縮の使い方</h1>
@@ -83,10 +84,19 @@
             {% for item in faq_list %}<article><h3>Q. {{ item.q }}</h3><p>A. {{ item.a }}</p></article>{% endfor %}
         </section>
 
+        {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-guide-image-compress-title' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+
         <div class="compress-guide__actions"><a class="btn btn-primary" href="/tools/image-compress">画像を軽くする</a><a class="btn btn-secondary" href="/tools/image-batch">複数サイズ・形式をまとめて変換する</a></div>
         {% set tool_path = '/tools/image-compress' %}
         {% set tool_name = '画像圧縮' %}
         {% include 'guide/_partials/guide_related_links.html' %}
+        {% with inline_affiliate_provider='a8' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+        </div>
+        {% include 'includes/affiliate_primary_rail.html' %}
     </main>
     {% include 'guide/_partials/guide_faq_jsonld.html' %}
     {% include 'includes/footer.html' %}

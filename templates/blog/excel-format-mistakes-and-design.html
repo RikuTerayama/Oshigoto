@@ -10,7 +10,8 @@
 <body class="landing-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <main class="page-shell page-shell--article">
+    <main class="page-shell page-shell--article page-with-affiliate-rail">
+        <div class="page-with-affiliate-rail__content">
         <article class="article-shell" itemscope itemtype="https://schema.org/BlogPosting">
             <header class="article-hero">
                 <p class="eyebrow">CSV / Excel</p>
@@ -71,6 +72,8 @@
             </section>
         </article>
         {% include 'includes/related_content.html' %}
+        </div>
+        {% include 'includes/affiliate_primary_rail.html' %}
     </main>
     {% include 'includes/seo_link_hub.html' %}
     {% include 'includes/footer.html' %}

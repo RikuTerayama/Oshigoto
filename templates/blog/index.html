@@ -9,7 +9,8 @@
 <body class="landing-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <main class="page-shell">
+    <main class="page-shell page-with-affiliate-rail">
+        <div class="page-with-affiliate-rail__content">
         <section class="page-hero page-hero--compact">
             <p class="eyebrow">Blog</p>
             <h1>ブログ</h1>
@@ -36,6 +37,8 @@
                 <a class="text-link" href="/guide/image-batch">ガイドを見る</a>
             </article>
         </section>
+        </div>
+        {% include 'includes/affiliate_primary_rail.html' %}
     </main>
     {% include 'includes/seo_link_hub.html' %}
     {% include 'includes/footer.html' %}

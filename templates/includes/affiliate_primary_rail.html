@@ -1,0 +1,35 @@
+{# Primary monetization rail. Callers keep this beside publisher intro/content only. #}
+{% set rail_amazon = amazon_single_recommendation|default(none) %}
+{% set rail_a8 = selected_a8_creative|default(none) %}
+{% set rail_links = affiliate_rail_links|default([
+    {'href': '/guide', 'label': 'ツールの使い方を見る'},
+    {'href': '/faq', 'label': 'よくある質問を確認する'},
+    {'href': '/best-practices', 'label': '安全な使い方を確認する'}
+]) %}
+{% if rail_amazon or (rail_a8 and a8_can_render_placement(rail_a8.placement)) %}
+<aside class="global-affiliate-rail" aria-label="仕事道具と関連情報" data-affiliate-primary-rail>
+    <div class="global-affiliate-rail__inner">
+        {% if rail_amazon %}
+        <div class="global-affiliate-rail__amazon amazon-single-placement amazon-single-placement--rail">
+            {% with amazon_item_override=rail_amazon, amazon_title_id='amazon-primary-rail-title', amazon_card_class='amazon-single-card--rail' %}
+                {% include 'includes/amazon_single_card.html' %}
+            {% endwith %}
+        </div>
+        {% endif %}
+
+        <nav class="global-affiliate-rail__publisher" aria-label="関連ページ">
+            <p class="section-kicker">Guide</p>
+            <h2>作業前に確認する</h2>
+            {% for link in rail_links[:3] %}<a href="{{ link.href }}">{{ link.label }}</a>{% endfor %}
+        </nav>
+
+        {% if rail_a8 and a8_can_render_placement(rail_a8.placement) %}
+        <div class="global-affiliate-rail__a8">
+            {% with selected_a8_creative=rail_a8, affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--rail-a8', affiliate_section_tier='context-a8', affiliate_section_placement=rail_a8.placement, affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_a8_label='PR' %}
+                {% include 'includes/affiliate_cards_section.html' %}
+            {% endwith %}
+        </div>
+        {% endif %}
+    </div>
+</aside>
+{% endif %}

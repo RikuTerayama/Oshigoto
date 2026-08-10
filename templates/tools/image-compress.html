@@ -91,12 +91,17 @@
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
     <main class="compress-shell">
+        <div class="tool-intro-layout">
+        <div class="tool-intro-layout__content">
         <header class="compress-hero">
             <p class="compress-hero__kicker">Browser image tool</p>
             <h1>画像を軽くする</h1>
             <p>JPEG・PNG・WebP画像の品質やサイズを調整し、ブラウザ内で軽量化します。圧縮前後の容量を比較して保存できます。</p>
             <p class="compress-privacy">画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。</p>
         </header>
+        </div>
+        {% include 'includes/affiliate_primary_rail.html' %}
+        </div>
 
         <div
             id="image-compress-app"
@@ -181,7 +186,7 @@
                 {'label': '画像・素材整理の道具を見る', 'description': '画像や資料を整理する作業まわりの道具を探せます。', 'href': amazon_search_url('画像 素材整理 仕事道具'), 'category': 'image-organization', 'cta': '画像整理の道具を見る'},
                 {'label': '資料作成に役立つ本を見る', 'description': '画像を使った資料づくりに関係する本を探せます。', 'href': amazon_search_url('資料作成 デザイン 本'), 'category': 'material-books', 'cta': '資料作成の本を見る'}
             ] %}
-            {% with affiliate_context_title='画像・資料作成まわりを整える', affiliate_context_lead='画像を軽くしたあと、素材整理や資料作成に使う道具も必要なときだけ確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='image-materials', affiliate_context_placement='image-compress-post-content', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='画像・資料作成に近いサービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
+            {% with affiliate_context_title='画像・資料作成まわりを整える', affiliate_context_lead='画像を軽くしたあと、素材整理や資料作成に使う道具も参照できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='image-materials', affiliate_context_placement='image-compress-post-content', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='画像・資料作成に近いサービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% set affiliate_upper_amazon_rendered = true %}
@@ -192,6 +197,9 @@
     </main>
 
     {% include 'includes/related_tools.html' %}
+    {% with inline_affiliate_provider='a8' %}
+        {% include 'includes/affiliate_inline_secondary.html' %}
+    {% endwith %}
     {% include 'includes/footer.html' %}
     <script src="{{ url_for('static', filename='vendor/jszip/3.10.1/jszip.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/file-utils.js') }}"></script>

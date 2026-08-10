@@ -44,6 +44,8 @@
 <body class="landing-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
+    <div class="page-with-affiliate-rail">
+    <div class="page-with-affiliate-rail__content">
     <div class="container">
         <h1>PDFツールガイド</h1>
         <p>PDFの結合、抽出、分割、ページ削除、回転、圧縮、画像変換、パスワード設定の操作方法をまとめています。</p>
@@ -131,15 +133,26 @@
             <li><strong>処理が途中で止まる</strong>: ファイルサイズやページ数を減らし、他のタブを閉じて再試行してください。</li>
         </ul>
 
+        {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-guide-pdf-title' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+
         {% set tool_path = '/tools/pdf' %}
         {% set tool_name = 'PDFユーティリティ' %}
         {% include 'guide/_partials/guide_related_links.html' %}
+
+        {% with inline_affiliate_provider='a8' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
 
         <div class="nav-links">
             <a href="/tools/pdf" class="nav-link">← PDFユーティリティに戻る</a>
             <a href="/tools" class="nav-link">← ツール一覧へ</a>
             <a href="/faq" class="nav-link">FAQを確認する →</a>
         </div>
+    </div>
+    </div>
+    {% include 'includes/affiliate_primary_rail.html' %}
     </div>
     {% include 'guide/_partials/guide_faq_jsonld.html' %}
     {% include 'includes/footer.html' %}

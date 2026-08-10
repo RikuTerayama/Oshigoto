@@ -231,6 +231,8 @@
     {% include 'includes/breadcrumb.html' %}
 
     <div class="container">
+        <div class="tool-intro-layout">
+        <div class="tool-intro-layout__content">
         <div class="page-header">
             <span class="icon-tile icon-tile--lg icon-tile--blue" aria-hidden="true">{{ tool_icon('seo', 28) }}</span>
             <h1 data-reveal>ページを確認する</h1>
@@ -248,6 +250,9 @@
                 <li><strong>修正のヒントを見る</strong><span>結果をコピーまたはダウンロードして、修正メモとして使えます。</span></li>
             </ol>
         </section>
+        </div>
+        {% include 'includes/affiliate_primary_rail.html' %}
+        </div>
         <div class="page-layout">
         <div class="page-main">
         <div class="main-layout">
@@ -610,7 +615,7 @@
     </div>
 
     {% include 'includes/related_tools.html' %}
-    {% with a8_slot_placement='tool-after-explanation' %}
+    {% with selected_a8_creative=secondary_a8_creative, a8_slot_placement='content-lower-a8' %}
         {% include 'includes/a8_creative_slot.html' %}
     {% endwith %}
     {% include 'includes/footer.html' %}
