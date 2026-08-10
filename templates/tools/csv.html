@@ -132,11 +132,11 @@
     {% endwith %}
     <script src="{{ url_for('static', filename='js/file-validation.js') }}"></script>
     <script src="{{ url_for('static', filename='js/file-utils.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="{{ url_for('static', filename='vendor/jszip/3.10.1/jszip.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/zip-utils.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/encoding-japanese@2.0.0/encoding.min.js"></script>
+    <script src="{{ url_for('static', filename='vendor/papaparse/5.4.1/papaparse.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/sheetjs/0.20.3/xlsx.full.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/encoding-japanese/2.0.0/encoding.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/csv-ops.js') }}"></script>
     <script>
 (function() {

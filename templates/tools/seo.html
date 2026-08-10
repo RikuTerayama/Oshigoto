@@ -922,18 +922,29 @@
             
             // 結果一覧を表示
             const resultsEl = document.getElementById('meta-results');
-            resultsEl.innerHTML = '<strong>検査結果一覧:</strong><br><br>';
+            resultsEl.replaceChildren();
+            const resultsHeading = document.createElement('strong');
+            resultsHeading.textContent = '検査結果一覧:';
+            resultsEl.append(resultsHeading, document.createElement('br'), document.createElement('br'));
             
             items.forEach(item => {
                 const levelIcon = item.level === 'ok' ? '✅' : item.level === 'warn' ? '⚠️' : '❌';
                 const levelColor = item.level === 'ok' ? '#4CAF50' : item.level === 'warn' ? '#FF9800' : '#F44336';
-                resultsEl.innerHTML += `
-                    <div style="margin-bottom: 10px; padding: 10px; background: var(--brand-paper); border-radius: 6px; border-left: 3px solid ${levelColor};">
-                        <strong>${levelIcon} ${item.label}</strong><br>
-                        ${item.message}<br>
-                        ${item.value ? `<span style="color: var(--brand-muted); font-size: 0.9em;">値: ${item.value.length > 100 ? item.value.substring(0, 100) + '...' : item.value}</span>` : ''}
-                    </div>
-                `;
+                const row = document.createElement('div');
+                row.style.cssText = `margin-bottom: 10px; padding: 10px; background: var(--brand-paper); border-radius: 6px; border-left: 3px solid ${levelColor};`;
+                const title = document.createElement('strong');
+                title.textContent = `${levelIcon} ${item.label}`;
+                const message = document.createElement('span');
+                message.textContent = item.message;
+                row.append(title, document.createElement('br'), message, document.createElement('br'));
+                if (item.value) {
+                    const value = document.createElement('span');
+                    value.style.cssText = 'color: var(--brand-muted); font-size: 0.9em;';
+                    const text = String(item.value);
+                    value.textContent = `値: ${text.length > 100 ? text.substring(0, 100) + '...' : text}`;
+                    row.appendChild(value);
+                }
+                resultsEl.appendChild(row);
             });
             
             // Markdownを生成して表示
@@ -1076,7 +1087,15 @@
             // 警告を表示
             if (warnings.length > 0) {
                 const warningsEl = document.getElementById('sitemap-warnings');
-                warningsEl.innerHTML = '<strong>警告:</strong><br>' + warnings.map(w => `- ${w}`).join('<br>');
+                warningsEl.replaceChildren();
+                const heading = document.createElement('strong');
+                heading.textContent = '警告:';
+                warningsEl.append(heading, document.createElement('br'));
+                warnings.forEach((warning) => {
+                    const line = document.createElement('span');
+                    line.textContent = `- ${warning}`;
+                    warningsEl.append(line, document.createElement('br'));
+                });
                 warningsEl.style.display = 'block';
             } else {
                 document.getElementById('sitemap-warnings').style.display = 'none';

@@ -104,16 +104,27 @@ const CsvOps = {
         return chunks;
     },
 
+    /** Keep spreadsheet applications from interpreting untrusted text as a formula. */
+    sanitizeSpreadsheetCell(value) {
+        if (typeof value !== 'string') return value;
+        return /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+    },
+
+    sanitizeSpreadsheetRows(rows) {
+        return rows.map(row => row.map(value => this.sanitizeSpreadsheetCell(value)));
+    },
+
     /**
      * 二次元配列を CSV 文字列に
      * @param {string[][]} rows
      * @returns {string}
      */
     toCSVString(rows) {
+        const safeRows = this.sanitizeSpreadsheetRows(rows);
         if (typeof Papa === 'undefined') {
-            return rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+            return safeRows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\r\n');
         }
-        return Papa.unparse(rows);
+        return Papa.unparse(safeRows);
     },
 
     /**
@@ -191,7 +202,7 @@ const CsvOps = {
      */
     rowsToXLSXBlob(rows) {
         if (typeof XLSX === 'undefined') throw new Error('SheetJS が読み込まれていません');
-        const ws = XLSX.utils.aoa_to_sheet(rows);
+        const ws = XLSX.utils.aoa_to_sheet(this.sanitizeSpreadsheetRows(rows));
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
         const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });

@@ -77,7 +77,8 @@ class PdfRender {
 
         // Workerの設定
         if (pdfjs.GlobalWorkerOptions) {
-            pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            const workerMeta = document.querySelector('meta[name="oshigoto-pdf-worker-url"]');
+            pdfjs.GlobalWorkerOptions.workerSrc = workerMeta ? workerMeta.content : '/static/vendor/pdfjs/3.11.174/pdf.worker.min.js';
         }
 
         if (ctx.signal && ctx.signal.cancelled) {

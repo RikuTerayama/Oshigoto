@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import html
 import json
 import logging
 import os
@@ -10,8 +11,9 @@ import time
 import uuid
 from datetime import datetime
 from collections import deque as _deque
+from urllib.parse import urlsplit
 
-from werkzeug.exceptions import HTTPException, MethodNotAllowed, NotFound
+from werkzeug.exceptions import HTTPException, MethodNotAllowed, NotFound, RequestEntityTooLarge
 from flask import Flask, Response, g, has_request_context, jsonify, redirect, render_template, request, send_file
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import secure_filename
@@ -53,13 +55,25 @@ def _env_int(name, default, minimum=1):
     return max(minimum, value)
 
 
-MEMORY_LIMIT_MB = _env_int("MEMORY_LIMIT_MB", 450)
-MEMORY_WARNING_MB = _env_int("MEMORY_WARNING_MB", 400)
+def _env_int_capped(name, default, ceiling, minimum=1):
+    """Read an integer environment variable without allowing unsafe expansion."""
+    return min(_env_int(name, default, minimum=minimum), ceiling)
+
+
+def _env_bool(name, default=False):
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+MEMORY_LIMIT_MB = _env_int_capped("MEMORY_LIMIT_MB", 450, 512)
+MEMORY_WARNING_MB = _env_int_capped("MEMORY_WARNING_MB", 400, 480)
 if MEMORY_WARNING_MB >= MEMORY_LIMIT_MB:
     MEMORY_WARNING_MB = int(MEMORY_LIMIT_MB * 0.9)
 MAX_FILE_SIZE_MB = min(_env_int("MAX_FILE_SIZE_MB", 10), 10)
-MAX_TOTAL_UPLOAD_MB = _env_int("MAX_TOTAL_UPLOAD_MB", 50)
-MAX_FILES_PER_REQUEST = _env_int("MAX_FILES_PER_REQUEST", 20)
+MAX_TOTAL_UPLOAD_MB = _env_int_capped("MAX_TOTAL_UPLOAD_MB", 50, 100)
+MAX_FILES_PER_REQUEST = _env_int_capped("MAX_FILES_PER_REQUEST", 20, 25)
 MAX_PDF_PAGES = min(_env_int("MAX_PDF_PAGES", 500), 500)
 BROWSER_PDF_MAX_FILE_SIZE_MB = min(_env_int("BROWSER_PDF_MAX_FILE_SIZE_MB", 50), 50)
 BROWSER_PDF_MAX_PAGES = min(_env_int("BROWSER_PDF_MAX_PAGES", MAX_PDF_PAGES), 500)
@@ -68,8 +82,10 @@ BROWSER_IMAGE_COMPRESS_MAX_FILE_SIZE_MB = min(_env_int("BROWSER_IMAGE_COMPRESS_M
 BROWSER_IMAGE_COMPRESS_MAX_TOTAL_SIZE_MB = min(_env_int("BROWSER_IMAGE_COMPRESS_MAX_TOTAL_SIZE_MB", 100), 100)
 BROWSER_IMAGE_COMPRESS_MAX_PIXELS = min(_env_int("BROWSER_IMAGE_COMPRESS_MAX_PIXELS", 40_000_000), 40_000_000)
 BROWSER_IMAGE_COMPRESS_MAX_LONG_EDGE = min(_env_int("BROWSER_IMAGE_COMPRESS_MAX_LONG_EDGE", 16_384), 16_384)
-MAX_ACTIVE_PDF_JOBS = _env_int("MAX_ACTIVE_PDF_JOBS", 1)
-MAX_OUTPUT_SIZE_MB = _env_int("MAX_OUTPUT_SIZE_MB", 100)
+MAX_ACTIVE_PDF_JOBS = _env_int_capped("MAX_ACTIVE_PDF_JOBS", 1, 2)
+MAX_OUTPUT_SIZE_MB = _env_int_capped("MAX_OUTPUT_SIZE_MB", 100, 150)
+MAX_SEO_CRAWL_URLS = _env_int_capped("MAX_SEO_CRAWL_URLS", 100, 300)
+MAX_SEO_CRAWL_DEPTH = _env_int_capped("MAX_SEO_CRAWL_DEPTH", 3, 5, minimum=0)
 
 MAX_FILE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 MAX_TOTAL_UPLOAD_BYTES = MAX_TOTAL_UPLOAD_MB * 1024 * 1024
@@ -77,10 +93,81 @@ MAX_OUTPUT_BYTES = MAX_OUTPUT_SIZE_MB * 1024 * 1024
 PDF_JOB_RETRY_AFTER_SEC = _env_int("PDF_JOB_RETRY_AFTER_SEC", 5)
 
 app = Flask(__name__)
-app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=0)
 app.config["MAX_CONTENT_LENGTH"] = MAX_TOTAL_UPLOAD_BYTES
+app.config["MAX_FORM_MEMORY_SIZE"] = 512 * 1024
+app.config["MAX_FORM_PARTS"] = 25
+
+_BASE_URL = os.getenv("BASE_URL", "https://oshigoto.onrender.com").rstrip("/")
+_PUBLIC_HOST = (urlsplit(_BASE_URL).hostname or "oshigoto.onrender.com").lower()
+_IS_PRODUCTION = _env_bool("RENDER") or os.getenv("APP_ENV", "").strip().lower() == "production"
+_configured_hosts = [item.strip().lower() for item in os.getenv("TRUSTED_HOSTS", _PUBLIC_HOST).split(",") if item.strip()]
+if any(host.startswith(".") or "*" in host or "/" in host for host in _configured_hosts):
+    raise RuntimeError("TRUSTED_HOSTS must contain exact hostnames only")
+if _PUBLIC_HOST not in _configured_hosts:
+    _configured_hosts.append(_PUBLIC_HOST)
+if not _IS_PRODUCTION:
+    _configured_hosts.extend(["localhost", "127.0.0.1", "[::1]"])
+app.config["TRUSTED_HOSTS"] = list(dict.fromkeys(_configured_hosts))
+
+# Sessions are currently unused, but safe defaults prevent an insecure cookie if one is introduced.
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+)
+
+_CSP_ENFORCED = "object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
+_CSP_REPORT_ONLY = "; ".join((
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://rot3.a8.net",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob: https:",
+    "font-src 'self' data:",
+    "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://pagead2.googlesyndication.com",
+    "frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "frame-ancestors 'self'",
+    "form-action 'self'",
+))
 
 _PDF_JOB_SEMAPHORE = threading.BoundedSemaphore(MAX_ACTIVE_PDF_JOBS)
+
+
+def _request_origin_is_allowed(origin):
+    """Accept only this request's trusted origin or the configured public origin."""
+    try:
+        parsed = urlsplit(origin)
+    except ValueError:
+        return False
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc or parsed.path not in {"", "/"}:
+        return False
+    candidate = f"{parsed.scheme}://{parsed.netloc}".rstrip("/").lower()
+    request_origin = f"{request.scheme}://{request.host}".rstrip("/").lower()
+    return candidate in {request_origin, _BASE_URL.lower()}
+
+
+@app.before_request
+def reject_unsafe_request_shapes():
+    """Reject forbidden methods and browser-driven cross-site API work."""
+    if request.method in {"TRACE", "TRACK", "CONNECT"}:
+        return jsonify(success=False, error_code="METHOD_NOT_ALLOWED"), 405
+
+    if not request.path.startswith("/api/") or request.method in {"GET", "HEAD", "OPTIONS"}:
+        return None
+
+    if request.headers.get("Sec-Fetch-Site", "").strip().lower() == "cross-site":
+        return jsonify(success=False, error_code="CROSS_SITE_REQUEST_REJECTED"), 403
+    origin = request.headers.get("Origin")
+    if origin and not _request_origin_is_allowed(origin):
+        return jsonify(success=False, error_code="ORIGIN_NOT_ALLOWED"), 403
+
+    if request.path == "/api/seo/crawl-urls" and not request.is_json:
+        return jsonify(success=False, error_code="UNSUPPORTED_MEDIA_TYPE"), 415
+    if request.path.startswith("/api/pdf/") and not request.mimetype == "multipart/form-data":
+        return jsonify(success=False, error_code="UNSUPPORTED_MEDIA_TYPE"), 415
+    return None
 
 # === In-memory rate limiting ===
 from collections import deque as _deque
@@ -130,9 +217,9 @@ class RateLimiter:
             return True, self.window_sec
 
 _RATE_LIMITS = {
-    'api': _env_int("RATE_LIMIT_LIGHT_PER_MIN", 60),
-    'pdf': _env_int("RATE_LIMIT_PDF_PER_MIN", 10),
-    'seo_crawl': _env_int("RATE_LIMIT_SEO_PER_MIN", 8),
+    'api': _env_int_capped("RATE_LIMIT_LIGHT_PER_MIN", 60, 120),
+    'pdf': _env_int_capped("RATE_LIMIT_PDF_PER_MIN", 10, 30),
+    'seo_crawl': _env_int_capped("RATE_LIMIT_SEO_PER_MIN", 8, 8),
 }
 _rate_limiter = RateLimiter(window_sec=60)
 
@@ -206,6 +293,16 @@ def after_request(response):
     response.headers.setdefault('Referrer-Policy', 'strict-origin-when-cross-origin')
     response.headers.setdefault('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()')
     response.headers.setdefault('X-Frame-Options', 'SAMEORIGIN')
+    response.headers.setdefault('X-Permitted-Cross-Domain-Policies', 'none')
+    response.headers.setdefault('X-XSS-Protection', '0')
+    response.headers.setdefault('Content-Security-Policy', _CSP_ENFORCED)
+    response.headers.setdefault('Content-Security-Policy-Report-Only', _CSP_REPORT_ONLY)
+    if request.is_secure:
+        response.headers.setdefault('Strict-Transport-Security', 'max-age=31536000')
+
+    if request.path.startswith('/api/'):
+        response.headers['Cache-Control'] = 'no-store, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
 
     if not request.path.startswith('/static/'):
         ct = response.content_type or ''
@@ -235,8 +332,8 @@ def _render_error_page(status_code, error_message, error_id=None):
         logger.exception("error_page_render_failed error_id=%s render_error=%s", error_id, render_error)
         html_content = (
             '<html><head><meta charset="utf-8"><title>Error</title></head>'
-            f'<body><h1>Error {status_code}</h1><p>{error_message}</p>'
-            f'<p>Error ID: {error_id}</p></body></html>'
+            f'<body><h1>Error {int(status_code)}</h1><p>{html.escape(str(error_message))}</p>'
+            f'<p>Error ID: {html.escape(str(error_id))}</p></body></html>'
         )
         return Response(html_content, status=status_code, mimetype='text/html')
 
@@ -1239,6 +1336,18 @@ def _safe_locked_pdf_name(filename):
     return f'{base}_locked.pdf'
 
 
+def _validate_pdf_upload_metadata(file_storage):
+    """Validate untrusted upload metadata before invoking a PDF parser."""
+    filename = file_storage.filename or ''
+    if any(ord(char) < 32 for char in filename) or any(char in filename for char in ('/', '\\')):
+        return 'invalid_filename'
+    if not filename.lower().endswith('.pdf'):
+        return 'invalid_extension'
+    if (file_storage.mimetype or '').lower() not in {'application/pdf', 'application/octet-stream'}:
+        return 'invalid_content_type'
+    return None
+
+
 @app.route('/api/pdf/lock', methods=['POST'])
 def api_pdf_lock():
     """Encrypt an uploaded PDF with the supplied password."""
@@ -1258,6 +1367,11 @@ def api_pdf_lock():
             return _pdf_api_error('file_required')
         if not password:
             return _pdf_api_error('missing_password')
+        if len(password) > 128:
+            return _pdf_api_error('password_too_long')
+        metadata_error = _validate_pdf_upload_metadata(file)
+        if metadata_error:
+            return _pdf_api_error(metadata_error, 400)
 
         acquired = _PDF_JOB_SEMAPHORE.acquire(blocking=False)
         if not acquired:
@@ -1270,6 +1384,8 @@ def api_pdf_lock():
             return _pdf_api_error(str(e), status)
         except Exception:
             return _pdf_api_error('read_failed', 400)
+        if not pdf_bytes.startswith(b'%PDF-'):
+            return _pdf_api_error('invalid_pdf_signature', 422)
 
         try:
             from lib.pdf_lock import encrypt_pdf
@@ -1304,6 +1420,8 @@ def api_pdf_lock():
             as_attachment=True,
             download_name=_safe_locked_pdf_name(file.filename),
         )
+    except RequestEntityTooLarge:
+        return _pdf_api_error('request_too_large', 413)
     except Exception as e:
         rid = getattr(g, 'request_id', None) or uuid.uuid4().hex[:12]
         logging.getLogger(__name__).exception('pdf_lock_failed request_id=%s error_type=%s', rid, type(e).__name__)
@@ -1345,10 +1463,7 @@ def tools_csv():
 @app.route('/api/seo/crawl-urls', methods=['POST'])
 def api_seo_crawl_urls():
     """Crawl URLs from the same host and return discovered URLs for sitemap checks."""
-    try:
-        data = request.get_json(force=True, silent=True) or {}
-    except Exception:
-        data = {}
+    data = request.get_json(silent=True) or {}
     start_url = (data.get('start_url') or '').strip()
     if not start_url:
         return jsonify(success=False, error='start_url is required'), 400
@@ -1358,16 +1473,16 @@ def api_seo_crawl_urls():
     if not safe:
         return jsonify(success=False, error=err_msg or '縺薙・URL縺ｯ險ｱ蜿ｯ縺輔ｌ縺ｦ縺・∪縺帙ｓ'), 400
 
-    max_urls = data.get('max_urls', 300)
-    max_depth = data.get('max_depth', 3)
+    max_urls = data.get('max_urls', MAX_SEO_CRAWL_URLS)
+    max_depth = data.get('max_depth', MAX_SEO_CRAWL_DEPTH)
     try:
         max_urls = int(max_urls)
         max_depth = int(max_depth)
     except (TypeError, ValueError):
-        max_urls = 300
-        max_depth = 3
-    max_urls = max(1, min(1000, max_urls))
-    max_depth = max(0, min(10, max_depth))
+        max_urls = MAX_SEO_CRAWL_URLS
+        max_depth = MAX_SEO_CRAWL_DEPTH
+    max_urls = max(1, min(MAX_SEO_CRAWL_URLS, max_urls))
+    max_depth = max(0, min(MAX_SEO_CRAWL_DEPTH, max_depth))
 
     urls, warnings = crawl(
         start_url=start_url,
@@ -1728,4 +1843,8 @@ def monitor_processing_resources(data_index, total_data):
         raise
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(
+        debug=_env_bool('FLASK_DEBUG') and not _IS_PRODUCTION,
+        host=os.environ.get('HOST', '127.0.0.1'),
+        port=int(os.environ.get('PORT', 5000)),
+    )
