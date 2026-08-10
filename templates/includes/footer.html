@@ -2,7 +2,7 @@
     <div style="max-width: 1200px; margin: 0 auto;">
         {% set can_render_affiliate = affiliate_can_render_textlinks() %}
         {% set affiliate_disclosure_rendered = affiliate_disclosure_rendered|default(false) %}
-        {% if related_content_section %}
+        {% if related_content_section and not related_content_rendered|default(false) %}
             {% include 'includes/related_content.html' %}
         {% endif %}
         {% set footer_affiliate_slot_id = affiliate_footer_slot_id %}

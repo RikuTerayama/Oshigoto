@@ -1,8 +1,13 @@
-{% set amazon_item = amazon_single_recommendation|default(none) %}
+{% if amazon_item_override is defined %}
+    {% set amazon_item = amazon_item_override %}
+{% else %}
+    {% set amazon_item = amazon_single_recommendation|default(none) %}
+{% endif %}
+{% set amazon_title_id = amazon_title_id|default('amazon-single-title') %}
 {% if amazon_item %}
 <section
-    class="amazon-single-card"
-    aria-labelledby="amazon-single-title"
+    class="amazon-single-card{% if amazon_card_class|default('') %} {{ amazon_card_class }}{% endif %}"
+    aria-labelledby="{{ amazon_title_id }}"
     data-affiliate-placement="{{ amazon_item.placement }}"
     data-affiliate-category="{{ amazon_item.theme_id }}"
 >
@@ -26,7 +31,7 @@
     <div class="amazon-single-card__body">
         <p class="amazon-single-card__kicker">PR / Amazon affiliate</p>
         <p class="amazon-single-card__category">{{ amazon_item.category_label }}</p>
-        <h2 class="amazon-single-card__title" id="amazon-single-title">{{ amazon_item.title }}</h2>
+        <h2 class="amazon-single-card__title" id="{{ amazon_title_id }}">{{ amazon_item.title }}</h2>
         <p class="amazon-single-card__lead">{{ amazon_item.lead }}</p>
         <a
             class="amazon-single-card__cta"

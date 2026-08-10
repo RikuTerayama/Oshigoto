@@ -13,11 +13,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from lib.a8_affiliate_catalog import (  # noqa: E402
     A8_ELIGIBLE_EXACT_PATHS,
     A8_HARD_EXCLUDED_PATHS,
+    get_a8_visible_limit,
     load_a8_creative_catalog,
 )
 from lib.amazon_affiliate_map import (  # noqa: E402
     AMAZON_ELIGIBLE_EXACT_PATHS,
     AMAZON_HARD_EXCLUDED_PATHS,
+    get_amazon_visible_limit,
 )
 
 BASE_URL_DEFAULT = 'https://oshigoto.onrender.com'
@@ -81,6 +83,10 @@ def _headers(resp):
 
 def _amazon_urls(html):
     return re.findall(r'https://www\.amazon\.co\.jp/[^"\'<> ]+', html)
+
+
+def _amazon_card_count(html):
+    return len(re.findall(r'<section\b[^>]*class="[^"]*\bamazon-single-card\b', html, re.IGNORECASE))
 
 
 def run_checks(get):
@@ -346,12 +352,16 @@ def run_checks(get):
     for path in A8_PUBLIC_PATHS:
         body = _body(get(path))
         a8_count = body.count(A8_SLOT_MARKER)
-        add('a8_present_once', path, a8_count == 1, f'count={a8_count}')
-        add('a8_direct_link_once', path, body.count(A8_LINK_SRC) == 1, f'count={body.count(A8_LINK_SRC)}')
-        add('a8_banner_once', path, body.count('width="300" height="250"') == 1)
-        add('a8_tracker_once', path, len(A8_TRACKER_PATTERN.findall(body)) == 1)
+        expected_count = get_a8_visible_limit(path)
+        add('a8_visible_limit', path, a8_count == expected_count, f'count={a8_count} expected={expected_count}')
+        add('a8_direct_link_limit', path, body.count(A8_LINK_SRC) == expected_count, f'count={body.count(A8_LINK_SRC)}')
+        add('a8_banner_limit', path, body.count('width="300" height="250"') == expected_count)
+        add('a8_tracker_limit', path, len(A8_TRACKER_PATTERN.findall(body)) == expected_count)
         add('a8_legacy_script_absent', path, A8_LEGACY_SCRIPT_HOST not in body)
         add('a8_pr_label_present', path, 'a8-creative-slot__label">PR<' in body)
+        if path == '/':
+            creative_ids = re.findall(r'data-a8-creative-id="([^"]+)"', body)
+            add('a8_landing_creatives_distinct', path, len(creative_ids) == 2 and len(set(creative_ids)) == 2)
 
     for path in NO_VISIBLE_AFFILIATE_PATHS:
         body = _body(get(path))
@@ -363,6 +373,7 @@ def run_checks(get):
         body = _body(get(path))
         urls = _amazon_urls(body)
         if AMAZON_EXPECTED_ASSOCIATE_TAG:
+            expected_count = get_amazon_visible_limit(path)
             missing = []
             duplicate = []
             for url in urls:
@@ -372,11 +383,12 @@ def run_checks(get):
                     missing.append(url)
                 if len(tags) > 1:
                     duplicate.append(url)
-            add('amazon_single_link', path, len(urls) == 1, f'count={len(urls)}')
+            add('amazon_visible_limit', path, len(urls) == expected_count, f'count={len(urls)} expected={expected_count}')
+            add('amazon_urls_distinct', path, len(set(urls)) == len(urls), f'unique={len(set(urls))}')
             add('amazon_tag', path, not missing and not duplicate, f'missing={len(missing)} duplicate={len(duplicate)}')
-            add('amazon_single_card', path, body.count('class="amazon-single-card"') == 1)
-            add('amazon_single_cta', path, body.count('class="amazon-single-card__cta"') == 1)
-            add('amazon_neutral_icon', path, body.count('class="amazon-single-card__icon"') == 1)
+            add('amazon_card_limit', path, _amazon_card_count(body) == expected_count)
+            add('amazon_cta_limit', path, body.count('class="amazon-single-card__cta"') == expected_count)
+            add('amazon_neutral_icon', path, body.count('class="amazon-single-card__icon"') == expected_count)
             add('amazon_legacy_grid_absent', path, 'class="amazon-recommendation-grid"' not in body)
             add('amazon_side_box_absent', path, 'class="affiliate-side-box"' not in body)
             amazon_card_match = re.search(

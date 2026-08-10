@@ -5,6 +5,7 @@ import copy
 import hashlib
 import json
 import os
+import re
 import sys
 from datetime import date, timedelta
 from pathlib import Path
@@ -22,7 +23,9 @@ from lib.a8_affiliate_catalog import (  # noqa: E402
     TEMPLATE_ROOT,
     VISIBLE_A8_MAX_PER_PAGE,
     a8_can_render_placement,
+    get_a8_allowed_placements,
     get_a8_placement,
+    get_a8_visible_limit,
     load_a8_creative_catalog,
     select_a8_creative,
 )
@@ -41,6 +44,8 @@ def _assert_catalog():
     creatives = load_a8_creative_catalog()
     assert len(creatives) == 5
     assert VISIBLE_A8_MAX_PER_PAGE == 1
+    assert get_a8_visible_limit("/") == 2
+    assert get_a8_visible_limit("/tools") == 1
     assert {item["id"] for item in creatives} == set(EXPECTED_PARAMETERS)
     assert {item["template"] for item in creatives} == ALLOWED_A8_TEMPLATES
     assert all(item["enabled"] is True and item["weight"] == 1 for item in creatives)
@@ -69,6 +74,18 @@ def _assert_selection():
     assert selected["placement"] == "tool-after-explanation"
     assert a8_can_render_placement("/tools/pdf", "tool-after-explanation")
     assert not a8_can_render_placement("/tools/pdf", "global-footer-a8")
+    assert get_a8_allowed_placements("/") == ("top-lower-a8", "landing-lower-a8")
+    landing_primary = select_a8_creative("/", "2026-08-08", creatives)
+    landing_secondary = select_a8_creative(
+        "/",
+        "2026-08-08",
+        creatives,
+        placement="landing-lower-a8",
+        exclude_creative_ids=[landing_primary["id"]],
+    )
+    assert landing_secondary is not None
+    assert landing_secondary["id"] != landing_primary["id"]
+    assert landing_secondary["placement"] == "landing-lower-a8"
 
     seen = set()
     start = date(2026, 1, 1)
@@ -131,6 +148,10 @@ def _assert_placement_spacing():
     publisher_block = landing.index('class="landing-affiliate-rail__related"')
     a8_block = landing.index("affiliate_section_placement='top-lower-a8'")
     assert amazon_block < publisher_block < a8_block < landing.index('id="safety"')
+    lower_amazon = landing.index("landing_secondary_amazon_recommendation")
+    lower_publisher = landing.index("includes/related_content.html", lower_amazon)
+    lower_a8 = landing.index("affiliate_section_placement='landing-lower-a8'")
+    assert lower_amazon < lower_publisher < lower_a8
 
     for path in A8_AFTER_EXPLANATION_PATHS:
         template = (ROOT / "templates" / f"{path.lstrip('/')}.html").read_text(encoding="utf-8")
@@ -149,11 +170,15 @@ def _assert_rendering():
             response = client.get(path, follow_redirects=False)
             assert response.status_code == 200, (path, response.status_code)
             body = response.data.decode("utf-8", errors="replace")
-            assert body.count('data-a8-creative-id="') == 1, path
-            assert body.count("https://px.a8.net/svt/ejp") == 1, path
-            assert body.count('width="300" height="250"') == 1, path
-            assert body.count('width="1" height="1"') == 1, path
+            expected_count = get_a8_visible_limit(path)
+            assert body.count('data-a8-creative-id="') == expected_count, path
+            assert body.count("https://px.a8.net/svt/ejp") == expected_count, path
+            assert body.count('width="300" height="250"') == expected_count, path
+            assert body.count('width="1" height="1"') == expected_count, path
             assert "rot3.a8.net" not in body, path
+            if path == "/":
+                creative_ids = re.findall(r'data-a8-creative-id="([^"]+)"', body)
+                assert len(set(creative_ids)) == 2
         article_path = "/blog/excel-format-mistakes-and-design"
         article_body = client.get(article_path).data.decode("utf-8", errors="replace")
         assert article_body.count('data-a8-creative-id="') == 1, article_path

@@ -7,7 +7,11 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from lib.a8_affiliate_catalog import A8_ELIGIBLE_EXACT_PATHS, A8_HARD_EXCLUDED_PATHS  # noqa: E402
+from lib.a8_affiliate_catalog import (  # noqa: E402
+    A8_ELIGIBLE_EXACT_PATHS,
+    A8_HARD_EXCLUDED_PATHS,
+    get_a8_visible_limit,
+)
 
 
 def _looks_like_error_page(body):
@@ -28,11 +32,12 @@ def _check_a8_catalog_rendering(client, failed):
         if response.status_code != 200:
             failed.append(f'A8 path={path} expected=200 status={response.status_code}')
             continue
+        expected_count = get_a8_visible_limit(path)
         checks = {
-            'slot_once': body.count('data-a8-creative-id="') == 1,
-            'link_once': body.count('https://px.a8.net/svt/ejp') == 1,
-            'banner_once': body.count('width="300" height="250"') == 1,
-            'tracker_once': len(re.findall(r'https://www\d+\.a8\.net/0\.gif\?a8mat=', body)) == 1,
+            'slot_count': body.count('data-a8-creative-id="') == expected_count,
+            'link_count': body.count('https://px.a8.net/svt/ejp') == expected_count,
+            'banner_count': body.count('width="300" height="250"') == expected_count,
+            'tracker_count': len(re.findall(r'https://www\d+\.a8\.net/0\.gif\?a8mat=', body)) == expected_count,
             'legacy_absent': 'rot3.a8.net' not in body,
         }
         for name, ok in checks.items():

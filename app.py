@@ -29,6 +29,7 @@ from lib.seo import (
     is_noindex_path,
 )
 from lib.amazon_creators import (
+    build_landing_secondary_amazon_recommendation,
     build_search_url as build_amazon_search_url,
     build_single_amazon_recommendation,
 )
@@ -832,12 +833,19 @@ def inject_env_vars():
         current_path = request.path if has_request_context() else '/'
         affiliate_page_type = get_affiliate_page_type(current_path)
         selected_a8_creative = None
+        landing_secondary_a8_creative = None
         if (
             affiliate_settings['enabled']
             and affiliate_settings['banners_enabled']
             and not affiliate_is_path_excluded(current_path)
         ):
             selected_a8_creative = select_a8_creative(current_path)
+            if current_path == "/" and selected_a8_creative:
+                landing_secondary_a8_creative = select_a8_creative(
+                    current_path,
+                    placement="landing-lower-a8",
+                    exclude_creative_ids=[selected_a8_creative.get("id")],
+                )
         seo_defaults = get_seo_defaults(current_path)
         base_url = os.getenv('BASE_URL', 'https://oshigoto.onrender.com').rstrip('/')
         seo_page_description = seo_defaults.get('description', '')
@@ -878,6 +886,16 @@ def inject_env_vars():
             title=seo_defaults.get('title', ''),
             tags=amazon_tags,
         )
+        landing_secondary_amazon_recommendation = None
+        if current_path == "/" and amazon_single_recommendation:
+            landing_secondary_amazon_recommendation = build_landing_secondary_amazon_recommendation(
+                path=current_path,
+                page_type=affiliate_page_type,
+                title=seo_defaults.get('title', ''),
+                tags=amazon_tags,
+                exclude_theme_ids=[amazon_single_recommendation.get('theme_id')],
+                exclude_urls=[amazon_single_recommendation.get('url')],
+            )
         from lib.nav import get_nav_sections, get_footer_columns
         nav_sections = get_nav_sections()
         footer_columns = get_footer_columns()
@@ -920,6 +938,7 @@ def inject_env_vars():
             'AFFILIATE_ROTATION_BANNER_ENABLED': affiliate_settings['rotation_banner_enabled'],
             'AMAZON_AFFILIATE_ENABLED': bool(amazon_single_recommendation),
             'amazon_single_recommendation': amazon_single_recommendation,
+            'landing_secondary_amazon_recommendation': landing_secondary_amazon_recommendation,
             'amazon_search_url': build_amazon_search_url,
             'affiliate_page_type': affiliate_page_type,
             'affiliate_path_excluded': affiliate_is_path_excluded(current_path),
@@ -931,6 +950,7 @@ def inject_env_vars():
             'affiliate_can_render_slot': affiliate_can_render_slot,
             'affiliate_get_slot_config': affiliate_get_slot_config,
             'selected_a8_creative': selected_a8_creative,
+            'landing_secondary_a8_creative': landing_secondary_a8_creative,
             'a8_can_render_placement': lambda placement: catalog_a8_can_render_placement(current_path, placement),
             'a8_page_placement': get_a8_placement(current_path),
         }
@@ -981,6 +1001,7 @@ def inject_env_vars():
             'AFFILIATE_ROTATION_BANNER_ENABLED': affiliate_settings['rotation_banner_enabled'],
             'AMAZON_AFFILIATE_ENABLED': False,
             'amazon_single_recommendation': None,
+            'landing_secondary_amazon_recommendation': None,
             'amazon_search_url': build_amazon_search_url,
             'affiliate_page_type': get_affiliate_page_type(current_path),
             'affiliate_path_excluded': affiliate_is_path_excluded(current_path),
@@ -992,6 +1013,7 @@ def inject_env_vars():
             'affiliate_can_render_slot': affiliate_can_render_slot,
             'affiliate_get_slot_config': affiliate_get_slot_config,
             'selected_a8_creative': None,
+            'landing_secondary_a8_creative': None,
             'a8_can_render_placement': lambda placement: False,
             'a8_page_placement': None,
         }

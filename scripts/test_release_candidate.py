@@ -23,8 +23,16 @@ os.environ.setdefault("AFFILIATE_ENABLED", "true")
 os.environ.setdefault("AFFILIATE_BANNERS_ENABLED", "true")
 
 from app import app  # noqa: E402
-from lib.a8_affiliate_catalog import A8_ELIGIBLE_EXACT_PATHS, A8_HARD_EXCLUDED_PATHS  # noqa: E402
-from lib.amazon_affiliate_map import AMAZON_ELIGIBLE_EXACT_PATHS, AMAZON_HARD_EXCLUDED_PATHS  # noqa: E402
+from lib.a8_affiliate_catalog import (  # noqa: E402
+    A8_ELIGIBLE_EXACT_PATHS,
+    A8_HARD_EXCLUDED_PATHS,
+    get_a8_visible_limit,
+)
+from lib.amazon_affiliate_map import (  # noqa: E402
+    AMAZON_ELIGIBLE_EXACT_PATHS,
+    AMAZON_HARD_EXCLUDED_PATHS,
+    get_amazon_visible_limit,
+)
 
 
 INDEXABLE_PATHS = (
@@ -193,18 +201,18 @@ def main() -> int:
             require(root_types.count("Offer") == 0, f"{path}: standalone Offer schema is not allowed")
 
         require(body.count(ADSENSE_SCRIPT) == 1, f"{path}: expected one AdSense loader")
-        amazon_count = body.count('class="amazon-single-card"')
+        amazon_count = len(soup.select("section.amazon-single-card"))
         a8_count = body.count('data-a8-creative-id="')
-        require(amazon_count <= 1, f"{path}: multiple Amazon recommendations")
-        require(a8_count <= 1, f"{path}: multiple A8 creatives")
+        require(amazon_count <= get_amazon_visible_limit(path), f"{path}: too many Amazon recommendations")
+        require(a8_count <= get_a8_visible_limit(path), f"{path}: too many A8 creatives")
         if path in AMAZON_HARD_EXCLUDED_PATHS:
             require(amazon_count == 0, f"{path}: Amazon rendered on excluded page")
         if path in AMAZON_ELIGIBLE_EXACT_PATHS or path.startswith("/blog/"):
-            require(amazon_count == 1, f"{path}: Amazon recommendation missing")
+            require(amazon_count == get_amazon_visible_limit(path), f"{path}: Amazon recommendation count mismatch")
         if path in A8_HARD_EXCLUDED_PATHS:
             require(a8_count == 0, f"{path}: A8 rendered on excluded page")
         if path in A8_ELIGIBLE_EXACT_PATHS or path.startswith("/blog/"):
-            require(a8_count == 1, f"{path}: A8 creative missing")
+            require(a8_count == get_a8_visible_limit(path), f"{path}: A8 creative count mismatch")
 
         if path == "/":
             require(len(soup.select(".hero-tool-grid > .hero-tool-card")) == 6, "/: expected six hero tool cards")
@@ -215,6 +223,15 @@ def main() -> int:
             require(len(rail.select(".amazon-single-card")) == 1, "/: rail must contain one Amazon recommendation")
             require(len(rail.select("[data-a8-creative-id]")) == 1, "/: rail must contain one A8 creative")
             require(rail.select_one(".landing-affiliate-rail__related") is not None, "/: publisher guide content missing from rail")
+            lower_band = soup.select_one(".landing-monetization-band")
+            require(lower_band is not None, "/: lower monetization band missing")
+            require(len(lower_band.select(".amazon-single-card")) == 1, "/: lower Amazon recommendation missing")
+            require(len(lower_band.select("[data-a8-creative-id]")) == 1, "/: lower A8 creative missing")
+            require(lower_band.select_one(".related-content") is not None, "/: publisher content must separate lower affiliates")
+            amazon_urls = [link.get("href") for link in soup.select(".amazon-single-card__cta")]
+            require(len(amazon_urls) == 2 and len(set(amazon_urls)) == 2, "/: Amazon URLs must be distinct")
+            creative_ids = [slot.get("data-a8-creative-id") for slot in soup.select("[data-a8-creative-id]")]
+            require(len(creative_ids) == 2 and len(set(creative_ids)) == 2, "/: A8 creatives should differ")
             amazon_position = body.find('class="amazon-single-card"')
             related_position = body.find('class="landing-affiliate-rail__related"')
             a8_position = body.find('data-a8-creative-id="')
