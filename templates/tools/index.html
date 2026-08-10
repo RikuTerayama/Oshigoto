@@ -5,57 +5,14 @@
     {% set page_description = 'PDF、CSV/Excel、画像一括変換、画像クリーンアップ、SEO/URL確認など、仕事でたまに必要になる軽量ツールを選べます。' %}
     {% set breadcrumb_title = 'ツール一覧' %}
     {% include 'includes/head_meta.html' %}
-    <style>
-        * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; background: var(--brand-bg); min-height: 100vh; color: var(--brand-ink); line-height: 1.7; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        .tools-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 48px 20px 16px; margin-bottom: 12px; }
-        .tools-hero__icon { margin-bottom: 18px; }
-        .tools-hero h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 14px; color: var(--brand-ink); font-weight: 700; letter-spacing: 0; }
-        .tools-hero p { font-size: 1.08em; color: var(--brand-muted); max-width: 720px; margin: 0 auto; }
-        .tools-hero__note { margin-top: 14px !important; font-size: 0.92em !important; color: #7c8577 !important; }
-        .tools-hero__note a { color: var(--brand-primary-strong); }
-        .tools-search { max-width: 760px; margin: 22px auto 28px; }
-        .tools-search input { width: 100%; padding: 13px 16px; background: #fff; border: 1px solid var(--brand-line); border-radius: 12px; color: var(--brand-ink); font-size: 1em; }
-        .tools-search input:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
-        .products-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 24px; margin-top: 34px; }
-        .product-card { grid-column: span 2; background: var(--brand-surface); border-radius: var(--radius-xl); padding: 28px; border: 1px solid var(--brand-line); box-shadow: var(--shadow-soft); transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; color: inherit; display: block; min-width: 0; }
-        .products-grid > .product-card:nth-last-child(2):nth-child(3n + 1) { grid-column: 2 / span 2; }
-        .products-grid > .product-card:only-child { grid-column: 3 / span 2; }
-        .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: rgba(14, 124, 123, 0.3); }
-        .product-card > a { text-decoration: none; color: inherit; display: block; }
-        .product-card .icon-tile { margin-bottom: 16px; }
-        .product-card h3 { font-size: 1.32em; margin: 0 0 10px; color: var(--brand-ink); letter-spacing: 0; }
-        .product-card p { color: var(--brand-muted); line-height: 1.7; margin: 0 0 14px; }
-        .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-        .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.76em; font-weight: 700; }
-        .pill--available { background: rgba(31, 122, 92, 0.12); color: #1F7A5C; }
-        .pill--pending { background: var(--brand-amber-soft); color: #9a5b00; }
-        .pill--tag { background: var(--brand-teal-soft); color: var(--brand-primary-strong); }
-        .product-card .feature-list { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--brand-line); }
-        .product-card .feature-list p { font-size: 0.85em; color: var(--brand-muted); margin: 0; }
-        .link-button { display: inline-block; padding: 10px 20px; background: var(--brand-primary); border: 1px solid var(--brand-primary); border-radius: 10px; color: #fff; text-decoration: none; font-weight: 700; transition: all 0.2s ease; }
-        .link-button:hover { background: var(--brand-primary-strong); text-decoration: none; }
-        .tool-cta-row { display: flex; gap: 12px; align-items: stretch; justify-content: space-between; margin-top: 16px; }
-        .tool-cta-row .link-button { flex: 1; text-align: center; text-decoration: none; margin: 0; }
-        .guide-card { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; background: #fff; border: 1px solid var(--brand-line); border-radius: 10px; color: var(--brand-primary-strong); text-decoration: none; font-size: 0.9em; font-weight: 700; transition: all 0.2s ease; white-space: nowrap; min-width: fit-content; }
-        .guide-card:hover { background: var(--brand-teal-soft); border-color: rgba(14, 124, 123, 0.3); transform: translateY(-1px); }
-        #no-results { color: var(--brand-muted); }
-        .support-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 34px; }
-        .support-card { display: block; border: 1px solid var(--brand-line); border-radius: 8px; padding: 18px; background: var(--brand-paper); text-decoration: none; color: inherit; }
-        .support-card h3 { margin: 0 0 6px; letter-spacing: 0; font-size: 1rem; }
-        .support-card p { margin: 0; color: var(--brand-muted); font-size: .92rem; }
-        @media (min-width: 641px) and (max-width: 959px) { .products-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } .product-card { grid-column: span 2; } .products-grid > .product-card:nth-last-child(2):nth-child(3n + 1) { grid-column: span 2; } .products-grid > .product-card:last-child:nth-child(odd) { grid-column: 2 / span 2; } .products-grid > .product-card:only-child { grid-column: 2 / span 2; } .support-grid { grid-template-columns: 1fr; } }
-        @media (max-width: 640px) { .tool-cta-row { flex-direction: column; gap: 10px; } .tool-cta-row .link-button, .guide-card { width: 100%; justify-content: center; } .tools-hero h1 { font-size: 1.85em; } .products-grid { grid-template-columns: 1fr; } .product-card, .products-grid > .product-card:nth-last-child(2):nth-child(3n + 1), .products-grid > .product-card:last-child:nth-child(odd), .products-grid > .product-card:only-child { grid-column: auto; } .support-grid { grid-template-columns: 1fr; } }
-    </style>
 </head>
-<body class="landing-page">
+<body class="tools-index-page">
     {% from 'includes/tool_icons.html' import tool_icon %}
     {% set icon_tint_by_id = {'pdf': 'teal', 'csv': 'blue', 'image-batch': 'amber', 'image-compress': 'amber', 'image-cleanup': 'teal', 'seo': 'blue'} %}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
 
-    <main class="container">
+    <main class="tools-page-shell">
         <section class="tools-hero">
             <span class="icon-tile icon-tile--teal icon-tile--lg tools-hero__icon" aria-hidden="true">{{ tool_icon('toolbox', 28) }}</span>
             <h1 data-reveal>今日の作業に合う道具を選ぶ</h1>
@@ -74,66 +31,100 @@
             <input type="text" id="search-input" placeholder="ツール名や説明で検索..." aria-label="ツールを検索">
         </div>
 
-        <div class="tools-catalog-grid" id="products-grid" data-reveal-stagger>
-            {% for product in products %}
-                <article class="product-card"
-                         data-name="{{ product.name }}"
-                         data-description="{{ product.description }}"
-                         data-tags="{{ (product.tags or [])|join(',') }}"
-                         data-status="{{ product.status }}">
-                    <a href="{{ product.path }}">
-                        <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-compress','qr-code','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
-                        <h3>{{ product.name }}</h3>
-                        <div class="pill-row">
-                            {% if product.status == 'available' %}
-                                <span class="pill pill--available">公開中</span>
-                            {% else %}
-                                <span class="pill pill--pending">準備中</span>
-                            {% endif %}
-                            {% for tag in product.tags|default([]) %}
-                                <span class="pill pill--tag">{{ tag }}</span>
-                            {% endfor %}
+        <section class="tools-catalog-shell" aria-label="ツールと関連情報">
+            <div class="tools-catalog-shell__main">
+                <div class="tools-catalog-grid" id="products-grid" data-reveal-stagger>
+                    {% for product in products %}
+                    <article class="product-card tool-catalog-card"
+                             data-name="{{ product.name }}"
+                             data-description="{{ product.description }}"
+                             data-tags="{{ (product.tags or [])|join(',') }}"
+                             data-status="{{ product.status }}">
+                        <div class="tool-catalog-card__meta">
+                            <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} tool-catalog-card__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-compress','qr-code','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
+                            <span class="tool-catalog-card__category">{{ product.category|default('ツール') }}</span>
+                            <span class="pill {% if product.status == 'available' %}pill--available{% else %}pill--pending{% endif %}">{% if product.status == 'available' %}公開中{% else %}準備中{% endif %}</span>
                         </div>
-                        <p>{{ product.description }}</p>
+                        <h3 class="tool-catalog-card__title"><a href="{{ product.path }}">{{ product.name }}</a></h3>
+                        <div class="pill-row tool-catalog-card__tags" aria-label="カテゴリ">
+                            {% for tag in (product.tags|default([]))[:2] %}<span class="pill pill--tag">{{ tag }}</span>{% endfor %}
+                        </div>
+                        <p class="tool-catalog-card__description">{{ product.description }}</p>
                         {% if product.features %}
-                            <div class="feature-list"><p><strong>主な機能:</strong> {{ product.features|join('、') }}</p></div>
+                        <ul class="tool-catalog-card__features" aria-label="主な機能">
+                            {% for feature in (product.features|default([]))[:3] %}<li>{{ feature }}</li>{% endfor %}
+                        </ul>
                         {% endif %}
-                    </a>
-                    <div class="tool-cta-row">
-                        <a href="{{ product.path }}" class="link-button">{% if product.status == 'available' %}使ってみる{% else %}詳細を見る{% endif %}</a>
-                        {% if product.guide_path and product.status == 'available' %}
+                        <div class="tool-cta-row tool-catalog-card__actions">
+                            <a href="{{ product.path }}" class="link-button">{% if product.status == 'available' %}使ってみる{% else %}詳細を見る{% endif %}</a>
+                            {% if product.guide_path and product.status == 'available' %}
                             <a href="{{ product.guide_path }}" class="guide-card"><span class="guide-text">ガイド</span><span class="guide-arrow">→</span></a>
-                        {% endif %}
+                            {% endif %}
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                <div id="no-results" class="tools-no-results" hidden aria-hidden="true"></div>
+            </div>
+
+            <aside class="tools-affiliate-rail" aria-label="仕事道具と関連ガイド">
+                <div class="tools-affiliate-rail__inner">
+                    {% if amazon_single_recommendation %}
+                    <div class="tools-affiliate-rail__primary amazon-single-placement amazon-single-placement--rail">
+                        {% include 'includes/amazon_single_card.html' %}
                     </div>
-                </article>
-            {% endfor %}
+                    {% endif %}
+                    <nav class="tools-affiliate-rail__related" aria-label="作業前に確認するページ">
+                        <p class="section-kicker">Guide</p>
+                        <h2>作業前に確認する</h2>
+                        <a href="/guide">ツール活用ガイド</a>
+                        <a href="/faq">よくある質問</a>
+                        <a href="/privacy">ファイル処理と安全性</a>
+                    </nav>
+                    {% if selected_a8_creative and a8_can_render_placement('tools-primary-a8') %}
+                    <div class="tools-affiliate-rail__a8">
+                        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--rail-a8', affiliate_section_tier='context-a8', affiliate_section_placement='tools-primary-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='必要なときだけ確認できます。', affiliate_a8_label='PR' %}
+                            {% include 'includes/affiliate_cards_section.html' %}
+                        {% endwith %}
+                    </div>
+                    {% endif %}
+                </div>
+            </aside>
+        </section>
+
+        <div class="tools-support-surface">
+            {% with seo_link_hub_class='seo-link-hub--tools-support', seo_link_hub_grid_class='seo-link-hub__grid--tools-balanced' %}
+                {% include 'includes/seo_link_hub.html' %}
+            {% endwith %}
         </div>
 
-        <div id="no-results" hidden style="display: none; text-align: center; padding: 40px;" aria-hidden="true"></div>
-
-        <nav class="support-grid" aria-label="関連ガイド">
-            <a href="/guide" class="support-card"><h3>ツールの選び方</h3><p>用途別のガイドで、どの道具を使えばよいか確認できます。</p></a>
-            <a href="/faq" class="support-card"><h3>よくある質問</h3><p>対応形式や処理方法など、使う前の疑問をまとめています。</p></a>
-            <a href="/privacy" class="support-card"><h3>ファイル処理と安全性</h3><p>ブラウザ内処理とサーバー処理の違いを確認できます。</p></a>
-        </nav>
-
-        {% set affiliate_context_links = [
-            {'label': 'PDF・書類作業', 'description': 'PDFや紙の書類を扱う作業まわりを探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-documents', 'cta': 'PDF作業の本を見る'},
-            {'label': '表計算・デスク作業', 'description': 'CSV、Excel、デスク作業に関係する本や道具を探せます。', 'href': amazon_search_url('Kindle Excel'), 'category': 'spreadsheet-desk', 'cta': 'Excelの本を見る'},
-            {'label': '画像・資料作成', 'description': '画像処理や資料づくりに役立つ本を探せます。', 'href': amazon_search_url('資料作成 Kindle'), 'category': 'image-materials', 'cta': '資料作成の本を見る'},
-            {'label': 'Web運用・マーケティング', 'description': 'SEO、Webマーケティング、SNS運用の本を探せます。', 'href': amazon_search_url('Kindle SEO'), 'category': 'web-marketing', 'cta': 'SEOの本を見る'},
-            {'label': '集中環境・デスク周り', 'description': '作業環境を整える道具を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-focus', 'cta': 'デスク道具を見る'}
-        ] %}
-        {% with affiliate_context_title='作業別の仕事道具', affiliate_context_lead='使うツールに合わせて、PDF、表、画像、Web運用、デスク環境まわりの本や道具を探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='tools-index', affiliate_context_placement='tools-index', affiliate_context_class='affiliate-context-block--tools', affiliate_context_show_a8=false %}
-            {% include 'includes/affiliate_context_block.html' %}
-        {% endwith %}
-
+        {% if secondary_amazon_recommendation or secondary_a8_creative %}
+        <section class="tools-monetization-band" aria-label="関連する仕事道具とコンテンツ">
+            {% if secondary_amazon_recommendation %}
+            <div class="amazon-single-placement tools-monetization-band__amazon">
+                {% with amazon_item_override=secondary_amazon_recommendation, amazon_title_id='amazon-single-title-tools-lower', amazon_card_class='amazon-single-card--wide' %}
+                    {% include 'includes/amazon_single_card.html' %}
+                {% endwith %}
+            </div>
+            {% endif %}
+            {% if related_content_section %}
+            <div class="tools-monetization-band__publisher">
+                {% include 'includes/related_content.html' %}
+            </div>
+            {% set related_content_rendered = true %}
+            {% endif %}
+            {% if secondary_a8_creative and a8_can_render_placement('tools-lower-a8') %}
+            <div class="tools-monetization-band__a8">
+                {% with selected_a8_creative=secondary_a8_creative, affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--lower-a8', affiliate_section_tier='context-a8', affiliate_section_placement='tools-lower-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='作業内容を確認したあとに、必要な場合だけご覧ください。', affiliate_a8_label='PR' %}
+                    {% include 'includes/affiliate_cards_section.html' %}
+                {% endwith %}
+            </div>
+            {% endif %}
+        </section>
+        {% endif %}
         {% set affiliate_disclosure_rendered = true %}
-
-        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--tools-a8', affiliate_section_tier='context-a8', affiliate_section_placement='tools-index-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='必要なときだけ確認できます。', affiliate_a8_label='PR' %}
-            {% include 'includes/affiliate_cards_section.html' %}
-        {% endwith %}
         {% set affiliate_a8_rendered = true %}
+        {% set affiliate_secondary_rendered = true %}
     </main>
 
     <script>
@@ -159,7 +150,7 @@
                     const haystack = [card.dataset.name, card.dataset.description, card.dataset.tags].join(' ').toLowerCase();
                     const matchesQuery = !query || haystack.includes(query);
                     const isVisible = matchesQuery;
-                    card.style.display = isVisible ? 'block' : 'none';
+                    card.hidden = !isVisible;
                     if (isVisible) visibleCount += 1;
                 });
 
@@ -171,7 +162,6 @@
         });
     </script>
 
-    {% include 'includes/seo_link_hub.html' %}
     {% include 'includes/footer.html' %}
 </body>
 </html>

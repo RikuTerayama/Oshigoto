@@ -19,6 +19,31 @@ JST = timezone(timedelta(hours=9))
 VISIBLE_A8_MAX_PER_PAGE = 1
 LANDING_VISIBLE_A8_MAX_PER_PAGE = 2
 
+A8_HIGH_CONTENT_EXACT_PATHS = frozenset(
+    (
+        "/tools",
+        "/tools/pdf",
+        "/tools/csv",
+        "/tools/image-batch",
+        "/tools/image-compress",
+        "/tools/image-cleanup",
+        "/tools/qr-code",
+        "/tools/seo",
+        "/guide",
+        "/guide/pdf",
+        "/guide/csv",
+        "/guide/image-batch",
+        "/guide/image-compress",
+        "/guide/image-cleanup",
+        "/guide/qr-code",
+        "/guide/seo",
+        "/best-practices",
+        "/glossary",
+        "/blog",
+    )
+)
+A8_HIGH_CONTENT_PREFIXES = ("/blog/",)
+
 ALLOWED_A8_TEMPLATES = frozenset(
     f"includes/a8/creative_{index:02d}.html" for index in range(1, 6)
 )
@@ -82,8 +107,14 @@ def get_a8_allowed_placements(path: str | None) -> tuple[str, ...]:
         return ()
     if normalized == "/":
         return ("top-lower-a8", "landing-lower-a8")
+    if normalized == "/tools":
+        return ("tools-primary-a8", "tools-lower-a8")
     if normalized in A8_AFTER_EXPLANATION_PATHS:
-        return ("tool-after-explanation",)
+        return ("tool-after-explanation", "content-lower-a8")
+    if normalized in A8_HIGH_CONTENT_EXACT_PATHS or any(
+        normalized.startswith(prefix) for prefix in A8_HIGH_CONTENT_PREFIXES
+    ):
+        return ("global-footer-a8", "content-lower-a8")
     return ("global-footer-a8",)
 
 
@@ -94,8 +125,13 @@ def get_a8_placement(path: str | None) -> str | None:
 
 
 def get_a8_visible_limit(path: str | None) -> int:
-    if _normalize_path(path) == "/":
+    normalized = _normalize_path(path)
+    if normalized == "/":
         return LANDING_VISIBLE_A8_MAX_PER_PAGE
+    if normalized in A8_HIGH_CONTENT_EXACT_PATHS or any(
+        normalized.startswith(prefix) for prefix in A8_HIGH_CONTENT_PREFIXES
+    ):
+        return 2
     return VISIBLE_A8_MAX_PER_PAGE
 
 

@@ -241,7 +241,29 @@ def main() -> int:
             )
 
         if path == "/tools":
-            require(len(soup.select(".tools-catalog-grid > .product-card")) == 7, "/tools: expected seven catalog cards")
+            tool_cards = soup.select(".tools-catalog-grid > .tool-catalog-card")
+            require(len(tool_cards) == 7, "/tools: expected seven compact tool cards")
+            require(all(len(card.select(".tool-catalog-card__tags .pill")) <= 2 for card in tool_cards), "/tools: too many visible tags")
+            require(all(len(card.select(".tool-catalog-card__features li")) <= 3 for card in tool_cards), "/tools: too many visible features")
+            require(all(card.select_one(".tool-catalog-card__description") for card in tool_cards), "/tools: description class missing")
+            require(all(card.select_one(".tool-catalog-card__actions") for card in tool_cards), "/tools: aligned action row missing")
+            rail = soup.select_one(".tools-affiliate-rail")
+            require(rail is not None, "/tools: affiliate rail missing")
+            require(len(rail.select(".amazon-single-card")) == 1, "/tools: rail Amazon count mismatch")
+            require(len(rail.select("[data-a8-creative-id]")) == 1, "/tools: rail A8 count mismatch")
+            require(rail.select_one(".tools-affiliate-rail__related") is not None, "/tools: internal navigation missing from rail")
+            support = soup.select_one(".seo-link-hub--tools-support")
+            require(support is not None, "/tools: support surface missing")
+            require(len(support.select(".seo-link-hub__card")) == 5, "/tools: expected five support cards")
+            lower_band = soup.select_one(".tools-monetization-band")
+            require(lower_band is not None, "/tools: lower monetization band missing")
+            require(len(lower_band.select(".amazon-single-card")) == 1, "/tools: lower Amazon count mismatch")
+            require(len(lower_band.select("[data-a8-creative-id]")) == 1, "/tools: lower A8 count mismatch")
+            require(lower_band.select_one(".related-content") is not None, "/tools: publisher content must separate lower affiliates")
+            amazon_urls = [link.get("href") for link in soup.select(".amazon-single-card__cta")]
+            require(len(amazon_urls) == 2 and len(set(amazon_urls)) == 2, "/tools: Amazon URLs must be distinct")
+            creative_ids = [slot.get("data-a8-creative-id") for slot in soup.select("[data-a8-creative-id]")]
+            require(len(creative_ids) == 2 and len(set(creative_ids)) == 2, "/tools: A8 creatives should differ")
 
         for link in soup.select("a[href]"):
             href = (link.get("href") or "").strip()

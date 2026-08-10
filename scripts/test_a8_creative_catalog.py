@@ -19,6 +19,7 @@ from lib.a8_affiliate_catalog import (  # noqa: E402
     A8_AFTER_EXPLANATION_PATHS,
     A8_ELIGIBLE_EXACT_PATHS,
     A8_HARD_EXCLUDED_PATHS,
+    A8_HIGH_CONTENT_EXACT_PATHS,
     ALLOWED_A8_TEMPLATES,
     TEMPLATE_ROOT,
     VISIBLE_A8_MAX_PER_PAGE,
@@ -45,7 +46,9 @@ def _assert_catalog():
     assert len(creatives) == 5
     assert VISIBLE_A8_MAX_PER_PAGE == 1
     assert get_a8_visible_limit("/") == 2
-    assert get_a8_visible_limit("/tools") == 1
+    assert get_a8_visible_limit("/tools") == 2
+    assert get_a8_visible_limit("/guide/pdf") == 2
+    assert get_a8_visible_limit("/faq") == 1
     assert {item["id"] for item in creatives} == set(EXPECTED_PARAMETERS)
     assert {item["template"] for item in creatives} == ALLOWED_A8_TEMPLATES
     assert all(item["enabled"] is True and item["weight"] == 1 for item in creatives)
@@ -75,6 +78,8 @@ def _assert_selection():
     assert a8_can_render_placement("/tools/pdf", "tool-after-explanation")
     assert not a8_can_render_placement("/tools/pdf", "global-footer-a8")
     assert get_a8_allowed_placements("/") == ("top-lower-a8", "landing-lower-a8")
+    assert get_a8_allowed_placements("/tools") == ("tools-primary-a8", "tools-lower-a8")
+    assert get_a8_allowed_placements("/tools/pdf") == ("tool-after-explanation", "content-lower-a8")
     landing_primary = select_a8_creative("/", "2026-08-08", creatives)
     landing_secondary = select_a8_creative(
         "/",
@@ -138,10 +143,22 @@ def _assert_invalid_catalog_fails_closed():
 
 def _assert_placement_spacing():
     footer = (ROOT / "templates" / "includes" / "footer.html").read_text(encoding="utf-8")
-    amazon_block = footer.index("{% if amazon_single_recommendation|default(none)")
+    amazon_block = footer.index("{% if footer_primary_amazon %}")
+    related_block = footer.index("includes/related_content.html", amazon_block)
+    primary_a8_block = footer.index("{% if footer_primary_a8 %}")
+    secondary_amazon_block = footer.index("{% if footer_secondary_amazon %}")
     navigation_block = footer.index("{% for col in footer_columns|default([]) %}")
-    a8_block = footer.index("{% if selected_a8_creative and a8_can_render_placement('global-footer-a8') %}")
-    assert amazon_block < navigation_block < a8_block
+    secondary_a8_block = footer.index("{% if footer_secondary_a8 and a8_can_render_placement")
+    assert amazon_block < related_block < primary_a8_block < secondary_amazon_block < navigation_block < secondary_a8_block
+
+    tools = (ROOT / "templates" / "tools" / "index.html").read_text(encoding="utf-8")
+    tools_amazon = tools.index("tools-affiliate-rail__primary")
+    tools_publisher = tools.index("tools-affiliate-rail__related")
+    tools_a8 = tools.index("tools-primary-a8")
+    tools_lower_amazon = tools.index("secondary_amazon_recommendation", tools_a8)
+    tools_lower_publisher = tools.index("includes/related_content.html", tools_lower_amazon)
+    tools_lower_a8 = tools.index("tools-lower-a8")
+    assert tools_amazon < tools_publisher < tools_a8 < tools_lower_amazon < tools_lower_publisher < tools_lower_a8
 
     landing = (ROOT / "templates" / "landing.html").read_text(encoding="utf-8")
     amazon_block = landing.index("affiliate_context_placement='top-late-amazon'")
@@ -181,8 +198,8 @@ def _assert_rendering():
                 assert len(set(creative_ids)) == 2
         article_path = "/blog/excel-format-mistakes-and-design"
         article_body = client.get(article_path).data.decode("utf-8", errors="replace")
-        assert article_body.count('data-a8-creative-id="') == 1, article_path
-        assert article_body.count("https://px.a8.net/svt/ejp") == 1, article_path
+        assert article_body.count('data-a8-creative-id="') == get_a8_visible_limit(article_path), article_path
+        assert article_body.count("https://px.a8.net/svt/ejp") == get_a8_visible_limit(article_path), article_path
         for path in excluded:
             response = client.get(path, follow_redirects=False)
             assert response.status_code == 200, (path, response.status_code)
@@ -209,6 +226,7 @@ def main():
     _assert_invalid_catalog_fails_closed()
     _assert_placement_spacing()
     _assert_rendering()
+    assert len(A8_HIGH_CONTENT_EXACT_PATHS) >= 18
     print("A8 creative catalog checks passed")
 
 

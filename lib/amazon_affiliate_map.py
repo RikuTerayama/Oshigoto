@@ -8,6 +8,31 @@ from typing import Dict, List, Tuple
 VISIBLE_AMAZON_MAX_PER_PAGE = 1
 LANDING_VISIBLE_AMAZON_MAX_PER_PAGE = 2
 
+AMAZON_HIGH_CONTENT_EXACT_PATHS = frozenset(
+    (
+        "/tools",
+        "/tools/pdf",
+        "/tools/csv",
+        "/tools/image-batch",
+        "/tools/image-compress",
+        "/tools/image-cleanup",
+        "/tools/qr-code",
+        "/tools/seo",
+        "/guide",
+        "/guide/pdf",
+        "/guide/csv",
+        "/guide/image-batch",
+        "/guide/image-compress",
+        "/guide/image-cleanup",
+        "/guide/qr-code",
+        "/guide/seo",
+        "/best-practices",
+        "/glossary",
+        "/blog",
+    )
+)
+AMAZON_HIGH_CONTENT_PREFIXES = ("/blog/",)
+
 AMAZON_HARD_EXCLUDED_PATHS = frozenset(
     ("/about", "/business", "/contact", "/privacy", "/terms")
 )
@@ -93,7 +118,7 @@ def get_amazon_page_policy(path: str | None) -> Dict[str, object] | None:
     if normalized == "/":
         return {"enabled": True, "render_target": "content", "placement": "top-late-amazon"}
     if normalized == "/tools":
-        return {"enabled": True, "render_target": "content", "placement": "tools-after-grid"}
+        return {"enabled": True, "render_target": "content", "placement": "tools-primary-amazon"}
     if normalized in AMAZON_CONTENT_PATHS:
         return {"enabled": True, "render_target": "content", "placement": "tool-post-content"}
     if normalized.startswith("/blog/"):
@@ -102,9 +127,14 @@ def get_amazon_page_policy(path: str | None) -> Dict[str, object] | None:
 
 
 def get_amazon_visible_limit(path: str | None) -> int:
-    """Allow a second editorial placement on the landing page only."""
-    if normalize_amazon_path(path) == "/":
+    """Return the route-level visibility cap for approved editorial placements."""
+    normalized = normalize_amazon_path(path)
+    if normalized == "/":
         return LANDING_VISIBLE_AMAZON_MAX_PER_PAGE
+    if normalized in AMAZON_HIGH_CONTENT_EXACT_PATHS or any(
+        normalized.startswith(prefix) for prefix in AMAZON_HIGH_CONTENT_PREFIXES
+    ):
+        return 2
     return VISIBLE_AMAZON_MAX_PER_PAGE
 
 AMAZON_THEME_POOL: List[Dict[str, object]] = [
