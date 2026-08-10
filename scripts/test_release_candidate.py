@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
@@ -65,6 +66,14 @@ NO_GO_PATHS = (
     "/_internal/background-removal-spike",
     "/api/pdf/unlock",
 )
+ERROR_CHECK_PATH = "/this-page-does-not-exist-release-check"
+DUPLICATE_SCHEMA_TOOL_PATHS = (
+    "/tools/pdf",
+    "/tools/csv",
+    "/tools/image-batch",
+    "/tools/image-compress",
+    "/tools/image-cleanup",
+)
 ADSENSE_SCRIPT = "pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
 SITEMAP_NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 
@@ -74,7 +83,24 @@ def require(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
-def schema_types(soup: BeautifulSoup) -> set[str]:
+def json_ld_documents(soup: BeautifulSoup) -> list[dict | list]:
+    documents: list[dict | list] = []
+    for node in soup.select('script[type="application/ld+json"]'):
+        try:
+            document = json.loads(node.string or node.get_text())
+        except (TypeError, ValueError, json.JSONDecodeError) as exc:
+            raise AssertionError(f"invalid JSON-LD: {exc}") from exc
+        require(isinstance(document, (dict, list)), "JSON-LD root must be an object or array")
+        documents.append(document)
+    return documents
+
+
+def normalized_json(document: dict | list) -> str:
+    """Return a key-order-independent representation for exact duplicate checks."""
+    return json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def schema_types(documents: list[dict | list]) -> set[str]:
     found: set[str] = set()
 
     def collect(value):
@@ -90,12 +116,20 @@ def schema_types(soup: BeautifulSoup) -> set[str]:
             for nested in value:
                 collect(nested)
 
-    for node in soup.select('script[type="application/ld+json"]'):
-        try:
-            collect(json.loads(node.string or node.get_text()))
-        except (TypeError, ValueError, json.JSONDecodeError) as exc:
-            raise AssertionError(f"invalid JSON-LD: {exc}") from exc
+    for document in documents:
+        collect(document)
     return found
+
+
+def require_valid_internal_target(client, path: str, source: str) -> None:
+    response = client.get(path, follow_redirects=False)
+    if response.status_code == 200:
+        return
+    if response.status_code in {301, 302, 307, 308}:
+        followed = client.get(path, follow_redirects=True)
+        require(followed.status_code == 200, f"{source}: redirect target failed for {path}")
+        return
+    raise AssertionError(f"{source}: broken internal link {path} status={response.status_code}")
 
 
 def main() -> int:
@@ -134,7 +168,13 @@ def main() -> int:
         else:
             require("noindex" in robots_value, f"{path}: expected noindex")
 
-        types = schema_types(soup)
+        documents = json_ld_documents(soup)
+        normalized_documents = [normalized_json(document) for document in documents]
+        require(
+            len(normalized_documents) == len(set(normalized_documents)),
+            f"{path}: exact duplicate JSON-LD object detected",
+        )
+        types = schema_types(documents)
         require("WebSite" in types, f"{path}: WebSite schema missing")
         if path != "/":
             require("BreadcrumbList" in types, f"{path}: BreadcrumbList schema missing")
@@ -143,6 +183,14 @@ def main() -> int:
         if path.startswith("/guide/") or path.startswith("/blog/"):
             require("Article" in types, f"{path}: Article schema missing")
         require(not (types & {"Review", "AggregateRating"}), f"{path}: unsupported review schema exposed")
+        if path in DUPLICATE_SCHEMA_TOOL_PATHS:
+            root_types = [document.get("@type") for document in documents if isinstance(document, dict)]
+            require(root_types.count("BreadcrumbList") == 1, f"{path}: expected one BreadcrumbList")
+            require(
+                sum(root_types.count(schema_type) for schema_type in ("WebApplication", "SoftwareApplication")) == 1,
+                f"{path}: expected one application schema",
+            )
+            require(root_types.count("Offer") == 0, f"{path}: standalone Offer schema is not allowed")
 
         require(body.count(ADSENSE_SCRIPT) == 1, f"{path}: expected one AdSense loader")
         amazon_count = body.count('class="amazon-single-card"')
@@ -172,8 +220,7 @@ def main() -> int:
     require(len(set(descriptions.values())) == len(descriptions), "duplicate meta descriptions detected")
 
     for path in sorted(internal_paths):
-        response = client.get(path, follow_redirects=False)
-        require(response.status_code != 404, f"broken internal link: {path}")
+        require_valid_internal_target(client, path, "public pages")
 
     sitemap_response = client.get("/sitemap.xml")
     require(sitemap_response.status_code == 200, "sitemap.xml unavailable")
@@ -193,10 +240,38 @@ def main() -> int:
     for path in NO_GO_PATHS:
         require(client.get(path, follow_redirects=False).status_code == 404, f"{path}: private feature exposed")
 
+    error_response = client.get(ERROR_CHECK_PATH, follow_redirects=False)
+    require(error_response.status_code == 404, "unknown route must remain 404")
+    error_body = error_response.get_data(as_text=True)
+    error_soup = BeautifulSoup(error_body, "html.parser")
+    require(len(error_soup.select("h1")) == 1, "404: expected exactly one H1")
+    require(error_soup.select_one("h1").get_text(strip=True) == "ページが見つかりません", "404: unexpected H1")
+    require(error_soup.select_one("header.site-header") is not None, "404: shared header missing")
+    require(error_soup.select_one("footer") is not None, "404: shared footer missing")
+    require(error_soup.select_one('a[href="/tools"]') is not None, "404: tools recovery CTA missing")
+    robots = error_soup.select_one('meta[name="robots"]')
+    robots_value = (robots.get("content") or "").replace(" ", "").lower() if robots else ""
+    require(robots_value == "noindex,follow", "404: expected noindex,follow")
+    require(error_soup.select_one('link[rel="canonical"]') is None, "404: canonical must be absent")
+    require(not json_ld_documents(error_soup), "404: structured data must be absent")
+    require(not error_soup.select(".amazon-single-card, [data-a8-creative-id], .affiliate-slot, .affiliate-cards-section"), "404: affiliate output detected")
+    require(error_soup.select_one("ins.adsbygoogle") is None, "404: ad slot detected")
+    require(ERROR_CHECK_PATH not in error_body, "404: unknown URL echoed into response")
+    require(not any(marker in error_body for marker in ("Traceback (most recent call last)", "werkzeug.debug", "File \"")), "404: stack trace exposed")
+    error_id = error_soup.select_one("[data-error-id]")
+    require(error_id is not None and re.fullmatch(r"[0-9a-f]{8}", error_id.get_text(strip=True)), "404: invalid error ID")
+    for link in error_soup.select("a[href]"):
+        href = (link.get("href") or "").strip()
+        parsed = urlparse(href)
+        if parsed.scheme or parsed.netloc or not parsed.path.startswith("/") or parsed.path.startswith("/static/"):
+            continue
+        require_valid_internal_target(client, parsed.path, "404")
+
     print(f"PASS: {len(PUBLIC_HTML_PATHS)} public HTML pages")
     print(f"PASS: {len(INDEXABLE_PATHS)} sitemap/indexable pages")
     print(f"PASS: {len(internal_paths)} internal link targets")
     print("PASS: SEO, schema, AdSense, Amazon, A8, and NO-GO contracts")
+    print("PASS: 404 recovery and exact JSON-LD duplicate guards")
     return 0
 
 

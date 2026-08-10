@@ -6218,6 +6218,103 @@ body {
     white-space: normal !important;
 }
 
+/* Error pages reuse the public shell without inheriting affiliate surfaces. */
+.error-page__main {
+    display: grid;
+    place-items: center;
+    width: min(100% - 32px, 760px);
+    min-height: clamp(440px, 64vh, 680px);
+    margin: 0 auto;
+    padding: clamp(48px, 8vw, 96px) 0;
+}
+
+.error-page__card {
+    width: 100%;
+    padding: clamp(28px, 6vw, 56px);
+    border: 1px solid var(--brand-line);
+    border-radius: 24px;
+    background: var(--brand-surface);
+    box-shadow: var(--shadow-soft);
+    text-align: center;
+}
+
+.error-page__eyebrow {
+    margin: 0 0 12px;
+    color: var(--brand-primary-strong);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+}
+
+.error-page__card h1 {
+    margin: 0;
+    color: var(--brand-ink);
+    font-size: clamp(1.8rem, 6vw, 3rem);
+    line-height: 1.25;
+}
+
+.error-page__lead {
+    max-width: 560px;
+    margin: 18px auto 0;
+    color: var(--brand-muted);
+    line-height: 1.85;
+}
+
+.error-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.error-page__recovery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 22px;
+    margin-top: 26px;
+}
+
+.error-page__recovery a {
+    color: var(--brand-primary-strong);
+    font-weight: 700;
+}
+
+.error-page__id {
+    margin: 28px 0 0;
+    color: var(--brand-muted);
+    font-size: 0.82rem;
+}
+
+.error-page__id code {
+    padding: 3px 7px;
+    border-radius: 6px;
+    background: var(--brand-paper);
+    color: var(--brand-ink);
+}
+
+@media (max-width: 480px) {
+    .error-page__main {
+        width: min(100% - 24px, 760px);
+        min-height: 0;
+        padding: 36px 0 48px;
+    }
+
+    .error-page__card {
+        padding: 28px 20px;
+        border-radius: 18px;
+    }
+
+    .error-page__actions {
+        flex-direction: column;
+    }
+
+    .error-page__actions .btn {
+        width: 100%;
+    }
+}
+
 .landing-page .affiliate-disclosure {
     display: block !important;
     width: min(100%, 760px) !important;

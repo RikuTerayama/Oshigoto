@@ -5,24 +5,6 @@
     {% set page_description = 'CSVやExcelの文字コード確認、CSV⇄Excel変換、重複削除、列の整理を操作順に使える無料ツール。ブラウザ内で処理します。' %}
     {% set breadcrumb_title = '表を整える' %}
     {% include 'includes/head_meta.html' %}
-    {% if product %}
-    {% include 'includes/structured_data.html' %}
-    {% block extra_structured_data %}
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "{{ product.name|e }}",
-        "description": "{{ product.description|e }}",
-        "url": "https://oshigoto.onrender.com{{ product.path }}",
-        "applicationCategory": "WebApplication",
-        "operatingSystem": "Web Browser",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
-        "publisher": { "@type": "Organization", "name": "しごと道具箱", "url": "https://oshigoto.onrender.com" }
-    }
-    </script>
-    {% endblock %}
-    {% endif %}
     <style>
         * { box-sizing: border-box; font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif; }
         body { margin: 0; padding: 0; background: var(--brand-bg); min-height: 100vh; color: var(--brand-ink); }

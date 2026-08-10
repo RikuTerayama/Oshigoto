@@ -5,32 +5,6 @@
     {% set page_description = 'PDFの結合、抽出、分割、ページ削除、回転、圧縮、画像変換をブラウザで行える無料ツールです。ページ削除と回転はブラウザ内で処理します。' %}
     {% set breadcrumb_title = 'PDFツール' %}
     {% include 'includes/head_meta.html' %}
-    {% if product %}
-    {% include 'includes/structured_data.html' %}
-    {% block extra_structured_data %}
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "{{ product.name|e }}",
-        "description": "{{ product.description|e }}",
-        "url": "https://oshigoto.onrender.com{{ product.path }}",
-        "applicationCategory": "WebApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "JPY"
-        },
-        "publisher": {
-            "@type": "Organization",
-            "name": "しごと道具箱",
-            "url": "https://oshigoto.onrender.com"
-        }
-    }
-    </script>
-    {% endblock %}
-    {% endif %}
     <style>
         * { box-sizing: border-box; font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif; }
         body { margin: 0; padding: 0; background: var(--brand-bg); min-height: 100vh; color: var(--brand-ink); line-height: 1.6; letter-spacing: 0; }
