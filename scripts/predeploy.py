@@ -21,6 +21,7 @@ PYTHON_CHECKS = (
     ("AdSense preflight", "scripts/adsense_preflight.py"),
     ("A8 catalog", "scripts/test_a8_creative_catalog.py"),
     ("Amazon single recommendation", "scripts/test_amazon_single_recommendation.py"),
+    ("public theme", "scripts/test_public_theme.py"),
     ("multi-user safety", "scripts/test_multi_user_safety.py"),
     ("security preflight", "scripts/security_preflight.py"),
 )
