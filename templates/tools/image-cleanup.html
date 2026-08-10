@@ -513,8 +513,7 @@
     {% endwith %}
     {% include 'includes/footer.html' %}
     
-    <!-- JSZip CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="{{ url_for('static', filename='vendor/jszip/3.10.1/jszip.min.js') }}"></script>
     
     <!-- 共通ライブラリ -->
     <script src="{{ url_for('static', filename='js/file-validation.js') }}"></script>

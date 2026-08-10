@@ -193,7 +193,7 @@
 
     {% include 'includes/related_tools.html' %}
     {% include 'includes/footer.html' %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="{{ url_for('static', filename='vendor/jszip/3.10.1/jszip.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/file-utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/image-convert.js') }}"></script>
     <script src="{{ url_for('static', filename='js/zip-utils.js') }}"></script>

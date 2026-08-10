@@ -21,6 +21,8 @@ PYTHON_CHECKS = (
     ("AdSense preflight", "scripts/adsense_preflight.py"),
     ("A8 catalog", "scripts/test_a8_creative_catalog.py"),
     ("Amazon single recommendation", "scripts/test_amazon_single_recommendation.py"),
+    ("multi-user safety", "scripts/test_multi_user_safety.py"),
+    ("security preflight", "scripts/security_preflight.py"),
 )
 
 NODE_CHECKS = (
@@ -31,6 +33,7 @@ NODE_CHECKS = (
     ("QR code", "scripts/test_qr_code.js"),
     ("OCR NO-GO", "scripts/test_ocr_spike.js"),
     ("background removal NO-GO", "scripts/test_background_removal_spike.js"),
+    ("CSV formula injection", "scripts/test_csv_formula_injection.js"),
 )
 
 

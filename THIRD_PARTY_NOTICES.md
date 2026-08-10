@@ -15,3 +15,14 @@
 - License copy: `static/vendor/qrcode/1.5.4/LICENSE`
 
 The npm tarball for 1.5.4 declares `build/` but does not contain the browser bundle. The vendored file was therefore generated from the official `v1.5.4` tag without source edits by running `npm ci --ignore-scripts --no-audit --no-fund` followed by the project's own `npm run build` Rollup task. The generated `build/qrcode.js` file is already minified by the official configuration and was copied without content changes to `qrcode.min.js`.
+
+## Browser tool dependencies
+
+The following exact-version browser bundles are served locally. Their SHA-256 digests and source URLs are recorded in `data/vendor_integrity.json`; their license texts are stored beside each bundle.
+
+- encoding-japanese 2.0.0 (MIT)
+- JSZip 3.10.1 (MIT or GPL-3.0-or-later)
+- Papa Parse 5.4.1 (MIT)
+- pdf-lib 1.17.1 (MIT)
+- pdfjs-dist 3.11.174 (Apache-2.0)
+- SheetJS Community Edition 0.20.3 (Apache-2.0)

@@ -131,7 +131,7 @@ def check_size_and_pdf_validation_limits():
 
     invalid = post_lock(b"not a pdf", "invalid-pass", "invalid.pdf")
     assert invalid.status_code == 422, invalid.status_code
-    assert invalid.get_json()["error_code"] == "corrupt_pdf"
+    assert invalid.get_json()["error_code"] == "invalid_pdf_signature"
 
     encrypted = post_lock(make_pdf(encrypted=True, password="old-pass"), "new-pass", "encrypted.pdf")
     assert encrypted.status_code == 400, encrypted.status_code
@@ -140,6 +140,16 @@ def check_size_and_pdf_validation_limits():
     too_many_pages = post_lock(make_pdf(pages=4), "pages-pass", "pages.pdf")
     assert too_many_pages.status_code == 413, too_many_pages.status_code
     assert too_many_pages.get_json()["error_code"] == "too_many_pages"
+
+
+def check_download_headers():
+    response = post_lock(make_pdf(), "header-pass", "quarterly-report.pdf")
+    assert response.status_code == 200, response.status_code
+    assert response.headers.get("Content-Type", "").startswith("application/pdf")
+    assert response.headers.get("Content-Disposition", "").startswith("attachment;")
+    assert "quarterly-report_locked.pdf" in response.headers.get("Content-Disposition", "")
+    assert "no-store" in response.headers.get("Cache-Control", "")
+    assert response.headers.get("X-Content-Type-Options") == "nosniff"
 
 
 def check_no_tempfile_leftovers():
@@ -153,6 +163,7 @@ def main():
         check_busy_limit_returns_429()
         check_file_count_limit()
         check_size_and_pdf_validation_limits()
+        check_download_headers()
         check_no_tempfile_leftovers()
     finally:
         shutil.rmtree(_TEMP_ROOT, ignore_errors=True)
