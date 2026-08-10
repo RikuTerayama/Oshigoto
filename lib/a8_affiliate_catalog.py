@@ -17,6 +17,7 @@ DEFAULT_CATALOG_PATH = REPO_ROOT / "data" / "a8_creative_catalog.json"
 TEMPLATE_ROOT = REPO_ROOT / "templates"
 JST = timezone(timedelta(hours=9))
 VISIBLE_A8_MAX_PER_PAGE = 1
+LANDING_VISIBLE_A8_MAX_PER_PAGE = 2
 
 ALLOWED_A8_TEMPLATES = frozenset(
     f"includes/a8/creative_{index:02d}.html" for index in range(1, 6)
@@ -70,24 +71,36 @@ def _normalize_path(path: str | None) -> str:
     return normalized
 
 
-def get_a8_placement(path: str | None) -> str | None:
-    """Return the only A8 placement allowed for a public path."""
+def get_a8_allowed_placements(path: str | None) -> tuple[str, ...]:
+    """Return the allowlisted A8 placements for a public path."""
     normalized = _normalize_path(path)
     if normalized in A8_HARD_EXCLUDED_PATHS:
-        return None
+        return ()
     if normalized not in A8_ELIGIBLE_EXACT_PATHS and not any(
         normalized.startswith(prefix) for prefix in A8_ELIGIBLE_PREFIXES
     ):
-        return None
+        return ()
     if normalized == "/":
-        return "top-lower-a8"
+        return ("top-lower-a8", "landing-lower-a8")
     if normalized in A8_AFTER_EXPLANATION_PATHS:
-        return "tool-after-explanation"
-    return "global-footer-a8"
+        return ("tool-after-explanation",)
+    return ("global-footer-a8",)
+
+
+def get_a8_placement(path: str | None) -> str | None:
+    """Return the primary A8 placement retained for compatibility."""
+    placements = get_a8_allowed_placements(path)
+    return placements[0] if placements else None
+
+
+def get_a8_visible_limit(path: str | None) -> int:
+    if _normalize_path(path) == "/":
+        return LANDING_VISIBLE_A8_MAX_PER_PAGE
+    return VISIBLE_A8_MAX_PER_PAGE
 
 
 def a8_can_render_placement(path: str | None, placement: str | None) -> bool:
-    return bool(placement and get_a8_placement(path) == placement)
+    return bool(placement and placement in get_a8_allowed_placements(path))
 
 
 def _template_checksum(template_path: str) -> str:
@@ -142,11 +155,14 @@ def select_a8_creative(
     request_path: str | None,
     date_key: str | None = None,
     creatives: list[dict] | None = None,
+    placement: str | None = None,
+    exclude_creative_ids: set[str] | list[str] | tuple[str, ...] | None = None,
 ) -> dict | None:
     """Select one enabled creative using a stable JST-date and path seed."""
     normalized_path = _normalize_path(request_path)
-    placement = get_a8_placement(normalized_path)
-    if placement is None:
+    primary_placement = get_a8_placement(normalized_path)
+    selected_placement = placement or primary_placement
+    if selected_placement not in get_a8_allowed_placements(normalized_path):
         return None
     if date_key is None:
         date_key = datetime.now(JST).date().isoformat()
@@ -154,21 +170,29 @@ def select_a8_creative(
         return None
 
     source = creatives if creatives is not None else load_a8_creative_catalog()
+    excluded_ids = {str(value) for value in (exclude_creative_ids or ()) if value}
     enabled = [
         item for item in source
-        if item.get("enabled") is True and isinstance(item.get("weight"), int) and item["weight"] > 0
+        if item.get("enabled") is True
+        and isinstance(item.get("weight"), int)
+        and item["weight"] > 0
+        and str(item.get("id") or "") not in excluded_ids
     ]
     total_weight = sum(item["weight"] for item in enabled)
     if total_weight <= 0:
         return None
 
-    digest = hashlib.sha256(f"{date_key}:{normalized_path}:a8-v1".encode("utf-8")).digest()
+    if selected_placement == primary_placement:
+        seed = f"{date_key}:{normalized_path}:a8-v1"
+    else:
+        seed = f"{date_key}:{normalized_path}:{selected_placement}:a8-v1"
+    digest = hashlib.sha256(seed.encode("utf-8")).digest()
     position = int.from_bytes(digest, "big") % total_weight
     cumulative = 0
     for item in enabled:
         cumulative += item["weight"]
         if position < cumulative:
             selected = dict(item)
-            selected["placement"] = placement
+            selected["placement"] = selected_placement
             return selected
     return None

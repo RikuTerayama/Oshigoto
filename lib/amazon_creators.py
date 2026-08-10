@@ -407,7 +407,22 @@ def build_single_amazon_recommendation(
     if len(cards) != 1:
         return None
 
-    card = dict(cards[0])
+    return _finalize_single_recommendation(
+        cards[0],
+        associate_tag=associate_tag,
+        placement=str(policy["placement"]),
+        render_target=str(policy["render_target"]),
+    )
+
+
+def _finalize_single_recommendation(
+    source_card: dict,
+    associate_tag: str,
+    placement: str,
+    render_target: str,
+) -> Optional[dict]:
+    """Validate and decorate one search card without external API calls."""
+    card = dict(source_card)
     parsed = urlparse(str(card.get("url") or ""))
     query_pairs = parse_qsl(parsed.query, keep_blank_values=True)
     tag_values = [value for key, value in query_pairs if key.lower() == "tag"]
@@ -427,11 +442,52 @@ def build_single_amazon_recommendation(
         {
             "icon_key": icon_key,
             "lead": "このページの作業に近いテーマの本や仕事道具をAmazonで探せます。",
-            "placement": str(policy["placement"]),
-            "render_target": str(policy["render_target"]),
+            "placement": placement,
+            "render_target": render_target,
         }
     )
     return card
+
+
+def build_landing_secondary_amazon_recommendation(
+    path: str,
+    page_type: str,
+    title: str = "",
+    tags: Optional[Iterable[str]] = None,
+    exclude_theme_ids: Optional[Iterable[str]] = None,
+    exclude_urls: Optional[Iterable[str]] = None,
+) -> Optional[dict]:
+    """Build a distinct lower-page recommendation for the landing page only."""
+    if path != "/":
+        return None
+    settings = get_settings()
+    associate_tag = _current_associate_tag(settings)
+    if not settings.get("enabled") or not associate_tag:
+        return None
+
+    excluded_urls = {str(value) for value in (exclude_urls or ()) if value}
+    cards = build_rotating_theme_cards(
+        path=path,
+        page_type=page_type,
+        title=title,
+        tags=tags,
+        recent_history=None,
+        slot_id="landing-lower-amazon",
+        count=3,
+        exclude_theme_ids=exclude_theme_ids,
+    )
+    for candidate in cards:
+        if str(candidate.get("url") or "") in excluded_urls:
+            continue
+        card = _finalize_single_recommendation(
+            candidate,
+            associate_tag=associate_tag,
+            placement="landing-lower-amazon",
+            render_target="content",
+        )
+        if card:
+            return card
+    return None
 
 
 def _make_cache_key(settings: Dict[str, object], keywords: List[str]) -> str:

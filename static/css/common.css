@@ -8527,3 +8527,340 @@ body {
         position: static;
     }
 }
+
+/* Post-release UX Hotfix 3: compact landing tools and deliberate section rhythm. */
+:root {
+    --surface-paper: #fbf8f2;
+    --surface-stone: #f2eee6;
+    --surface-sand: #eee4d7;
+    --surface-sage-soft: #eef1ec;
+}
+
+.landing-page .landing-tools-zone {
+    width: min(calc(100% - 32px), 1360px);
+    margin: clamp(48px, 6vw, 72px) auto 0;
+    padding: clamp(40px, 4vw, 48px) 0;
+    border-top: 1px solid rgba(70, 78, 71, 0.16);
+    border-bottom: 1px solid rgba(70, 78, 71, 0.16);
+    background: var(--surface-paper);
+}
+
+.landing-page .landing-tools-zone > .section-heading {
+    margin-bottom: clamp(24px, 2.4vw, 32px) !important;
+    padding-inline: 16px !important;
+}
+
+.landing-page .landing-tools-zone__body {
+    min-width: 0;
+}
+
+.landing-page .landing-tools-zone__main,
+.landing-page .landing-affiliate-rail {
+    min-width: 0;
+}
+
+.landing-page .landing-tool-grid {
+    width: 100%;
+    max-width: none;
+    gap: 16px;
+}
+
+.landing-page .landing-tool-grid > .tool-card-v2 {
+    display: flex !important;
+    min-height: 236px !important;
+    height: auto !important;
+    padding: 18px !important;
+    border: 1px solid rgba(74, 81, 75, 0.17) !important;
+    border-radius: 12px !important;
+    background: rgba(255, 253, 248, 0.94) !important;
+}
+
+.landing-page .tool-card-v2__meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    margin-bottom: 12px;
+}
+
+.landing-page .landing-tool-grid .tool-card-v2__icon {
+    width: 38px;
+    height: 38px;
+    margin: 0 !important;
+}
+
+.landing-page .landing-tool-grid .tool-card-v2__eyebrow {
+    min-width: 0;
+    margin: 0 !important;
+    color: var(--brand-muted);
+    font-size: 0.72rem;
+    line-height: 1.35 !important;
+    letter-spacing: 0.06em;
+}
+
+.landing-page .landing-tool-grid .tool-card-v2 h3 {
+    min-height: 2.8em;
+    margin: 0 0 8px !important;
+    font-size: clamp(1.02rem, 1.15vw, 1.18rem);
+    line-height: 1.4;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+}
+
+.landing-page .landing-tool-grid .tool-card-v2__description {
+    display: -webkit-box;
+    flex: 1 1 auto !important;
+    min-height: 4.65em;
+    margin: 0 !important;
+    overflow: hidden;
+    color: var(--brand-muted);
+    font-size: 0.84rem;
+    line-height: 1.55 !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.landing-page .landing-tool-grid .tool-card-v2__actions {
+    display: flex !important;
+    flex-flow: row nowrap !important;
+    gap: 8px !important;
+    align-items: stretch !important;
+    margin-top: auto !important;
+    padding-top: 14px !important;
+}
+
+.landing-page .landing-tool-grid .tool-card-v2__actions .btn {
+    flex: 1 1 0;
+    min-width: 0 !important;
+    min-height: 40px;
+    padding: 8px 10px;
+    white-space: nowrap !important;
+}
+
+.landing-page .landing-affiliate-rail {
+    width: min(100%, 920px);
+    margin: 32px auto 0;
+}
+
+.landing-page .landing-affiliate-rail__inner {
+    position: static !important;
+    gap: 20px;
+}
+
+.landing-page .landing-affiliate-rail__primary {
+    min-width: 0;
+}
+
+.landing-page .landing-affiliate-rail .amazon-single-card {
+    gap: 10px;
+    padding: 16px;
+}
+
+.landing-page .landing-affiliate-rail .amazon-single-card__icon {
+    width: 48px;
+    height: 48px;
+}
+
+.landing-page .landing-affiliate-rail .amazon-single-card__icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.landing-page .landing-affiliate-rail .amazon-single-card__title {
+    font-size: 1.08rem;
+    line-height: 1.4;
+}
+
+.landing-page .landing-affiliate-rail .amazon-single-card__lead {
+    display: -webkit-box;
+    margin-top: 6px;
+    overflow: hidden;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.landing-page .landing-affiliate-rail .amazon-single-card__cta {
+    min-height: 40px;
+    margin-top: 12px;
+    padding-block: 8px;
+}
+
+.landing-page .landing-affiliate-rail__related {
+    gap: 8px;
+    padding: 16px;
+}
+
+.landing-page .landing-affiliate-rail .affiliate-cards-section--rail-a8 {
+    margin: 0 !important;
+}
+
+.landing-page .landing-affiliate-rail .affiliate-cards-section--rail-a8 .affiliate-spotlight__header {
+    margin-bottom: 8px !important;
+}
+
+.landing-page .landing-affiliate-rail .affiliate-cards-section--rail-a8 .a8-creative-slot {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.landing-page .landing-section-surface {
+    margin-top: clamp(48px, 5vw, 68px) !important;
+    padding: clamp(38px, 4vw, 52px) clamp(24px, 4vw, 52px) !important;
+    border: 1px solid rgba(74, 81, 75, 0.14) !important;
+    box-shadow: none !important;
+}
+
+.landing-page .landing-section-surface--policy {
+    background: var(--surface-stone) !important;
+}
+
+.landing-page .landing-section-surface--policy .trust-grid > article {
+    background: rgba(255, 253, 248, 0.68) !important;
+}
+
+.landing-page .landing-section-surface--business {
+    border-left: 4px solid rgba(145, 104, 72, 0.48) !important;
+    background: var(--surface-sand) !important;
+}
+
+.landing-page .landing-section-surface--guide {
+    background: var(--surface-paper) !important;
+}
+
+.landing-page .landing-section-surface--guide .guide-preview-card {
+    border: 1px solid rgba(74, 81, 75, 0.18) !important;
+    background: rgba(255, 254, 250, 0.82) !important;
+}
+
+.landing-page .landing-monetization-band {
+    display: grid;
+    gap: clamp(48px, 6vw, 68px);
+    width: min(100%, 1220px);
+    margin: clamp(52px, 6vw, 72px) auto 0;
+    padding-top: clamp(42px, 5vw, 58px);
+    border-top: 1px solid rgba(74, 81, 75, 0.18);
+}
+
+.landing-page .amazon-single-placement--lower {
+    width: min(100%, 980px);
+    margin: 0 auto;
+}
+
+.landing-page .amazon-single-card--wide {
+    grid-template-columns: 72px minmax(0, 1fr);
+}
+
+.landing-page .landing-monetization-band__publisher .related-content {
+    margin: 0 auto !important;
+    padding: clamp(36px, 4vw, 48px) !important;
+    border: 1px solid rgba(74, 91, 83, 0.16) !important;
+    border-top: 3px solid rgba(74, 91, 83, 0.3) !important;
+    background: var(--surface-sage-soft) !important;
+}
+
+.landing-page .landing-monetization-band__publisher .related-content__card {
+    background: rgba(255, 255, 252, 0.72) !important;
+}
+
+.landing-page .landing-monetization-band__a8 .affiliate-cards-section--lower-a8 {
+    margin: 0 auto !important;
+    padding-block: 30px !important;
+    border: 1px solid rgba(120, 104, 76, 0.16);
+    background: var(--surface-paper) !important;
+}
+
+@media (min-width: 1180px) {
+    .landing-page .landing-tools-zone__body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 20px;
+        align-items: start;
+    }
+
+    .landing-page .landing-affiliate-rail {
+        width: 320px;
+        margin: 0;
+    }
+}
+
+@media (min-width: 1240px) {
+    .landing-page .landing-tool-grid {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+
+    .landing-page .landing-tool-grid > .tool-card-v2 {
+        grid-column: span 2 !important;
+    }
+
+    .landing-page .landing-tool-grid > .tool-card-v2:nth-child(5) {
+        grid-column: 2 / span 2 !important;
+    }
+}
+
+@media (min-width: 1240px) and (min-height: 800px) {
+    .landing-page .landing-affiliate-rail__primary {
+        position: sticky;
+        top: 92px;
+        z-index: 1;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1239px) {
+    .landing-page .landing-tool-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .landing-page .landing-tool-grid > .tool-card-v2 {
+        grid-column: span 2 !important;
+    }
+
+    .landing-page .landing-tool-grid > .tool-card-v2:nth-child(7) {
+        grid-column: 3 / span 2 !important;
+    }
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
+    .landing-page .landing-tool-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .landing-page .landing-tool-grid > .tool-card-v2 {
+        grid-column: span 2 !important;
+    }
+
+    .landing-page .landing-tool-grid > .tool-card-v2:nth-child(7) {
+        grid-column: 2 / span 2 !important;
+    }
+}
+
+@media (max-width: 599px) {
+    .landing-page .landing-tools-zone {
+        width: min(calc(100% - 24px), 1360px);
+        padding-block: 36px;
+    }
+
+    .landing-page .landing-tool-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .landing-page .landing-tool-grid > .tool-card-v2 {
+        grid-column: auto;
+        min-height: 0 !important;
+    }
+
+    .landing-page .landing-tool-grid .tool-card-v2__description {
+        min-height: 0;
+        -webkit-line-clamp: 4;
+    }
+
+    .landing-page .amazon-single-card--wide {
+        grid-template-columns: 1fr;
+    }
+
+    .landing-page .landing-section-surface,
+    .landing-page .landing-monetization-band__publisher .related-content {
+        padding: 30px 20px !important;
+    }
+}

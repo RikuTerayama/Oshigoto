@@ -6,6 +6,7 @@ from typing import Dict, List, Tuple
 
 
 VISIBLE_AMAZON_MAX_PER_PAGE = 1
+LANDING_VISIBLE_AMAZON_MAX_PER_PAGE = 2
 
 AMAZON_HARD_EXCLUDED_PATHS = frozenset(
     ("/about", "/business", "/contact", "/privacy", "/terms")
@@ -98,6 +99,13 @@ def get_amazon_page_policy(path: str | None) -> Dict[str, object] | None:
     if normalized.startswith("/blog/"):
         return {"enabled": True, "render_target": "content", "placement": "article-mid-late"}
     return {"enabled": True, "render_target": "footer", "placement": "after-page-content"}
+
+
+def get_amazon_visible_limit(path: str | None) -> int:
+    """Allow a second editorial placement on the landing page only."""
+    if normalize_amazon_path(path) == "/":
+        return LANDING_VISIBLE_AMAZON_MAX_PER_PAGE
+    return VISIBLE_AMAZON_MAX_PER_PAGE
 
 AMAZON_THEME_POOL: List[Dict[str, object]] = [
     {
