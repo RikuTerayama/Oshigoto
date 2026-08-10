@@ -1,4 +1,4 @@
-/** Browser-only JPEG, PNG, and WebP compression controller. */
+/** Browser-only JPEG, PNG, WebP, and capability-gated AVIF compression controller. */
 (function () {
     'use strict';
 
@@ -18,6 +18,7 @@
         fileInput: document.getElementById('compress-files'),
         fileList: document.getElementById('compress-file-list'),
         outputFormat: document.getElementById('compress-output-format'),
+        avifOption: document.getElementById('compress-output-avif'),
         quality: document.getElementById('compress-quality'),
         qualityValue: document.getElementById('compress-quality-value'),
         qualityHelp: document.getElementById('compress-quality-help'),
@@ -31,7 +32,7 @@
         results: document.getElementById('compress-results'),
         zip: document.getElementById('compress-zip'),
     };
-    const state = { files: [], results: [], running: false, cancelled: false, previewUrls: [] };
+    const state = { files: [], results: [], running: false, cancelled: false, previewUrls: [], avifOutputSupported: false };
 
     function formatBytes(bytes) {
         return FileUtils.formatBytes(bytes);
@@ -158,7 +159,8 @@
         } else if (selection === 'original') {
             elements.qualityHelp.textContent = '元の形式がJPEGまたはWebPの画像に適用します。PNGには品質値を適用しません。';
         } else {
-            elements.qualityHelp.textContent = `${selection === 'jpeg' ? 'JPEG' : 'WebP'}出力へ適用します。数値を下げるほど容量が小さくなる傾向があります。`;
+            const outputLabel = selection === 'jpeg' ? 'JPEG' : selection === 'avif' ? 'AVIF' : 'WebP';
+            elements.qualityHelp.textContent = `${outputLabel}出力へ適用します。数値を下げるほど容量が小さくなる傾向があります。`;
         }
     }
 
@@ -208,6 +210,9 @@
             Core.validateImageLimits(decoded.width, decoded.height, limits.maxPixels, limits.maxLongEdge);
             const dimensions = Core.calculateDimensions(decoded.width, decoded.height, settings.maxWidth, settings.maxHeight);
             const outputFormat = Core.resolveOutputFormat(settings.outputFormat, inputFormat);
+            if (outputFormat === 'avif' && !state.avifOutputSupported) {
+                throw new Error('このブラウザではAVIFを書き出せません。JPEG、PNG、WebPを選択してください。');
+            }
             const quality = Core.normalizeQuality(settings.quality, outputFormat);
             canvas = document.createElement('canvas');
             canvas.width = dimensions.width;
@@ -248,7 +253,7 @@
     }
 
     function formatName(format) {
-        return format === 'jpeg' ? 'JPEG' : format === 'png' ? 'PNG' : 'WebP';
+        return format === 'jpeg' ? 'JPEG' : format === 'png' ? 'PNG' : format === 'avif' ? 'AVIF' : 'WebP';
     }
 
     function addDetail(list, label, value) {
@@ -391,6 +396,17 @@
     });
     elements.zip.addEventListener('click', downloadZip);
     window.addEventListener('beforeunload', revokePreviews);
+    ImageFormatCore.detectAvifEncodeSupport().then((supported) => {
+        state.avifOutputSupported = supported;
+        if (elements.avifOption) {
+            elements.avifOption.hidden = !supported;
+            elements.avifOption.disabled = !supported;
+        }
+        if (!supported && elements.outputFormat.value === 'avif') elements.outputFormat.value = 'original';
+        updateQualityUi();
+    }).catch(() => {
+        state.avifOutputSupported = false;
+    });
     updateQualityUi();
     updateControls();
 })();

@@ -44,6 +44,7 @@ assert.equal(Core.parsePositiveInteger('', 16384, '最大幅'), null);
 
 assert.equal(Core.normalizeQuality('1', 'jpeg'), 0.01);
 assert.equal(Core.normalizeQuality('80', 'webp'), 0.8);
+assert.equal(Core.normalizeQuality('70', 'avif'), 0.7);
 assert.equal(Core.normalizeQuality('100', 'jpeg'), 1);
 assert.equal(Core.normalizeQuality('anything', 'png'), null);
 throws(() => Core.normalizeQuality('0', 'jpeg'), /1〜100/);
@@ -75,6 +76,7 @@ assert.equal(Core.sanitizeFilename('bad\u0000name.png'), 'bad_name.png');
 assert.equal(Core.generateOutputFilename('写真.jpg', 'jpeg', new Set()), '写真_compressed.jpg');
 assert.equal(Core.generateOutputFilename('README', 'webp', new Set()), 'README_compressed.webp');
 assert.equal(Core.generateOutputFilename('report.final.png', 'png', new Set()), 'report.final_compressed.png');
+assert.equal(Core.generateOutputFilename('photo.png', 'avif', new Set()), 'photo_compressed.avif');
 const names = new Set();
 assert.equal(Core.generateOutputFilename('same.jpg', 'jpeg', names), 'same_compressed.jpg');
 assert.equal(Core.generateOutputFilename('same.jpeg', 'jpeg', names), 'same_compressed_2.jpg');

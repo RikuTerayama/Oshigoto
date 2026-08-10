@@ -11,8 +11,8 @@
     'use strict';
 
     if (!FormatCore) throw new Error('ImageFormatCore is required.');
-    const FORMAT_MIME = Object.freeze({ jpeg: FormatCore.FORMAT_MIME.jpeg, png: FormatCore.FORMAT_MIME.png, webp: FormatCore.FORMAT_MIME.webp });
-    const FORMAT_EXTENSION = Object.freeze({ jpeg: FormatCore.FORMAT_EXTENSION.jpeg, png: FormatCore.FORMAT_EXTENSION.png, webp: FormatCore.FORMAT_EXTENSION.webp });
+    const FORMAT_MIME = Object.freeze({ jpeg: FormatCore.FORMAT_MIME.jpeg, png: FormatCore.FORMAT_MIME.png, webp: FormatCore.FORMAT_MIME.webp, avif: FormatCore.FORMAT_MIME.avif });
+    const FORMAT_EXTENSION = Object.freeze({ jpeg: FormatCore.FORMAT_EXTENSION.jpeg, png: FormatCore.FORMAT_EXTENSION.png, webp: FormatCore.FORMAT_EXTENSION.webp, avif: FormatCore.FORMAT_EXTENSION.avif });
     const EXTENSION_FORMAT = Object.freeze({ jpg: 'jpeg', jpeg: 'jpeg', png: 'png', webp: 'webp' });
     const MIME_FORMAT = Object.freeze({ 'image/jpeg': 'jpeg', 'image/png': 'png', 'image/webp': 'webp' });
 
