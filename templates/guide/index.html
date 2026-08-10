@@ -29,7 +29,8 @@
 <body class="landing-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <main class="page">
+    <main class="page page-with-affiliate-rail">
+        <div class="page-with-affiliate-rail__content">
         <section class="hero">
             <h1>ガイド一覧</h1>
             <p>PDF、CSV/Excel、画像、SEO/URL確認の使い方を、作業の目的別に短く確認できます。</p>
@@ -43,6 +44,8 @@
             <article class="card"><h2><a href="/guide/seo">SEO/URL確認ガイド</a></h2><p>title、meta、OGP、sitemap、robots.txtの確認方法をまとめています。</p></article>
         </section>
         <div class="links"><a class="button" href="/tools">ツール一覧</a><a class="button" href="/best-practices">ベストプラクティス</a><a class="button" href="/faq">FAQ</a></div>
+        </div>
+        {% include 'includes/affiliate_primary_rail.html' %}
     </main>
     {% include 'includes/seo_link_hub.html' %}
     {% include 'includes/footer.html' %}

@@ -28,6 +28,8 @@
 <body class="landing-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
+    <div class="page-with-affiliate-rail">
+    <div class="page-with-affiliate-rail__content">
     <div class="container">
         <h1>📊 CSV/Excelユーティリティガイド</h1>
         <p><strong>できること:</strong> CSVの文字コード変換（Shift-JIS/UTF-8）、CSV⇄XLSX変換、キー列指定の重複削除、列の抽出・並べ替え、N行ごとの分割。すべてブラウザ内で完結し、ファイルはサーバーに送信されません。</p>
@@ -160,15 +162,26 @@
             </ul>
         </div>
 
+        {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-guide-csv-title' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+
         {% set tool_path = '/tools/csv' %}
         {% set tool_name = 'CSV/Excelユーティリティ' %}
         {% include 'guide/_partials/guide_related_links.html' %}
+
+        {% with inline_affiliate_provider='a8' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
 
         <div class="nav-links">
             <a href="/tools/csv" class="nav-link">← CSV/Excelユーティリティに戻る</a>
             <a href="/tools" class="nav-link">← ツール一覧へ</a>
             <a href="/guide/seo" class="nav-link">次のガイド: Web/SEO →</a>
         </div>
+    </div>
+    </div>
+    {% include 'includes/affiliate_primary_rail.html' %}
     </div>
     {% include 'includes/footer.html' %}
 </body>

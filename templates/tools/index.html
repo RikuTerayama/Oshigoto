@@ -25,13 +25,11 @@
                 <span class="copy-lines__line"><a href="/faq">FAQ</a>、<a href="/guide">ガイド</a>、<a href="/privacy">プライバシーポリシー</a>もあわせて確認できます。</span>
             </p>
         </section>
-
-
-        <div class="tools-search" data-reveal data-reveal-delay="100">
-            <input type="text" id="search-input" placeholder="ツール名や説明で検索..." aria-label="ツールを検索">
-        </div>
-
-        <section class="tools-catalog-shell" aria-label="ツールと関連情報">
+        <div class="tools-main-layout page-with-affiliate-rail">
+        <section class="tools-catalog-panel" aria-label="ツール一覧">
+            <div class="tools-search" data-reveal data-reveal-delay="100">
+                <input type="text" id="search-input" placeholder="ツール名や説明で検索..." aria-label="ツールを検索">
+            </div>
             <div class="tools-catalog-shell__main">
                 <div class="tools-catalog-grid" id="products-grid" data-reveal-stagger>
                     {% for product in products %}
@@ -65,32 +63,14 @@
                     {% endfor %}
                 </div>
                 <div id="no-results" class="tools-no-results" hidden aria-hidden="true"></div>
-            </div>
-
-            <aside class="tools-affiliate-rail" aria-label="仕事道具と関連ガイド">
-                <div class="tools-affiliate-rail__inner">
-                    {% if amazon_single_recommendation %}
-                    <div class="tools-affiliate-rail__primary amazon-single-placement amazon-single-placement--rail">
-                        {% include 'includes/amazon_single_card.html' %}
-                    </div>
-                    {% endif %}
-                    <nav class="tools-affiliate-rail__related" aria-label="作業前に確認するページ">
-                        <p class="section-kicker">Guide</p>
-                        <h2>作業前に確認する</h2>
-                        <a href="/guide">ツール活用ガイド</a>
-                        <a href="/faq">よくある質問</a>
-                        <a href="/privacy">ファイル処理と安全性</a>
-                    </nav>
-                    {% if selected_a8_creative and a8_can_render_placement('tools-primary-a8') %}
-                    <div class="tools-affiliate-rail__a8">
-                        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--rail-a8', affiliate_section_tier='context-a8', affiliate_section_placement='tools-primary-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='必要なときだけ確認できます。', affiliate_a8_label='PR' %}
-                            {% include 'includes/affiliate_cards_section.html' %}
-                        {% endwith %}
-                    </div>
-                    {% endif %}
-                </div>
-            </aside>
         </section>
+        {% set affiliate_rail_links = [
+            {'href': '/guide', 'label': 'ツール活用ガイド'},
+            {'href': '/faq', 'label': 'よくある質問'},
+            {'href': '/privacy', 'label': 'ファイル処理と安全性'}
+        ] %}
+        {% include 'includes/affiliate_primary_rail.html' %}
+        </div>
 
         <div class="tools-support-surface">
             {% with seo_link_hub_class='seo-link-hub--tools-support', seo_link_hub_grid_class='seo-link-hub__grid--tools-balanced' %}
@@ -115,7 +95,7 @@
             {% endif %}
             {% if secondary_a8_creative and a8_can_render_placement('tools-lower-a8') %}
             <div class="tools-monetization-band__a8">
-                {% with selected_a8_creative=secondary_a8_creative, affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--lower-a8', affiliate_section_tier='context-a8', affiliate_section_placement='tools-lower-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='作業内容を確認したあとに、必要な場合だけご覧ください。', affiliate_a8_label='PR' %}
+                {% with selected_a8_creative=secondary_a8_creative, affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--lower-a8', affiliate_section_tier='context-a8', affiliate_section_placement='tools-lower-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_a8_label='PR' %}
                     {% include 'includes/affiliate_cards_section.html' %}
                 {% endwith %}
             </div>

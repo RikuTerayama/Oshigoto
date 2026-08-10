@@ -123,6 +123,8 @@
 <body class="landing-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
+    <div class="page-with-affiliate-rail">
+    <div class="page-with-affiliate-rail__content">
     <div class="container">
         <h1>🖼️ 画像一括変換ツールガイド</h1>
         <p><strong>できること:</strong> JPEG・PNG・WebPの一括形式変換、リサイズ、品質調整、複数サイズの同時出力、ZIP保存に対応します。処理はブラウザ内で完結し、画像はサーバーへ送信されません。</p>
@@ -290,15 +292,26 @@
             </ul>
         </div>
 
+        {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-guide-image-batch-title' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+
         {% set tool_path = '/tools/image-batch' %}
         {% set tool_name = '画像一括変換ツール' %}
         {% include 'guide/_partials/guide_related_links.html' %}
+
+        {% with inline_affiliate_provider='a8' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
 
         <div class="nav-links">
             <a href="/tools/image-batch" class="nav-link">← 画像一括変換ツールに戻る</a>
             <a href="/tools" class="nav-link">← ツール一覧へ</a>
             <a href="/guide/image-cleanup" class="nav-link">次のガイド: 画像ユーティリティ →</a>
         </div>
+    </div>
+    </div>
+    {% include 'includes/affiliate_primary_rail.html' %}
     </div>
 
     {% include 'guide/_partials/guide_faq_jsonld.html' %}

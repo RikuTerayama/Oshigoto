@@ -27,6 +27,8 @@
 <body class="landing-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
+    <div class="page-with-affiliate-rail">
+    <div class="page-with-affiliate-rail__content">
     <div class="container">
         <h1>✨ 画像ユーティリティガイド</h1>
         <p><strong>できること:</strong> 透過PNGの白背景化、余白トリム、縦横比統一（1:1/4:5/16:9等）、枠・余白・角丸の付与。ブラウザ内で完結し、画像は当サーバーに送信されません。</p>
@@ -125,15 +127,26 @@
             <li><strong>ダウンロードが始まらない</strong>: ブラウザのポップアップブロックを確認し、個別ダウンロードでも試してください。</li>
         </ul>
 
+        {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-guide-image-cleanup-title' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+
         {% set tool_path = '/tools/image-cleanup' %}
         {% set tool_name = '画像ユーティリティ' %}
         {% include 'guide/_partials/guide_related_links.html' %}
+
+        {% with inline_affiliate_provider='a8' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
 
         <div class="nav-links">
             <a href="/tools/image-cleanup" class="nav-link">← 画像ユーティリティに戻る</a>
             <a href="/tools" class="nav-link">← ツール一覧へ</a>
             <a href="/guide/seo" class="nav-link">次のガイド: Web/SEO →</a>
         </div>
+    </div>
+    </div>
+    {% include 'includes/affiliate_primary_rail.html' %}
     </div>
     {% include 'guide/_partials/guide_faq_jsonld.html' %}
     {% include 'includes/footer.html' %}

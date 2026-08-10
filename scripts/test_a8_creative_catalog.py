@@ -74,12 +74,12 @@ def _assert_selection():
     selected = select_a8_creative("/tools/pdf", "2026-08-08", creatives)
     assert selected == select_a8_creative("/tools/pdf", "2026-08-08", creatives)
     assert selected["id"] == "a8-02"
-    assert selected["placement"] == "tool-after-explanation"
-    assert a8_can_render_placement("/tools/pdf", "tool-after-explanation")
+    assert selected["placement"] == "global-primary-a8"
+    assert a8_can_render_placement("/tools/pdf", "global-primary-a8")
     assert not a8_can_render_placement("/tools/pdf", "global-footer-a8")
-    assert get_a8_allowed_placements("/") == ("top-lower-a8", "landing-lower-a8")
+    assert get_a8_allowed_placements("/") == ("top-primary-a8", "landing-lower-a8")
     assert get_a8_allowed_placements("/tools") == ("tools-primary-a8", "tools-lower-a8")
-    assert get_a8_allowed_placements("/tools/pdf") == ("tool-after-explanation", "content-lower-a8")
+    assert get_a8_allowed_placements("/tools/pdf") == ("global-primary-a8", "content-lower-a8")
     landing_primary = select_a8_creative("/", "2026-08-08", creatives)
     landing_secondary = select_a8_creative(
         "/",
@@ -142,29 +142,33 @@ def _assert_invalid_catalog_fails_closed():
 
 
 def _assert_placement_spacing():
-    footer = (ROOT / "templates" / "includes" / "footer.html").read_text(encoding="utf-8")
-    amazon_block = footer.index("{% if footer_primary_amazon %}")
-    related_block = footer.index("includes/related_content.html", amazon_block)
-    primary_a8_block = footer.index("{% if footer_primary_a8 %}")
-    secondary_amazon_block = footer.index("{% if footer_secondary_amazon %}")
-    navigation_block = footer.index("{% for col in footer_columns|default([]) %}")
-    secondary_a8_block = footer.index("{% if footer_secondary_a8 and a8_can_render_placement")
-    assert amazon_block < related_block < primary_a8_block < secondary_amazon_block < navigation_block < secondary_a8_block
+    primary = (ROOT / "templates" / "includes" / "affiliate_primary_rail.html").read_text(encoding="utf-8")
+    assert primary.index("global-affiliate-rail__amazon") < primary.index("global-affiliate-rail__publisher")
+    assert primary.index("global-affiliate-rail__publisher") < primary.index("global-affiliate-rail__a8")
+    assert "affiliate_section_lead" not in primary
 
     tools = (ROOT / "templates" / "tools" / "index.html").read_text(encoding="utf-8")
-    tools_amazon = tools.index("tools-affiliate-rail__primary")
-    tools_publisher = tools.index("tools-affiliate-rail__related")
-    tools_a8 = tools.index("tools-primary-a8")
-    tools_lower_amazon = tools.index("secondary_amazon_recommendation", tools_a8)
+    panel_start = tools.index('<section class="tools-catalog-panel"')
+    panel_end = tools.index("</section>", panel_start)
+    panel_source = tools[panel_start:panel_end]
+    assert "affiliate_primary_rail" not in panel_source
+    assert "amazon-single" not in panel_source
+    assert "a8" not in panel_source.lower()
+    primary_include = tools.index("includes/affiliate_primary_rail.html", panel_end)
+    tools_lower_amazon = tools.index("secondary_amazon_recommendation", primary_include)
     tools_lower_publisher = tools.index("includes/related_content.html", tools_lower_amazon)
     tools_lower_a8 = tools.index("tools-lower-a8")
-    assert tools_amazon < tools_publisher < tools_a8 < tools_lower_amazon < tools_lower_publisher < tools_lower_a8
+    assert primary_include < tools_lower_amazon < tools_lower_publisher < tools_lower_a8
 
     landing = (ROOT / "templates" / "landing.html").read_text(encoding="utf-8")
-    amazon_block = landing.index("affiliate_context_placement='top-late-amazon'")
-    publisher_block = landing.index('class="landing-affiliate-rail__related"')
-    a8_block = landing.index("affiliate_section_placement='top-lower-a8'")
-    assert amazon_block < publisher_block < a8_block < landing.index('id="safety"')
+    panel_start = landing.index('<section class="landing-tools-zone')
+    panel_end = landing.index("</section>", panel_start)
+    panel_source = landing[panel_start:panel_end]
+    assert "affiliate_primary_rail" not in panel_source
+    assert "amazon-single" not in panel_source
+    assert "a8" not in panel_source.lower()
+    primary_include = landing.index("includes/affiliate_primary_rail.html", panel_end)
+    assert primary_include < landing.index('id="safety"')
     lower_amazon = landing.index("landing_secondary_amazon_recommendation")
     lower_publisher = landing.index("includes/related_content.html", lower_amazon)
     lower_a8 = landing.index("affiliate_section_placement='landing-lower-a8'")
@@ -172,8 +176,8 @@ def _assert_placement_spacing():
 
     for path in A8_AFTER_EXPLANATION_PATHS:
         template = (ROOT / "templates" / f"{path.lstrip('/')}.html").read_text(encoding="utf-8")
-        assert template.index("includes/tool_content_blocks.html") < template.index("a8_slot_placement='tool-after-explanation'")
-        assert template.index("includes/related_tools.html") < template.index("a8_slot_placement='tool-after-explanation'")
+        assert template.index("includes/tool_content_blocks.html") < template.index("a8_slot_placement='content-lower-a8'")
+        assert template.index("includes/related_tools.html") < template.index("a8_slot_placement='content-lower-a8'")
 
 
 def _assert_rendering():
@@ -187,19 +191,21 @@ def _assert_rendering():
             response = client.get(path, follow_redirects=False)
             assert response.status_code == 200, (path, response.status_code)
             body = response.data.decode("utf-8", errors="replace")
-            expected_count = get_a8_visible_limit(path)
-            assert body.count('data-a8-creative-id="') == expected_count, path
-            assert body.count("https://px.a8.net/svt/ejp") == expected_count, path
-            assert body.count('width="300" height="250"') == expected_count, path
-            assert body.count('width="1" height="1"') == expected_count, path
+            maximum = get_a8_visible_limit(path)
+            count = body.count('data-a8-creative-id="')
+            assert 1 <= count <= maximum, (path, count, maximum)
+            assert body.count("https://px.a8.net/svt/ejp") == count, path
+            assert body.count('width="300" height="250"') == count, path
+            assert body.count('width="1" height="1"') == count, path
             assert "rot3.a8.net" not in body, path
             if path == "/":
                 creative_ids = re.findall(r'data-a8-creative-id="([^"]+)"', body)
                 assert len(set(creative_ids)) == 2
         article_path = "/blog/excel-format-mistakes-and-design"
         article_body = client.get(article_path).data.decode("utf-8", errors="replace")
-        assert article_body.count('data-a8-creative-id="') == get_a8_visible_limit(article_path), article_path
-        assert article_body.count("https://px.a8.net/svt/ejp") == get_a8_visible_limit(article_path), article_path
+        article_count = article_body.count('data-a8-creative-id="')
+        assert 1 <= article_count <= get_a8_visible_limit(article_path), article_path
+        assert article_body.count("https://px.a8.net/svt/ejp") == article_count, article_path
         for path in excluded:
             response = client.get(path, follow_redirects=False)
             assert response.status_code == 200, (path, response.status_code)

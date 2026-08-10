@@ -1,7 +1,9 @@
-{# Legacy callsites now converge on the one page-level Amazon recommendation. #}
-{% set amazon_item = amazon_single_recommendation|default(none) %}
-{% if amazon_item and amazon_item.render_target == 'content' %}
+{# Legacy lower-content callsites now render only the approved secondary item. #}
+{% set amazon_item = secondary_amazon_recommendation|default(none) %}
+{% if amazon_item %}
 <div class="amazon-single-placement{% if affiliate_context_class|default('') %} {{ affiliate_context_class }}{% endif %}">
-    {% include 'includes/amazon_single_card.html' %}
+    {% with amazon_item_override=amazon_item, amazon_title_id='amazon-secondary-content-title', amazon_card_class='amazon-single-card--wide' %}
+        {% include 'includes/amazon_single_card.html' %}
+    {% endwith %}
 </div>
 {% endif %}
