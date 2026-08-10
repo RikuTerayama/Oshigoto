@@ -206,6 +206,26 @@ def main() -> int:
         if path in A8_ELIGIBLE_EXACT_PATHS or path.startswith("/blog/"):
             require(a8_count == 1, f"{path}: A8 creative missing")
 
+        if path == "/":
+            require(len(soup.select(".hero-tool-grid > .hero-tool-card")) == 6, "/: expected six hero tool cards")
+            require(len(soup.select(".landing-tool-grid > .tool-card-v2")) == 7, "/: expected seven landing tool cards")
+            require(not soup.select(".hero-tool-stack, .tool-card-grid.cards-grid--balanced"), "/: legacy balanced grid class detected")
+            rail = soup.select_one(".landing-affiliate-rail")
+            require(rail is not None, "/: affiliate rail missing")
+            require(len(rail.select(".amazon-single-card")) == 1, "/: rail must contain one Amazon recommendation")
+            require(len(rail.select("[data-a8-creative-id]")) == 1, "/: rail must contain one A8 creative")
+            require(rail.select_one(".landing-affiliate-rail__related") is not None, "/: publisher guide content missing from rail")
+            amazon_position = body.find('class="amazon-single-card"')
+            related_position = body.find('class="landing-affiliate-rail__related"')
+            a8_position = body.find('data-a8-creative-id="')
+            require(
+                -1 < amazon_position < related_position < a8_position,
+                "/: expected Amazon, publisher guide, then A8 in DOM order",
+            )
+
+        if path == "/tools":
+            require(len(soup.select(".tools-catalog-grid > .product-card")) == 7, "/tools: expected seven catalog cards")
+
         for link in soup.select("a[href]"):
             href = (link.get("href") or "").strip()
             parsed = urlparse(href)

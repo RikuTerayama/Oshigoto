@@ -127,8 +127,10 @@ def _assert_placement_spacing():
     assert amazon_block < navigation_block < a8_block
 
     landing = (ROOT / "templates" / "landing.html").read_text(encoding="utf-8")
-    assert landing.index("affiliate_context_placement='top-inline'") < landing.index('id="safety"')
-    assert landing.index('id="safety"') < landing.index("affiliate_section_placement='top-lower-a8'")
+    amazon_block = landing.index("affiliate_context_placement='top-late-amazon'")
+    publisher_block = landing.index('class="landing-affiliate-rail__related"')
+    a8_block = landing.index("affiliate_section_placement='top-lower-a8'")
+    assert amazon_block < publisher_block < a8_block < landing.index('id="safety"')
 
     for path in A8_AFTER_EXPLANATION_PATHS:
         template = (ROOT / "templates" / f"{path.lstrip('/')}.html").read_text(encoding="utf-8")

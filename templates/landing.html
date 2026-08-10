@@ -26,66 +26,81 @@
             </div>
             <aside class="hero-v2__panel hero-tool-panel" aria-label="6つの道具">
                 <div class="hero-v2__panel-header">6つの道具</div>
-                <div class="hero-tool-stack" role="list">
+                <div class="hero-tool-grid" role="list">
                     <a class="hero-tool-card hero-tool-card--pdf" href="/tools/pdf" role="listitem">
                         <span class="icon-tile icon-tile--teal" aria-hidden="true">{{ tool_icon('pdf', 18) }}</span>
-                        <span><strong>PDF</strong><em>結合・分割・抽出・圧縮・保護</em></span>
+                        <span class="hero-tool-card__copy"><strong>PDF</strong><em>結合・分割・抽出・圧縮・保護</em></span>
                     </a>
                     <a class="hero-tool-card hero-tool-card--csv" href="/tools/csv" role="listitem">
                         <span class="icon-tile icon-tile--blue" aria-hidden="true">{{ tool_icon('csv', 18) }}</span>
-                        <span><strong>CSV/Excel</strong><em>変換・文字コード確認・列整理</em></span>
+                        <span class="hero-tool-card__copy"><strong>CSV/Excel</strong><em>変換・文字コード確認・列整理</em></span>
                     </a>
                     <a class="hero-tool-card hero-tool-card--image" href="/tools/image-batch" role="listitem">
                         <span class="icon-tile icon-tile--amber" aria-hidden="true">{{ tool_icon('image-batch', 18) }}</span>
-                        <span><strong>画像一括変換</strong><em>形式変換・リサイズ・まとめて処理</em></span>
+                        <span class="hero-tool-card__copy"><strong>画像一括変換</strong><em>形式変換・リサイズ・まとめて処理</em></span>
                     </a>
                     <a class="hero-tool-card hero-tool-card--image" href="/tools/image-compress" role="listitem">
                         <span class="icon-tile icon-tile--amber" aria-hidden="true">{{ tool_icon('image-compress', 18) }}</span>
-                        <span><strong>画像圧縮</strong><em>品質・サイズ調整・容量比較</em></span>
+                        <span class="hero-tool-card__copy"><strong>画像圧縮</strong><em>品質・サイズ調整・容量比較</em></span>
                     </a>
                     <a class="hero-tool-card hero-tool-card--cleanup" href="/tools/image-cleanup" role="listitem">
                         <span class="icon-tile icon-tile--teal" aria-hidden="true">{{ tool_icon('image-cleanup', 18) }}</span>
-                        <span><strong>画像クリーンアップ</strong><em>白背景化・余白・比率の調整</em></span>
+                        <span class="hero-tool-card__copy"><strong>画像クリーンアップ</strong><em>白背景化・余白・比率の調整</em></span>
                     </a>
                     <a class="hero-tool-card hero-tool-card--seo" href="/tools/seo" role="listitem">
                         <span class="icon-tile icon-tile--blue" aria-hidden="true">{{ tool_icon('seo', 18) }}</span>
-                        <span><strong>SEO/URL</strong><em>title・meta・OGP・URL一覧</em></span>
+                        <span class="hero-tool-card__copy"><strong>SEO/URL</strong><em>title・meta・OGP・URL一覧</em></span>
                     </a>
                 </div>
             </aside>
         </section>
 
-        <section class="section-block section-block--tools">
-            <div class="section-heading section-heading--centered">
-                <p class="section-kicker">Tools</p>
-                <h2>必要な作業を選ぶ</h2>
-                <p>よくある作業を6つに分けました。目的に近いカードから、そのまま作業に進めます。</p>
-            </div>
-            <div class="tool-card-grid cards-grid--balanced cards-grid--three-balanced">
-                {% for product in public_products|default(products) %}
-                <article class="tool-card-v2">
-                    <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} tool-card-v2__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-compress','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
-                    <p class="tool-card-v2__eyebrow">{{ product.category|default('ツール') }}</p>
-                    <h3>{{ product.name }}</h3>
-                    <p>{{ product.description }}</p>
-                    <div class="tool-card-v2__actions">
-                        <a href="{{ product.path }}" class="btn btn-primary">使う</a>
-                        {% if product.guide_path %}<a href="{{ product.guide_path }}" class="btn btn-secondary">ガイド</a>{% endif %}
+        <div class="landing-tools-rail-layout">
+            <div class="landing-tools-rail-layout__main">
+                <section class="section-block section-block--tools">
+                    <div class="section-heading section-heading--centered">
+                        <p class="section-kicker">Tools</p>
+                        <h2>必要な作業を選ぶ</h2>
+                        <p>目的に近いカードから、そのまま作業に進めます。</p>
                     </div>
-                </article>
-                {% endfor %}
+                    <div class="landing-tool-grid">
+                        {% for product in public_products|default(products) %}
+                        <article class="tool-card-v2">
+                            <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} tool-card-v2__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-compress','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
+                            <p class="tool-card-v2__eyebrow">{{ product.category|default('ツール') }}</p>
+                            <h3>{{ product.name }}</h3>
+                            <p>{{ product.description }}</p>
+                            <div class="tool-card-v2__actions">
+                                <a href="{{ product.path }}" class="btn btn-primary">使う</a>
+                                {% if product.guide_path %}<a href="{{ product.guide_path }}" class="btn btn-secondary">ガイド</a>{% endif %}
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </section>
             </div>
-        </section>
 
-        {% set affiliate_context_links = [
-            {'label': 'PDF・書類作業', 'description': 'PDFや紙の書類を扱う作業まわりの本や道具を探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-documents', 'cta': 'PDF作業の本を見る'},
-            {'label': 'CSV/Excel作業', 'description': '表計算、データ整理、Excel作業に関係する本を探せます。', 'href': amazon_search_url('Kindle Excel'), 'category': 'spreadsheet-books', 'cta': 'Excelの本を見る'},
-            {'label': 'デスク環境・仕事道具', 'description': '作業環境を整えるデスク用品や仕事道具を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-focus', 'cta': '仕事道具を見る'}
-        ] %}
-        {% with affiliate_context_title='仕事ついでに、道具も見直す', affiliate_context_lead='ツールの利用後に近い本や道具を、必要なときだけ確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='top-work-tools', affiliate_context_placement='top-inline', affiliate_context_class='affiliate-context-block--landing', affiliate_context_show_a8=false %}
-            {% include 'includes/affiliate_context_block.html' %}
-        {% endwith %}
-        {% set affiliate_disclosure_rendered = true %}
+            <aside class="landing-affiliate-rail" aria-label="仕事道具と関連ガイド">
+                <div class="landing-affiliate-rail__inner">
+                    {% with affiliate_context_category='top-work-tools', affiliate_context_placement='top-late-amazon', affiliate_context_class='amazon-single-placement--rail', affiliate_context_show_a8=false %}
+                        {% include 'includes/affiliate_context_block.html' %}
+                    {% endwith %}
+                    {% set affiliate_disclosure_rendered = true %}
+
+                    <nav class="landing-affiliate-rail__related" aria-label="関連ガイド">
+                        <p class="section-kicker">Guide</p>
+                        <h2>作業前に確認する</h2>
+                        <a href="/guide">ツールの使い方を見る</a>
+                        <a href="/best-practices">安全な使い方を確認する</a>
+                    </nav>
+
+                    {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--rail-a8', affiliate_section_tier='context-a8', affiliate_section_placement='top-lower-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='必要なときだけ確認できます。', affiliate_a8_label='PR' %}
+                        {% include 'includes/affiliate_cards_section.html' %}
+                    {% endwith %}
+                    {% set affiliate_a8_rendered = true %}
+                </div>
+            </aside>
+        </div>
 
         <section class="section-block" id="safety">
             <div class="section-heading section-heading--centered">
@@ -131,10 +146,6 @@
             </div>
         </section>
 
-        {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--landing-a8', affiliate_section_tier='context-a8', affiliate_section_placement='top-lower-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='必要なときだけ確認できます。', affiliate_a8_label='PR' %}
-            {% include 'includes/affiliate_cards_section.html' %}
-        {% endwith %}
-        {% set affiliate_a8_rendered = true %}
     </main>
     {% include 'includes/footer.html' %}
 </body>
