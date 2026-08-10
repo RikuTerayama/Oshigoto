@@ -1,20 +1,47 @@
 ﻿<footer style="background: var(--color-bg-primary, #121212); padding: var(--spacing-xl, 48px) var(--spacing-md, 16px); margin-top: var(--spacing-xl, 48px); border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));">
+    {% set footer_primary_amazon = amazon_single_recommendation|default(none) if amazon_single_recommendation|default(none) and amazon_single_recommendation.render_target == 'footer' else none %}
+    {% set footer_primary_a8 = selected_a8_creative|default(none) if selected_a8_creative|default(none) and a8_can_render_placement('global-footer-a8') else none %}
+    {% set footer_secondary_amazon = secondary_amazon_recommendation|default(none) if not affiliate_secondary_rendered|default(false) else none %}
+    {% set footer_secondary_a8 = secondary_a8_creative|default(none) if not affiliate_secondary_rendered|default(false) else none %}
+    {% if footer_primary_amazon or (related_content_section and not related_content_rendered|default(false)) or footer_primary_a8 or footer_secondary_amazon %}
+    <section class="site-affiliate-flow" aria-label="関連コンテンツと仕事道具">
+        {% if footer_primary_amazon %}
+        <div class="amazon-single-placement site-affiliate-flow__primary-amazon">
+            {% include 'includes/amazon_single_card.html' %}
+        </div>
+        {% endif %}
+        {% if related_content_section and not related_content_rendered|default(false) %}
+        <div class="site-affiliate-flow__publisher">
+            {% include 'includes/related_content.html' %}
+        </div>
+        {% set related_content_rendered = true %}
+        {% endif %}
+        {% if footer_primary_a8 %}
+        <div class="site-affiliate-flow__primary-a8">
+            {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--footer-a8', affiliate_section_tier='context-a8', affiliate_section_placement='global-footer-a8', affiliate_section_category='related-services', affiliate_a8_label='PR' %}
+                {% include 'includes/affiliate_cards_section.html' %}
+            {% endwith %}
+        </div>
+        {% set affiliate_a8_rendered = true %}
+        {% endif %}
+        {% if footer_secondary_amazon %}
+        <div class="amazon-single-placement site-affiliate-flow__secondary-amazon">
+            {% with amazon_item_override=footer_secondary_amazon, amazon_title_id='amazon-single-title-secondary', amazon_card_class='amazon-single-card--wide' %}
+                {% include 'includes/amazon_single_card.html' %}
+            {% endwith %}
+        </div>
+        {% endif %}
+    </section>
+    {% endif %}
+
     <div style="max-width: 1200px; margin: 0 auto;">
         {% set can_render_affiliate = affiliate_can_render_textlinks() %}
         {% set affiliate_disclosure_rendered = affiliate_disclosure_rendered|default(false) %}
-        {% if related_content_section and not related_content_rendered|default(false) %}
-            {% include 'includes/related_content.html' %}
-        {% endif %}
         {% set footer_affiliate_slot_id = affiliate_footer_slot_id %}
         {% if (not AFFILIATE_STACK_ONLY) and footer_affiliate_slot_id and not (footer_affiliate_slot_id == 'global_footer_banner' and affiliate_top_slot_id) %}
             {% with slot_id=footer_affiliate_slot_id, hidden_until_ready=(footer_affiliate_slot_id == 'tool_post_result'), show_disclosure=false %}
                 {% include 'includes/affiliate_slot.html' %}
             {% endwith %}
-        {% endif %}
-        {% if amazon_single_recommendation|default(none) and amazon_single_recommendation.render_target == 'footer' %}
-            <div class="amazon-single-placement amazon-single-placement--footer">
-                {% include 'includes/amazon_single_card.html' %}
-            </div>
         {% endif %}
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; text-align: left;">
@@ -70,8 +97,8 @@
             {% endfor %}
         </div>
 
-        {% if selected_a8_creative and a8_can_render_placement('global-footer-a8') %}
-            {% with affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--footer-a8', affiliate_section_tier='context-a8', affiliate_section_placement='global-footer-a8', affiliate_section_category='related-services', affiliate_a8_label='PR' %}
+        {% if footer_secondary_a8 and a8_can_render_placement(footer_secondary_a8.placement) %}
+            {% with selected_a8_creative=footer_secondary_a8, affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--footer-a8 affiliate-cards-section--secondary-a8', affiliate_section_tier='context-a8', affiliate_section_placement=footer_secondary_a8.placement, affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_section_lead='ページの内容を確認したあとに、必要な場合だけご覧ください。', affiliate_a8_label='PR' %}
                 {% include 'includes/affiliate_cards_section.html' %}
             {% endwith %}
             {% set affiliate_a8_rendered = true %}

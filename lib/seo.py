@@ -121,11 +121,29 @@ RELATED_CONTENT = {
         {'path': '/faq', 'label': 'FAQ', 'description': 'よくある質問を確認できます。'},
         {'path': '/privacy', 'label': 'プライバシーポリシー', 'description': 'ファイル処理と広告表示の考え方を確認できます。'},
     ]},
+    '/best-practices': {'title': '実際の作業に進む', 'intro': '確認した方針を、ガイドやツールで実践できます。', 'links': [
+        {'path': '/tools', 'label': 'ツール一覧', 'description': '目的に合う道具を選べます。'},
+        {'path': '/guide', 'label': 'ガイド', 'description': '各ツールの使い方を手順で確認できます。'},
+        {'path': '/faq', 'label': 'FAQ', 'description': '処理方法や制約を確認できます。'},
+        {'path': '/privacy', 'label': 'プライバシーポリシー', 'description': 'ファイル処理と広告表示の方針を確認できます。'},
+    ]},
+}
+
+TOOL_RELATED_CONTENT = {
+    'title': '作業の前後に確認する',
+    'intro': '使い方、安全性、別のツールもあわせて確認できます。',
+    'links': [
+        {'path': '/guide', 'label': 'ガイド', 'description': '各ツールの使い方を手順で確認できます。'},
+        {'path': '/tools', 'label': 'ツール一覧', 'description': '別の作業に使う道具も選べます。'},
+        {'path': '/faq', 'label': 'FAQ', 'description': '処理方法や制約を確認できます。'},
+        {'path': '/privacy', 'label': 'プライバシーポリシー', 'description': 'ファイル処理と広告表示の方針を確認できます。'},
+    ],
 }
 
 RELATED_CONTENT_PREFIXES = (
     ('/blog/', RELATED_CONTENT['/blog']),
     ('/guide/', RELATED_CONTENT['/guide']),
+    ('/tools/', TOOL_RELATED_CONTENT),
 )
 
 

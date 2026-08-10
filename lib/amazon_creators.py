@@ -20,6 +20,7 @@ from lib.amazon_affiliate_map import (
     PAGE_TYPE_KEYWORDS,
     PATH_KEYWORD_RULES,
     get_amazon_page_policy,
+    get_amazon_visible_limit,
 )
 
 logger = logging.getLogger(__name__)
@@ -483,6 +484,49 @@ def build_landing_secondary_amazon_recommendation(
             candidate,
             associate_tag=associate_tag,
             placement="landing-lower-amazon",
+            render_target="content",
+        )
+        if card:
+            return card
+    return None
+
+
+def build_secondary_amazon_recommendation(
+    path: str,
+    page_type: str,
+    title: str = "",
+    tags: Optional[Iterable[str]] = None,
+    exclude_theme_ids: Optional[Iterable[str]] = None,
+    exclude_urls: Optional[Iterable[str]] = None,
+) -> Optional[dict]:
+    """Build a distinct lower-page recommendation for approved long-form routes."""
+    if path == "/" or get_amazon_visible_limit(path) < 2:
+        return None
+    settings = get_settings()
+    associate_tag = _current_associate_tag(settings)
+    policy = get_amazon_page_policy(path)
+    if not settings.get("enabled") or not associate_tag or not policy:
+        return None
+
+    excluded_urls = {str(value) for value in (exclude_urls or ()) if value}
+    placement = f"{policy['placement']}-secondary"
+    cards = build_rotating_theme_cards(
+        path=path,
+        page_type=page_type,
+        title=title,
+        tags=tags,
+        recent_history=None,
+        slot_id=placement,
+        count=3,
+        exclude_theme_ids=exclude_theme_ids,
+    )
+    for candidate in cards:
+        if str(candidate.get("url") or "") in excluded_urls:
+            continue
+        card = _finalize_single_recommendation(
+            candidate,
+            associate_tag=associate_tag,
+            placement=placement,
             render_target="content",
         )
         if card:

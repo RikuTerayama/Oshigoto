@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regression checks for the one-Amazon-recommendation page contract."""
+"""Regression checks for route-managed Amazon recommendation limits."""
 
 from __future__ import annotations
 
@@ -24,6 +24,7 @@ import lib.amazon_creators as creators  # noqa: E402
 from lib.amazon_affiliate_map import (  # noqa: E402
     AMAZON_ELIGIBLE_EXACT_PATHS,
     AMAZON_HARD_EXCLUDED_PATHS,
+    AMAZON_HIGH_CONTENT_EXACT_PATHS,
     AMAZON_ICON_ALLOWLIST,
     AMAZON_THEME_ICON_MAP,
     AMAZON_THEME_POOL,
@@ -49,7 +50,9 @@ def build(path: str, page_type: str = "tool") -> dict | None:
 def main() -> int:
     require(VISIBLE_AMAZON_MAX_PER_PAGE == 1, "visible Amazon maximum must be one")
     require(get_amazon_visible_limit("/") == 2, "landing Amazon maximum must be two")
-    require(get_amazon_visible_limit("/tools") == 1, "non-landing Amazon maximum must remain one")
+    require(get_amazon_visible_limit("/tools") == 2, "tools Amazon maximum must be two")
+    require(get_amazon_visible_limit("/guide/pdf") == 2, "long-form Amazon maximum must be two")
+    require(get_amazon_visible_limit("/faq") == 1, "medium-page Amazon maximum must remain one")
     require(any(theme.get("enabled") for theme in AMAZON_THEME_POOL), "enabled theme pool required")
     require(set(AMAZON_THEME_ICON_MAP.values()) <= AMAZON_ICON_ALLOWLIST, "theme icons must be allowlisted")
     require(get_amazon_page_policy("/tools/pdf") is not None, "eligible policy missing")
@@ -79,6 +82,18 @@ def main() -> int:
         require(landing_secondary["theme_id"] != landing_primary["theme_id"], "landing themes must differ")
         require(landing_secondary["url"] != landing_primary["url"], "landing URLs must differ")
         require(landing_secondary["placement"] == "landing-lower-amazon", "secondary placement mismatch")
+
+        tools_primary = build("/tools", "tool_index")
+        tools_secondary = creators.build_secondary_amazon_recommendation(
+            "/tools",
+            "tool_index",
+            exclude_theme_ids=[tools_primary["theme_id"]],
+            exclude_urls=[tools_primary["url"]],
+        )
+        require(tools_secondary is not None, "tools secondary recommendation missing")
+        require(tools_secondary["theme_id"] != tools_primary["theme_id"], "tools themes must differ")
+        require(tools_secondary["url"] != tools_primary["url"], "tools URLs must differ")
+        require(tools_secondary["placement"].endswith("-secondary"), "tools secondary placement mismatch")
 
         original_icon = AMAZON_THEME_ICON_MAP.get(first["theme_id"])
         AMAZON_THEME_ICON_MAP[first["theme_id"]] = "unknown-icon"
@@ -155,7 +170,8 @@ def main() -> int:
     require("get_amazon_recommendations(" not in context_source, "page rendering must not call Creators API")
     require("_prepare_recent_affiliate_history_cookie(" not in context_source, "single recommendation must not write history")
 
-    print(f"PASS: {len(eligible_paths)} eligible routes respect landing-two/other-one Amazon limits")
+    print(f"PASS: {len(eligible_paths)} eligible routes respect route-managed Amazon limits")
+    print(f"PASS: {len(AMAZON_HIGH_CONTENT_EXACT_PATHS)} long-form routes allow at most two recommendations")
     print(f"PASS: {len(AMAZON_HARD_EXCLUDED_PATHS)} excluded routes render none")
     print("PASS: deterministic rotation, tag handling, icon allowlist, A8 spacing, no page-render API call")
     return 0
