@@ -5,33 +5,6 @@
     {% set page_description = '画像の白背景化、余白、サイズや比率を整える無料ツール。EC画像、資料画像、添付画像をブラウザ内で処理します。' %}
     {% set breadcrumb_title = '画像を見やすくする' %}
     {% include 'includes/head_meta.html' %}
-    {# P1-4: SoftwareApplication構造化データ #}
-    {% if product %}
-    {% include 'includes/structured_data.html' %}
-    {% block extra_structured_data %}
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "{{ product.name|e }}",
-        "description": "{{ product.description|e }}",
-        "url": "https://oshigoto.onrender.com{{ product.path }}",
-        "applicationCategory": "WebApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "JPY"
-        },
-        "publisher": {
-            "@type": "Organization",
-            "name": "しごと道具箱",
-            "url": "https://oshigoto.onrender.com"
-        }
-    }
-    </script>
-    {% endblock %}
-    {% endif %}
     <style>
         * {
             box-sizing: border-box;

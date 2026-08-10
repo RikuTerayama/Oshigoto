@@ -5,33 +5,6 @@
     {% set page_description = 'JPEG・PNG・WebP画像の形式変換とリサイズをブラウザ内でまとめて実行できます。対応ブラウザでは静止GIF、BMP、AVIFの入力にも対応します。' %}
     {% set breadcrumb_title = '画像をまとめて変換' %}
     {% include 'includes/head_meta.html' %}
-    {# P1-4: SoftwareApplication構造化データ #}
-    {% if product %}
-    {% include 'includes/structured_data.html' %}
-    {% block extra_structured_data %}
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "{{ product.name|e }}",
-        "description": "{{ product.description|e }}",
-        "url": "https://oshigoto.onrender.com{{ product.path }}",
-        "applicationCategory": "WebApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "JPY"
-        },
-        "publisher": {
-            "@type": "Organization",
-            "name": "しごと道具箱",
-            "url": "https://oshigoto.onrender.com"
-        }
-    }
-    </script>
-    {% endblock %}
-    {% endif %}
     <style>
         * {
             box-sizing: border-box;
