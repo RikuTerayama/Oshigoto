@@ -215,7 +215,7 @@ def main() -> int:
             require(0 < a8_count <= get_a8_visible_limit(path), f"{path}: A8 creative count mismatch")
 
         if path == "/":
-            require(len(soup.select(".hero-tool-grid > .hero-tool-card")) == 6, "/: expected six hero tool cards")
+            require(len(soup.select(".hero-tool-grid > .hero-tool-card")) == 7, "/: expected seven hero tool cards")
             require(len(soup.select(".landing-tool-grid > .tool-card-v2")) == 7, "/: expected seven landing tool cards")
             require(not soup.select(".hero-tool-stack, .tool-card-grid.cards-grid--balanced"), "/: legacy balanced grid class detected")
             rail = soup.select_one(".global-affiliate-rail")

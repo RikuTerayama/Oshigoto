@@ -136,21 +136,22 @@
                         <select id="compress-output-format">
                             <option value="original" selected>元の形式</option>
                             <option value="jpeg">JPEG</option>
-                            <option value="webp">WebP</option>
                             <option value="png">PNG</option>
+                            <option value="webp">WebP</option>
+                            <option id="compress-output-avif" value="avif" hidden disabled>AVIF（対応ブラウザのみ）</option>
                         </select>
                     </div>
                     <div class="compress-field">
                         <label for="compress-quality">品質 <output id="compress-quality-value" for="compress-quality">80</output></label>
                         <input id="compress-quality" type="range" min="1" max="100" value="80" aria-describedby="compress-quality-help">
-                        <small id="compress-quality-help">JPEGとWebPへ適用します。</small>
+                        <small id="compress-quality-help">JPEG、WebP、対応ブラウザのAVIFへ適用します。</small>
                     </div>
                     <div class="compress-dimensions">
                         <div class="compress-field"><label for="compress-max-width">最大幅</label><input id="compress-max-width" type="number" min="1" max="{{ image_compress_max_long_edge }}" step="1" inputmode="numeric" placeholder="変更しない"><small>px</small></div>
                         <div class="compress-field"><label for="compress-max-height">最大高さ</label><input id="compress-max-height" type="number" min="1" max="{{ image_compress_max_long_edge }}" step="1" inputmode="numeric" placeholder="変更しない"><small>px</small></div>
                     </div>
                     <small>片方だけでも指定できます。縦横比を保ち、元画像より拡大しません。</small>
-                    <small>JPEG出力では透明部分を白背景にします。PNG・WebPはブラウザが対応する範囲で透明を保ちます。</small>
+                    <small>JPEG出力では透明部分を白背景にします。PNG・WebP・AVIFはブラウザが対応する範囲で透明を保ちます。</small>
                     <small>Canvasで再生成するため位置情報などのメタデータは通常引き継がれませんが、すべての環境での完全な除去は保証しません。</small>
                 </div>
                 <div class="compress-step" style="margin-top: 26px;">
@@ -176,6 +177,7 @@
             <article><h3>JPEG</h3><p>写真向けの形式です。品質値で容量を調整できますが、透明部分は保持できません。</p></article>
             <article><h3>PNG</h3><p>透過画像や図版に向きます。品質値では容量を調整できないため、寸法の縮小やWebPへの変換が有効な場合があります。再生成後に元より大きくなることもあります。</p></article>
             <article><h3>WebP</h3><p>写真と透過画像の両方に使え、品質値を調整できます。保存後に利用先の対応状況を確認してください。</p></article>
+            <article><h3>AVIF（対応ブラウザのみ）</h3><p>実行時の書き出し検証に成功したブラウザだけ選択肢を表示します。保存後に利用先の対応状況を確認してください。</p></article>
             <article><h3>注意</h3><ul><li>容量が必ず小さくなるとは限りません。</li><li>印刷用途では寸法や品質を下げすぎないでください。</li><li>大きな画像は端末性能により処理できない場合があります。</li><li>静止画のみ対応し、アニメーション画像は処理しません。</li></ul></article>
         </section>
 
