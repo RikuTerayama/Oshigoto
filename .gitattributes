@@ -1,1 +1,2 @@
 templates/includes/a8/*.html text eol=lf
+static/vendor/**/*.js -text

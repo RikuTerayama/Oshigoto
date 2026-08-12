@@ -5462,8 +5462,8 @@ body {
 
 .landing-page .hero-v2__panel,
 .landing-page .hero-tool-panel {
-    width: min(100%, 1040px) !important;
-    max-width: 1040px !important;
+    width: min(100%, 1180px) !important;
+    max-width: 1180px !important;
     margin-left: auto !important;
     margin-right: auto !important;
     padding: clamp(22px, 3vw, 36px) !important;
@@ -5848,11 +5848,6 @@ body {
     display: block;
 }
 
-.landing-page .hero-v2__panel,
-.landing-page .hero-tool-panel {
-    max-width: 980px !important;
-}
-
 .landing-page .affiliate-context-block,
 .landing-page .affiliate-cards-section--context-a8,
 .landing-page .affiliate-cards-section--landing-a8,
@@ -6180,8 +6175,8 @@ body {
 }
 
 .landing-page .tool-flow {
-    width: min(100%, 1120px) !important;
-    max-width: 1120px !important;
+    width: min(100%, 800px) !important;
+    max-width: 800px !important;
 }
 
 .landing-page .tool-step-list {
@@ -6350,7 +6345,7 @@ body {
 .landing-page .tool-flow {
     margin-bottom: clamp(56px, 6vw, 84px) !important;
     border: 1px solid var(--brand-line) !important;
-    border-radius: 8px !important;
+    border-radius: 14px !important;
     background: rgba(255, 252, 246, 0.86) !important;
     box-shadow: none !important;
 }

@@ -16,6 +16,7 @@
         .tool-section h3 { color: var(--brand-primary); font-size: 1.3em; margin: 0 0 20px 0; }
         .info-text { color: var(--brand-muted); font-size: 0.85em; margin-top: 5px; }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
 <body class="landing-page tool-page tool-page--csv">
     {% from 'includes/tool_icons.html' import tool_icon %}
@@ -28,7 +29,7 @@
             <span class="icon-tile icon-tile--lg icon-tile--blue" aria-hidden="true">{{ tool_icon('table', 28) }}</span>
             <h1 data-reveal>表を整える</h1>
             <p data-reveal data-reveal-delay="50">CSVやExcelを、文字化け確認・変換・重複削除・列整理までまとめて処理します。</p>
-            <p data-reveal data-reveal-delay="60" style="font-size: 0.95em; color: var(--brand-muted); margin-top: 8px;">ファイル内容はサーバーに送信しません。計測・広告のために外部サービスへ通信することがあります。</p>
+            <p class="tool-processing-note" data-reveal data-reveal-delay="60">ファイル内容はサーバーに送信しません。計測・広告のために外部サービスへ通信することがあります。</p>
         </div>
         {% set tool_intro_what = '表データの文字化け確認、CSVとExcelの変換、重複削除、列の整理をまとめて行えます。' %}
         {% set tool_intro_steps = ['CSVまたはExcelを選ぶ', 'やりたい操作を選ぶ', 'プレビューで確認する', '結果をダウンロードする'] %}

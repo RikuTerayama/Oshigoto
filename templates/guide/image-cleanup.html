@@ -23,16 +23,20 @@
         a { color: var(--brand-primary-strong); text-decoration: none; }
         a:hover { text-decoration: underline; }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
-<body class="landing-page">
+<body class="landing-page guide-detail-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <div class="page-with-affiliate-rail">
+    <div class="page-with-affiliate-rail guide-shell">
     <div class="page-with-affiliate-rail__content">
-    <div class="container">
-        <h1>✨ 画像ユーティリティガイド</h1>
+    <div class="container guide-content">
+        <header class="guide-hero">
+        <p class="guide-hero__kicker">Image Cleanup Guide</p>
+        <h1>画像クリーンアップガイド</h1>
         <p><strong>できること:</strong> 透過PNGの白背景化、余白トリム、縦横比統一（1:1/4:5/16:9等）、枠・余白・角丸の付与。ブラウザ内で完結し、画像は当サーバーに送信されません。</p>
         <p><strong>想定ユーザー:</strong> EC・SNS運用、デザイナー、マーケターなど、商品画像の統一や投稿用画像の整形が必要な方。</p>
+        </header>
 
         <h2>このツールで解決できる課題</h2>
         <ul>

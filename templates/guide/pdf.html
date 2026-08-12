@@ -40,15 +40,19 @@
         a { color: var(--brand-primary-strong); text-decoration: none; }
         a:hover { text-decoration: underline; }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
-<body class="landing-page">
+<body class="landing-page guide-detail-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <div class="page-with-affiliate-rail">
+    <div class="page-with-affiliate-rail guide-shell">
     <div class="page-with-affiliate-rail__content">
-    <div class="container">
+    <div class="container guide-content">
+        <header class="guide-hero">
+        <p class="guide-hero__kicker">PDF Guide</p>
         <h1>PDFツールガイド</h1>
         <p>PDFの結合、抽出、分割、ページ削除、回転、圧縮、画像変換、パスワード設定の操作方法をまとめています。</p>
+        </header>
 
         <h2>主要機能</h2>
         <ul>

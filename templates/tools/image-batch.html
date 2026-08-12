@@ -364,6 +364,7 @@
             }
         }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
 <body class="landing-page tool-page tool-page--image-batch"
       data-max-files="50"
@@ -382,6 +383,7 @@
             <span class="icon-tile icon-tile--lg icon-tile--amber" aria-hidden="true">{{ tool_icon('image-batch', 28) }}</span>
             <h1 data-reveal>画像をまとめて変換</h1>
             <p data-reveal data-reveal-delay="50">JPEG・PNG・WebPの形式変換とサイズ調整を、ブラウザ内でまとめて行えます。</p>
+            <p class="tool-processing-note">画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。</p>
         </div>
         {% set tool_intro_what = '画像をまとめて選び、形式・サイズ・品質を指定して一括で書き出せます。' %}
         {% set tool_intro_steps = ['画像をまとめて選ぶ', '変換形式を選ぶ', 'サイズや品質を指定する', '一括変換してダウンロード'] %}

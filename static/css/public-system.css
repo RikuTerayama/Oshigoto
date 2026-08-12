@@ -1,0 +1,467 @@
+/* Canonical public-page system for catalog, tool, and guide surfaces. */
+:root {
+    --public-shell: 1180px;
+    --public-wide: 1100px;
+    --public-reading: 800px;
+    --public-gap-xs: 10px;
+    --public-gap-sm: 16px;
+    --public-gap-md: 24px;
+    --public-gap-lg: clamp(32px, 5vw, 56px);
+    --public-card-padding: clamp(20px, 3vw, 28px);
+    --public-radius: 14px;
+    --public-control-radius: 10px;
+    --public-font: "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.landing-page,
+.tools-index-page,
+.guide-index-page,
+.guide-detail-page {
+    color: var(--brand-ink);
+    background: var(--brand-bg);
+    font-family: var(--public-font);
+}
+
+.landing-page :is(h1, h2, h3, h4, button, input, select, textarea),
+.tools-index-page :is(h1, h2, h3, h4, button, input, select, textarea),
+.guide-index-page :is(h1, h2, h3, h4, button, input, select, textarea),
+.guide-detail-page :is(h1, h2, h3, h4, button, input, select, textarea) {
+    font-family: var(--public-font);
+}
+
+.landing-page button,
+.landing-page input,
+.landing-page select,
+.landing-page textarea,
+.tools-index-page button,
+.tools-index-page input,
+.guide-index-page button,
+.guide-detail-page button {
+    font: inherit;
+}
+
+/* One reusable seven-item layout: 4 + centered 3, 2 + centered 1, then 1 column. */
+.landing-page .balanced-seven-grid,
+.tools-index-page .balanced-seven-grid,
+.guide-index-page .balanced-seven-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: var(--public-gap-md);
+    width: 100%;
+}
+
+.landing-page .balanced-seven-grid > *,
+.tools-index-page .balanced-seven-grid > *,
+.guide-index-page .balanced-seven-grid > * {
+    flex: 0 1 calc((100% - (3 * var(--public-gap-md))) / 4);
+    width: calc((100% - (3 * var(--public-gap-md))) / 4);
+    min-width: 0;
+    max-width: none;
+}
+
+.landing-page .hero-tool-panel {
+    width: min(100%, var(--public-shell));
+    max-width: var(--public-shell);
+}
+
+.hero-tool-grid.balanced-seven-grid .hero-tool-card,
+.landing-tool-grid.balanced-seven-grid .tool-card-v2,
+.tools-catalog-grid.balanced-seven-grid .tool-catalog-card,
+.guide-catalog-grid.balanced-seven-grid .guide-catalog-card {
+    display: flex;
+    min-height: 100%;
+}
+
+.hero-tool-grid.balanced-seven-grid .hero-tool-card {
+    align-items: center;
+    min-height: 132px;
+    padding: 22px;
+    border: 1px solid var(--brand-line);
+    border-radius: var(--public-radius);
+    background: var(--brand-surface);
+}
+
+.hero-tool-card__copy,
+.tool-card-v2,
+.tool-catalog-card,
+.guide-catalog-card {
+    min-width: 0;
+}
+
+.hero-tool-card__copy strong,
+.tool-card-v2 h3,
+.tool-catalog-card__title,
+.guide-catalog-card h2 {
+    word-break: keep-all;
+    overflow-wrap: normal;
+}
+
+.landing-tool-grid.balanced-seven-grid .tool-card-v2,
+.tools-catalog-grid.balanced-seven-grid .tool-catalog-card {
+    flex-direction: column;
+    padding: var(--public-card-padding);
+    border: 1px solid var(--brand-line);
+    border-radius: var(--public-radius);
+    background: var(--brand-surface);
+    box-shadow: var(--shadow-soft);
+}
+
+.landing-tool-grid .tool-card-v2__actions,
+.tools-catalog-grid .tool-catalog-card__actions {
+    margin-top: auto;
+}
+
+/* Canonical tool shell. Tool-specific controls retain their own JS-facing IDs. */
+.landing-page.tool-page .container,
+.landing-page.tool-page .compress-shell,
+.landing-page.tool-page .qr-shell {
+    width: min(calc(100% - 32px), var(--public-shell));
+    max-width: var(--public-shell);
+    margin-inline: auto;
+    padding-top: clamp(28px, 4vw, 48px);
+    padding-bottom: clamp(56px, 7vw, 84px);
+}
+
+.landing-page.tool-page .tool-intro-layout {
+    align-items: start;
+    gap: clamp(28px, 4vw, 36px);
+}
+
+.landing-page.tool-page .page-header,
+.landing-page.tool-page .compress-hero,
+.landing-page.tool-page .qr-hero {
+    max-width: var(--public-reading);
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+}
+
+.landing-page.tool-page .page-header h1,
+.landing-page.tool-page .compress-hero h1,
+.landing-page.tool-page .qr-hero h1 {
+    margin: 14px 0 16px;
+    color: var(--brand-ink);
+    font-size: clamp(2rem, 5vw, 3.15rem);
+    line-height: 1.22;
+    letter-spacing: -.035em;
+}
+
+.landing-page.tool-page .page-header > p,
+.landing-page.tool-page .compress-hero > p,
+.landing-page.tool-page .qr-hero > p {
+    max-width: 720px;
+    margin: 0 auto;
+    color: var(--brand-muted);
+    font-size: 1rem;
+    line-height: 1.85;
+}
+
+.landing-page.tool-page .tool-processing-note,
+.landing-page.tool-page .compress-privacy,
+.landing-page.tool-page .qr-privacy {
+    width: fit-content;
+    max-width: 720px;
+    margin: 16px auto 0;
+    padding: 10px 14px;
+    border: 1px solid rgba(14, 124, 123, .24);
+    border-radius: var(--public-control-radius);
+    color: var(--brand-primary-strong);
+    background: var(--brand-teal-soft);
+    font-size: .92rem;
+}
+
+.landing-page.tool-page .tool-flow {
+    width: min(100%, var(--public-reading));
+    margin: var(--public-gap-lg) auto;
+    padding: clamp(24px, 4vw, 34px);
+    border: 1px solid var(--brand-line);
+    border-radius: var(--public-radius);
+    background: var(--brand-paper);
+    box-shadow: var(--shadow-soft);
+}
+
+.landing-page.tool-page .tool-flow > h2 {
+    margin: 0 0 22px;
+    color: var(--brand-ink);
+    font-size: clamp(1.35rem, 3vw, 1.7rem);
+    line-height: 1.35;
+    text-align: left;
+}
+
+.landing-page.tool-page .tool-step-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    counter-reset: public-tool-step;
+    list-style: none;
+}
+
+.landing-page.tool-page .tool-step-list > li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: 16px;
+    min-height: 72px;
+    padding: 0 0 22px;
+    border: 0;
+    background: transparent;
+}
+
+.landing-page.tool-page .tool-step-list > li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 48px;
+    bottom: 0;
+    left: 23px;
+    width: 1px;
+    background: var(--brand-line);
+}
+
+.landing-page.tool-page .tool-step-list > li::before {
+    counter-increment: public-tool-step;
+    content: counter(public-tool-step);
+    grid-row: 1 / span 2;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    color: #fff;
+    background: var(--brand-primary-strong);
+    font-weight: 800;
+}
+
+.landing-page.tool-page .tool-step-list strong {
+    align-self: end;
+    color: var(--brand-ink);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.landing-page.tool-page .tool-step-list span {
+    color: var(--brand-muted);
+    line-height: 1.7;
+}
+
+.landing-page.tool-page .tool-workspace,
+.landing-page.tool-page .compress-app,
+.landing-page.tool-page .qr-app,
+.landing-page.tool-page .main-layout {
+    border-color: var(--brand-line);
+    border-radius: var(--public-radius);
+    background: var(--brand-surface);
+    box-shadow: var(--shadow-soft);
+}
+
+.landing-page.tool-page .btn,
+.landing-page.tool-page .link-button,
+.guide-detail-page .btn,
+.guide-index-page .button {
+    min-height: 44px;
+    border-radius: var(--public-control-radius);
+}
+
+.landing-page.tool-page .btn-primary,
+.landing-page.tool-page .link-button,
+.guide-detail-page .btn-primary {
+    color: #fff;
+    border-color: var(--brand-primary-strong);
+    background: var(--brand-primary-strong);
+}
+
+.landing-page.tool-page :is(button, a, input, select, textarea):focus-visible,
+.guide-detail-page :is(button, a, input, select, textarea):focus-visible,
+.guide-index-page :is(button, a, input):focus-visible {
+    outline: 3px solid rgba(14, 124, 123, .35);
+    outline-offset: 3px;
+}
+
+/* Canonical guide system. */
+.guide-index-page .guide-shell,
+.guide-detail-page .guide-shell {
+    width: min(calc(100% - 32px), var(--public-shell));
+    max-width: var(--public-shell);
+    margin-inline: auto;
+    padding: clamp(36px, 6vw, 68px) 0 clamp(64px, 8vw, 92px);
+}
+
+.guide-index-page .guide-hero,
+.guide-detail-page .guide-hero {
+    max-width: var(--public-reading);
+    margin: 0 auto var(--public-gap-lg);
+    text-align: center;
+}
+
+.guide-detail-page .guide-shell .guide-content {
+    width: min(100%, var(--public-reading));
+    max-width: var(--public-reading);
+    margin-inline: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.guide-index-page .guide-hero__kicker,
+.guide-detail-page .guide-hero__kicker {
+    margin: 0 0 10px;
+    color: var(--brand-primary-strong);
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+.guide-index-page .guide-hero h1,
+.guide-detail-page .guide-hero h1,
+.guide-detail-page .guide-shell > h1 {
+    margin: 0 0 16px;
+    color: var(--brand-ink);
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.24;
+    letter-spacing: -.035em;
+}
+
+.guide-index-page .guide-hero p,
+.guide-detail-page .guide-hero p,
+.guide-detail-page .guide-shell > p {
+    color: var(--brand-muted);
+    font-size: 1rem;
+    line-height: 1.85;
+}
+
+.guide-detail-page .guide-shell > :not(.guide-hero):not(.global-affiliate-rail),
+.guide-detail-page .guide-shell .page-with-affiliate-rail__content > :not(.guide-hero) {
+    max-width: var(--public-reading);
+    margin-inline: auto;
+}
+
+.guide-detail-page .guide-shell h2 {
+    margin: clamp(34px, 5vw, 52px) 0 14px;
+    color: var(--brand-ink);
+    font-size: clamp(1.35rem, 3vw, 1.7rem);
+    line-height: 1.4;
+}
+
+.guide-detail-page .guide-shell h3 {
+    color: var(--brand-ink);
+    line-height: 1.5;
+}
+
+.guide-detail-page .guide-shell :is(p, li, dd) {
+    color: var(--brand-muted);
+    line-height: 1.85;
+    overflow-wrap: anywhere;
+}
+
+.guide-detail-page .guide-shell :is(.card, .info-card, .step-box, .compress-guide__step, .qr-guide-card, details) {
+    border: 1px solid var(--brand-line);
+    border-radius: var(--public-radius);
+    color: var(--brand-ink);
+    background: var(--brand-surface);
+    box-shadow: var(--shadow-soft);
+}
+
+.guide-detail-page .guide-shell :is(.step-box, .compress-guide__step, .qr-guide-card) {
+    padding: var(--public-card-padding);
+}
+
+.guide-detail-page .guide-shell :is(.compress-guide__steps, .qr-guide-grid) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--public-gap-md);
+}
+
+.guide-detail-page .guide-shell :is(.compress-guide__step, .qr-guide-card--wide) {
+    grid-column: auto;
+}
+
+.guide-detail-page .guide-shell :is(.info-box, .warning-box, .tip-box, .compress-guide__notice, .qr-guide-note) {
+    padding: 16px 18px;
+    border: 1px solid rgba(14, 124, 123, .24);
+    border-left: 4px solid var(--brand-primary-strong);
+    border-radius: var(--public-control-radius);
+    color: var(--brand-ink);
+    background: var(--brand-teal-soft);
+}
+
+.guide-detail-page .guide-shell :is(table, pre, code) {
+    max-width: 100%;
+}
+
+.guide-detail-page .guide-shell table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.guide-catalog-grid .guide-catalog-card {
+    flex-direction: column;
+    padding: var(--public-card-padding);
+    border: 1px solid var(--brand-line);
+    border-radius: var(--public-radius);
+    background: var(--brand-surface);
+    box-shadow: var(--shadow-soft);
+}
+
+.guide-catalog-card p {
+    color: var(--brand-muted);
+    line-height: 1.75;
+}
+
+@media (max-width: 1199px) {
+    .landing-page .balanced-seven-grid > *,
+    .tools-index-page .balanced-seven-grid > *,
+    .guide-index-page .balanced-seven-grid > * {
+        flex-basis: calc((100% - var(--public-gap-md)) / 2);
+        width: calc((100% - var(--public-gap-md)) / 2);
+    }
+}
+
+@media (max-width: 640px) {
+    .landing-page .balanced-seven-grid,
+    .tools-index-page .balanced-seven-grid,
+    .guide-index-page .balanced-seven-grid {
+        gap: var(--public-gap-sm);
+    }
+
+    .landing-page .balanced-seven-grid > *,
+    .tools-index-page .balanced-seven-grid > *,
+    .guide-index-page .balanced-seven-grid > * {
+        flex-basis: 100%;
+        width: 100%;
+    }
+
+    .landing-page.tool-page .container,
+    .landing-page.tool-page .compress-shell,
+    .landing-page.tool-page .qr-shell,
+    .guide-index-page .guide-shell,
+    .guide-detail-page .guide-shell {
+        width: min(calc(100% - 24px), var(--public-shell));
+    }
+
+    .landing-page.tool-page .tool-flow {
+        padding: 22px 18px;
+    }
+
+    .landing-page.tool-page .tool-step-list > li {
+        grid-template-columns: 40px minmax(0, 1fr);
+        column-gap: 14px;
+    }
+
+    .landing-page.tool-page .tool-step-list > li::before {
+        width: 40px;
+        height: 40px;
+    }
+
+    .landing-page.tool-page .tool-step-list > li:not(:last-child)::after {
+        top: 40px;
+        left: 19px;
+    }
+}

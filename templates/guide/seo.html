@@ -23,16 +23,20 @@
         a { color: var(--brand-primary-strong); text-decoration: none; }
         a:hover { text-decoration: underline; }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
-<body class="landing-page">
+<body class="landing-page guide-detail-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <div class="page-with-affiliate-rail">
+    <div class="page-with-affiliate-rail guide-shell">
     <div class="page-with-affiliate-rail__content">
-    <div class="container">
-        <h1>🔍 Web/SEOユーティリティガイド</h1>
+    <div class="container guide-content">
+        <header class="guide-hero">
+        <p class="guide-hero__kicker">SEO / URL Guide</p>
+        <h1>SEO/URL確認ガイド</h1>
         <p><strong>できること:</strong> OGP画像生成、PageSpeedチェックリスト、メタタグ検査、sitemap.xml/robots.txt生成。OGP・チェックリスト・sitemap/robotsはブラウザ内完結。メタタグ検査はURL入力でHTML取得。URLクロール機能のみ、入力したURLをサーバー経由でアクセスしリンク一覧を返します。</p>
         <p><strong>想定ユーザー:</strong> Webマスター、デザイナー、マーケター、開発者など、OGP・SEO・サイト構造の確認・生成が必要な方。</p>
+        </header>
 
         <h2>このツールで解決できる課題</h2>
         <ul>

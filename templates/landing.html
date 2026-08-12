@@ -4,6 +4,7 @@
     {% set page_title = 'しごとの小さな面倒を、さっと片づける。 | しごと道具箱' %}
     {% set page_description = 'PDF、CSV、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。' %}
     {% include 'includes/head_meta.html' %}
+    {% include 'includes/public_system_styles.html' %}
 </head>
 <body class="landing-page">
     {% from 'includes/tool_icons.html' import tool_icon %}
@@ -36,7 +37,7 @@
             </div>
             <aside class="hero-v2__panel hero-tool-panel" aria-label="{{ hero_tools|length }}つの道具">
                 <div class="hero-v2__panel-header">{{ hero_tools|length }}つの道具</div>
-                <div class="hero-tool-grid" role="list">
+                <div class="hero-tool-grid balanced-seven-grid" role="list">
                     {% for product in hero_tools %}
                     <a class="hero-tool-card hero-tool-card--{{ product.id }}" href="{{ product.path }}" role="listitem">
                         <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}" aria-hidden="true">{{ tool_icon(product.id, 18) }}</span>
@@ -56,7 +57,7 @@
             </div>
             <div class="landing-tools-zone__body">
                 <div class="landing-tools-zone__main">
-                    <div class="landing-tool-grid">
+                    <div class="landing-tool-grid balanced-seven-grid">
                         {% for product in public_products|default(products) %}
                         <article class="tool-card-v2">
                             <div class="tool-card-v2__meta">

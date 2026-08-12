@@ -281,6 +281,7 @@
             }
         }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
 <body class="landing-page tool-page tool-page--image-cleanup">
     {% from 'includes/tool_icons.html' import tool_icon %}
@@ -294,6 +295,7 @@
             <span class="icon-tile icon-tile--lg icon-tile--teal" aria-hidden="true">{{ tool_icon('image-cleanup', 28) }}</span>
             <h1 data-reveal>画像を見やすくする</h1>
             <p data-reveal data-reveal-delay="50">余白、背景、比率、枠まわりを整えて、資料や添付画像に使いやすい見た目にします。</p>
+            <p class="tool-processing-note">画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。</p>
         </div>
         {% set tool_intro_what = '透明部分の白背景化、余白調整、サイズや比率を揃える作業をまとめて行えます。' %}
         {% set tool_intro_steps = ['画像を選ぶ', '整え方を選ぶ', '仕上がりを確認する', '画像を書き出す'] %}

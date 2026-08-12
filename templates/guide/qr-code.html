@@ -55,14 +55,15 @@
         @media (max-width: 700px) { .qr-guide-grid { grid-template-columns: 1fr; } .qr-guide-card--wide { grid-column: auto; } }
         @media (max-width: 390px) { .qr-guide-shell { width: min(100% - 16px, 680px); padding-top: 28px; } .qr-guide-card { padding: 20px 16px; } }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
-<body class="landing-page qr-guide-page">
+<body class="landing-page guide-detail-page qr-guide-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <main class="qr-guide-shell page-with-affiliate-rail">
+    <main class="qr-guide-shell guide-shell page-with-affiliate-rail">
         <div class="page-with-affiliate-rail__content">
-        <header class="qr-guide-hero">
-            <p class="qr-guide-hero__kicker">QR code guide</p>
+        <header class="qr-guide-hero guide-hero">
+            <p class="qr-guide-hero__kicker guide-hero__kicker">QR Code Guide</p>
             <h1>QRコード作成の使い方</h1>
             <p>5種類の入力からQRコードを作成し、PNGまたはSVGで保存するまでの手順と注意点をまとめます。</p>
             <p class="qr-guide-actions"><a class="btn btn-primary" href="/tools/qr-code">QRコードを作る</a></p>
