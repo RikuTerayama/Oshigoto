@@ -541,14 +541,14 @@
             {% endwith %}
             {% set affiliate_a8_rendered = true %}
         </section>
-        <div class="tool-kb-anchor-link" style="text-align: center; margin: 28px 0 16px 0;"><a href="#about-tool" style="color: #4FA79C;">使い方・FAQを読む ↓</a></div>
+        {% include 'includes/tool_kb_cta.html' %}
         {% include 'includes/tool_content_blocks.html' %}
     </div>
 
-    {% include 'includes/related_tools.html' %}
-    {% with selected_a8_creative=secondary_a8_creative, a8_slot_placement='content-lower-a8' %}
-        {% include 'includes/a8_creative_slot.html' %}
+    {% with inline_affiliate_provider='a8' %}
+        {% include 'includes/affiliate_inline_secondary.html' %}
     {% endwith %}
+    {% include 'includes/related_tools.html' %}
     {% include 'includes/footer.html' %}
     
     <script src="{{ url_for('static', filename='vendor/jszip/3.10.1/jszip.min.js') }}"></script>

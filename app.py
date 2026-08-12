@@ -941,6 +941,7 @@ def inject_env_vars():
         return {
             'ADSENSE_ENABLED': os.getenv('ADSENSE_ENABLED', 'false').lower() == 'true',
             'app_version': app_version,
+            'public_ui_asset_version': '20260812-final-consistency',
             'products': public_products,
             'products_catalog': products_catalog,
             'nav_sections': nav_sections,
@@ -1006,6 +1007,7 @@ def inject_env_vars():
         return {
             'ADSENSE_ENABLED': False,
             'app_version': '1.0.0',
+            'public_ui_asset_version': '20260812-final-consistency',
             'products': [],
             'products_catalog': [],
             'nav_sections': get_nav_sections_fallback(),

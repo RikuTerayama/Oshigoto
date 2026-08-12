@@ -213,16 +213,6 @@
     background: transparent;
 }
 
-.landing-page.tool-page .tool-step-list > li:not(:last-child)::after {
-    content: "";
-    position: absolute;
-    top: 48px;
-    bottom: 0;
-    left: 23px;
-    width: 1px;
-    background: var(--brand-line);
-}
-
 .landing-page.tool-page .tool-step-list > li::before {
     counter-increment: public-tool-step;
     content: counter(public-tool-step);
@@ -288,6 +278,32 @@
 .guide-index-page :is(button, a, input):focus-visible {
     outline: 3px solid rgba(14, 124, 123, .35);
     outline-offset: 3px;
+}
+
+.landing-page.tool-page .tool-kb-anchor-link {
+    display: flex;
+    justify-content: center;
+    margin: 28px 0 16px;
+}
+
+.landing-page.tool-page .tool-kb-anchor-link > a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    border: 1px solid var(--brand-primary-strong);
+    border-radius: var(--public-control-radius);
+    color: var(--brand-primary-strong);
+    background: var(--brand-paper);
+    font-weight: 700;
+    line-height: 1.45;
+    text-align: center;
+    text-decoration: none;
+}
+
+.landing-page.tool-page .tool-kb-anchor-link > a:hover {
+    background: var(--brand-teal-soft);
 }
 
 /* Canonical guide system. */
@@ -405,6 +421,20 @@
     box-shadow: none;
 }
 
+.landing-page :is(.amazon-single-placement, .landing-monetization-band__a8, .tools-monetization-band__a8),
+.guide-detail-page .amazon-single-placement {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.affiliate-spotlight__header,
+.affiliate-spotlight__header > * {
+    justify-content: center !important;
+    text-align: center !important;
+}
+
 .landing-page .amazon-single-card,
 .guide-detail-page .amazon-single-card,
 .landing-page .amazon-single-card :is(.amazon-single-card__body, .affiliate-disclosure),
@@ -520,28 +550,6 @@
     }
 }
 
-@media (min-width: 1240px) {
-    .landing-page.tool-page:is(.tool-page--image-compress, .qr-page) .tool-intro-layout {
-        position: relative;
-        display: block;
-        min-height: 0;
-    }
-
-    .landing-page.tool-page:is(.tool-page--image-compress, .qr-page) .tool-intro-layout__content {
-        width: calc(100% - 356px);
-    }
-
-    .landing-page.tool-page:is(.tool-page--image-compress, .qr-page) .tool-intro-layout > .global-affiliate-rail {
-        position: absolute;
-        top: 0;
-        right: 0;
-    }
-
-    .landing-page.tool-page:is(.tool-page--image-compress, .qr-page) .tool-flow {
-        margin-inline: 0;
-    }
-}
-
 @media (max-width: 640px) {
     :root {
         --public-section-gap: clamp(28px, 8vw, 36px);
@@ -581,8 +589,4 @@
         height: 40px;
     }
 
-    .landing-page.tool-page .tool-step-list > li:not(:last-child)::after {
-        top: 40px;
-        left: 19px;
-    }
 }

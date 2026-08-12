@@ -5595,8 +5595,8 @@ body {
 .landing-page .affiliate-disclosure,
 .landing-page .affiliate-stack__head,
 .landing-page .affiliate-stack__head--a8 {
-    justify-content: flex-start !important;
-    text-align: left !important;
+    justify-content: center !important;
+    text-align: center !important;
     margin-left: auto !important;
     margin-right: auto !important;
 }
@@ -9353,9 +9353,10 @@ body {
 
 .landing-page .landing-monetization-band__a8 .affiliate-cards-section--lower-a8 {
     margin: 0 auto !important;
-    padding-block: 30px !important;
-    border: 1px solid rgba(120, 104, 76, 0.16);
-    background: var(--surface-paper) !important;
+    padding: 0 !important;
+    border: 0;
+    background: transparent !important;
+    box-shadow: none;
 }
 
 @media (min-width: 1180px) {

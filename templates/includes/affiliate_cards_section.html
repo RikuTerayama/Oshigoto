@@ -38,6 +38,7 @@
     data-affiliate-placement="{{ affiliate_section_placement }}"
     data-affiliate-category="{{ affiliate_section_category }}"
     data-affiliate-cta="{{ affiliate_section_cta }}"
+    {% if has_a8_creative and not has_amazon_items %}hidden data-a8-pending-container{% endif %}
 >
     {% if affiliate_section_heading or affiliate_section_lead %}
     <div class="affiliate-spotlight__header">

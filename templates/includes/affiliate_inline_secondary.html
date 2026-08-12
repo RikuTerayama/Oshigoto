@@ -8,7 +8,7 @@
     </div>
 </aside>
 {% elif inline_affiliate_provider|default('amazon') == 'a8' and secondary_a8_creative|default(none) and a8_can_render_placement(secondary_a8_creative.placement) %}
-<aside class="inline-affiliate-break inline-affiliate-break--a8" aria-label="関連サービス">
+<aside class="inline-affiliate-break inline-affiliate-break--a8" aria-label="関連サービス" hidden data-a8-pending-container>
     {% with selected_a8_creative=secondary_a8_creative, affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--lower-a8', affiliate_section_tier='context-a8', affiliate_section_placement=secondary_a8_creative.placement, affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_a8_label='PR' %}
         {% include 'includes/affiliate_cards_section.html' %}
     {% endwith %}

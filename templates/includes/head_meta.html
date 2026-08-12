@@ -80,13 +80,13 @@
    system-font stack (Hiragino Sans / Yu Gothic) defined in common.css -
    removes an external network request entirely. #}
 {# Common Design System CSS #}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common.css', v=public_ui_asset_version|default('1')) }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/scroll-reveal.css') }}">
 {# Scroll Reveal JS #}
 <script src="{{ url_for('static', filename='js/scroll-reveal.js') }}" defer></script>
-{% set affiliate_should_load_widgets = AFFILIATE_ENABLED and AFFILIATE_BANNERS_ENABLED and (affiliate_footer_slot_id or affiliate_page_type in ('landing', 'blog_index', 'case_index')) %}
+{% set affiliate_should_load_widgets = AFFILIATE_ENABLED and AFFILIATE_BANNERS_ENABLED and (affiliate_footer_slot_id or selected_a8_creative|default(none) or secondary_a8_creative|default(none) or landing_secondary_a8_creative|default(none)) %}
 {% if affiliate_should_load_widgets %}
-<script src="{{ url_for('static', filename='js/affiliate-widgets.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/affiliate-widgets.js', v=public_ui_asset_version|default('1')) }}" defer></script>
 {% endif %}
 {% if page_include_structured_data|default(true) %}
 {# Structured data: Organization, WebSite, BreadcrumbList, and page-specific schema. #}
