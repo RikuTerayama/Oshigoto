@@ -39,6 +39,7 @@
         <p><strong>想定ユーザー:</strong> 名簿や集計データなどのCSV/Excelを、文字コード変換・形式変換・整形したい方。</p>
         </header>
 
+        <section class="guide-section-card">
         <h2>このツールで解決できる課題</h2>
         <ul>
             <li>Shift-JISのCSVをUTF-8に変換したい</li>
@@ -48,7 +49,9 @@
             <li>必要な列だけ抽出したり並べ替えたりしたい</li>
             <li>大きなCSVをN行ごとに分割したい</li>
         </ul>
+        </section>
 
+        <section class="guide-section-card">
         <h2>主要機能</h2>
         <ul>
             <li><strong>文字コード変換</strong>: 入力（UTF-8/Shift-JIS）・出力（UTF-8 BOMあり/なし、Shift-JIS）を選択可能</li>
@@ -58,7 +61,9 @@
             <li><strong>重複削除</strong>: 指定したキー列で重複行を削除（先頭行を残す）</li>
             <li><strong>N行ごと分割</strong>: 指定行数ごとに複数CSVに分割（ZIPで一括DL）</li>
         </ul>
+        </section>
 
+        <section class="guide-section-card">
         <h2>使い方の流れ（機能別）</h2>
 
             <div class="step-box guide-section-card">
@@ -99,7 +104,9 @@
                 <li>「実行」で複数ファイルがZIPでダウンロード</li>
             </ol>
         </div>
+        </section>
 
+        <section class="guide-section-card">
         <h2>入出力仕様</h2>
         <h3>対応入力形式</h3>
         <ul>
@@ -123,7 +130,9 @@
             <strong>⚠️ 文字コードについて</strong>
             <p>Shift-JISには機種依存文字や対応外文字があり、変換時に文字化けすることがあります。変換後はプレビューやダウンロード結果で内容を確認してください。</p>
         </div>
+        </section>
 
+        <section class="guide-section-card">
         <h2 id="data-handling">データの取り扱い</h2>
         <p>当ツールでは、CSV・Excelのアップロード・サーバー保存・外部送信は行いません。</p>
         <ul>
@@ -131,7 +140,9 @@
             <li><strong>サーバー保存・ログ</strong>: なし。ファイル内容はサーバーに送信されません。</li>
         </ul>
         <p>詳細は<a href="/privacy">プライバシーポリシー</a>をご確認ください。</p>
+        </section>
 
+        <section class="guide-section-card">
         <h2 id="faq">よくある質問（FAQ）</h2>
         {% set faq_list = [
             {"q": "ファイルはサーバーに送信されますか？", "a": "いいえ。すべてブラウザ内で処理され、CSV・Excelの内容はサーバーに送信されません。"},
@@ -149,7 +160,9 @@
             </div>
             {% endfor %}
         </div>
+        </section>
 
+        <section class="guide-section-card">
         <h2>トラブルシューティング</h2>
         <ul>
             <li><strong>「CSVの解析に失敗しました」</strong>: 入力文字コードが実際のファイルと一致しているか確認してください。UTF-8で文字化けする場合はShift-JISを選んで再試行。</li>
@@ -165,8 +178,13 @@
                 <li>文字化けする場合は、入力文字コードを「Shift-JIS」に変えて再度読み込んでください。</li>
             </ul>
         </div>
+        </section>
 
         {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-guide-csv-title' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+
+        {% with inline_affiliate_provider='a8' %}
             {% include 'includes/affiliate_inline_secondary.html' %}
         {% endwith %}
 
@@ -174,11 +192,7 @@
         {% set tool_name = 'CSV/Excelユーティリティ' %}
         {% include 'guide/_partials/guide_related_links.html' %}
 
-        {% with inline_affiliate_provider='a8' %}
-            {% include 'includes/affiliate_inline_secondary.html' %}
-        {% endwith %}
-
-        <div class="nav-links">
+        <div class="nav-links guide-section-card">
             <a href="/tools/csv" class="nav-link">← CSV/Excelユーティリティに戻る</a>
             <a href="/tools" class="nav-link">← ツール一覧へ</a>
             <a href="/guide/seo" class="nav-link">次のガイド: Web/SEO →</a>

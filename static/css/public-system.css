@@ -344,6 +344,11 @@
     text-align: left;
 }
 
+.guide-detail-page .guide-content {
+    font-size: 1rem;
+    line-height: 1.85;
+}
+
 .guide-detail-page .guide-section-card > :first-child {
     margin-top: 0;
 }
@@ -387,14 +392,18 @@
 }
 
 .guide-detail-page .guide-shell h2 {
-    margin: 0 0 14px;
+    margin: 0 0 16px;
     color: var(--brand-ink);
-    font-size: clamp(1.35rem, 3vw, 1.7rem);
+    font-size: clamp(1.4rem, 2.2vw, 1.6rem);
+    font-weight: 700;
     line-height: 1.4;
 }
 
 .guide-detail-page .guide-shell h3 {
+    margin: 22px 0 8px;
     color: var(--brand-ink);
+    font-size: clamp(1rem, 1.6vw, 1.125rem);
+    font-weight: 700;
     line-height: 1.5;
 }
 
@@ -402,6 +411,20 @@
     color: var(--brand-muted);
     line-height: 1.85;
     overflow-wrap: anywhere;
+}
+
+.guide-detail-page .guide-section-card :is(ul, ol) {
+    margin-block: 0;
+    padding-left: 1.5rem;
+}
+
+.guide-detail-page .guide-section-card li + li {
+    margin-top: 8px;
+}
+
+.guide-detail-page .guide-section-card > h3:first-child,
+.guide-detail-page .guide-section-card > h2 + h3 {
+    margin-top: 0;
 }
 
 .guide-detail-page .guide-shell :is(.card, .info-card, .step-box, .compress-guide__step, .qr-guide-card, details) {
@@ -427,6 +450,44 @@
     border: 0;
     background: transparent;
     box-shadow: none;
+}
+
+.guide-detail-page .inline-affiliate-break {
+    width: min(100%, var(--public-reading));
+    margin: 20px auto;
+    padding: 0;
+    border: 0;
+}
+
+.guide-detail-page .inline-affiliate-break .amazon-single-placement,
+.guide-detail-page .inline-affiliate-break .affiliate-cards-section,
+.guide-detail-page .inline-affiliate-break .affiliate-cards-section__inner {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.guide-detail-page .inline-affiliate-break .affiliate-cards-section {
+    margin: 0 !important;
+}
+
+.guide-detail-page .inline-affiliate-break--a8 .affiliate-spotlight__header {
+    margin-bottom: 8px !important;
+}
+
+.guide-detail-page .inline-affiliate-break--a8 .a8-creative-slot {
+    margin: 10px auto !important;
+}
+
+.guide-detail-page .affiliate-spotlight__header h2 {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 1.05rem;
+    line-height: 1.45;
 }
 
 .affiliate-spotlight__header,
@@ -469,31 +530,6 @@
     transform: none;
 }
 
-.guide-detail-page .guide-content > :is(h2, h2 + ul, h2 + ol, h2 + p, h2 + .faq-list) {
-    position: relative;
-    width: min(100%, var(--public-reading));
-    margin-inline: auto;
-    padding-inline: var(--public-card-padding);
-    border-inline: 1px solid var(--brand-line);
-    background: var(--brand-surface);
-}
-
-.guide-detail-page .guide-content > h2 {
-    margin-top: var(--public-gap-md);
-    margin-bottom: 0;
-    padding-top: var(--public-card-padding);
-    border-top: 1px solid var(--brand-line);
-    border-radius: var(--public-radius) var(--public-radius) 0 0;
-}
-
-.guide-detail-page .guide-content > :is(h2 + ul, h2 + ol, h2 + p, h2 + .faq-list) {
-    margin-top: 0;
-    margin-bottom: var(--public-gap-md);
-    padding-bottom: var(--public-card-padding);
-    border-bottom: 1px solid var(--brand-line);
-    border-radius: 0 0 var(--public-radius) var(--public-radius);
-}
-
 .guide-detail-page .guide-shell :is(.step-box, .compress-guide__step, .qr-guide-card) {
     padding: var(--public-card-padding);
 }
@@ -525,6 +561,113 @@
     display: block;
     overflow-x: auto;
     white-space: nowrap;
+}
+
+.guide-detail-page .guide-related-links {
+    margin-top: var(--public-gap-md);
+    margin-bottom: var(--public-gap-md);
+}
+
+.guide-detail-page .guide-related-links ul {
+    margin: 0;
+    padding-left: 1.45rem;
+}
+
+.guide-detail-page .guide-related-links li:last-child {
+    margin-bottom: 0;
+}
+
+.guide-detail-page .global-affiliate-rail__inner {
+    gap: 16px;
+}
+
+.guide-detail-page .global-affiliate-rail__amazon { order: 1; }
+.guide-detail-page .global-affiliate-rail__a8 { order: 2; }
+.guide-detail-page .global-affiliate-rail__publisher { order: 3; }
+
+.guide-detail-page .global-affiliate-rail .amazon-single-card {
+    grid-template-columns: 44px minmax(0, 1fr);
+    align-items: start;
+    gap: 10px;
+    padding: 16px;
+}
+
+.guide-detail-page .global-affiliate-rail .amazon-single-card__icon {
+    width: 44px;
+    height: 44px;
+}
+
+.guide-detail-page .global-affiliate-rail .amazon-single-card__icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.guide-detail-page .global-affiliate-rail .amazon-single-card__title {
+    margin: 4px 0 0;
+    padding: 0;
+    border: 0;
+    font-size: 1.08rem;
+    line-height: 1.4;
+}
+
+.guide-detail-page .global-affiliate-rail .amazon-single-card__lead {
+    margin-top: 6px;
+    font-size: .86rem;
+    line-height: 1.55;
+}
+
+.guide-detail-page .global-affiliate-rail .amazon-single-card__cta {
+    min-height: 40px;
+    margin-top: 12px;
+    padding-block: 8px;
+}
+
+.guide-detail-page .global-affiliate-rail .affiliate-disclosure {
+    margin-top: 8px;
+    font-size: .7rem;
+    line-height: 1.5;
+}
+
+.guide-detail-page .global-affiliate-rail__publisher {
+    gap: 7px;
+    padding: 16px;
+}
+
+.guide-detail-page .global-affiliate-rail__a8 .affiliate-cards-section {
+    margin: 0 !important;
+}
+
+.guide-detail-page .global-affiliate-rail__a8 .affiliate-spotlight__header {
+    margin-bottom: 8px !important;
+}
+
+.guide-detail-page .global-affiliate-rail__a8 .affiliate-stack__row--a8 {
+    gap: 0;
+}
+
+.guide-detail-page .global-affiliate-rail__a8 .a8-creative-slot {
+    width: 262px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.guide-detail-page .global-affiliate-rail__a8 .a8-creative-slot__creative {
+    width: 260px;
+}
+
+.guide-detail-page .global-affiliate-rail__a8 .a8-creative-slot__creative > a > img {
+    width: 260px;
+    height: auto;
+}
+
+@media (min-width: 1280px) and (min-height: 800px) {
+    .guide-detail-page .page-with-affiliate-rail > .global-affiliate-rail .global-affiliate-rail__inner {
+        max-height: none;
+        padding-right: 0;
+        overflow: visible;
+        overscroll-behavior: auto;
+        scrollbar-gutter: auto;
+    }
 }
 
 .guide-catalog-grid .guide-catalog-card {
@@ -577,6 +720,26 @@
 
     .landing-page.tool-page .tool-flow {
         padding: 22px 18px;
+    }
+
+    .guide-detail-page .guide-section-card {
+        padding: 18px 16px;
+    }
+
+    .guide-detail-page .guide-content {
+        font-size: .96rem;
+    }
+
+    .guide-detail-page .guide-shell h2 {
+        font-size: 1.35rem;
+    }
+
+    .guide-detail-page .inline-affiliate-break {
+        margin-block: 18px;
+    }
+
+    .guide-detail-page .global-affiliate-rail .amazon-single-card {
+        grid-template-columns: 1fr;
     }
 
     .landing-page.tool-page .tool-step-list > li {

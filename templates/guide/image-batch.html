@@ -134,6 +134,7 @@
         <p><strong>想定ユーザー:</strong> ECサイト・Webデザイナー、SNS運用、マーケターなど、画像の一括変換・複数サイズ出力が必要な方。</p>
         </header>
 
+        <section class="guide-section-card">
         <h2>このツールで解決できる課題</h2>
         <ul>
             <li>複数の画像ファイルを一度に別の形式に変換したい</li>
@@ -142,7 +143,9 @@
             <li>画像ファイルの容量を削減したい</li>
             <li>画像処理ソフトをインストールせずに作業したい</li>
         </ul>
+        </section>
 
+        <section class="guide-section-card">
         <h2>主要機能</h2>
         <ul>
             <li><strong>形式変換</strong>: JPEG、PNG、WebPへ変換。対応ブラウザでは静止GIF、BMP、AVIFも入力できます</li>
@@ -152,7 +155,9 @@
             <li><strong>プリセット機能</strong>: SNS用、Web用などのプリセット</li>
             <li><strong>ZIP一括ダウンロード</strong>: 複数ファイルをZIPでまとめてダウンロード</li>
         </ul>
+        </section>
 
+        <section class="guide-section-card">
         <h2>使い方の流れ（4ステップ）</h2>
 
             <div class="step-box guide-section-card">
@@ -196,7 +201,9 @@
                 <li>個別ダウンロードも可能です</li>
             </ul>
         </div>
+        </section>
 
+        <section class="guide-section-card">
         <h2>入出力仕様</h2>
 
         <h3>正式対応する入力形式</h3>
@@ -248,7 +255,9 @@
             <strong>⚠️ 注意事項</strong>
             <p>非常に大きな画像や大量ファイルを一度に処理すると、ブラウザのメモリ不足で失敗することがあります。ファイル数を減らすか、画像サイズを事前に縮小してからお試しください。</p>
         </div>
+        </section>
 
+        <section class="guide-section-card">
         <h2 id="data-handling">データの取り扱い</h2>
         <p>当ツールでは、画像ファイルのアップロード・サーバー保存・外部送信は行いません。</p>
         <ul>
@@ -257,7 +266,9 @@
             <li><strong>ログ</strong>: 当ツール単体では、画像内容やファイル名をサーバーに送る処理はありません。</li>
         </ul>
         <p>詳細は<a href="/privacy">プライバシーポリシー</a>もご確認ください。</p>
+        </section>
 
+        <section class="guide-section-card">
         <h2 id="faq">よくある質問（FAQ）</h2>
         {% set faq_list = [
             {"q": "画像一括変換ツールでサーバーに画像がアップロードされますか？", "a": "いいえ。すべてブラウザ内で処理され、画像データはサーバーに送信されません。処理は static/js/image-batch-convert.js およびブラウザの Canvas API で完結しています。"},
@@ -277,7 +288,9 @@
             </div>
             {% endfor %}
         </div>
+        </section>
 
+        <section class="guide-section-card">
         <h2>トラブルシューティング</h2>
         <ul>
             <li><strong>画像サイズの上限エラー</strong>: 4,000万画素または長辺16,384pxを超えています。読み込み前に元画像を縮小してください。</li>
@@ -295,8 +308,13 @@
                 <li>大量ファイルは一度に50枚以内に分けて処理することをおすすめします。</li>
             </ul>
         </div>
+        </section>
 
         {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-guide-image-batch-title' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+
+        {% with inline_affiliate_provider='a8' %}
             {% include 'includes/affiliate_inline_secondary.html' %}
         {% endwith %}
 
@@ -304,11 +322,7 @@
         {% set tool_name = '画像一括変換ツール' %}
         {% include 'guide/_partials/guide_related_links.html' %}
 
-        {% with inline_affiliate_provider='a8' %}
-            {% include 'includes/affiliate_inline_secondary.html' %}
-        {% endwith %}
-
-        <div class="nav-links">
+        <div class="nav-links guide-section-card">
             <a href="/tools/image-batch" class="nav-link">← 画像一括変換ツールに戻る</a>
             <a href="/tools" class="nav-link">← ツール一覧へ</a>
             <a href="/guide/image-cleanup" class="nav-link">次のガイド: 画像ユーティリティ →</a>
