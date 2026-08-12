@@ -389,6 +389,7 @@
         {% set tool_intro_steps = ['画像をまとめて選ぶ', '変換形式を選ぶ', 'サイズや品質を指定する', '一括変換してダウンロード'] %}
         {% set tool_intro_notice = 'BMP・静止GIF・AVIFの入力対応とAVIF出力はブラウザによって異なります。選択後に実データを確認します。' %}
         <section class="tool-flow" aria-labelledby="image-batch-flow-heading">
+            <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="image-batch-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
                 <li><strong>画像をまとめて選ぶ</strong><span>JPEG、PNG、WebPを最大50ファイルまで選べます。追加形式はブラウザ対応時のみ使えます。</span></li>
@@ -405,7 +406,7 @@
         <div class="tool-workspace">
         <div class="tool-section tool-main-panel" data-reveal data-reveal-delay="150">
             <h3>1. 画像をまとめて選ぶ</h3>
-            <div id="dropzone" class="file-dropzone" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 60px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); transition: all 0.3s; cursor: pointer;">
+            <div id="dropzone" class="file-dropzone" data-file-dropzone role="button" tabindex="0" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 60px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); transition: all 0.3s; cursor: pointer;">
                 <div style="font-size: 3em; margin-bottom: 20px;">📁</div>
                 <p style="color: var(--brand-ink); font-size: 1.1em; margin: 0 0 10px 0; font-weight: 500;">
                     ファイルをドラッグ＆ドロップ

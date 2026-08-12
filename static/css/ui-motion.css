@@ -168,7 +168,7 @@
     left: 13px;
     height: 2px;
     border-radius: 2px;
-    background: var(--brand-primary, #0e7c7b);
+    background: var(--nav-active-color, var(--brand-primary, #0e7c7b));
     content: "";
     transform: scaleX(0);
     transform-origin: left center;
@@ -184,6 +184,25 @@
 .site-nav__dropdown-link--active {
     color: var(--brand-primary-strong, #6e4229);
     background: rgba(14, 124, 123, .07);
+}
+
+@media (max-width: 767px) {
+    .site-nav__link::after {
+        top: 10px;
+        right: auto;
+        bottom: 10px;
+        left: 2px;
+        width: 2px;
+        height: auto;
+        transform: scaleY(0);
+        transform-origin: center top;
+    }
+
+    .site-nav__link:hover::after,
+    .site-nav__link:focus-visible::after,
+    .site-nav__link--active::after {
+        transform: scaleY(1);
+    }
 }
 
 .a8-creative-slot,

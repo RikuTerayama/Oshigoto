@@ -35,7 +35,7 @@
             <div class="tools-catalog-shell__main">
                 <div class="tools-catalog-grid balanced-seven-grid" id="products-grid" data-reveal-stagger>
                     {% for product in products %}
-                    <article class="product-card tool-catalog-card"
+                    <article class="product-card tool-catalog-card tool-accent--{{ product.id }}"
                              data-name="{{ product.name }}"
                              data-description="{{ product.description }}"
                              data-tags="{{ (product.tags or [])|join(',') }}"

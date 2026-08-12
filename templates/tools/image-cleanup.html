@@ -301,6 +301,7 @@
         {% set tool_intro_steps = ['画像を選ぶ', '整え方を選ぶ', '仕上がりを確認する', '画像を書き出す'] %}
         {% set tool_intro_notice = '背景調整は画像の状態によって仕上がりが変わります。大切な画像は出力後に確認してください。' %}
         <section class="tool-flow" aria-labelledby="image-cleanup-flow-heading">
+            <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="image-cleanup-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
                 <li><strong>画像を選ぶ</strong><span>EC画像、資料画像、添付画像などを選びます。</span></li>
@@ -317,7 +318,7 @@
         <div class="tool-workspace">
         <div class="tool-section tool-main-panel">
             <h3>1. 画像を選ぶ</h3>
-            <div id="dropzone" class="file-dropzone" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 60px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); transition: all 0.3s; cursor: pointer;">
+            <div id="dropzone" class="file-dropzone" data-file-dropzone role="button" tabindex="0" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 60px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); transition: all 0.3s; cursor: pointer;">
                 <div style="font-size: 3em; margin-bottom: 20px;">📁</div>
                 <p style="color: var(--brand-ink); font-size: 1.1em; margin: 0 0 10px 0; font-weight: 500;">
                     ファイルをドラッグ＆ドロップ

@@ -16,7 +16,15 @@
     --public-radius: 14px;
     --public-control-radius: 10px;
     --public-font: "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --motion-fast: 160ms;
+    --focus-ring-color: rgba(14, 124, 123, .14);
+    --focus-ring-size: 3px;
+    --kicker-size: clamp(.7rem, .8vw, .75rem);
+    --kicker-spacing: .17em;
+    --nav-active-color: var(--brand-primary, #0e7c7b);
     --tool-accent: var(--brand-primary, #0e7c7b);
+    --tool-accent-soft: rgba(14, 124, 123, .08);
+    --tool-accent-line: rgba(14, 124, 123, .32);
 }
 
 .editorial-kicker,
@@ -31,10 +39,10 @@
 .qr-hero__kicker {
     margin: 0 0 10px;
     color: var(--brand-primary-strong, #6e4229);
-    font-size: clamp(.7rem, .8vw, .78rem);
+    font-size: var(--kicker-size);
     font-weight: 600;
-    letter-spacing: .17em;
-    line-height: 1.4;
+    letter-spacing: var(--kicker-spacing);
+    line-height: 1.2;
     text-transform: uppercase;
 }
 
@@ -48,13 +56,36 @@
     font-size: .68rem;
 }
 
-.landing-page.tool-page--pdf { --tool-accent: #8b5c43; }
-.landing-page.tool-page--csv { --tool-accent: #71856f; }
-.landing-page.tool-page--image-batch,
-.landing-page.tool-page--image-compress,
-.landing-page.tool-page--image-cleanup { --tool-accent: #557c82; }
-.landing-page.tool-page--qr { --tool-accent: #0b6e70; }
-.landing-page.tool-page--seo { --tool-accent: #52616d; }
+:is(.tool-page--pdf, .tool-accent--pdf) { --tool-accent: #8b5c43; --tool-accent-soft: rgba(139, 92, 67, .09); --tool-accent-line: rgba(139, 92, 67, .32); }
+:is(.tool-page--csv, .tool-accent--csv) { --tool-accent: #71856f; --tool-accent-soft: rgba(113, 133, 111, .1); --tool-accent-line: rgba(113, 133, 111, .32); }
+:is(.tool-page--image-batch, .tool-accent--image-batch) { --tool-accent: #667b86; --tool-accent-soft: rgba(102, 123, 134, .1); --tool-accent-line: rgba(102, 123, 134, .32); }
+:is(.tool-page--image-compress, .tool-accent--image-compress) { --tool-accent: #34817c; --tool-accent-soft: rgba(52, 129, 124, .09); --tool-accent-line: rgba(52, 129, 124, .32); }
+:is(.tool-page--image-cleanup, .tool-accent--image-cleanup) { --tool-accent: #6c7f76; --tool-accent-soft: rgba(108, 127, 118, .1); --tool-accent-line: rgba(108, 127, 118, .32); }
+:is(.tool-page--qr, .tool-accent--qr-code) { --tool-accent: #0b6e70; --tool-accent-soft: rgba(11, 110, 112, .09); --tool-accent-line: rgba(11, 110, 112, .32); }
+:is(.tool-page--seo, .tool-accent--seo) { --tool-accent: #52616d; --tool-accent-soft: rgba(82, 97, 109, .09); --tool-accent-line: rgba(82, 97, 109, .32); }
+
+:is(.hero-tool-card, .tool-card-v2, .tool-catalog-card)[class*="tool-accent--"] {
+    position: relative;
+    overflow: hidden;
+}
+
+:is(.hero-tool-card, .tool-card-v2, .tool-catalog-card)[class*="tool-accent--"]::before {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    left: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--tool-accent);
+    content: "";
+    opacity: .62;
+}
+
+:is(.hero-tool-card, .tool-card-v2, .tool-catalog-card)[class*="tool-accent--"] .icon-tile {
+    border-color: var(--tool-accent-line);
+    background: var(--tool-accent-soft);
+    color: var(--tool-accent);
+}
 
 .landing-page.tool-page :is(.page-header, .compress-hero, .qr-hero) {
     position: relative;
@@ -416,11 +447,63 @@
     background: var(--brand-primary-strong);
 }
 
-.landing-page.tool-page :is(button, a, input, select, textarea):focus-visible,
+.landing-page.tool-page :is(button, a):focus-visible,
 .guide-detail-page :is(button, a, input, select, textarea):focus-visible,
 .guide-index-page :is(button, a, input):focus-visible {
     outline: 3px solid rgba(14, 124, 123, .35);
     outline-offset: 3px;
+}
+
+/* Canonical form interaction: quiet teal feedback without changing layout. */
+:is(.landing-page.tool-page, .tools-index-page) :is(input, select, textarea) {
+    transition: border-color var(--motion-fast) ease, box-shadow var(--motion-fast) ease,
+                background-color var(--motion-fast) ease;
+}
+
+:is(.landing-page.tool-page, .tools-index-page) :is(input, select, textarea):focus,
+:is(.landing-page.tool-page, .tools-index-page) :is(input, select, textarea):focus-visible {
+    border-color: var(--brand-primary, #0e7c7b) !important;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 var(--focus-ring-size) var(--focus-ring-color) !important;
+}
+
+:is(.landing-page.tool-page, .tools-index-page) :is(input, select, textarea)[aria-invalid="true"] {
+    border-color: #9b2c2c !important;
+}
+
+:is(.landing-page.tool-page, .tools-index-page) :is(input, select, textarea)[aria-invalid="true"]:focus,
+:is(.landing-page.tool-page, .tools-index-page) :is(input, select, textarea)[aria-invalid="true"]:focus-visible {
+    border-color: #9b2c2c !important;
+    box-shadow: 0 0 0 var(--focus-ring-size) rgba(155, 44, 44, .14) !important;
+}
+
+.landing-page.tool-page [data-file-dropzone] {
+    border-color: var(--tool-accent-line) !important;
+    background: var(--brand-paper, #fffaf1) !important;
+    transition: border-color var(--motion-fast) ease, background-color var(--motion-fast) ease,
+                box-shadow var(--motion-fast) ease !important;
+}
+
+.landing-page.tool-page [data-file-dropzone]:hover {
+    border-color: var(--tool-accent) !important;
+}
+
+.landing-page.tool-page [data-file-dropzone]:focus-visible {
+    border-color: var(--tool-accent) !important;
+    outline: 2px solid transparent;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 var(--focus-ring-size) var(--focus-ring-color) !important;
+}
+
+.landing-page.tool-page [data-file-dropzone].is-dragging {
+    border-color: var(--tool-accent) !important;
+    background: var(--tool-accent-soft) !important;
+}
+
+.landing-page.tool-page [data-file-dropzone]:hover,
+.landing-page.tool-page [data-file-dropzone].is-dragging {
+    transform: none !important;
 }
 
 .landing-page.tool-page .tool-kb-anchor-link {

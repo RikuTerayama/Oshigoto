@@ -39,7 +39,7 @@
                 <div class="hero-v2__panel-header"><span class="editorial-kicker hero-v2__panel-kicker">TOOLS</span>{{ hero_tools|length }}つの道具</div>
                 <div class="hero-tool-grid balanced-seven-grid" role="list">
                     {% for product in hero_tools %}
-                    <a class="hero-tool-card hero-tool-card--{{ product.id }}" href="{{ product.path }}" role="listitem">
+                    <a class="hero-tool-card hero-tool-card--{{ product.id }} tool-accent--{{ product.id }}" href="{{ product.path }}" role="listitem">
                         <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}" aria-hidden="true">{{ tool_icon(product.id, 18) }}</span>
                         <span class="hero-tool-card__copy"><strong>{{ product.name }}</strong><em>{{ hero_tool_summaries.get(product.id, product.description) }}</em></span>
                     </a>
@@ -59,7 +59,7 @@
                 <div class="landing-tools-zone__main">
                     <div class="landing-tool-grid balanced-seven-grid">
                         {% for product in public_products|default(products) %}
-                        <article class="tool-card-v2">
+                        <article class="tool-card-v2 tool-accent--{{ product.id }}">
                             <div class="tool-card-v2__meta">
                                 <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} tool-card-v2__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-compress','qr-code','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
                                 <p class="tool-card-v2__eyebrow">{{ product.category|default('ツール') }}</p>

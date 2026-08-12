@@ -67,8 +67,32 @@
         });
     }
 
+    function prepareFileDropzones() {
+        document.querySelectorAll('[data-file-dropzone]').forEach(function(dropzone) {
+            var input = dropzone.querySelector('input[type="file"]');
+            if (!dropzone.hasAttribute('role')) dropzone.setAttribute('role', 'button');
+            if (!dropzone.hasAttribute('tabindex')) dropzone.setAttribute('tabindex', '0');
+
+            if (input && !dropzone.classList.contains('compress-dropzone')) {
+                dropzone.addEventListener('keydown', function(event) {
+                    if (event.key !== 'Enter' && event.key !== ' ') return;
+                    event.preventDefault();
+                    dropzone.click();
+                });
+            }
+
+            ['dragenter', 'dragover'].forEach(function(name) {
+                dropzone.addEventListener(name, function() { dropzone.classList.add('is-dragging'); });
+            });
+            ['dragleave', 'drop'].forEach(function(name) {
+                dropzone.addEventListener(name, function() { dropzone.classList.remove('is-dragging'); });
+            });
+        });
+    }
+
     function init() {
         markTextLinks();
+        prepareFileDropzones();
         syncCapability();
 
         document.addEventListener('pointermove', function(event) {

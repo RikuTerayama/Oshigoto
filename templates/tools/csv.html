@@ -35,6 +35,7 @@
         {% set tool_intro_steps = ['CSVまたはExcelを選ぶ', 'やりたい操作を選ぶ', 'プレビューで確認する', '結果をダウンロードする'] %}
         {% set tool_intro_notice = '文字コードや区切り文字が合わない場合は、プレビューで確認してから保存してください。' %}
         <section class="tool-flow" aria-labelledby="csv-flow-heading">
+            <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="csv-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
                 <li><strong>ファイルを選ぶ</strong><span>CSVまたはExcelをドラッグ＆ドロップします。</span></li>
@@ -52,7 +53,7 @@
         <div class="tool-section tool-main-panel">
             <h3>1. ファイルを選ぶ</h3>
             <p style="color: var(--brand-muted);">CSV または Excel ファイルをドラッグ＆ドロップ、または下のボタンで選択してください。（対応: .csv, .xlsx）</p>
-            <div id="dropzone" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 40px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); cursor: pointer;">
+            <div id="dropzone" data-file-dropzone role="button" tabindex="0" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 40px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); cursor: pointer;">
                 <div style="font-size: 2.5em; margin-bottom: 15px;">📁</div>
                 <p style="margin: 0; color: var(--brand-ink);">クリックまたはドロップでファイルを選択</p>
                 <input type="file" id="file-input" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" multiple style="display: none;">
