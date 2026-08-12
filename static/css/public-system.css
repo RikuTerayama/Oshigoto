@@ -16,6 +16,102 @@
     --public-radius: 14px;
     --public-control-radius: 10px;
     --public-font: "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --tool-accent: var(--brand-primary, #0e7c7b);
+}
+
+.editorial-kicker,
+.section-kicker,
+.landing-section__eyebrow,
+.landing-hero__eyebrow,
+.guide-hero__kicker,
+.related-content__eyebrow,
+.page-hero .eyebrow,
+.article-hero .eyebrow,
+.compress-hero__kicker,
+.qr-hero__kicker {
+    margin: 0 0 10px;
+    color: var(--brand-primary-strong, #6e4229);
+    font-size: clamp(.7rem, .8vw, .78rem);
+    font-weight: 600;
+    letter-spacing: .17em;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.tools-hero .editorial-kicker {
+    margin-top: 14px;
+}
+
+.hero-v2__panel-kicker {
+    display: block;
+    margin-bottom: 7px;
+    font-size: .68rem;
+}
+
+.landing-page.tool-page--pdf { --tool-accent: #8b5c43; }
+.landing-page.tool-page--csv { --tool-accent: #71856f; }
+.landing-page.tool-page--image-batch,
+.landing-page.tool-page--image-compress,
+.landing-page.tool-page--image-cleanup { --tool-accent: #557c82; }
+.landing-page.tool-page--qr { --tool-accent: #0b6e70; }
+.landing-page.tool-page--seo { --tool-accent: #52616d; }
+
+.landing-page.tool-page :is(.page-header, .compress-hero, .qr-hero) {
+    position: relative;
+    overflow: hidden;
+}
+
+.landing-page.tool-page :is(.page-header, .compress-hero, .qr-hero)::before {
+    position: absolute;
+    top: 0;
+    right: 12%;
+    left: 12%;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--tool-accent);
+    content: "";
+    opacity: .72;
+}
+
+.landing-page.tool-page :is(.page-header, .compress-hero, .qr-hero) :is(.eyebrow, .page-header__kicker, .compress-hero__kicker, .qr-hero__kicker) {
+    color: var(--tool-accent);
+}
+
+.site-footer__editorial {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 16px;
+    margin: 0 0 16px;
+}
+
+.site-footer__editorial-kicker {
+    color: rgba(255, 255, 255, .58);
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .17em;
+}
+
+.site-footer__editorial-line {
+    color: rgba(255, 255, 255, .9);
+    font-size: .92rem;
+    font-weight: 600;
+}
+
+@media (min-width: 768px) {
+    .site-nav__link {
+        border-color: transparent;
+        border-radius: 0;
+        background: transparent;
+    }
+
+    .site-nav__link:hover,
+    .site-nav__link:focus-visible,
+    .site-nav__link--active {
+        border-color: transparent;
+        background: transparent;
+        color: var(--brand-primary-strong, #6e4229);
+    }
 }
 
 /* Glossary rhythm and cards use the same public surface tokens as tools and guides. */

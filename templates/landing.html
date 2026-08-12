@@ -36,7 +36,7 @@
                 </div>
             </div>
             <aside class="hero-v2__panel hero-tool-panel" aria-label="{{ hero_tools|length }}つの道具">
-                <div class="hero-v2__panel-header">{{ hero_tools|length }}つの道具</div>
+                <div class="hero-v2__panel-header"><span class="editorial-kicker hero-v2__panel-kicker">TOOLS</span>{{ hero_tools|length }}つの道具</div>
                 <div class="hero-tool-grid balanced-seven-grid" role="list">
                     {% for product in hero_tools %}
                     <a class="hero-tool-card hero-tool-card--{{ product.id }}" href="{{ product.path }}" role="listitem">
