@@ -84,6 +84,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/scroll-reveal.css') }}">
 {# Scroll Reveal JS #}
 <script src="{{ url_for('static', filename='js/scroll-reveal.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/ui-polish.js', v=public_ui_asset_version|default('1')) }}" defer></script>
 {% set affiliate_should_load_widgets = AFFILIATE_ENABLED and AFFILIATE_BANNERS_ENABLED and (affiliate_footer_slot_id or selected_a8_creative|default(none) or secondary_a8_creative|default(none) or landing_secondary_a8_creative|default(none)) %}
 {% if affiliate_should_load_widgets %}
 <script src="{{ url_for('static', filename='js/affiliate-widgets.js', v=public_ui_asset_version|default('1')) }}" defer></script>

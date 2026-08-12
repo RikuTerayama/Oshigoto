@@ -1,0 +1,243 @@
+/* Quiet, shared interaction layer. Structural styling remains in public-system.css. */
+:root {
+    --ui-motion-fast: 180ms;
+    --ui-motion-link: 200ms;
+    --ui-motion-soft: 320ms;
+    --ui-motion-ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+.ui-cursor-halo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1300;
+    display: none;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border: 1px solid rgba(14, 124, 123, .52);
+    border-radius: 50%;
+    background: rgba(14, 124, 123, .045);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(var(--ui-cursor-x, -100px), var(--ui-cursor-y, -100px), 0) scale(1);
+    transition: width 210ms var(--ui-motion-ease), height 210ms var(--ui-motion-ease),
+                margin 210ms var(--ui-motion-ease), opacity 160ms ease,
+                border-color 210ms ease, background-color 210ms ease;
+    will-change: transform, width, height;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .ui-cursor-halo {
+        display: block;
+    }
+
+    .ui-cursor-halo.is-visible {
+        opacity: .58;
+    }
+
+    .ui-cursor-halo.is-interactive {
+        width: 42px;
+        height: 42px;
+        margin: -21px 0 0 -21px;
+        border-color: rgba(14, 124, 123, .68);
+        background: rgba(14, 124, 123, .075);
+    }
+
+    .ui-cursor-halo.is-primary {
+        border-color: rgba(8, 91, 91, .78);
+        background: rgba(14, 124, 123, .1);
+    }
+
+    .ui-cursor-halo.is-input {
+        opacity: 0;
+    }
+
+    :is(
+        .hero-tool-card,
+        .tool-card-v2,
+        .tool-catalog-card,
+        .guide-catalog-card,
+        .guide-preview-card,
+        .related-content__card,
+        .seo-link-hub__card,
+        .glossary-card,
+        .faq-card,
+        .business-card,
+        .blog-card,
+        .blog-page .info-card,
+        .page-shell .content-grid > .info-card
+    ) {
+        transition: transform var(--ui-motion-fast) var(--ui-motion-ease),
+                    border-color var(--ui-motion-fast) ease,
+                    box-shadow var(--ui-motion-fast) ease,
+                    background-color var(--ui-motion-fast) ease;
+    }
+
+    :is(
+        .hero-tool-card,
+        .tool-card-v2,
+        .tool-catalog-card,
+        .guide-catalog-card,
+        .guide-preview-card,
+        .related-content__card,
+        .seo-link-hub__card,
+        .glossary-card,
+        .faq-card,
+        .business-card,
+        .blog-card,
+        .blog-page .info-card,
+        .page-shell .content-grid > .info-card
+    ):hover {
+        border-color: rgba(14, 124, 123, .34);
+        background-color: #fffefb;
+        box-shadow: 0 8px 24px rgba(40, 34, 27, .06);
+        transform: translateY(-2px);
+    }
+
+    :is(
+        .hero-tool-card,
+        .tool-card-v2,
+        .tool-catalog-card,
+        .guide-catalog-card,
+        .guide-preview-card,
+        .related-content__card,
+        .seo-link-hub__card,
+        .glossary-card,
+        .faq-card,
+        .business-card,
+        .blog-card,
+        .blog-page .info-card,
+        .page-shell .content-grid > .info-card
+    ):active {
+        transform: translateY(0);
+    }
+
+    :is(.btn-primary, .link-button) {
+        transition: color var(--ui-motion-fast) ease, background-color var(--ui-motion-fast) ease,
+                    border-color var(--ui-motion-fast) ease, transform var(--ui-motion-fast) ease;
+    }
+
+    :is(.btn-primary, .link-button):hover {
+        border-color: #075f60;
+        background: #075f60;
+    }
+
+    :is(.btn-primary, .link-button):active {
+        transform: translateY(1px);
+    }
+
+    :is(.btn-secondary, .button, .guide-card):hover {
+        border-color: rgba(14, 124, 123, .56);
+        background: rgba(14, 124, 123, .07);
+    }
+}
+
+.ui-text-link {
+    position: relative;
+    text-decoration: none;
+}
+
+.ui-text-link::after {
+    position: absolute;
+    right: 0;
+    bottom: -.18em;
+    left: 0;
+    height: 1px;
+    background: currentColor;
+    content: "";
+    opacity: .7;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--ui-motion-link) ease-out;
+}
+
+.ui-text-link:hover::after,
+.ui-text-link:focus-visible::after {
+    transform: scaleX(1);
+}
+
+.site-nav__link {
+    position: relative;
+}
+
+.site-nav__link::after {
+    position: absolute;
+    right: 13px;
+    bottom: 4px;
+    left: 13px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--brand-primary, #0e7c7b);
+    content: "";
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--ui-motion-link) ease-out;
+}
+
+.site-nav__link:hover::after,
+.site-nav__link:focus-visible::after,
+.site-nav__link--active::after {
+    transform: scaleX(1);
+}
+
+.site-nav__dropdown-link--active {
+    color: var(--brand-primary-strong, #6e4229);
+    background: rgba(14, 124, 123, .07);
+}
+
+.a8-creative-slot,
+.a8-creative-slot__creative,
+.a8-creative-slot__creative > a,
+.a8-creative-slot__creative > a > img {
+    transition: none;
+}
+
+.a8-creative-slot:hover,
+.a8-creative-slot__creative:hover,
+.a8-creative-slot__creative > a:hover,
+.a8-creative-slot__creative > a:hover > img {
+    filter: none;
+    opacity: 1;
+    transform: none;
+}
+
+@media (max-width: 767px), (hover: none), (pointer: coarse) {
+    .ui-cursor-halo {
+        display: none !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ui-cursor-halo {
+        display: none !important;
+    }
+
+    :is(
+        .hero-tool-card,
+        .tool-card-v2,
+        .tool-catalog-card,
+        .guide-catalog-card,
+        .guide-preview-card,
+        .related-content__card,
+        .seo-link-hub__card,
+        .glossary-card,
+        .faq-card,
+        .business-card,
+        .blog-card,
+        .blog-page .info-card,
+        .page-shell .content-grid > .info-card,
+        .btn,
+        .button,
+        .link-button,
+        .guide-card
+    ) {
+        transition-duration: 0s !important;
+        transform: none !important;
+    }
+
+    .ui-text-link::after,
+    .site-nav__link::after {
+        transition: none;
+    }
+}

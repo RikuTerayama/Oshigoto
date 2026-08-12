@@ -20,6 +20,7 @@
         .button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 16px; border: 1px solid rgba(14, 124, 123, 0.32); border-radius: 8px; background: var(--brand-teal-soft); text-decoration: none; color: var(--brand-primary-strong); font-weight: 700; }
         @media (max-width: 760px) { .faq-grid { grid-template-columns: 1fr; } }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
 <body class="landing-page">
     {% from 'includes/tool_icons.html' import tool_icon %}
@@ -29,6 +30,7 @@
         <div class="page-with-affiliate-rail__content">
         <section class="hero">
             <span class="icon-tile icon-tile--lg icon-tile--teal" aria-hidden="true">{{ tool_icon('faq', 28) }}</span>
+            <p class="editorial-kicker">FAQ</p>
             <h1>よくある質問</h1>
             <p>PDF、CSV/Excel、画像、SEO/URL確認ツールの使い方と、ファイルの扱い方についてまとめました。</p>
         </section>

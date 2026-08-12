@@ -55,15 +55,16 @@
 
     function markRevealTargets() {
         const singleSelectors = [
-            '.landing-page .page-header',
-            '.landing-page .hero-v2__copy',
-            '.landing-page .landing-hero__copy',
-            '.landing-page .tool-flow',
             '.landing-page .tool-note',
             '.landing-page .tool-flow-side-box',
             '.landing-page .related-tools-heading',
             '.landing-page .content-card',
-            '.landing-page .info-card'
+            '.landing-page .info-card',
+            '.landing-page .related-content',
+            '.landing-page .seo-link-hub',
+            '.guide-detail-page .guide-section-card',
+            '.business-page .business-section',
+            '.site-footer__summary'
         ];
 
         const staggerSelectors = [
@@ -71,7 +72,12 @@
             '.landing-page .tool-step-list',
             '.landing-page .tool-flow-side-box__steps',
             '.landing-page .content-grid--three.glossary-grid',
-            '.landing-page .landing-use-grid'
+            '.landing-page .landing-use-grid',
+            '.landing-page .glossary-grid',
+            '.landing-page .faq-grid',
+            '.tools-index-page .tools-catalog-grid',
+            '.guide-index-page .guide-catalog-grid',
+            '.business-page .business-grid'
         ];
 
         singleSelectors.forEach(function(selector) {
@@ -104,6 +110,8 @@
             revealImmediately();
             return;
         }
+
+        root.classList.add('reveal-ready');
 
         const observer = new IntersectionObserver(function(entries) {
             entries.forEach(function(entry) {
