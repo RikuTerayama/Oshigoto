@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 PYTHON_CHECKS = (
     ("manifest", "scripts/generate_sitemap_lastmod_manifest.py", "--check"),
+    ("Google Analytics", "scripts/test_google_analytics.py"),
     ("smoke", "scripts/smoke_test.py"),
     ("deploy smoke", "scripts/smoke_test.py", "--deploy"),
     ("release candidate", "scripts/test_release_candidate.py"),

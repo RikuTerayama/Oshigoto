@@ -70,6 +70,14 @@ def _env_bool(name, default=False):
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
+GA_MEASUREMENT_ID_DEFAULT = "G-T51PVK40M0"
+
+
+def get_ga_measurement_id():
+    """Return the configured GA4 property, falling back to Oshigoto's property."""
+    return os.getenv("GA_MEASUREMENT_ID", "").strip() or GA_MEASUREMENT_ID_DEFAULT
+
+
 MEMORY_LIMIT_MB = _env_int_capped("MEMORY_LIMIT_MB", 450, 512)
 MEMORY_WARNING_MB = _env_int_capped("MEMORY_WARNING_MB", 400, 480)
 if MEMORY_WARNING_MB >= MEMORY_LIMIT_MB:
@@ -819,6 +827,7 @@ def affiliate_side_rail_enabled(path=None):
 @app.context_processor
 def inject_env_vars():
     """Expose template variables for public tool and affiliate navigation."""
+    ga_measurement_id = get_ga_measurement_id()
     try:
         import json
         from lib.products_catalog import PRODUCTS, get_public_products
@@ -937,7 +946,7 @@ def inject_env_vars():
             'nav_sections': nav_sections,
             'footer_columns': footer_columns,
             'BASE_URL': base_url,
-            'GA_MEASUREMENT_ID': os.getenv('GA_MEASUREMENT_ID', ''),
+            'GA_MEASUREMENT_ID': ga_measurement_id,
             'GSC_VERIFICATION_CONTENT': os.getenv('GSC_VERIFICATION_CONTENT', ''),
             'OPERATOR_NAME': os.getenv('OPERATOR_NAME', ''),
             'OPERATOR_EMAIL': os.getenv('OPERATOR_EMAIL', ''),
@@ -1002,7 +1011,7 @@ def inject_env_vars():
             'nav_sections': get_nav_sections_fallback(),
             'footer_columns': get_footer_columns(),
             'BASE_URL': os.getenv('BASE_URL', 'https://oshigoto.onrender.com').rstrip('/'),
-            'GA_MEASUREMENT_ID': '',
+            'GA_MEASUREMENT_ID': ga_measurement_id,
             'GSC_VERIFICATION_CONTENT': '',
             'OPERATOR_NAME': '',
             'OPERATOR_EMAIL': '',
