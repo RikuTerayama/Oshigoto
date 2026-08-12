@@ -13,8 +13,10 @@ from urllib.parse import parse_qs, urlparse
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+TEST_ASSOCIATE_TAG = "ieltsconsult-22"
+
 os.environ["AMAZON_AFFILIATE_ENABLED"] = "true"
-os.environ["AMAZON_ASSOCIATE_TAG"] = "jobcanauto-22"
+os.environ["AMAZON_ASSOCIATE_TAG"] = TEST_ASSOCIATE_TAG
 os.environ.setdefault("AFFILIATE_ENABLED", "true")
 os.environ.setdefault("AFFILIATE_TEXTLINKS_ENABLED", "true")
 os.environ.setdefault("AFFILIATE_BANNERS_ENABLED", "true")
@@ -48,6 +50,20 @@ def build(path: str, page_type: str = "tool") -> dict | None:
 
 
 def main() -> int:
+    search_url = creators.build_search_url("Kindle 業務改善")
+    search_query = parse_qs(urlparse(search_url).query)
+    require(search_query.get("tag") == [TEST_ASSOCIATE_TAG], "search URL must use the active associate tag exactly once")
+    require(search_url.count("tag=") == 1, "search URL must contain one tag parameter")
+
+    legacy_tag = "jobcan" + "auto-22"
+    replaced_url = creators._append_associate_tag(
+        f"https://www.amazon.co.jp/s?k=PDF&tag={legacy_tag}&tag=stale-tag",
+        TEST_ASSOCIATE_TAG,
+    )
+    replaced_query = parse_qs(urlparse(replaced_url).query)
+    require(replaced_query.get("tag") == [TEST_ASSOCIATE_TAG], "existing tags must be replaced by the active tag")
+    require(legacy_tag not in replaced_url and replaced_url.count("tag=") == 1, "legacy or duplicate tags must not remain")
+
     require(VISIBLE_AMAZON_MAX_PER_PAGE == 1, "visible Amazon maximum must be one")
     require(get_amazon_visible_limit("/") == 2, "landing Amazon maximum must be two")
     require(get_amazon_visible_limit("/tools") == 2, "tools Amazon maximum must be two")
@@ -69,7 +85,7 @@ def main() -> int:
         require(first.get("image_url", "") == "", "product images are forbidden")
         require(not any(key in first for key in ("price", "rating", "review_count", "stock")), "product commerce metadata is forbidden")
         parsed = urlparse(first["url"])
-        require(parse_qs(parsed.query).get("tag") == ["jobcanauto-22"], "associate tag must appear exactly once")
+        require(parse_qs(parsed.query).get("tag") == [TEST_ASSOCIATE_TAG], "associate tag must appear exactly once")
 
         landing_primary = build("/", "landing")
         landing_secondary = creators.build_landing_secondary_amazon_recommendation(

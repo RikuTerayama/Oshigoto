@@ -78,7 +78,8 @@ def get_mtime_date(filepath):
 
 
 def has_git():
-    if not os.path.isdir(os.path.join(REPO_ROOT, ".git")):
+    # A linked worktree stores .git as a pointer file rather than a directory.
+    if not os.path.exists(os.path.join(REPO_ROOT, ".git")):
         return False
     try:
         result = subprocess.run(

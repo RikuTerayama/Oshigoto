@@ -288,7 +288,8 @@ def check_no_go_and_secrets() -> None:
             require(pattern.search(text) is None, f'possible tracked {label}: {path.relative_to(ROOT)}')
 
     source = '\n'.join((ROOT / path).read_text(encoding='utf-8') for path in ('app.py', 'render.yaml', 'lib/amazon_creators.py'))
-    require('jobcanauto-22' not in source and 'ieltsconsult-22' not in source, 'Amazon associate tag must not be hard-coded')
+    forbidden_tags = ('jobcan' + 'auto-22', 'ielts' + 'consult-22')
+    require(not any(tag in source for tag in forbidden_tags), 'Amazon associate tag must not be hard-coded')
 
 
 def main() -> int:

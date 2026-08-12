@@ -97,13 +97,14 @@
             {% include 'includes/affiliate_inline_secondary.html' %}
         {% endwith %}
 
+        {% with inline_affiliate_provider='a8' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+
         <div class="compress-guide__actions"><a class="btn btn-primary" href="/tools/image-compress">画像を軽くする</a><a class="btn btn-secondary" href="/tools/image-batch">複数サイズ・形式をまとめて変換する</a></div>
         {% set tool_path = '/tools/image-compress' %}
         {% set tool_name = '画像圧縮' %}
         {% include 'guide/_partials/guide_related_links.html' %}
-        {% with inline_affiliate_provider='a8' %}
-            {% include 'includes/affiliate_inline_secondary.html' %}
-        {% endwith %}
         </div>
         {% include 'includes/affiliate_primary_rail.html' %}
     </main>

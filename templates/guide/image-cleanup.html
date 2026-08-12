@@ -38,6 +38,7 @@
         <p><strong>想定ユーザー:</strong> EC・SNS運用、デザイナー、マーケターなど、商品画像の統一や投稿用画像の整形が必要な方。</p>
         </header>
 
+        <section class="guide-section-card">
         <h2>このツールで解決できる課題</h2>
         <ul>
             <li>透過PNGを白背景のJPEGに変換したい</li>
@@ -45,7 +46,9 @@
             <li>複数の画像を同じ縦横比に統一したい</li>
             <li>画像に枠・余白・角丸を付けて体裁を揃えたい</li>
         </ul>
+        </section>
 
+        <section class="guide-section-card">
         <h2>主要機能</h2>
         <ul>
             <li><strong>透過→白背景変換</strong>: 透過PNGを白背景のJPEGに変換</li>
@@ -53,7 +56,9 @@
             <li><strong>縦横比統一</strong>: 指定した縦横比に合わせて背景を追加</li>
             <li><strong>枠・余白・角丸</strong>: 画像周りの余白（px）、角丸、枠（ボーダー）を指定して一括適用</li>
         </ul>
+        </section>
 
+        <section class="guide-section-card">
         <h2>使い方の流れ（4ステップ）</h2>
                 <div class="step-box guide-section-card">
             <h3>ステップ1: 機能を選択</h3>
@@ -71,7 +76,9 @@
             <h3>ステップ4: 処理を実行してダウンロード</h3>
             <p>「処理を開始」ボタンをクリックし、完了後に結果をダウンロードします。</p>
         </div>
+        </section>
 
+        <section class="guide-section-card">
         <h2>入出力仕様</h2>
         <h3>対応入力形式</h3>
         <ul>
@@ -95,14 +102,18 @@
             <strong>白背景化について</strong>
             <p>白背景化は元画像の透明部分を白で合成します。被写体を推定して背景を削除する機能ではありません。</p>
         </div>
+        </section>
 
+        <section class="guide-section-card">
         <h2 id="data-handling">データの取り扱い</h2>
         <p>当ツールでは、画像のアップロード・当サーバーへの保存は行いません。</p>
         <ul>
             <li><strong>アップロード</strong>: 行いません。処理はブラウザ内で完結します。根拠: <code>app.py</code> に <code>/tools/image-cleanup</code> 向けのファイル受信ルートは存在せず、<code>templates/tools/image-cleanup.html</code> および <code>static/js/image-cleanup.js</code> でクライアント側のみで処理しています。</li>
         </ul>
         <p>詳細は<a href="/privacy">プライバシーポリシー</a>をご確認ください。</p>
+        </section>
 
+        <section class="guide-section-card">
         <h2 id="faq">よくある質問（FAQ）</h2>
         {% set faq_list = [
             {"q": "画像ユーティリティでサーバーに画像がアップロードされますか？", "a": "いいえ。すべてブラウザ内で処理され、画像データは当サーバーに送信されません。app.py に /tools/image-cleanup 向けのアップロードルートはありません。"},
@@ -121,7 +132,9 @@
             </div>
             {% endfor %}
         </div>
+        </section>
 
+        <section class="guide-section-card">
         <h2>トラブルシューティング</h2>
         <ul>
             <li><strong>「画像サイズが大きすぎます」</strong>: 幅×高さが8,000万ピクセルを超えています。事前にリサイズしてからお試しください。</li>
@@ -130,8 +143,13 @@
             <li><strong>枠・角丸を付けても変化がない</strong>: 余白・角丸・枠のいずれも0より大きい値を指定してください。適用順は余白→角丸→枠です。JPEG出力で「透明」を選んだ場合、角部分は白で出力されます。</li>
             <li><strong>ダウンロードが始まらない</strong>: ブラウザのポップアップブロックを確認し、個別ダウンロードでも試してください。</li>
         </ul>
+        </section>
 
         {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-guide-image-cleanup-title' %}
+            {% include 'includes/affiliate_inline_secondary.html' %}
+        {% endwith %}
+
+        {% with inline_affiliate_provider='a8' %}
             {% include 'includes/affiliate_inline_secondary.html' %}
         {% endwith %}
 
@@ -139,11 +157,7 @@
         {% set tool_name = '画像ユーティリティ' %}
         {% include 'guide/_partials/guide_related_links.html' %}
 
-        {% with inline_affiliate_provider='a8' %}
-            {% include 'includes/affiliate_inline_secondary.html' %}
-        {% endwith %}
-
-        <div class="nav-links">
+        <div class="nav-links guide-section-card">
             <a href="/tools/image-cleanup" class="nav-link">← 画像ユーティリティに戻る</a>
             <a href="/tools" class="nav-link">← ツール一覧へ</a>
             <a href="/guide/seo" class="nav-link">次のガイド: Web/SEO →</a>
