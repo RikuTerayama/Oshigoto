@@ -10,7 +10,7 @@ CSS = (ROOT / "static/css/public-system.css").read_text(encoding="utf-8")
 def main() -> int:
     required = (
         "--public-section-gap: clamp(48px, 5vw, 64px)",
-        "margin: var(--public-section-gap) auto",
+        "margin: clamp(48px, 5vw, 64px) auto var(--public-section-gap)",
         ".guide-detail-page .guide-section-card",
         "background: transparent",
         ".amazon-single-card__cta",

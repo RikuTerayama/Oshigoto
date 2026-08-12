@@ -28,26 +28,6 @@
             padding: 40px 20px;
         }
 
-        .page-header {
-            text-align: center;
-            padding: 40px 20px;
-            margin-bottom: 40px;
-        }
-
-        .page-header h1 {
-            font-size: 2.5em;
-            margin: 0 0 15px 0;
-            color: var(--brand-ink);
-            font-weight: 600;
-        }
-
-        .page-header p {
-            font-size: 1.1em;
-            color: var(--brand-muted);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
         .tool-section {
             background: #ffffff;
             border-radius: 12px;
@@ -336,10 +316,6 @@
         .file-item-name { overflow-wrap: anywhere; }
 
         @media (max-width: 768px) {
-            .page-header h1 {
-                font-size: 2em;
-            }
-
             .container {
                 padding: 20px 15px;
             }
@@ -372,19 +348,17 @@
       data-max-total-mb="200"
       data-max-pixels="40000000"
       data-max-long-edge="16384">
-    {% from 'includes/tool_icons.html' import tool_icon %}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
 
     <div class="container">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
-        <div class="page-header">
-            <span class="icon-tile icon-tile--lg icon-tile--amber" aria-hidden="true">{{ tool_icon('image-batch', 28) }}</span>
-            <h1 data-reveal>画像をまとめて変換</h1>
-            <p data-reveal data-reveal-delay="50">JPEG・PNG・WebPの形式変換とサイズ調整を、ブラウザ内でまとめて行えます。</p>
-            <p class="tool-processing-note">画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。</p>
-        </div>
+        {% set tool_hero_icon = 'image-batch' %}
+        {% set tool_hero_title = '画像をまとめて変換' %}
+        {% set tool_hero_lead = 'JPEG・PNG・WebPの形式変換とサイズ調整を、ブラウザ内でまとめて行えます。' %}
+        {% set tool_hero_note = '画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。' %}
+        {% include 'includes/tool_hero.html' %}
         {% set tool_intro_what = '画像をまとめて選び、形式・サイズ・品質を指定して一括で書き出せます。' %}
         {% set tool_intro_steps = ['画像をまとめて選ぶ', '変換形式を選ぶ', 'サイズや品質を指定する', '一括変換してダウンロード'] %}
         {% set tool_intro_notice = 'BMP・静止GIF・AVIFの入力対応とAVIF出力はブラウザによって異なります。選択後に実データを確認します。' %}

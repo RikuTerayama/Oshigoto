@@ -8,11 +8,6 @@
     <style>
         .image-compress-page { background: var(--brand-bg); color: var(--brand-ink); }
         .compress-shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 42px 0 72px; }
-        .compress-hero { max-width: 760px; margin: 0 auto 32px; text-align: center; }
-        .compress-hero__kicker { margin: 0 0 10px; color: var(--brand-primary-strong); font-size: .78rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
-        .compress-hero h1 { margin: 0 0 14px; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.15; letter-spacing: -.04em; }
-        .compress-hero p { margin: 0; color: var(--brand-muted); font-size: 1.02rem; line-height: 1.9; }
-        .compress-privacy { display: inline-flex; align-items: center; min-height: 44px; margin-top: 18px; padding: 10px 16px; border: 1px solid rgba(14,124,123,.28); border-radius: 999px; background: rgba(14,124,123,.07); color: var(--brand-primary-strong); font-size: .9rem; font-weight: 650; }
         .compress-app { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(300px, .88fr); gap: 24px; align-items: start; }
         .compress-panel { min-width: 0; padding: clamp(20px, 4vw, 34px); border: 1px solid var(--brand-line); border-radius: 20px; background: var(--brand-surface); box-shadow: var(--shadow-soft); }
         .compress-panel h2 { margin: 0 0 20px; font-size: 1.3rem; }
@@ -94,12 +89,11 @@
     <main class="compress-shell">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
-        <header class="compress-hero">
-            <p class="compress-hero__kicker">Browser image tool</p>
-            <h1>画像を軽くする</h1>
-            <p>JPEG・PNG・WebP画像の品質やサイズを調整し、ブラウザ内で軽量化します。圧縮前後の容量を比較して保存できます。</p>
-            <p class="compress-privacy">画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。</p>
-        </header>
+        {% set tool_hero_icon = 'image-compress' %}
+        {% set tool_hero_title = '画像を軽くする' %}
+        {% set tool_hero_lead = 'JPEG・PNG・WebP画像の品質やサイズを調整し、ブラウザ内で軽量化します。圧縮前後の容量を比較して保存できます。' %}
+        {% set tool_hero_note = '画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。' %}
+        {% include 'includes/tool_hero.html' %}
         <section class="tool-flow" aria-labelledby="image-compress-flow-heading">
             <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="image-compress-flow-heading">使う順番</h2>

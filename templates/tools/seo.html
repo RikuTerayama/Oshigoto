@@ -28,26 +28,6 @@
             padding: 40px 20px;
         }
 
-        .page-header {
-            text-align: center;
-            padding: 40px 20px;
-            margin-bottom: 40px;
-        }
-
-        .page-header h1 {
-            font-size: 2.5em;
-            margin: 0 0 15px 0;
-            color: var(--brand-ink);
-            font-weight: 600;
-        }
-
-        .page-header p {
-            font-size: 1.1em;
-            color: var(--brand-muted);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
         .main-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -227,19 +207,17 @@
     {% include 'includes/public_system_styles.html' %}
 </head>
 <body class="landing-page tool-page tool-page--seo">
-    {% from 'includes/tool_icons.html' import tool_icon %}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
 
     <div class="container">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
-        <div class="page-header">
-            <span class="icon-tile icon-tile--lg icon-tile--blue" aria-hidden="true">{{ tool_icon('seo', 28) }}</span>
-            <h1 data-reveal>ページを確認する</h1>
-            <p data-reveal data-reveal-delay="50">公開前やSNS共有前に、title、meta description、OGP、canonical、robots、sitemapを確認します。</p>
-            <p class="tool-processing-note">ブラウザ内で完結する機能と、入力URLへサーバーから接続する機能を画面内で区別して表示します。</p>
-        </div>
+        {% set tool_hero_icon = 'seo' %}
+        {% set tool_hero_title = 'ページを確認する' %}
+        {% set tool_hero_lead = '公開前やSNS共有前に、title、meta description、OGP、canonical、robots、sitemapを確認します。' %}
+        {% set tool_hero_note = 'ブラウザ内で完結する機能と、入力URLへサーバーから接続する機能を画面内で区別して表示します。' %}
+        {% include 'includes/tool_hero.html' %}
         {% set tool_intro_what = 'HTMLやURLをもとに、SNS共有や検索結果で見える情報を確認できます。OGP画像やsitemap/robots作成も扱えます。' %}
         {% set tool_intro_steps = ['URLまたはHTMLを入力する', '確認したい項目を選ぶ', 'チェックする', '結果と修正ヒントを見る'] %}
         {% set tool_intro_notice = '外部URL確認には取得制限やタイムアウトがあります。取得できない場合はHTMLを貼り付けてください。' %}

@@ -192,7 +192,7 @@ def run_checks(get):
     max_total_mb = re.search(r'data-max-total-mb="(\d+)"', image_body)
     max_pixels = re.search(r'data-max-pixels="(\d+)"', image_body)
     max_long_edge = re.search(r'data-max-long-edge="(\d+)"', image_body)
-    add('image_compress_h1', '/tools/image-compress', '<h1>画像を軽くする</h1>' in image_body)
+    add('image_compress_h1', '/tools/image-compress', '<h1 id="tool-hero-heading">画像を軽くする</h1>' in image_body)
     add('image_compress_canonical', '/tools/image-compress', 'https://oshigoto.onrender.com/tools/image-compress' in image_body)
     add('image_compress_guide_canonical', '/guide/image-compress', 'https://oshigoto.onrender.com/guide/image-compress' in image_guide_body)
     add('image_compress_browser_only', '/tools/image-compress', 'Oshigotoのサーバーへ送信されません' in image_body)
@@ -269,7 +269,7 @@ def run_checks(get):
         qr_license = handle.read()
     with open(qr_notice_path, encoding='utf-8') as handle:
         qr_notice = handle.read()
-    add('qr_h1', '/tools/qr-code', '<h1>QRコードを作る</h1>' in qr_body)
+    add('qr_h1', '/tools/qr-code', '<h1 id="tool-hero-heading">QRコードを作る</h1>' in qr_body)
     add('qr_canonical', '/tools/qr-code', 'https://oshigoto.onrender.com/tools/qr-code' in qr_body)
     add('qr_guide_canonical', '/guide/qr-code', 'https://oshigoto.onrender.com/guide/qr-code' in qr_guide_body)
     add('qr_web_application_schema', '/tools/qr-code', '"@type": "WebApplication"' in qr_body and 'QRコード作成' in qr_body)

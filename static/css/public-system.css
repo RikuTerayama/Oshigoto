@@ -34,9 +34,7 @@
 .guide-hero__kicker,
 .related-content__eyebrow,
 .page-hero .eyebrow,
-.article-hero .eyebrow,
-.compress-hero__kicker,
-.qr-hero__kicker {
+.article-hero .eyebrow {
     margin: 0 0 10px;
     color: var(--brand-primary-strong, #6e4229);
     font-size: var(--kicker-size);
@@ -87,16 +85,16 @@
     color: var(--tool-accent);
 }
 
-.landing-page.tool-page :is(.page-header, .compress-hero, .qr-hero) {
+.landing-page.tool-page .tool-hero {
     position: relative;
     overflow: hidden;
 }
 
-.landing-page.tool-page :is(.page-header, .compress-hero, .qr-hero)::before {
+.landing-page.tool-page .tool-hero::before {
     position: absolute;
     top: 0;
-    right: 12%;
-    left: 12%;
+    right: clamp(42px, 9%, 72px);
+    left: clamp(42px, 9%, 72px);
     height: 2px;
     border-radius: 999px;
     background: var(--tool-accent);
@@ -104,8 +102,16 @@
     opacity: .72;
 }
 
-.landing-page.tool-page :is(.page-header, .compress-hero, .qr-hero) :is(.eyebrow, .page-header__kicker, .compress-hero__kicker, .qr-hero__kicker) {
-    color: var(--tool-accent);
+.landing-page.tool-page .tool-hero::after {
+    position: absolute;
+    top: -3px;
+    right: clamp(38px, calc(9% - 4px), 68px);
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--brand-surface);
+    border-radius: 50%;
+    background: var(--tool-accent);
+    content: "";
 }
 
 .site-footer__editorial {
@@ -295,6 +301,7 @@
     width: min(calc(100% - 32px), var(--public-shell));
     max-width: var(--public-shell);
     margin-inline: auto;
+    padding-inline: 0;
     padding-top: clamp(28px, 4vw, 48px);
     padding-bottom: clamp(56px, 7vw, 84px);
 }
@@ -304,28 +311,34 @@
     gap: clamp(28px, 4vw, 36px);
 }
 
-.landing-page.tool-page .page-header,
-.landing-page.tool-page .compress-hero,
-.landing-page.tool-page .qr-hero {
+.landing-page.tool-page .tool-hero {
     max-width: var(--public-reading);
     margin: 0 auto;
-    padding: 0;
+    padding: clamp(30px, 5vw, 46px) clamp(22px, 5vw, 48px) clamp(28px, 4vw, 40px);
+    border: 1px solid var(--brand-line);
+    border-radius: var(--public-radius);
+    background: var(--brand-surface);
+    box-shadow: var(--shadow-soft);
     text-align: center;
 }
 
-.landing-page.tool-page .page-header h1,
-.landing-page.tool-page .compress-hero h1,
-.landing-page.tool-page .qr-hero h1 {
-    margin: 14px 0 16px;
+.landing-page.tool-page .tool-hero__icon {
+    margin: 0 auto 16px;
+    border-color: var(--tool-accent-line);
+    background: var(--tool-accent-soft);
+    color: var(--tool-accent);
+}
+
+.landing-page.tool-page .tool-hero h1 {
+    margin: 0 0 14px;
     color: var(--brand-ink);
-    font-size: clamp(2rem, 5vw, 3.15rem);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
     line-height: 1.22;
     letter-spacing: -.035em;
 }
 
-.landing-page.tool-page .page-header > p,
-.landing-page.tool-page .compress-hero > p,
-.landing-page.tool-page .qr-hero > p {
+.landing-page.tool-page .tool-hero__lead {
     max-width: 720px;
     margin: 0 auto;
     color: var(--brand-muted);
@@ -333,9 +346,7 @@
     line-height: 1.85;
 }
 
-.landing-page.tool-page .tool-processing-note,
-.landing-page.tool-page .compress-privacy,
-.landing-page.tool-page .qr-privacy {
+.landing-page.tool-page .tool-hero .tool-processing-note {
     width: fit-content;
     max-width: 720px;
     margin: 16px auto 0;
@@ -345,11 +356,12 @@
     color: var(--brand-primary-strong);
     background: var(--brand-teal-soft);
     font-size: .92rem;
+    line-height: 1.65;
 }
 
 .landing-page.tool-page .tool-flow {
     width: min(100%, var(--public-reading));
-    margin: var(--public-section-gap) auto;
+    margin: clamp(48px, 5vw, 64px) auto var(--public-section-gap);
     padding: clamp(24px, 4vw, 34px);
     border: 1px solid var(--brand-line);
     border-radius: var(--public-radius);
@@ -945,7 +957,21 @@
     }
 
     .landing-page.tool-page .tool-flow {
+        margin-top: clamp(28px, 8vw, 36px);
         padding: 22px 18px;
+    }
+
+    .landing-page.tool-page .tool-hero {
+        padding: 28px 18px 24px;
+    }
+
+    .landing-page.tool-page .tool-hero::before {
+        right: 28px;
+        left: 28px;
+    }
+
+    .landing-page.tool-page .tool-hero::after {
+        right: 24px;
     }
 
     .guide-detail-page .guide-section-card {
