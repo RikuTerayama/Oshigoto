@@ -7,6 +7,7 @@
     --public-gap-sm: 16px;
     --public-gap-md: 24px;
     --public-gap-lg: clamp(32px, 5vw, 56px);
+    --public-section-gap: clamp(48px, 5vw, 64px);
     --public-card-padding: clamp(20px, 3vw, 28px);
     --public-radius: 14px;
     --public-control-radius: 10px;
@@ -174,7 +175,7 @@
 
 .landing-page.tool-page .tool-flow {
     width: min(100%, var(--public-reading));
-    margin: var(--public-gap-lg) auto;
+    margin: var(--public-section-gap) auto;
     padding: clamp(24px, 4vw, 34px);
     border: 1px solid var(--brand-line);
     border-radius: var(--public-radius);
@@ -252,10 +253,18 @@
 .landing-page.tool-page .compress-app,
 .landing-page.tool-page .qr-app,
 .landing-page.tool-page .main-layout {
-    border-color: var(--brand-line);
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.landing-page.tool-page :is(.tool-workspace, .compress-app, .qr-app, .main-layout) > :is(.tool-section, .compress-panel, .qr-panel, .panel) {
+    border: 1px solid var(--brand-line);
     border-radius: var(--public-radius);
     background: var(--brand-surface);
-    box-shadow: var(--shadow-soft);
+    box-shadow: none;
 }
 
 .landing-page.tool-page .btn,
@@ -294,7 +303,7 @@
 .guide-detail-page .guide-hero {
     max-width: var(--public-reading);
     margin: 0 auto var(--public-gap-lg);
-    text-align: center;
+    text-align: left;
 }
 
 .guide-detail-page .guide-shell .guide-content {
@@ -306,6 +315,25 @@
     border-radius: 0;
     background: transparent;
     box-shadow: none;
+}
+
+.guide-detail-page .guide-section-card {
+    width: min(100%, var(--public-reading));
+    margin: 0 auto var(--public-gap-md);
+    padding: var(--public-card-padding);
+    border: 1px solid var(--brand-line);
+    border-radius: var(--public-radius);
+    background: var(--brand-surface);
+    box-shadow: none;
+    text-align: left;
+}
+
+.guide-detail-page .guide-section-card > :first-child {
+    margin-top: 0;
+}
+
+.guide-detail-page .guide-section-card > :last-child {
+    margin-bottom: 0;
 }
 
 .guide-index-page .guide-hero__kicker,
@@ -343,7 +371,7 @@
 }
 
 .guide-detail-page .guide-shell h2 {
-    margin: clamp(34px, 5vw, 52px) 0 14px;
+    margin: 0 0 14px;
     color: var(--brand-ink);
     font-size: clamp(1.35rem, 3vw, 1.7rem);
     line-height: 1.4;
@@ -366,6 +394,74 @@
     color: var(--brand-ink);
     background: var(--brand-surface);
     box-shadow: var(--shadow-soft);
+}
+
+/* Affiliate wrappers remain spacing boundaries, not additional cards. */
+.landing-page :is(.inline-affiliate-break, .affiliate-cards-section, .affiliate-footer-block),
+.guide-detail-page :is(.inline-affiliate-break, .affiliate-cards-section, .affiliate-footer-block) {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.landing-page .amazon-single-card,
+.guide-detail-page .amazon-single-card,
+.landing-page .amazon-single-card :is(.amazon-single-card__body, .affiliate-disclosure),
+.guide-detail-page .amazon-single-card :is(.amazon-single-card__body, .affiliate-disclosure) {
+    text-align: left;
+}
+
+.landing-page .amazon-single-card .amazon-single-card__cta,
+.guide-detail-page .amazon-single-card .amazon-single-card__cta {
+    text-align: center;
+}
+
+.a8-creative-slot {
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+}
+
+.a8-creative-slot__creative {
+    width: auto;
+    max-width: 100%;
+}
+
+.a8-creative-slot__creative > a,
+.a8-creative-slot__creative > a > img {
+    display: block;
+}
+
+.affiliate-stack__row--a8 .a8-creative-slot {
+    left: auto;
+    margin-inline: auto;
+    transform: none;
+}
+
+.guide-detail-page .guide-content > :is(h2, h2 + ul, h2 + ol, h2 + p, h2 + .faq-list) {
+    position: relative;
+    width: min(100%, var(--public-reading));
+    margin-inline: auto;
+    padding-inline: var(--public-card-padding);
+    border-inline: 1px solid var(--brand-line);
+    background: var(--brand-surface);
+}
+
+.guide-detail-page .guide-content > h2 {
+    margin-top: var(--public-gap-md);
+    margin-bottom: 0;
+    padding-top: var(--public-card-padding);
+    border-top: 1px solid var(--brand-line);
+    border-radius: var(--public-radius) var(--public-radius) 0 0;
+}
+
+.guide-detail-page .guide-content > :is(h2 + ul, h2 + ol, h2 + p, h2 + .faq-list) {
+    margin-top: 0;
+    margin-bottom: var(--public-gap-md);
+    padding-bottom: var(--public-card-padding);
+    border-bottom: 1px solid var(--brand-line);
+    border-radius: 0 0 var(--public-radius) var(--public-radius);
 }
 
 .guide-detail-page .guide-shell :is(.step-box, .compress-guide__step, .qr-guide-card) {
@@ -424,7 +520,32 @@
     }
 }
 
+@media (min-width: 1240px) {
+    .landing-page.tool-page:is(.tool-page--image-compress, .qr-page) .tool-intro-layout {
+        position: relative;
+        display: block;
+        min-height: 0;
+    }
+
+    .landing-page.tool-page:is(.tool-page--image-compress, .qr-page) .tool-intro-layout__content {
+        width: calc(100% - 356px);
+    }
+
+    .landing-page.tool-page:is(.tool-page--image-compress, .qr-page) .tool-intro-layout > .global-affiliate-rail {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .landing-page.tool-page:is(.tool-page--image-compress, .qr-page) .tool-flow {
+        margin-inline: 0;
+    }
+}
+
 @media (max-width: 640px) {
+    :root {
+        --public-section-gap: clamp(28px, 8vw, 36px);
+    }
     .landing-page .balanced-seven-grid,
     .tools-index-page .balanced-seven-grid,
     .guide-index-page .balanced-seven-grid {

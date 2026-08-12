@@ -202,7 +202,7 @@ def main() -> int:
 
         require(body.count(ADSENSE_SCRIPT) == 1, f"{path}: expected one AdSense loader")
         amazon_count = len(soup.select("section.amazon-single-card"))
-        a8_count = body.count('data-a8-creative-id="')
+        a8_count = len(soup.select("section[data-a8-responsive-slot]"))
         require(amazon_count <= get_amazon_visible_limit(path), f"{path}: too many Amazon recommendations")
         require(a8_count <= get_a8_visible_limit(path), f"{path}: too many A8 creatives")
         if path in AMAZON_HARD_EXCLUDED_PATHS:
@@ -221,16 +221,16 @@ def main() -> int:
             rail = soup.select_one(".global-affiliate-rail")
             require(rail is not None, "/: affiliate rail missing")
             require(len(rail.select(".amazon-single-card")) == 1, "/: rail must contain one Amazon recommendation")
-            require(len(rail.select("[data-a8-creative-id]")) == 1, "/: rail must contain one A8 creative")
+            require(len(rail.select("section[data-a8-responsive-slot]")) == 1, "/: rail must contain one A8 creative")
             require(rail.select_one(".global-affiliate-rail__publisher") is not None, "/: publisher guide content missing from rail")
             lower_band = soup.select_one(".landing-monetization-band")
             require(lower_band is not None, "/: lower monetization band missing")
             require(len(lower_band.select(".amazon-single-card")) == 1, "/: lower Amazon recommendation missing")
-            require(len(lower_band.select("[data-a8-creative-id]")) == 1, "/: lower A8 creative missing")
+            require(len(lower_band.select("section[data-a8-responsive-slot]")) == 1, "/: lower A8 creative missing")
             require(lower_band.select_one(".related-content") is not None, "/: publisher content must separate lower affiliates")
             amazon_urls = [link.get("href") for link in soup.select(".amazon-single-card__cta")]
             require(len(amazon_urls) == 2 and len(set(amazon_urls)) == 2, "/: Amazon URLs must be distinct")
-            creative_ids = [slot.get("data-a8-creative-id") for slot in soup.select("[data-a8-creative-id]")]
+            creative_ids = [slot.get("data-a8-creative-id") for slot in soup.select("section[data-a8-responsive-slot]")]
             require(len(creative_ids) == 2 and len(set(creative_ids)) == 2, "/: A8 creatives should differ")
             amazon_position = body.find('class="amazon-single-card')
             related_position = body.find('class="global-affiliate-rail__publisher"')
@@ -250,7 +250,7 @@ def main() -> int:
             rail = soup.select_one(".global-affiliate-rail")
             require(rail is not None, "/tools: affiliate rail missing")
             require(len(rail.select(".amazon-single-card")) == 1, "/tools: rail Amazon count mismatch")
-            require(len(rail.select("[data-a8-creative-id]")) == 1, "/tools: rail A8 count mismatch")
+            require(len(rail.select("section[data-a8-responsive-slot]")) == 1, "/tools: rail A8 count mismatch")
             require(rail.select_one(".global-affiliate-rail__publisher") is not None, "/tools: internal navigation missing from rail")
             support = soup.select_one(".seo-link-hub--tools-support")
             require(support is not None, "/tools: support surface missing")
@@ -258,11 +258,11 @@ def main() -> int:
             lower_band = soup.select_one(".tools-monetization-band")
             require(lower_band is not None, "/tools: lower monetization band missing")
             require(len(lower_band.select(".amazon-single-card")) == 1, "/tools: lower Amazon count mismatch")
-            require(len(lower_band.select("[data-a8-creative-id]")) == 1, "/tools: lower A8 count mismatch")
+            require(len(lower_band.select("section[data-a8-responsive-slot]")) == 1, "/tools: lower A8 count mismatch")
             require(lower_band.select_one(".related-content") is not None, "/tools: publisher content must separate lower affiliates")
             amazon_urls = [link.get("href") for link in soup.select(".amazon-single-card__cta")]
             require(len(amazon_urls) == 2 and len(set(amazon_urls)) == 2, "/tools: Amazon URLs must be distinct")
-            creative_ids = [slot.get("data-a8-creative-id") for slot in soup.select("[data-a8-creative-id]")]
+            creative_ids = [slot.get("data-a8-creative-id") for slot in soup.select("section[data-a8-responsive-slot]")]
             require(len(creative_ids) == 2 and len(set(creative_ids)) == 2, "/tools: A8 creatives should differ")
 
         for link in soup.select("a[href]"):

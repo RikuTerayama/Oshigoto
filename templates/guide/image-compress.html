@@ -40,6 +40,7 @@
             <p>JPEG・PNG・WebPの静止画像を、用途に合わせて軽量化する手順です。画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。</p>
         </header>
 
+        <section class="guide-section-card">
         <h2>6つの手順</h2>
         <section class="compress-guide__steps" aria-label="画像圧縮の手順">
             <article class="compress-guide__step"><h3>画像を選ぶ</h3><p>最大{{ image_compress_max_files }}件まで選べます。1件{{ image_compress_max_file_size_mb }}MB、合計{{ image_compress_max_total_size_mb }}MB以下にしてください。</p></article>
@@ -49,7 +50,9 @@
             <article class="compress-guide__step"><h3>圧縮前後を確認する</h3><p>形式、寸法、容量、削減率または増加率を確認します。必ず小さくなるわけではありません。</p></article>
             <article class="compress-guide__step"><h3>保存する</h3><p>個別に保存するか、複数の完了結果をまとめてZIPで保存します。</p></article>
         </section>
+        </section>
 
+        <section class="guide-section-card">
         <h2>用途別の考え方</h2>
         <section class="compress-guide__uses">
             <article class="compress-guide__card"><h3>メール添付</h3><p>まず最大幅を小さくし、写真ならJPEGまたはWebPの品質を調整します。</p></article>
@@ -58,20 +61,24 @@
             <article class="compress-guide__card"><h3>保管容量の整理</h3><p>複数画像を同じ設定で処理し、元容量と結果容量を比較してから置き換えます。</p></article>
             <article class="compress-guide__card"><h3>透過画像</h3><p>透明部分を残す場合はPNGまたはWebPを選びます。JPEGでは白背景になります。</p></article>
         </section>
+        </section>
 
+        <section class="guide-section-card">
         <h2>形式ごとの違い</h2>
         <section class="compress-guide__formats">
             <article class="compress-guide__card"><h3>JPEG</h3><p>写真向けです。品質値で容量を調整できますが、透明部分は保持できません。</p></article>
             <article class="compress-guide__card"><h3>PNG</h3><p>透過や図版向けです。品質値を指定できず、寸法変更やWebP変換が有効な場合があります。</p></article>
             <article class="compress-guide__card"><h3>WebP</h3><p>写真と透過画像に使え、品質を調整できます。利用先のブラウザやシステムの対応状況を確認してください。</p></article>
         </section>
+        </section>
 
-        <div class="compress-guide__notice">
+        <div class="compress-guide__notice guide-section-card">
             <h2 style="margin-top:0">品質値と安全上限</h2>
             <p>品質の数字は絶対的な画質を示すものではありません。画像内容・形式・ブラウザによって結果は異なり、特定の削減率は保証しません。</p>
             <p>1画像は最大{{ '{:,}'.format(image_compress_max_pixels) }}画素、長辺{{ '{:,}'.format(image_compress_max_long_edge) }}pxまでです。大きな画像は端末のメモリ状況により、上限内でも処理できない場合があります。</p>
         </div>
 
+        <section class="guide-section-card">
         <h2>よくある質問</h2>
         {% set faq_list = [
             {'q': 'PNGの品質を変更できないのはなぜですか', 'a': 'ブラウザのCanvasによるPNG出力では、JPEGやWebPのような品質値を指定できないためです。寸法を小さくするか、利用先が対応していればWebPへの変換を検討してください。'},
@@ -83,6 +90,7 @@
         ] %}
         <section class="compress-guide__faq">
             {% for item in faq_list %}<article><h3>Q. {{ item.q }}</h3><p>A. {{ item.a }}</p></article>{% endfor %}
+        </section>
         </section>
 
         {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-guide-image-compress-title' %}

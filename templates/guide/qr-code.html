@@ -70,7 +70,7 @@
         </header>
 
         <div class="qr-guide-grid">
-            <article class="qr-guide-card">
+            <article class="qr-guide-card guide-section-card">
                 <h2>基本の手順</h2>
                 <ol class="qr-guide-steps">
                     <li>URL、テキスト、メール、電話番号、Wi-Fiから種類を選びます。</li>
@@ -80,7 +80,7 @@
                     <li>PNGまたはSVGで保存し、実際の端末で読み取りを確認します。</li>
                 </ol>
             </article>
-            <article class="qr-guide-card">
+            <article class="qr-guide-card guide-section-card">
                 <h2>入力できる内容</h2>
                 <ul>
                     <li><strong>URL:</strong> http:// または https:// のアドレス</li>
@@ -91,12 +91,12 @@
                 </ul>
                 <p>最終的なQRコード内容はUTF-8で1,000バイトまでです。</p>
             </article>
-            <article class="qr-guide-card">
+            <article class="qr-guide-card guide-section-card">
                 <h2>保存形式の選び方</h2>
                 <h3>PNG</h3><p>文書やチャットへ貼り付けるときに扱いやすい画像形式です。256px、512px、1024pxから選べます。</p>
                 <h3>SVG</h3><p>印刷や資料作成で拡大して使いたいときに向くベクター形式です。保存後も実際の利用サイズで読み取り確認をしてください。</p>
             </article>
-            <article class="qr-guide-card">
+            <article class="qr-guide-card guide-section-card">
                 <h2>読み取りやすくするために</h2>
                 <ul>
                     <li>前景は黒、背景は白に固定し、コントラストを保っています。</li>
@@ -105,13 +105,13 @@
                     <li>誤り訂正を上げると耐性は増えますが、必ず読めることを保証するものではありません。</li>
                 </ul>
             </article>
-            <article class="qr-guide-card qr-guide-card--wide">
+            <article class="qr-guide-card qr-guide-card--wide guide-section-card">
                 <h2>プライバシーと安全上の注意</h2>
                 <p>QRコードはブラウザ内で作成され、入力内容はOshigotoのサーバーへ送信されません。Cookieやブラウザストレージへの保存も行いません。</p>
                 <p class="qr-guide-note">Wi-Fi用QRコードには接続パスワードが含まれます。画像ファイルを共有すると、受け取った人が接続情報を読み取れる可能性があります。</p>
                 <p>URL用QRコードは入力されたURLを符号化するだけです。リンク先の内容や安全性を確認する機能ではありません。重要な配布物へ載せる前にURLと読み取り結果を確認してください。</p>
             </article>
-            <article class="qr-guide-card qr-guide-card--wide">
+            <article class="qr-guide-card qr-guide-card--wide guide-section-card">
                 <h2>よくある質問</h2>
                 <div class="qr-guide-faq">
                     {% for item in qr_faqs %}

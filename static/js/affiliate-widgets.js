@@ -100,6 +100,21 @@
   }
 
   function init() {
+    Array.prototype.slice.call(document.querySelectorAll('[data-a8-responsive-slot]')).forEach(function(slot) {
+      var mount = slot.querySelector('[data-a8-responsive-mount]');
+      var mobileTemplate = slot.querySelector('[data-a8-mobile-template]');
+      var desktopTemplate = slot.querySelector('[data-a8-desktop-template]');
+      if (!mount || !mobileTemplate) return;
+      var mode = slot.dataset.a8ResponsiveMode || 'compact';
+      var desktopQuery = mode === 'rail'
+        ? '(min-width: 1280px) and (min-height: 800px)'
+        : '(min-width: 1024px)';
+      var selectedTemplate = desktopTemplate && window.matchMedia(desktopQuery).matches
+        ? desktopTemplate
+        : mobileTemplate;
+      mount.appendChild(selectedTemplate.content.cloneNode(true));
+      slot.dataset.a8RenderedCreativeId = selectedTemplate.dataset.a8CreativeId || '';
+    });
     Array.prototype.slice.call(document.querySelectorAll('[data-affiliate-slot]')).forEach(function(slot) {
       var mount = slot.querySelector('[data-affiliate-mount]');
       if (isServerManaged(slot) && mount) {

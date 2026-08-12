@@ -41,6 +41,10 @@ def main() -> int:
             require(soup.select_one(".guide-hero h1") is not None, f"{path}: shared hero missing")
             require(soup.select_one('link[href*="public-system.css"]') is not None, f"{path}: shared stylesheet missing")
             require(soup.select_one(f'a[href="/tools/{guide_id}"]') is not None, f"{path}: tool CTA missing")
+            require(
+                soup.select_one(".guide-section-card") is not None or soup.select_one(".guide-content") is not None,
+                f"{path}: canonical information surface missing",
+            )
 
     print("PASS: guide index and all seven detail guides use the canonical shared format")
     return 0

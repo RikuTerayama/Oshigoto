@@ -46,6 +46,7 @@ def main() -> int:
                 soup.select_one(".tool-workspace, .compress-app, .qr-app, .main-layout") is not None,
                 f"{path}: workspace missing",
             )
+            require(soup.select_one(".amazon-single-card") is not None, f"{path}: Amazon placement missing")
             require(soup.select_one(".related-tools, .related-tools-grid, .related-content") is not None, f"{path}: related section missing")
 
     print("PASS: all seven tools use the canonical hero, note, four-step flow, workspace, and related sections")

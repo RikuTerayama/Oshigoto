@@ -33,12 +33,13 @@ def _check_a8_catalog_rendering(client, failed):
             failed.append(f'A8 path={path} expected=200 status={response.status_code}')
             continue
         maximum = get_a8_visible_limit(path)
-        actual_count = body.count('data-a8-creative-id="')
+        actual_count = body.count('data-a8-responsive-slot')
+        candidate_count = body.count('https://px.a8.net/svt/ejp')
         checks = {
             'slot_count': 1 <= actual_count <= maximum,
-            'link_count': body.count('https://px.a8.net/svt/ejp') == actual_count,
-            'banner_count': body.count('width="300" height="250"') == actual_count,
-            'tracker_count': len(re.findall(r'https://www\d+\.a8\.net/0\.gif\?a8mat=', body)) == actual_count,
+            'candidate_count': actual_count <= candidate_count <= actual_count * 3,
+            'native_size_present': bool(re.search(r'width="(?:120|200|250|300|336|350|728)" height="(?:90|200|240|250|280|600)"', body)),
+            'tracker_count': len(re.findall(r'https://www\d+\.a8\.net/0\.gif\?a8mat=', body)) == candidate_count,
             'legacy_absent': 'rot3.a8.net' not in body,
         }
         for name, ok in checks.items():
