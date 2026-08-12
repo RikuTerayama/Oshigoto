@@ -42,6 +42,15 @@ A8_EXPECTED_PARAMETERS = {
     'a8-03': ('4B3SMZ+61B8KY+5O7E+BXYE9', '260517563365', 's00000026465002006000', 'www22', 'www11'),
     'a8-04': ('4AZMKE+EF60AA+5OEW+5ZEMP', '260323070872', 's00000026492001005000', 'www26', 'www19'),
     'a8-05': ('4AZMKE+EF60AA+5OEW+601S1', '260323070872', 's00000026492001008000', 'www21', 'www12'),
+    'a8-06': ('4AZHWA+1BMP6A+3N0O+BY641', '260317018080', 's00000016980002007000', 'www25', 'www12'),
+    'a8-07': ('4AZHWA+1BMP6A+3N0O+BXQOH', '260317018080', 's00000016980002005000', 'www28', 'www17'),
+    'a8-08': ('4AZHWA+2DQFW2+35VG+67C4H', '260317018144', 's00000014758001042000', 'www25', 'www19'),
+    'a8-09': ('4AZHWA+2DQFW2+35VG+6B70H', '260317018144', 's00000014758001060000', 'www26', 'www16'),
+    'a8-10': ('4AX6C9+AAX2NM+428Q+60WN5', '260208729623', 's00000018953001012000', 'www23', 'www13'),
+    'a8-11': ('4AX6C9+AAX2NM+428Q+66H9D', '260208729623', 's00000018953001038000', 'www26', 'www19'),
+    'a8-12': ('4AX5KH+A1ZKKY+3N0O+5ZMCH', '260207729608', 's00000016980001006000', 'www23', 'www16'),
+    'a8-13': ('4AX6C9+AF33W2+2QEI+5YRHD', '260208729630', 's00000012753001002000', 'www22', 'www14'),
+    'a8-14': ('4AX6C9+AF33W2+2QEI+6AZAP', '260208729630', 's00000012753001059000', 'www25', 'www17'),
 }
 FORBIDDEN_PUBLIC_STRINGS = [
     'Jobcan',
@@ -335,8 +344,8 @@ def run_checks(get):
     add('robots_autofill_disallow', '/robots.txt', 'Disallow: /autofill' in robots)
 
     catalog = load_a8_creative_catalog()
-    add('a8_catalog_exact_count', 'data/a8_creative_catalog.json', len(catalog) == 5, f'count={len(catalog)}')
-    add('a8_catalog_unique_ids', 'data/a8_creative_catalog.json', len({item.get("id") for item in catalog}) == 5)
+    add('a8_catalog_exact_count', 'data/a8_creative_catalog.json', len(catalog) == 14, f'count={len(catalog)}')
+    add('a8_catalog_unique_ids', 'data/a8_creative_catalog.json', len({item.get("id") for item in catalog}) == 14)
     for item in catalog:
         creative_id = item['id']
         creative_path = os.path.join(repo_root, 'templates', *item['template'].split('/'))
@@ -348,7 +357,7 @@ def run_checks(get):
             f'https://px.a8.net/svt/ejp?a8mat={a8mat}',
             f'https://{banner_host}.a8.net/svt/bgt?aid={aid}&wid=001&eno=01&mid={mid}&mc=1',
             f'https://{tracker_host}.a8.net/0.gif?a8mat={a8mat}',
-            'width="300" height="250" alt=""',
+            f'width="{item["width"]}" height="{item["height"]}" alt=""',
             'width="1" height="1"',
             'rel="nofollow"',
         )
@@ -358,16 +367,16 @@ def run_checks(get):
 
     for path in A8_PUBLIC_PATHS:
         body = _body(get(path))
-        a8_count = body.count(A8_SLOT_MARKER)
+        a8_count = body.count('data-a8-responsive-slot')
         expected_count = get_a8_visible_limit(path)
         add('a8_visible_limit', path, 0 < a8_count <= expected_count, f'count={a8_count} limit={expected_count}')
-        add('a8_direct_link_limit', path, body.count(A8_LINK_SRC) == a8_count, f'count={body.count(A8_LINK_SRC)} rendered={a8_count}')
-        add('a8_banner_limit', path, body.count('width="300" height="250"') == a8_count)
-        add('a8_tracker_limit', path, len(A8_TRACKER_PATTERN.findall(body)) == a8_count)
+        add('a8_direct_link_limit', path, body.count(A8_LINK_SRC) >= a8_count, f'candidates={body.count(A8_LINK_SRC)} slots={a8_count}')
+        add('a8_banner_limit', path, '<template data-a8-mobile-template' in body)
+        add('a8_tracker_limit', path, len(A8_TRACKER_PATTERN.findall(body)) >= a8_count)
         add('a8_legacy_script_absent', path, A8_LEGACY_SCRIPT_HOST not in body)
         add('a8_pr_label_present', path, 'a8-creative-slot__label">PR<' in body)
         if path == '/':
-            creative_ids = re.findall(r'data-a8-creative-id="([^"]+)"', body)
+            creative_ids = re.findall(r'<section[^>]+data-a8-creative-id="([^"]+)"', body)
             add('a8_landing_creatives_distinct', path, len(creative_ids) == 2 and len(set(creative_ids)) == 2)
 
     for path in NO_VISIBLE_AFFILIATE_PATHS:

@@ -27,6 +27,8 @@ PYTHON_CHECKS = (
     ("tool layout consistency", "scripts/test_tool_layout_consistency.py"),
     ("guide layout consistency", "scripts/test_guide_layout_consistency.py"),
     ("public theme", "scripts/test_public_theme.py"),
+    ("public visual consistency", "scripts/test_public_visual_consistency.py"),
+    ("affiliate size placement", "scripts/test_affiliate_size_placement.py"),
     ("multi-user safety", "scripts/test_multi_user_safety.py"),
     ("security preflight", "scripts/security_preflight.py"),
 )

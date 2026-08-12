@@ -54,6 +54,7 @@
         <p>PDFの結合、抽出、分割、ページ削除、回転、圧縮、画像変換、パスワード設定の操作方法をまとめています。</p>
         </header>
 
+        <section class="guide-section-card">
         <h2>主要機能</h2>
         <ul>
             <li><strong>結合・抽出・分割</strong>: 複数PDFの統合や、必要なページ範囲の切り出し</li>
@@ -62,7 +63,9 @@
             <li><strong>圧縮・画像変換</strong>: PDFの軽量化、PDFから画像、画像からPDF、埋め込み画像抽出</li>
             <li><strong>パスワード設定</strong>: PDFを開くためのパスワードを新たに設定</li>
         </ul>
+        </section>
 
+        <section class="guide-section-card">
         <h2>ページ削除</h2>
         <div class="step-box">
             <h3>不要なページだけを取り除く</h3>
@@ -74,7 +77,9 @@
             <p>ページ番号は1から始まります。重複指定は1回にまとめられ、元ファイルは変更されません。全ページを削除する指定はできません。</p>
             <p>白紙ページ、不要な添付ページ、配布対象外のページを除く用途に使えます。</p>
         </div>
+        </section>
 
+        <section class="guide-section-card">
         <h2>ページ回転</h2>
         <div class="step-box">
             <h3>スキャンや横向き資料の向きを直す</h3>
@@ -85,7 +90,9 @@
             </ol>
             <p>回転は現在の向きから時計回りに加算されます。選んでいないページの向き、ページ順、用紙サイズは変わりません。</p>
         </div>
+        </section>
 
+        <section class="guide-section-card">
         <h2>ページ指定の書き方</h2>
         <ul>
             <li>1ページ: <code>3</code></li>
@@ -94,7 +101,9 @@
             <li>組み合わせ: <code>1,3-5,8</code></li>
         </ul>
         <p>0、負数、小数、降順範囲、総ページ数を超える指定は受け付けません。</p>
+        </section>
 
+        <section class="guide-section-card">
         <h2>処理上限とデータの取り扱い</h2>
         <ul>
             <li><strong>ブラウザ内PDF処理</strong>: 1ファイル最大{{ browser_pdf_max_file_size_mb }}MB、最大{{ browser_pdf_max_pages }}ページ。結合は最大20件、画像化・画像抽出は最大10件です。</li>
@@ -111,7 +120,9 @@
         </div>
         <p>上限内でも、ページ数や画像量、モバイル端末のメモリ状況により処理できない場合があります。</p>
         <p>詳細は<a href="/privacy">プライバシーポリシー</a>をご確認ください。</p>
+        </section>
 
+        <section class="guide-section-card">
         <h2 id="faq">よくある質問（FAQ）</h2>
         {% set faq_list = [
             {"q": "ページ削除で元のPDFは変わりますか？", "a": "いいえ。削除対象以外のページを元の順序でコピーし、新しいPDFとして保存します。"},
@@ -129,13 +140,16 @@
             </div>
             {% endfor %}
         </div>
+        </section>
 
+        <section class="guide-section-card">
         <h2>トラブルシューティング</h2>
         <ul>
             <li><strong>ページ指定エラー</strong>: 半角数字を使い、ページ番号は1から指定してください。</li>
             <li><strong>PDFを読み込めない</strong>: ファイル破損やパスワード保護の可能性があります。保護されていないPDFで試してください。</li>
             <li><strong>処理が途中で止まる</strong>: ファイルサイズやページ数を減らし、他のタブを閉じて再試行してください。</li>
         </ul>
+        </section>
 
         {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-guide-pdf-title' %}
             {% include 'includes/affiliate_inline_secondary.html' %}
@@ -149,7 +163,7 @@
             {% include 'includes/affiliate_inline_secondary.html' %}
         {% endwith %}
 
-        <div class="nav-links">
+        <div class="nav-links guide-section-card">
             <a href="/tools/pdf" class="nav-link">← PDFユーティリティに戻る</a>
             <a href="/tools" class="nav-link">← ツール一覧へ</a>
             <a href="/faq" class="nav-link">FAQを確認する →</a>

@@ -38,7 +38,7 @@ from lib.a8_affiliate_catalog import (
     a8_can_render_placement as catalog_a8_can_render_placement,
     get_a8_allowed_placements,
     get_a8_placement,
-    select_a8_creative,
+    select_a8_responsive_creative,
 )
 
 
@@ -842,20 +842,28 @@ def inject_env_vars():
             and affiliate_settings['banners_enabled']
             and not affiliate_is_path_excluded(current_path)
         ):
-            selected_a8_creative = select_a8_creative(current_path)
+            selected_a8_creative = select_a8_responsive_creative(current_path)
+            selected_a8_creative_ids = [
+                creative_id
+                for creative_id in (
+                    selected_a8_creative.get("id") if selected_a8_creative else None,
+                    (selected_a8_creative.get("desktop_variant") or {}).get("id") if selected_a8_creative else None,
+                )
+                if creative_id
+            ]
             if current_path == "/" and selected_a8_creative:
-                landing_secondary_a8_creative = select_a8_creative(
+                landing_secondary_a8_creative = select_a8_responsive_creative(
                     current_path,
                     placement="landing-lower-a8",
-                    exclude_creative_ids=[selected_a8_creative.get("id")],
+                    exclude_creative_ids=selected_a8_creative_ids,
                 )
             elif selected_a8_creative:
                 allowed_a8_placements = get_a8_allowed_placements(current_path)
                 if len(allowed_a8_placements) > 1:
-                    secondary_a8_creative = select_a8_creative(
+                    secondary_a8_creative = select_a8_responsive_creative(
                         current_path,
                         placement=allowed_a8_placements[1],
-                        exclude_creative_ids=[selected_a8_creative.get("id")],
+                        exclude_creative_ids=selected_a8_creative_ids,
                     )
         seo_defaults = get_seo_defaults(current_path)
         base_url = os.getenv('BASE_URL', 'https://oshigoto.onrender.com').rstrip('/')

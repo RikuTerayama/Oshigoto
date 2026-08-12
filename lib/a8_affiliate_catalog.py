@@ -45,8 +45,12 @@ A8_HIGH_CONTENT_EXACT_PATHS = frozenset(
 A8_HIGH_CONTENT_PREFIXES = ("/blog/",)
 
 ALLOWED_A8_TEMPLATES = frozenset(
-    f"includes/a8/creative_{index:02d}.html" for index in range(1, 6)
+    f"includes/a8/creative_{index:02d}.html" for index in range(1, 15)
 )
+ALLOWED_A8_SIZES = frozenset(("120x600", "200x200", "250x250", "300x250", "336x280", "350x240", "728x90"))
+MOBILE_A8_SIZES = frozenset(("200x200", "250x250", "300x250"))
+RAIL_DESKTOP_A8_SIZES = frozenset(("120x600", "200x200", "250x250", "300x250"))
+WIDE_DESKTOP_A8_SIZES = frozenset(("200x200", "250x250", "300x250", "336x280", "350x240", "728x90"))
 A8_HARD_EXCLUDED_PATHS = frozenset(
     ("/about", "/business", "/contact", "/privacy", "/terms")
 )
@@ -160,14 +164,19 @@ def load_a8_creative_catalog(catalog_path: str | Path | None = None) -> list[dic
             creative_id = raw.get("id")
             template_path = raw.get("template")
             weight = raw.get("weight")
-            if not re.fullmatch(r"a8-0[1-5]", str(creative_id or "")):
+            if not re.fullmatch(r"a8-(?:0[1-9]|1[0-4])", str(creative_id or "")):
                 raise ValueError("invalid creative id")
             if creative_id in seen_ids or template_path in seen_templates:
                 raise ValueError("duplicate creative")
             if template_path not in ALLOWED_A8_TEMPLATES or ".." in template_path:
                 raise ValueError("template is not allowlisted")
-            if raw.get("size") != "300x250":
+            if raw.get("size") not in ALLOWED_A8_SIZES:
                 raise ValueError("unexpected creative size")
+            width, height = (int(value) for value in raw["size"].split("x", 1))
+            if raw.get("width") != width or raw.get("height") != height:
+                raise ValueError("creative dimensions do not match size")
+            if not isinstance(raw.get("category"), str) or not raw["category"].strip():
+                raise ValueError("creative category is required")
             if raw.get("source") != "user_supplied_a8_material":
                 raise ValueError("unexpected creative source")
             if not isinstance(raw.get("enabled"), bool):
@@ -179,8 +188,8 @@ def load_a8_creative_catalog(catalog_path: str | Path | None = None) -> list[dic
             seen_ids.add(creative_id)
             seen_templates.add(template_path)
             validated.append(dict(raw))
-        if len(validated) != 5:
-            raise ValueError("catalog must contain exactly five creatives")
+        if len(validated) != 14:
+            raise ValueError("catalog must contain exactly fourteen creatives")
         return validated
     except (OSError, TypeError, ValueError, json.JSONDecodeError) as exc:
         logger.warning("a8_catalog_disabled reason=%s", str(exc))
@@ -193,6 +202,7 @@ def select_a8_creative(
     creatives: list[dict] | None = None,
     placement: str | None = None,
     exclude_creative_ids: set[str] | list[str] | tuple[str, ...] | None = None,
+    eligible_sizes: set[str] | frozenset[str] | tuple[str, ...] | None = None,
 ) -> dict | None:
     """Select one enabled creative using a stable JST-date and path seed."""
     normalized_path = _normalize_path(request_path)
@@ -207,21 +217,23 @@ def select_a8_creative(
 
     source = creatives if creatives is not None else load_a8_creative_catalog()
     excluded_ids = {str(value) for value in (exclude_creative_ids or ()) if value}
+    allowed_sizes = set(eligible_sizes) if eligible_sizes is not None else set(MOBILE_A8_SIZES)
     enabled = [
         item for item in source
         if item.get("enabled") is True
         and isinstance(item.get("weight"), int)
         and item["weight"] > 0
         and str(item.get("id") or "") not in excluded_ids
+        and item.get("size") in allowed_sizes
     ]
     total_weight = sum(item["weight"] for item in enabled)
     if total_weight <= 0:
         return None
 
     if selected_placement == primary_placement:
-        seed = f"{date_key}:{normalized_path}:a8-v1"
+        seed = f"{date_key}:{normalized_path}:{','.join(sorted(allowed_sizes))}:a8-v2"
     else:
-        seed = f"{date_key}:{normalized_path}:{selected_placement}:a8-v1"
+        seed = f"{date_key}:{normalized_path}:{selected_placement}:{','.join(sorted(allowed_sizes))}:a8-v2"
     digest = hashlib.sha256(seed.encode("utf-8")).digest()
     position = int.from_bytes(digest, "big") % total_weight
     cumulative = 0
@@ -232,3 +244,41 @@ def select_a8_creative(
             selected["placement"] = selected_placement
             return selected
     return None
+
+
+def select_a8_responsive_creative(
+    request_path: str | None,
+    date_key: str | None = None,
+    creatives: list[dict] | None = None,
+    placement: str | None = None,
+    exclude_creative_ids: set[str] | list[str] | tuple[str, ...] | None = None,
+) -> dict | None:
+    """Return a mobile-safe creative plus an optional desktop-only variant."""
+    normalized_path = _normalize_path(request_path)
+    selected_placement = placement or get_a8_placement(normalized_path)
+    mobile = select_a8_creative(
+        normalized_path,
+        date_key,
+        creatives,
+        placement=selected_placement,
+        exclude_creative_ids=exclude_creative_ids,
+        eligible_sizes=MOBILE_A8_SIZES,
+    )
+    if mobile is None:
+        return None
+
+    mode = "wide" if selected_placement and ("lower" in selected_placement) else "rail"
+    desktop_sizes = WIDE_DESKTOP_A8_SIZES if mode == "wide" else RAIL_DESKTOP_A8_SIZES
+    desktop = select_a8_creative(
+        normalized_path,
+        date_key,
+        creatives,
+        placement=selected_placement,
+        exclude_creative_ids=exclude_creative_ids,
+        eligible_sizes=desktop_sizes,
+    )
+    selected = dict(mobile)
+    selected["responsive_mode"] = mode
+    if desktop and desktop["id"] != mobile["id"]:
+        selected["desktop_variant"] = desktop
+    return selected

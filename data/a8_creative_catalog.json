@@ -5,6 +5,9 @@
       "id": "a8-01",
       "enabled": true,
       "size": "300x250",
+      "width": 300,
+      "height": 250,
+      "category": "work-tools",
       "template": "includes/a8/creative_01.html",
       "sha256": "63cb848baaddaeb5f4be77f4a56cdec9eeb8a2f6882f46f64f2e5b179c07c8b8",
       "source": "user_supplied_a8_material",
@@ -14,6 +17,9 @@
       "id": "a8-02",
       "enabled": true,
       "size": "300x250",
+      "width": 300,
+      "height": 250,
+      "category": "work-tools",
       "template": "includes/a8/creative_02.html",
       "sha256": "96cc5c6909169ceb8de511b572118149dc11b37315a20460096c5562afe8ab05",
       "source": "user_supplied_a8_material",
@@ -23,6 +29,9 @@
       "id": "a8-03",
       "enabled": true,
       "size": "300x250",
+      "width": 300,
+      "height": 250,
+      "category": "work-tools",
       "template": "includes/a8/creative_03.html",
       "sha256": "e6d9f2692a1a94e1ed6e1939ab2598369ff12c91838cc94adf60c58abd6f016c",
       "source": "user_supplied_a8_material",
@@ -32,6 +41,9 @@
       "id": "a8-04",
       "enabled": true,
       "size": "300x250",
+      "width": 300,
+      "height": 250,
+      "category": "work-tools",
       "template": "includes/a8/creative_04.html",
       "sha256": "acb6adb31d5d0662fb5d14a9a8d8c8a09fe1c754022f061ebfd416e971265a29",
       "source": "user_supplied_a8_material",
@@ -41,10 +53,67 @@
       "id": "a8-05",
       "enabled": true,
       "size": "300x250",
+      "width": 300,
+      "height": 250,
+      "category": "work-tools",
       "template": "includes/a8/creative_05.html",
       "sha256": "035c1ed40219ac565559bfe1a9f4550bd8b86d3a51f68ea6ad2f1ce2039f93b9",
       "source": "user_supplied_a8_material",
       "weight": 1
+    },
+    {
+      "id": "a8-06", "enabled": true, "size": "200x200", "width": 200, "height": 200,
+      "category": "english-learning", "template": "includes/a8/creative_06.html",
+      "sha256": "48bb4a7d44b2ff8e38330ff2b2c702d7008b776eef93328b514794620ec2b873",
+      "source": "user_supplied_a8_material", "weight": 1
+    },
+    {
+      "id": "a8-07", "enabled": true, "size": "120x600", "width": 120, "height": 600,
+      "category": "english-learning", "template": "includes/a8/creative_07.html",
+      "sha256": "fefa4856e948b9ef686575e41b826ab76aa2b03816e13851a60dccaf462da7b7",
+      "source": "user_supplied_a8_material", "weight": 1
+    },
+    {
+      "id": "a8-08", "enabled": true, "size": "300x250", "width": 300, "height": 250,
+      "category": "english-learning", "template": "includes/a8/creative_08.html",
+      "sha256": "e2794258344aca9302650a76fe57e7fb62d4fbd38f60dfc30328e986ad46911e",
+      "source": "user_supplied_a8_material", "weight": 1
+    },
+    {
+      "id": "a8-09", "enabled": true, "size": "336x280", "width": 336, "height": 280,
+      "category": "english-learning", "template": "includes/a8/creative_09.html",
+      "sha256": "dd134930cbfafa28372a083df9a88bf1ba1c57e7a2add8a17889dd4a026a8a21",
+      "source": "user_supplied_a8_material", "weight": 1
+    },
+    {
+      "id": "a8-10", "enabled": true, "size": "300x250", "width": 300, "height": 250,
+      "category": "english-learning", "template": "includes/a8/creative_10.html",
+      "sha256": "1be4c7469e4eb87c3ce3bd34df0d3e5f7de101a720fc4feaa8018501844f816b",
+      "source": "user_supplied_a8_material", "weight": 1
+    },
+    {
+      "id": "a8-11", "enabled": true, "size": "250x250", "width": 250, "height": 250,
+      "category": "english-learning", "template": "includes/a8/creative_11.html",
+      "sha256": "4c317fe2a1524efef12a3fbcf5c91d7109962740031dec7c73518aa7de454562",
+      "source": "user_supplied_a8_material", "weight": 1
+    },
+    {
+      "id": "a8-12", "enabled": true, "size": "350x240", "width": 350, "height": 240,
+      "category": "english-learning", "template": "includes/a8/creative_12.html",
+      "sha256": "dd8faf5406c2973539f2bca6b285814d5d768e1d476e31f44dab9ae8e6857c7b",
+      "source": "user_supplied_a8_material", "weight": 1
+    },
+    {
+      "id": "a8-13", "enabled": true, "size": "728x90", "width": 728, "height": 90,
+      "category": "english-learning", "template": "includes/a8/creative_13.html",
+      "sha256": "ffe92007b82477b4efa2106ed21539bd4c94654626e3aa49702e440a79d31de2",
+      "source": "user_supplied_a8_material", "weight": 1
+    },
+    {
+      "id": "a8-14", "enabled": true, "size": "300x250", "width": 300, "height": 250,
+      "category": "english-learning", "template": "includes/a8/creative_14.html",
+      "sha256": "b1a4c7331cc98eb179a875bab4de7baeca46c127703ae61dcd97653c9ad1c004",
+      "source": "user_supplied_a8_material", "weight": 1
     }
   ]
 }
