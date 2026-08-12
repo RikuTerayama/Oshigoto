@@ -5,20 +5,21 @@
     {% set page_description = 'PDF、CSV/Excel、画像、SEO/URL確認、広告表示で出てくる基本用語をカテゴリ別に短く整理した用語集です。' %}
     {% set breadcrumb_title = '用語集' %}
     {% include 'includes/head_meta.html' %}
+    {% include 'includes/public_system_styles.html' %}
 </head>
 <body class="landing-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
     <main class="page-shell page-with-affiliate-rail glossary-page-layout">
         <div class="page-with-affiliate-rail__content">
-        <section class="page-hero page-hero--compact">
+        <section class="page-hero page-hero--compact glossary-hero">
             <p class="eyebrow">Glossary</p>
             <h1>用語集</h1>
             <p>PDF、CSV/Excel、画像、SEO/URL確認、広告表示でよく出てくる言葉を、作業前に確認しやすい形でまとめました。</p>
         </section>
 
         <section class="content-grid content-grid--single glossary-grid">
-            <article class="info-card">
+            <article class="info-card glossary-card">
                 <h2>PDF</h2>
                 <dl class="term-list">
                     <dt>結合</dt><dd>複数のPDFを1つのファイルにまとめることです。資料や請求書をひとまとめにしたいときに使います。</dd>
@@ -31,7 +32,7 @@
                 </dl>
             </article>
 
-            <article class="info-card">
+            <article class="info-card glossary-card">
                 <h2>CSV / Excel</h2>
                 <dl class="term-list">
                     <dt>CSV</dt><dd>カンマ区切りで表データを保存するテキスト形式です。多くの業務システムで使われます。</dd>
@@ -45,7 +46,7 @@
                 </dl>
             </article>
 
-            <article class="info-card">
+            <article class="info-card glossary-card">
                 <h2>画像</h2>
                 <dl class="term-list">
                     <dt>JPG</dt><dd>写真に向いた画像形式です。圧縮率が高く、ファイルサイズを小さくしやすい特徴があります。</dd>
@@ -59,7 +60,7 @@
                 </dl>
             </article>
 
-            <article class="info-card">
+            <article class="info-card glossary-card">
                 <h2>SEO / URL</h2>
                 <dl class="term-list">
                     <dt>title</dt><dd>ブラウザタブや検索結果で使われるページタイトルです。ページ内容を短く表します。</dd>
@@ -73,7 +74,7 @@
                 </dl>
             </article>
 
-            <article class="info-card">
+            <article class="info-card glossary-card">
                 <h2>安全性 / 広告</h2>
                 <dl class="term-list">
                     <dt>ブラウザ内処理</dt><dd>利用者のブラウザ上で処理を完結させ、サーバーへファイルを送らない方式です。</dd>

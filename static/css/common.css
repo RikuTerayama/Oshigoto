@@ -882,11 +882,13 @@ img {
 }
 
 .related-content__header {
-    margin-bottom: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--public-related-grid-gap, clamp(24px, 2.5vw, 32px));
 }
 
 .related-content__eyebrow {
-    margin: 0 0 var(--spacing-xs);
+    margin: 0 0 var(--public-related-eyebrow-gap, clamp(8px, 1vw, 12px));
     color: var(--color-accent);
     font-size: 0.82rem;
     font-weight: 700;
@@ -895,7 +897,7 @@ img {
 }
 
 .related-content h2 {
-    margin: 0 0 var(--spacing-sm);
+    margin: 0 0 var(--public-related-intro-gap, clamp(10px, 1.2vw, 16px));
     font-size: 1.5rem;
 }
 
