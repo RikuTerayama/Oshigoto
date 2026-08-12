@@ -2,12 +2,14 @@
 {% if selected_a8_creative and a8_can_render_placement(a8_slot_placement) %}
 <section
     class="a8-creative-slot a8-creative-slot--{{ selected_a8_creative.responsive_mode|default('compact') }}"
+    hidden
     aria-label="PR・広告"
     data-a8-creative-id="{{ selected_a8_creative.id }}"
     data-affiliate-network="a8"
     data-affiliate-placement="{{ a8_slot_placement }}"
     data-a8-responsive-slot
     data-a8-responsive-mode="{{ selected_a8_creative.responsive_mode|default('compact') }}"
+    data-a8-pending
 >
     <span class="a8-creative-slot__label">PR</span>
     <div class="a8-creative-slot__creative" data-a8-responsive-mount></div>

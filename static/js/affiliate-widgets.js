@@ -113,7 +113,24 @@
         ? desktopTemplate
         : mobileTemplate;
       mount.appendChild(selectedTemplate.content.cloneNode(true));
+      var anchor = mount.querySelector('a[href^="https://px.a8.net/"]');
+      var visibleImage = anchor && anchor.querySelector('img:not([width="1"]):not([height="1"])');
+      var tracker = mount.querySelector('img[width="1"][height="1"]');
+      if (!anchor || !visibleImage || !tracker) {
+        mount.replaceChildren();
+        return;
+      }
       slot.dataset.a8RenderedCreativeId = selectedTemplate.dataset.a8CreativeId || '';
+      slot.removeAttribute('hidden');
+      delete slot.dataset.a8Pending;
+      var containers = [slot.closest('[data-a8-pending-container]')];
+      var inlineContainer = slot.closest('.inline-affiliate-break--a8');
+      if (inlineContainer && containers.indexOf(inlineContainer) === -1) containers.push(inlineContainer);
+      containers.forEach(function(container) {
+        if (!container) return;
+        container.removeAttribute('hidden');
+        delete container.dataset.a8PendingContainer;
+      });
     });
     Array.prototype.slice.call(document.querySelectorAll('[data-affiliate-slot]')).forEach(function(slot) {
       var mount = slot.querySelector('[data-affiliate-mount]');

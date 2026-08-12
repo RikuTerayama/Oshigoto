@@ -100,10 +100,6 @@
             <p>JPEG・PNG・WebP画像の品質やサイズを調整し、ブラウザ内で軽量化します。圧縮前後の容量を比較して保存できます。</p>
             <p class="compress-privacy">画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。</p>
         </header>
-        </div>
-        {% include 'includes/affiliate_primary_rail.html' %}
-        </div>
-
         <section class="tool-flow" aria-labelledby="image-compress-flow-heading">
             <h2 id="image-compress-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
@@ -113,6 +109,9 @@
                 <li><strong>結果を確認して保存する</strong><span>画像を個別に保存するか、複数画像をZIPでまとめて保存します。</span></li>
             </ol>
         </section>
+        </div>
+        {% include 'includes/affiliate_primary_rail.html' %}
+        </div>
 
         <div
             id="image-compress-app"
@@ -192,7 +191,7 @@
             <article><h3>注意</h3><ul><li>容量が必ず小さくなるとは限りません。</li><li>印刷用途では寸法や品質を下げすぎないでください。</li><li>大きな画像は端末性能により処理できない場合があります。</li><li>静止画のみ対応し、アニメーション画像は処理しません。</li></ul></article>
         </section>
 
-        <div class="compress-guide-link"><a href="/guide/image-compress">画像圧縮の使い方と用途別の目安を見る</a></div>
+        {% with tool_kb_href='/guide/image-compress', tool_kb_label='画像圧縮の使い方と用途別の目安を見る' %}{% include 'includes/tool_kb_cta.html' %}{% endwith %}
 
         <section class="tool-affiliate-row" aria-label="画像作業に関連する仕事道具">
             {% set affiliate_context_links = [
@@ -209,10 +208,10 @@
         </section>
     </main>
 
-    {% include 'includes/related_tools.html' %}
     {% with inline_affiliate_provider='a8' %}
         {% include 'includes/affiliate_inline_secondary.html' %}
     {% endwith %}
+    {% include 'includes/related_tools.html' %}
     {% include 'includes/footer.html' %}
     <script src="{{ url_for('static', filename='vendor/jszip/3.10.1/jszip.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/file-utils.js') }}"></script>

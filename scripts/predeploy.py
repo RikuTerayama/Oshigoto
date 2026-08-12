@@ -30,6 +30,8 @@ PYTHON_CHECKS = (
     ("public theme", "scripts/test_public_theme.py"),
     ("public visual consistency", "scripts/test_public_visual_consistency.py"),
     ("affiliate size placement", "scripts/test_affiliate_size_placement.py"),
+    ("affiliate rendering consistency", "scripts/test_affiliate_rendering_consistency.py"),
+    ("tool flow visual contract", "scripts/test_tool_flow_visual_contract.py"),
     ("multi-user safety", "scripts/test_multi_user_safety.py"),
     ("security preflight", "scripts/security_preflight.py"),
 )
