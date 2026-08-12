@@ -119,16 +119,20 @@
             text-decoration: underline;
         }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
-<body class="landing-page">
+<body class="landing-page guide-detail-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <div class="page-with-affiliate-rail">
+    <div class="page-with-affiliate-rail guide-shell">
     <div class="page-with-affiliate-rail__content">
-    <div class="container">
-        <h1>🖼️ 画像一括変換ツールガイド</h1>
+    <div class="container guide-content">
+        <header class="guide-hero">
+        <p class="guide-hero__kicker">Image Conversion Guide</p>
+        <h1>画像一括変換ガイド</h1>
         <p><strong>できること:</strong> JPEG・PNG・WebPの一括形式変換、リサイズ、品質調整、複数サイズの同時出力、ZIP保存に対応します。処理はブラウザ内で完結し、画像はサーバーへ送信されません。</p>
         <p><strong>想定ユーザー:</strong> ECサイト・Webデザイナー、SNS運用、マーケターなど、画像の一括変換・複数サイズ出力が必要な方。</p>
+        </header>
 
         <h2>このツールで解決できる課題</h2>
         <ul>

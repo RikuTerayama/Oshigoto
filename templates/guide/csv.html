@@ -24,16 +24,20 @@
         a { color: var(--brand-primary-strong); text-decoration: none; }
         a:hover { text-decoration: underline; }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
-<body class="landing-page">
+<body class="landing-page guide-detail-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <div class="page-with-affiliate-rail">
+    <div class="page-with-affiliate-rail guide-shell">
     <div class="page-with-affiliate-rail__content">
-    <div class="container">
-        <h1>📊 CSV/Excelユーティリティガイド</h1>
+    <div class="container guide-content">
+        <header class="guide-hero">
+        <p class="guide-hero__kicker">CSV / Excel Guide</p>
+        <h1>CSV/Excelツールガイド</h1>
         <p><strong>できること:</strong> CSVの文字コード変換（Shift-JIS/UTF-8）、CSV⇄XLSX変換、キー列指定の重複削除、列の抽出・並べ替え、N行ごとの分割。すべてブラウザ内で完結し、ファイルはサーバーに送信されません。</p>
         <p><strong>想定ユーザー:</strong> 名簿や集計データなどのCSV/Excelを、文字コード変換・形式変換・整形したい方。</p>
+        </header>
 
         <h2>このツールで解決できる課題</h2>
         <ul>

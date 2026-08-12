@@ -40,24 +40,29 @@ def main() -> int:
         assert hashlib.sha256(source).hexdigest() == EXPECTED_A8_CHECKSUMS[item["id"]]
 
     seen_a8: set[str] = set()
+    a8_counts = {creative_id: 0 for creative_id in EXPECTED_A8_CHECKSUMS}
     start = date(2026, 1, 1)
     paths = ("/", "/tools", "/guide", "/blog/example")
-    for offset in range(30):
+    for offset in range(60):
         day = (start + timedelta(days=offset)).isoformat()
         for path in paths:
             primary = select_a8_creative(path, day, creatives)
             assert primary is not None
             seen_a8.add(primary["id"])
+            a8_counts[primary["id"]] += 1
             if path in {"/", "/tools", "/guide"}:
                 placement = {"/": "landing-lower-a8", "/tools": "tools-lower-a8", "/guide": "content-lower-a8"}[path]
                 secondary = select_a8_creative(path, day, creatives, placement=placement, exclude_creative_ids=[primary["id"]])
                 assert secondary is not None and secondary["id"] != primary["id"]
                 seen_a8.add(secondary["id"])
+                a8_counts[secondary["id"]] += 1
     assert seen_a8 == set(EXPECTED_A8_CHECKSUMS), seen_a8
+    assert min(a8_counts.values()) > 0, a8_counts
+    assert max(a8_counts.values()) <= min(a8_counts.values()) * 2, a8_counts
 
     enabled_amazon = {str(item["id"]) for item in AMAZON_THEME_POOL if item.get("enabled")}
     seen_amazon: set[str] = set()
-    for offset in range(30):
+    for offset in range(60):
         bucket = f"daily:{(start + timedelta(days=offset)).isoformat()}"
         with patch("lib.amazon_creators._rotation_bucket_key", return_value=bucket):
             for path, page_type in (("/", "landing"), ("/tools", "tool_index"), ("/guide", "guide"), ("/blog/example", "article")):
@@ -68,7 +73,7 @@ def main() -> int:
                 seen_amazon.update((primary[0]["theme_id"], secondary[0]["theme_id"]))
     assert len(seen_amazon) >= min(5, len(enabled_amazon)), seen_amazon
 
-    print(f"PASS: A8 reached {len(seen_a8)}/5 exact creatives; Amazon reached {len(seen_amazon)}/{len(enabled_amazon)} themes")
+    print(f"PASS: A8 reached {len(seen_a8)}/5 exact creatives over 60 days {a8_counts}; Amazon reached {len(seen_amazon)}/{len(enabled_amazon)} themes")
     return 0
 
 

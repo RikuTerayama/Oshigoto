@@ -24,23 +24,26 @@
         .button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 16px; border: 1px solid rgba(14,124,123,.45); border-radius: 8px; text-decoration: none; color: var(--brand-primary-strong); background: var(--brand-teal-soft); font-weight: 700; }
         @media (max-width: 820px) { .page { padding-inline: 16px; } .grid { grid-template-columns: 1fr; } .card, .grid > .card:last-child:nth-child(odd) { grid-column: auto; width: 100%; } }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
-<body class="landing-page">
+<body class="landing-page guide-index-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <main class="page page-with-affiliate-rail">
+    <main class="page guide-shell page-with-affiliate-rail">
         <div class="page-with-affiliate-rail__content">
-        <section class="hero">
+        <section class="hero guide-hero">
+            <p class="guide-hero__kicker">Guide</p>
             <h1>ガイド一覧</h1>
             <p>PDF、CSV/Excel、画像、SEO/URL確認の使い方を、作業の目的別に短く確認できます。</p>
         </section>
-        <section class="grid" aria-label="ツール別ガイド">
-            <article class="card"><h2><a href="/guide/pdf">PDFツールガイド</a></h2><p>PDFの結合、分割、抽出、圧縮、画像変換、保護の使い方を確認できます。</p></article>
-            <article class="card"><h2><a href="/guide/csv">CSV/Excelツールガイド</a></h2><p>CSV/Excelの変換、文字コード確認、重複削除、列整理の使い方を確認できます。</p></article>
-            <article class="card"><h2><a href="/guide/image-batch">画像一括変換ガイド</a></h2><p>画像の形式変換、リサイズ、品質調整をまとめて行う流れを確認できます。</p></article>
-            <article class="card"><h2><a href="/guide/image-compress">画像圧縮ガイド</a></h2><p>JPEG・PNG・WebPを軽量化し、圧縮前後の容量を比較する手順を確認できます。</p></article>
-            <article class="card"><h2><a href="/guide/image-cleanup">画像クリーンアップガイド</a></h2><p>余白、背景、比率を整えて、資料に使いやすくする方法を確認できます。</p></article>
-            <article class="card"><h2><a href="/guide/seo">SEO/URL確認ガイド</a></h2><p>title、meta、OGP、sitemap、robots.txtの確認方法をまとめています。</p></article>
+        <section class="grid guide-catalog-grid balanced-seven-grid" aria-label="ツール別ガイド">
+            <article class="card guide-catalog-card"><h2><a href="/guide/pdf">PDFツールガイド</a></h2><p>PDFの結合、分割、抽出、圧縮、画像変換、保護の使い方を確認できます。</p></article>
+            <article class="card guide-catalog-card"><h2><a href="/guide/csv">CSV/Excelツールガイド</a></h2><p>CSV/Excelの変換、文字コード確認、重複削除、列整理の使い方を確認できます。</p></article>
+            <article class="card guide-catalog-card"><h2><a href="/guide/image-batch">画像一括変換ガイド</a></h2><p>画像の形式変換、リサイズ、品質調整をまとめて行う流れを確認できます。</p></article>
+            <article class="card guide-catalog-card"><h2><a href="/guide/image-compress">画像圧縮ガイド</a></h2><p>JPEG・PNG・WebPを軽量化し、圧縮前後の容量を比較する手順を確認できます。</p></article>
+            <article class="card guide-catalog-card"><h2><a href="/guide/image-cleanup">画像クリーンアップガイド</a></h2><p>余白、背景、比率を整えて、資料に使いやすくする方法を確認できます。</p></article>
+            <article class="card guide-catalog-card"><h2><a href="/guide/qr-code">QRコード作成ガイド</a></h2><p>URL、テキスト、メール、電話番号、Wi-Fi情報をQRコードにする手順を確認できます。</p></article>
+            <article class="card guide-catalog-card"><h2><a href="/guide/seo">SEO/URL確認ガイド</a></h2><p>title、meta、OGP、sitemap、robots.txtの確認方法をまとめています。</p></article>
         </section>
         <div class="links"><a class="button" href="/tools">ツール一覧</a><a class="button" href="/best-practices">ベストプラクティス</a><a class="button" href="/faq">FAQ</a></div>
         </div>

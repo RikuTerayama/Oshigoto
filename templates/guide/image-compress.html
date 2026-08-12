@@ -27,14 +27,15 @@
         @media (max-width: 820px) { .compress-guide__steps, .compress-guide__uses, .compress-guide__formats { grid-template-columns: 1fr; } }
         @media (max-width: 430px) { .compress-guide { width: min(100% - 20px, 920px); } .compress-guide__step, .compress-guide__card, .compress-guide__faq article { padding: 18px; } }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
-<body class="landing-page compress-guide-page">
+<body class="landing-page guide-detail-page compress-guide-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <main class="compress-guide page-with-affiliate-rail">
+    <main class="compress-guide guide-shell page-with-affiliate-rail">
         <div class="page-with-affiliate-rail__content">
-        <header class="compress-guide__hero">
-            <p>Image compression guide</p>
+        <header class="compress-guide__hero guide-hero">
+            <p class="guide-hero__kicker">Image Compression Guide</p>
             <h1>画像圧縮の使い方</h1>
             <p>JPEG・PNG・WebPの静止画像を、用途に合わせて軽量化する手順です。画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。</p>
         </header>

@@ -5,6 +5,7 @@
     {% set page_description = 'PDF、CSV/Excel、画像一括変換、画像クリーンアップ、SEO/URL確認など、仕事でたまに必要になる軽量ツールを選べます。' %}
     {% set breadcrumb_title = 'ツール一覧' %}
     {% include 'includes/head_meta.html' %}
+    {% include 'includes/public_system_styles.html' %}
 </head>
 <body class="tools-index-page">
     {% from 'includes/tool_icons.html' import tool_icon %}
@@ -31,7 +32,7 @@
                 <input type="text" id="search-input" placeholder="ツール名や説明で検索..." aria-label="ツールを検索">
             </div>
             <div class="tools-catalog-shell__main">
-                <div class="tools-catalog-grid" id="products-grid" data-reveal-stagger>
+                <div class="tools-catalog-grid balanced-seven-grid" id="products-grid" data-reveal-stagger>
                     {% for product in products %}
                     <article class="product-card tool-catalog-card"
                              data-name="{{ product.name }}"

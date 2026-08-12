@@ -86,8 +86,9 @@
             .compress-file-row { align-items: flex-start; }
         }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
-<body class="landing-page image-compress-page">
+<body class="landing-page tool-page tool-page--image-compress image-compress-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
     <main class="compress-shell">
@@ -102,6 +103,16 @@
         </div>
         {% include 'includes/affiliate_primary_rail.html' %}
         </div>
+
+        <section class="tool-flow" aria-labelledby="image-compress-flow-heading">
+            <h2 id="image-compress-flow-heading">使う順番</h2>
+            <ol class="tool-step-list">
+                <li><strong>画像を選ぶ</strong><span>JPEG、PNG、WebPの静止画像を選択します。</span></li>
+                <li><strong>出力方法を決める</strong><span>形式、品質、最大幅・高さを用途に合わせて設定します。</span></li>
+                <li><strong>画像を軽くする</strong><span>ブラウザ内で処理し、圧縮前後の容量を比較します。</span></li>
+                <li><strong>結果を確認して保存する</strong><span>画像を個別に保存するか、複数画像をZIPでまとめて保存します。</span></li>
+            </ol>
+        </section>
 
         <div
             id="image-compress-app"

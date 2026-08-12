@@ -224,6 +224,7 @@
             }
         }
     </style>
+    {% include 'includes/public_system_styles.html' %}
 </head>
 <body class="landing-page tool-page tool-page--seo">
     {% from 'includes/tool_icons.html' import tool_icon %}
@@ -237,6 +238,7 @@
             <span class="icon-tile icon-tile--lg icon-tile--blue" aria-hidden="true">{{ tool_icon('seo', 28) }}</span>
             <h1 data-reveal>ページを確認する</h1>
             <p data-reveal data-reveal-delay="50">公開前やSNS共有前に、title、meta description、OGP、canonical、robots、sitemapを確認します。</p>
+            <p class="tool-processing-note">ブラウザ内で完結する機能と、入力URLへサーバーから接続する機能を画面内で区別して表示します。</p>
         </div>
         {% set tool_intro_what = 'HTMLやURLをもとに、SNS共有や検索結果で見える情報を確認できます。OGP画像やsitemap/robots作成も扱えます。' %}
         {% set tool_intro_steps = ['URLまたはHTMLを入力する', '確認したい項目を選ぶ', 'チェックする', '結果と修正ヒントを見る'] %}
