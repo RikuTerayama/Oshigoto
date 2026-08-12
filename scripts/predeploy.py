@@ -29,6 +29,8 @@ PYTHON_CHECKS = (
     ("guide layout consistency", "scripts/test_guide_layout_consistency.py"),
     ("public theme", "scripts/test_public_theme.py"),
     ("public visual consistency", "scripts/test_public_visual_consistency.py"),
+    ("glossary visual contract", "scripts/test_glossary_visual_contract.py"),
+    ("header icon consistency", "scripts/test_header_icon_consistency.py"),
     ("affiliate size placement", "scripts/test_affiliate_size_placement.py"),
     ("affiliate rendering consistency", "scripts/test_affiliate_rendering_consistency.py"),
     ("tool flow visual contract", "scripts/test_tool_flow_visual_contract.py"),

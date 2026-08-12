@@ -1,6 +1,7 @@
 ﻿{% from 'includes/icons.html' import icon %}
 {% from 'includes/tool_icons.html' import tool_icon %}
 {% set _current_path = request.path|default('/') if (request is defined and request) else '/' %}
+{% set _nav_icon_names = {'home': 'home', 'tools': 'tools', 'guide': 'book', 'resource': 'resources', 'business': 'briefcase'} %}
 <header class="site-header">
     <nav class="site-nav" role="navigation" aria-label="メインナビゲーション">
         <div class="site-nav__inner">
@@ -27,7 +28,8 @@
                         <a href="{{ section.path|default('/') }}"
                            class="site-nav__link {% if _current_path == section.path or (section.path == '/' and _current_path == '/') %}site-nav__link--active{% endif %}"
                            {% if section.id %}id="nav-{{ section.id }}"{% endif %}>
-                            {% if section.id == 'home' %}{{ icon('home', 18, 'site-nav__icon') }}{% elif section.id == 'guide' %}{{ icon('book', 18, 'site-nav__icon') }}{% elif section.id == 'tools' %}{{ icon('tools', 18, 'site-nav__icon') }}{% endif %}
+                            {% set _nav_icon_name = _nav_icon_names.get(section.id) %}
+                            {% if _nav_icon_name %}{{ icon(_nav_icon_name, 18, 'site-nav__icon') }}{% endif %}
                             <span>{{ section.label }}</span>
                         </a>
                     {% else %}
@@ -41,7 +43,8 @@
                                     aria-controls="{{ _mobile_panel_id }}"
                                     data-mobile-accordion-trigger
                                     id="nav-{{ _section_id }}">
-                                {% if section.id == 'tools' %}{{ icon('tools', 18, 'site-nav__icon') }}{% elif section.id == 'guide' %}{{ icon('book', 18, 'site-nav__icon') }}{% endif %}
+                                {% set _nav_icon_name = _nav_icon_names.get(section.id) %}
+                                {% if _nav_icon_name %}{{ icon(_nav_icon_name, 18, 'site-nav__icon') }}{% endif %}
                                 <span>{{ section.label }}</span>
                                 <span class="site-nav__chevron" aria-hidden="true">▾</span>
                             </button>

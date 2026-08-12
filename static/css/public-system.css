@@ -8,10 +8,57 @@
     --public-gap-md: 24px;
     --public-gap-lg: clamp(32px, 5vw, 56px);
     --public-section-gap: clamp(48px, 5vw, 64px);
+    --public-glossary-hero-gap: clamp(48px, 4vw, 56px);
+    --public-related-eyebrow-gap: clamp(8px, 1vw, 12px);
+    --public-related-intro-gap: clamp(10px, 1.2vw, 16px);
+    --public-related-grid-gap: clamp(24px, 2.5vw, 32px);
     --public-card-padding: clamp(20px, 3vw, 28px);
     --public-radius: 14px;
     --public-control-radius: 10px;
     --public-font: "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Glossary rhythm and cards use the same public surface tokens as tools and guides. */
+.landing-page .glossary-page-layout .glossary-grid {
+    gap: clamp(24px, 2.5vw, 32px) !important;
+    margin-top: var(--public-glossary-hero-gap) !important;
+}
+
+.landing-page .glossary-page-layout .glossary-grid > .glossary-card {
+    overflow: hidden;
+    padding: var(--public-card-padding) !important;
+    border: 1px solid var(--brand-line) !important;
+    border-radius: var(--public-radius) !important;
+    background: var(--brand-surface) !important;
+    box-shadow: none !important;
+}
+
+.landing-page .glossary-page-layout .glossary-grid + .related-content {
+    margin-top: clamp(56px, 6vw, 72px);
+}
+
+@media (min-width: 641px) and (max-width: 1199px) {
+    .landing-page .glossary-page-layout .glossary-grid {
+        margin-top: clamp(40px, 5vw, 48px) !important;
+    }
+
+    .landing-page .glossary-page-layout .glossary-grid + .related-content {
+        margin-top: clamp(48px, 5.5vw, 56px);
+    }
+}
+
+@media (max-width: 640px) {
+    :root {
+        --public-glossary-hero-gap: clamp(28px, 8vw, 36px);
+    }
+
+    .landing-page .glossary-page-layout .glossary-grid {
+        gap: var(--public-gap-md) !important;
+    }
+
+    .landing-page .glossary-page-layout .glossary-grid + .related-content {
+        margin-top: clamp(36px, 10vw, 44px);
+    }
 }
 
 .landing-page,
