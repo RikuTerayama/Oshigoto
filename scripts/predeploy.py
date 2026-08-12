@@ -29,6 +29,7 @@ PYTHON_CHECKS = (
     ("guide layout consistency", "scripts/test_guide_layout_consistency.py"),
     ("public theme", "scripts/test_public_theme.py"),
     ("public visual consistency", "scripts/test_public_visual_consistency.py"),
+    ("public page family consistency", "scripts/test_public_page_family_consistency.py"),
     ("UI polish contract", "scripts/test_ui_polish_contract.py"),
     ("glossary visual contract", "scripts/test_glossary_visual_contract.py"),
     ("header icon consistency", "scripts/test_header_icon_consistency.py"),

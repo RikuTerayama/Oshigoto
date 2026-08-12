@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -11,6 +12,8 @@ from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+os.environ.setdefault("AMAZON_AFFILIATE_ENABLED", "true")
+os.environ.setdefault("AMAZON_ASSOCIATE_TAG", "tool-layout-check-22")
 
 from app import app  # noqa: E402
 
@@ -33,11 +36,12 @@ def main() -> int:
             soup = BeautifulSoup(response.get_data(as_text=True), "html.parser")
             require(soup.select_one("body.tool-page") is not None, f"{path}: canonical body class missing")
             require(soup.select_one('link[href*="public-system.css"]') is not None, f"{path}: shared stylesheet missing")
-            require(soup.select_one("h1") is not None, f"{path}: hero heading missing")
-            require(
-                soup.select_one(".tool-processing-note, .compress-privacy, .qr-privacy") is not None,
-                f"{path}: processing note missing",
-            )
+            hero = soup.select_one(".tool-hero")
+            require(hero is not None, f"{path}: canonical hero missing")
+            require(hero.select_one(".tool-hero__icon svg") is not None, f"{path}: hero icon missing")
+            require(hero.select_one("h1") is not None, f"{path}: hero heading missing")
+            require(hero.select_one(".tool-hero__lead") is not None, f"{path}: hero lead missing")
+            require(hero.select_one(".tool-processing-note") is not None, f"{path}: processing note missing")
             flow = soup.select_one(".tool-flow")
             require(flow is not None, f"{path}: tool flow missing")
             require(flow.select_one("h2") is not None and flow.select_one("h2").get_text(strip=True) == "使う順番", f"{path}: flow heading differs")

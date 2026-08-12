@@ -149,7 +149,7 @@ def run_with_test_client():
         return 1
     image_body = client.get('/tools/image-compress', follow_redirects=False).data.decode('utf-8', errors='replace')
     image_checks = {
-        'h1': '<h1>画像を軽くする</h1>' in image_body,
+        'h1': '<h1 id="tool-hero-heading">画像を軽くする</h1>' in image_body,
         'browser_only': 'Oshigotoのサーバーへ送信されません' in image_body,
         'formats': all(marker in image_body for marker in ('image/jpeg', 'image/png', 'image/webp')),
         'core_script': 'js/image-compress-core.js' in image_body and 'js/image-compress.js' in image_body,
@@ -175,7 +175,7 @@ def run_with_test_client():
     qr_body = client.get('/tools/qr-code').data.decode('utf-8', errors='replace')
     qr_guide_body = client.get('/guide/qr-code').data.decode('utf-8', errors='replace')
     qr_checks = {
-        'h1': '<h1>QRコードを作る</h1>' in qr_body,
+        'h1': '<h1 id="tool-hero-heading">QRコードを作る</h1>' in qr_body,
         'five_types': all(f'value="{value}"' in qr_body for value in ('url', 'text', 'email', 'phone', 'wifi')),
         'local_vendor': 'vendor/qrcode/1.5.4/qrcode.min.js' in qr_body and 'cdn.' not in qr_body,
         'scripts': 'js/qr-code-core.js' in qr_body and 'js/qr-code.js' in qr_body,
@@ -228,7 +228,7 @@ def run_deploy_verification():
         if marker not in pdf_body:
             failed.append(f'path=/tools/pdf missing marker {marker}')
     image_body = client.get('/tools/image-compress').data.decode('utf-8', errors='replace')
-    for marker in ('<h1>画像を軽くする</h1>', 'data-max-files="20"', 'js/image-compress.js', 'Oshigotoのサーバーへ送信されません'):
+    for marker in ('<h1 id="tool-hero-heading">画像を軽くする</h1>', 'data-max-files="20"', 'js/image-compress.js', 'Oshigotoのサーバーへ送信されません'):
         if marker not in image_body:
             failed.append(f'path=/tools/image-compress missing marker {marker}')
     batch_body = client.get('/tools/image-batch').data.decode('utf-8', errors='replace')
@@ -236,7 +236,7 @@ def run_deploy_verification():
         if marker not in batch_body:
             failed.append(f'path=/tools/image-batch missing marker {marker}')
     qr_body = client.get('/tools/qr-code').data.decode('utf-8', errors='replace')
-    for marker in ('<h1>QRコードを作る</h1>', 'value="wifi"', '1,000 bytes', 'vendor/qrcode/1.5.4/qrcode.min.js', 'js/qr-code-core.js', 'PNGで保存', 'SVGで保存'):
+    for marker in ('<h1 id="tool-hero-heading">QRコードを作る</h1>', 'value="wifi"', '1,000 bytes', 'vendor/qrcode/1.5.4/qrcode.min.js', 'js/qr-code-core.js', 'PNGで保存', 'SVGで保存'):
         if marker not in qr_body:
             failed.append(f'path=/tools/qr-code missing marker {marker}')
     for path in (

@@ -1,0 +1,9 @@
+{% from 'includes/tool_icons.html' import tool_icon %}
+<section class="tool-hero" aria-labelledby="tool-hero-heading" data-reveal>
+    <span class="tool-hero__icon icon-tile icon-tile--lg" aria-hidden="true">
+        {{ tool_icon(tool_hero_icon, 28) }}
+    </span>
+    <h1 id="tool-hero-heading">{{ tool_hero_title }}</h1>
+    <p class="tool-hero__lead">{{ tool_hero_lead }}</p>
+    <p class="tool-processing-note">{{ tool_hero_note }}</p>
+</section>

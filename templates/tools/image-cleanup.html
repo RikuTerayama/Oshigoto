@@ -28,26 +28,6 @@
             padding: 40px 20px;
         }
 
-        .page-header {
-            text-align: center;
-            padding: 40px 20px;
-            margin-bottom: 40px;
-        }
-
-        .page-header h1 {
-            font-size: 2.5em;
-            margin: 0 0 15px 0;
-            color: var(--brand-ink);
-            font-weight: 600;
-        }
-
-        .page-header p {
-            font-size: 1.1em;
-            color: var(--brand-muted);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
         .tool-section {
             background: #ffffff;
             border-radius: 12px;
@@ -272,10 +252,6 @@
         .style-preview__presets .preset-button:hover { background: rgba(14, 124, 123, 0.16); }
 
         @media (max-width: 768px) {
-            .page-header h1 {
-                font-size: 2em;
-            }
-
             .container {
                 padding: 20px 15px;
             }
@@ -284,19 +260,17 @@
     {% include 'includes/public_system_styles.html' %}
 </head>
 <body class="landing-page tool-page tool-page--image-cleanup">
-    {% from 'includes/tool_icons.html' import tool_icon %}
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
 
     <div class="container">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
-        <div class="page-header">
-            <span class="icon-tile icon-tile--lg icon-tile--teal" aria-hidden="true">{{ tool_icon('image-cleanup', 28) }}</span>
-            <h1 data-reveal>画像を見やすくする</h1>
-            <p data-reveal data-reveal-delay="50">余白、背景、比率、枠まわりを整えて、資料や添付画像に使いやすい見た目にします。</p>
-            <p class="tool-processing-note">画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。</p>
-        </div>
+        {% set tool_hero_icon = 'image-cleanup' %}
+        {% set tool_hero_title = '画像を見やすくする' %}
+        {% set tool_hero_lead = '余白、背景、比率、枠まわりを整えて、資料や添付画像に使いやすい見た目にします。' %}
+        {% set tool_hero_note = '画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。' %}
+        {% include 'includes/tool_hero.html' %}
         {% set tool_intro_what = '透明部分の白背景化、余白調整、サイズや比率を揃える作業をまとめて行えます。' %}
         {% set tool_intro_steps = ['画像を選ぶ', '整え方を選ぶ', '仕上がりを確認する', '画像を書き出す'] %}
         {% set tool_intro_notice = '背景調整は画像の状態によって仕上がりが変わります。大切な画像は出力後に確認してください。' %}
