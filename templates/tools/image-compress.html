@@ -101,6 +101,7 @@
             <p class="compress-privacy">画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。</p>
         </header>
         <section class="tool-flow" aria-labelledby="image-compress-flow-heading">
+            <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="image-compress-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
                 <li><strong>画像を選ぶ</strong><span>JPEG、PNG、WebPの静止画像を選択します。</span></li>
@@ -127,7 +128,7 @@
                     <span class="compress-step__number" aria-hidden="true">1</span>
                     <div class="compress-step__copy"><h2 id="compress-input-title">画像を選択</h2><p>静止画のJPEG・PNG・WebPをまとめて選べます。</p></div>
                 </div>
-                <div id="compress-dropzone" class="compress-dropzone" role="button" tabindex="0" aria-controls="compress-files">
+                <div id="compress-dropzone" class="compress-dropzone" data-file-dropzone role="button" tabindex="0" aria-controls="compress-files">
                     <div><strong>画像を選ぶ、またはここへドロップ</strong><span>最大{{ image_compress_max_files }}件・1件{{ image_compress_max_file_size_mb }}MB・合計{{ image_compress_max_total_size_mb }}MB</span></div>
                 </div>
                 <input id="compress-files" class="compress-file-input" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple>

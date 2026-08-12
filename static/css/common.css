@@ -3272,17 +3272,6 @@ body.landing-page,
     box-shadow: inset 0 1px 0 rgba(43, 38, 32, 0.03);
 }
 
-.landing-page input:focus,
-.landing-page select:focus,
-.landing-page textarea:focus,
-.landing-page input:focus-visible,
-.landing-page select:focus-visible,
-.landing-page textarea:focus-visible {
-    outline: 2px solid var(--color-accent) !important;
-    outline-offset: 2px;
-    box-shadow: var(--shadow-focus) !important;
-}
-
 .landing-page .tool-step-list {
     counter-reset: tool-step;
     display: grid;
