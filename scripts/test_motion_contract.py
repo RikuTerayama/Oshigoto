@@ -20,8 +20,8 @@ def require(condition: bool, message: str) -> None:
 
 def main() -> int:
     require("IntersectionObserver" in REVEAL_JS, "scroll reveal must use IntersectionObserver")
-    require("translateY(10px)" in REVEAL_CSS and "0.32s" in REVEAL_CSS, "reveal motion must stay subtle")
-    require("@keyframes public-tool-signal" in PUBLIC_CSS and "4.8s" in PUBLIC_CSS, "hero signal animation missing")
+    require("translateY(12px)" in REVEAL_CSS and "0.38s" in REVEAL_CSS, "reveal motion must stay subtle")
+    require("@keyframes public-tool-signal" in PUBLIC_CSS and "animation-duration: 6.2s" in PUBLIC_CSS, "hero signal animation missing")
     require("@keyframes public-tool-icon-float" in PUBLIC_CSS and "translateY(-2px)" in PUBLIC_CSS, "icon micro motion missing")
     require("(hover: none), (pointer: coarse)" in PUBLIC_CSS and "translateY(1px)" in PUBLIC_CSS, "touch feedback missing")
     require("@media (prefers-reduced-motion: reduce)" in PUBLIC_CSS + MOTION_CSS + REVEAL_CSS, "reduced motion guard missing")

@@ -18,7 +18,7 @@
 <body class="landing-page tool-page tool-page--csv">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <div class="container">
+    <div class="container tool-detail-shell">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'csv' %}
@@ -29,7 +29,8 @@
         {% set tool_intro_what = '表データの文字化け確認、CSVとExcelの変換、重複削除、列の整理をまとめて行えます。' %}
         {% set tool_intro_steps = ['CSVまたはExcelを選ぶ', 'やりたい操作を選ぶ', 'プレビューで確認する', '結果をダウンロードする'] %}
         {% set tool_intro_notice = '文字コードや区切り文字が合わない場合は、プレビューで確認してから保存してください。' %}
-        <section class="tool-flow" aria-labelledby="csv-flow-heading" data-tool-flow>
+        <section class="tool-flow signal-surface" aria-labelledby="csv-flow-heading" data-tool-flow>
+            <span class="signal-track signal-track--short" aria-hidden="true"></span>
             <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="csv-flow-heading">使う順番</h2>
             <ol class="tool-step-list">

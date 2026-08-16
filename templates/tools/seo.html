@@ -210,7 +210,7 @@
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
 
-    <div class="container">
+    <div class="container tool-detail-shell">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'seo' %}
@@ -221,7 +221,8 @@
         {% set tool_intro_what = 'HTMLやURLをもとに、SNS共有や検索結果で見える情報を確認できます。OGP画像やsitemap/robots作成も扱えます。' %}
         {% set tool_intro_steps = ['URLまたはHTMLを入力する', '確認したい項目を選ぶ', 'チェックする', '結果と修正ヒントを見る'] %}
         {% set tool_intro_notice = '外部URL確認には取得制限やタイムアウトがあります。取得できない場合はHTMLを貼り付けてください。' %}
-        <section class="tool-flow" aria-labelledby="seo-flow-heading" data-tool-flow>
+        <section class="tool-flow signal-surface" aria-labelledby="seo-flow-heading" data-tool-flow>
+            <span class="signal-track signal-track--short" aria-hidden="true"></span>
             <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="seo-flow-heading">使う順番</h2>
             <ol class="tool-step-list">

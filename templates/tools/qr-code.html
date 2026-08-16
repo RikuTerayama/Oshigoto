@@ -74,7 +74,7 @@
 <body class="landing-page tool-page tool-page--qr qr-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <main class="qr-shell">
+    <main class="qr-shell tool-detail-shell">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'qr-code' %}
@@ -82,7 +82,8 @@
         {% set tool_hero_lead = 'URL、テキスト、メール、電話番号、Wi-Fi接続情報をQRコードにして、PNGまたはSVGで保存できます。' %}
         {% set tool_hero_note = '入力内容と生成処理はブラウザ内に留まり、Oshigotoのサーバーへ送信されません。' %}
         {% include 'includes/tool_hero.html' %}
-        <section class="tool-flow" aria-labelledby="qr-flow-heading" data-tool-flow>
+        <section class="tool-flow signal-surface" aria-labelledby="qr-flow-heading" data-tool-flow>
+            <span class="signal-track signal-track--short" aria-hidden="true"></span>
             <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="qr-flow-heading">使う順番</h2>
             <ol class="tool-step-list">

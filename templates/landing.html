@@ -25,10 +25,29 @@
                     <a href="/guide" class="btn btn-secondary">使い方を見る</a>
                 </div>
             </div>
+            <div class="hero-v2__signal" aria-hidden="true" data-no-reveal>
+                <div class="work-signal-visual">
+                    <svg class="work-signal-visual__map" viewBox="0 0 520 340" focusable="false">
+                        <path d="M82 92 C150 92 164 166 252 166 S356 72 438 90" />
+                        <path d="M88 260 C162 260 174 188 252 188 S356 270 432 244" />
+                        <path d="M252 166 V188" />
+                        <circle cx="252" cy="177" r="54" />
+                    </svg>
+                    <span class="work-signal-node work-signal-node--pdf">{{ tool_icon('pdf', 24) }}<small>PDF</small></span>
+                    <span class="work-signal-node work-signal-node--csv">{{ tool_icon('csv', 24) }}<small>CSV</small></span>
+                    <span class="work-signal-node work-signal-node--image">{{ tool_icon('image-batch', 24) }}<small>IMAGE</small></span>
+                    <span class="work-signal-node work-signal-node--qr">{{ tool_icon('qr-code', 24) }}<small>QR</small></span>
+                    <span class="work-signal-node work-signal-node--web">{{ tool_icon('seo', 24) }}<small>WEB</small></span>
+                    <span class="work-signal-visual__pulse"></span>
+                    <span class="work-signal-visual__status">WORK SIGNAL / READY</span>
+                </div>
+                <div class="work-signal-strip"><span></span><i></i><span></span><i></i><span></span></div>
+            </div>
         </section>
 
         <div class="landing-tools-layout page-with-affiliate-rail">
-        <section class="landing-tools-zone section-block--tools" aria-labelledby="landing-tools-heading">
+        <section class="landing-tools-zone section-block--tools signal-surface" aria-labelledby="landing-tools-heading">
+            <span class="signal-track" aria-hidden="true"></span>
             <div class="section-heading">
                 <p class="section-kicker">Tools</p>
                 <h2 id="landing-tools-heading">必要な作業を選ぶ</h2>
@@ -78,7 +97,8 @@
             </div>
         </section>
 
-        <section class="section-block business-teaser landing-section-surface landing-section-surface--business" aria-labelledby="business-teaser-heading" data-reveal>
+        <section class="section-block business-teaser landing-section-surface landing-section-surface--business signal-surface" aria-labelledby="business-teaser-heading" data-reveal>
+            <span class="signal-track signal-track--short" aria-hidden="true"></span>
             <div class="business-teaser__copy">
                 <p class="section-kicker">For business</p>
                 <h2 id="business-teaser-heading">企業の業務に合わせたツール作成も支援します</h2>

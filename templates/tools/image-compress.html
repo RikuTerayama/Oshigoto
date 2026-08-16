@@ -86,7 +86,7 @@
 <body class="landing-page tool-page tool-page--image-compress image-compress-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <main class="compress-shell">
+    <main class="compress-shell tool-detail-shell">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'image-compress' %}
@@ -94,7 +94,8 @@
         {% set tool_hero_lead = 'JPEG・PNG・WebP画像の品質やサイズを調整し、ブラウザ内で軽量化します。圧縮前後の容量を比較して保存できます。' %}
         {% set tool_hero_note = '画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。' %}
         {% include 'includes/tool_hero.html' %}
-        <section class="tool-flow" aria-labelledby="image-compress-flow-heading" data-tool-flow>
+        <section class="tool-flow signal-surface" aria-labelledby="image-compress-flow-heading" data-tool-flow>
+            <span class="signal-track signal-track--short" aria-hidden="true"></span>
             <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="image-compress-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
