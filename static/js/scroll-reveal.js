@@ -68,6 +68,7 @@
         ];
 
         const staggerSelectors = [
+            '.landing-page .landing-tool-grid',
             '.landing-page .tool-card-grid',
             '.landing-page .tool-step-list',
             '.landing-page .tool-flow-side-box__steps',
@@ -75,6 +76,8 @@
             '.landing-page .landing-use-grid',
             '.landing-page .glossary-grid',
             '.landing-page .faq-grid',
+            '.landing-page .related-content__grid',
+            '.landing-page .trust-grid',
             '.tools-index-page .tools-catalog-grid',
             '.guide-index-page .guide-catalog-grid',
             '.business-page .business-grid'

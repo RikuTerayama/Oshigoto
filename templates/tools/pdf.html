@@ -63,7 +63,7 @@
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
 
-    <div class="container">
+    <div class="container tool-detail-shell">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'pdf' %}
@@ -74,7 +74,8 @@
         {% set tool_intro_what = 'PDFをまとめる、必要なページだけ残す、不要ページを削る、向きを直す作業をまとめて扱えます。' %}
         {% set tool_intro_steps = ['操作を選ぶ', 'PDFまたは画像を選ぶ', '必要な設定を入れる', '実行してダウンロード'] %}
         {% set tool_intro_notice = '大きなPDFやページ数の多いPDFは処理に時間がかかることがあります。' %}
-        <section class="tool-flow" aria-labelledby="pdf-flow-heading" data-tool-flow>
+        <section class="tool-flow signal-surface" aria-labelledby="pdf-flow-heading" data-tool-flow>
+            <span class="signal-track signal-track--short" aria-hidden="true"></span>
             <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="pdf-flow-heading">使う順番</h2>
             <ol class="tool-step-list">

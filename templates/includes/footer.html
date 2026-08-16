@@ -1,4 +1,5 @@
 ﻿<footer style="background: var(--color-bg-primary, #121212); padding: var(--spacing-xl, 48px) var(--spacing-md, 16px); margin-top: var(--spacing-xl, 48px); border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));">
+    <span class="signal-track signal-track--footer" aria-hidden="true"></span>
     {% set footer_primary_amazon = amazon_single_recommendation|default(none) if amazon_single_recommendation|default(none) and amazon_single_recommendation.render_target == 'footer' else none %}
     {% set footer_primary_a8 = selected_a8_creative|default(none) if selected_a8_creative|default(none) and a8_can_render_placement('global-footer-a8') else none %}
     {# Primary rails and optional inline breaks own monetization; do not re-cluster it at the footer. #}

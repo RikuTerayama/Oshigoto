@@ -17,10 +17,10 @@ html:not(.js) .reveal-up {
 /* Reveal initialized: hide only after the observer is ready. */
 html.reveal-ready [data-reveal],
 html.reveal-ready .reveal-up {
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity: 0.76;
+    transform: translateY(12px);
+    transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
     transition-delay: var(--reveal-delay, 0ms);
     will-change: opacity, transform;
 }
@@ -42,29 +42,44 @@ html:not(.js) [data-reveal-stagger] > * {
 
 /* Reveal initialized: hide only after the observer is ready. */
 html.reveal-ready [data-reveal-stagger] > * {
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity: 0.76;
+    transform: translateY(12px);
+    transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: opacity, transform;
 }
 
 /* Stagger delays - Only when JS is enabled */
 html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(1) { transition-delay: 0ms; }
-html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(2) { transition-delay: 45ms; }
-html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(3) { transition-delay: 90ms; }
-html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(4) { transition-delay: 135ms; }
-html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(5) { transition-delay: 180ms; }
-html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(6) { transition-delay: 225ms; }
-html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(7) { transition-delay: 270ms; }
-html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(8) { transition-delay: 315ms; }
-html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(9) { transition-delay: 315ms; }
-html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(10) { transition-delay: 315ms; }
+html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(2) { transition-delay: 60ms; }
+html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(3) { transition-delay: 120ms; }
+html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(4) { transition-delay: 180ms; }
+html.reveal-ready [data-reveal-stagger].revealed > *:nth-child(n+5) { transition-delay: 240ms; }
 
 html.reveal-ready [data-reveal-stagger].revealed > * {
     opacity: 1;
     transform: translateY(0);
     will-change: auto;
+}
+
+html.reveal-ready [data-reveal-stagger] > * :is(
+    .icon-tile,
+    .tool-card-v2__icon,
+    .tool-catalog-card__icon
+) {
+    opacity: .88;
+    transform: translateY(2px) scale(.97);
+    transition: opacity .28s cubic-bezier(.22, 1, .36, 1),
+                transform .28s cubic-bezier(.22, 1, .36, 1);
+}
+
+html.reveal-ready [data-reveal-stagger].revealed > * :is(
+    .icon-tile,
+    .tool-card-v2__icon,
+    .tool-catalog-card__icon
+) {
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 /* Custom delay support */
@@ -77,7 +92,8 @@ html.reveal-ready .reveal-up[data-reveal-delay] {
 @media (prefers-reduced-motion: reduce) {
     [data-reveal],
     .reveal-up,
-    [data-reveal-stagger] > * {
+    [data-reveal-stagger] > *,
+    [data-reveal-stagger] > * :is(.icon-tile, .tool-card-v2__icon, .tool-catalog-card__icon) {
         opacity: 1 !important;
         transform: none !important;
         transition: none !important;
