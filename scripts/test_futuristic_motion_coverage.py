@@ -37,7 +37,9 @@ def main() -> int:
         landing = BeautifulSoup(client.get("/").get_data(as_text=True), "html.parser")
         visual = landing.select_one(".hero-v2__signal[aria-hidden='true'] .work-signal-visual")
         require(visual is not None, "landing Work Signal Visual missing")
-        require(len(visual.select(".work-signal-node")) == 5, "landing visual must have five nodes")
+        require(len(visual.select(".work-signal-stage--inputs > span")) == 5, "landing visual must have five inputs")
+        require(visual.select_one(".work-signal-stage--process") is not None, "landing process node missing")
+        require(visual.select_one(".work-signal-stage--ready") is not None, "landing ready state missing")
         require(landing.select_one(".landing-tools-zone > .signal-track") is not None, "landing section signal missing")
 
         for path in TOOL_PATHS:

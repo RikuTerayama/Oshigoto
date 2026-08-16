@@ -44,19 +44,20 @@ def main() -> int:
             require(response.status_code == 200, f"{path}: expected 200")
             soup = BeautifulSoup(response.get_data(as_text=True), "html.parser")
             shell = soup.select_one(".tool-detail-shell")
-            rail = shell.select_one(":scope > .global-affiliate-rail--tool") if shell else None
+            layout = shell.select_one(":scope > .tool-detail-layout.page-with-affiliate-rail") if shell else None
+            rail = layout.select_one(":scope > .global-affiliate-rail--tool") if layout else None
             workspace = soup.select_one("[data-tool-workspace]")
-            require(shell is not None and rail is not None, f"{path}: direct tool rail contract missing")
+            require(shell is not None and layout is not None and rail is not None, f"{path}: canonical tool rail contract missing")
             require(workspace is not None and workspace.sourceline < rail.sourceline, f"{path}: workspace must precede rail in DOM")
             require(not rail.select_one(".global-affiliate-rail__publisher"), f"{path}: publisher guide returned to rail")
             require(rail.select_one(".amazon-single-card--rail") is not None, f"{path}: Amazon rail card missing")
 
     css = (ROOT / "static/css/public-system.css").read_text(encoding="utf-8")
-    require("@media (min-width: 1220px)" in css, "desktop rail breakpoint missing")
-    require("clamp(300px, 22vw, 320px)" in css, "rail width contract missing")
-    require("column-gap: clamp(28px, 3vw, 36px)" in css, "rail gap contract missing")
+    require("@media (min-width: 1240px)" in css, "desktop rail breakpoint missing")
+    require("--public-detail-rail-width: 320px" in css, "rail width token missing")
+    require("--public-detail-rail-gap: clamp(28px, 3vw, 36px)" in css, "rail gap token missing")
     require("@media (min-width: 1280px) and (min-height: 800px)" in css, "safe sticky breakpoint missing")
-    require("@media (max-width: 1219px)" in css, "single-column tablet/mobile fallback missing")
+    require("@media (max-width: 1239px)" in css, "single-column tablet/mobile fallback missing")
     print("PASS: seven tool routes expose Amazon/A8-only desktop rails after workspace in DOM")
     return 0
 

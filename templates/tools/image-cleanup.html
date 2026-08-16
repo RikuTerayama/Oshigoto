@@ -263,7 +263,9 @@
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
 
-    <div class="container tool-detail-shell">
+    <main class="container tool-detail-shell">
+        <div class="page-with-affiliate-rail tool-detail-layout">
+        <div class="page-with-affiliate-rail__content">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'image-cleanup' %}
@@ -287,8 +289,6 @@
         </section>
         </div>
         </div>
-        <div class="page-layout">
-        <div class="page-main">
         <div class="tool-workspace" data-tool-workspace>
         <div class="tool-section tool-main-panel">
             <h3>1. 画像を選ぶ</h3>
@@ -455,47 +455,18 @@
             <div id="error-message" class="error-message"></div>
         </div>
         </div>
-        </div>
-        <div class="page-sidebar">
-            <div class="sticky-side-box">
-                {% set side_box_links = [
-                    {'label': '撮影小物を見る', 'description': '背景や小物など、撮影まわりの道具を探せます。', 'href': amazon_search_url('撮影 小物 仕事道具'), 'category': 'photo-props'},
-                    {'label': '商品撮影アイテムを見る', 'description': '商品画像を整えるための撮影アイテムを探せます。', 'href': amazon_search_url('撮影 小物 仕事道具'), 'category': 'product-photo'}
-                ] %}
-                {% with side_box_title='商品画像・資料画像を整える', side_box_lead='書き出しの合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='image-cleanup-side-box', side_box_category='image-cleanup' %}
-                    {% include 'includes/affiliate_side_box.html' %}
-                {% endwith %}
-                {% include 'includes/tool_flow_side_box.html' %}
-            </div>
-        </div>
-        </div>
 
         <section class="tool-note" aria-label="画像補正時の注意">
             <h3>確認のポイント</h3>
             <p>白背景化は元画像の透明部分を白で合成します。被写体を推定して背景を削除する機能ではありません。EC画像や資料画像は、出力後に余白と輪郭を確認してください。</p>
         </section>
+        </div>
         {% with affiliate_rail_show_publisher=false %}
             {% include 'includes/affiliate_primary_rail.html' %}
         {% endwith %}
-        <section class="tool-affiliate-row" aria-label="画像補正に関連する仕事道具">
-            {% set affiliate_context_links = [
-                {'label': '撮影小物を見る', 'description': '背景や小物など、撮影まわりの道具を探せます。', 'href': amazon_search_url('撮影 小物 仕事道具'), 'category': 'photo-props', 'cta': '撮影小物を見る'},
-                {'label': '商品撮影アイテムを見る', 'description': '商品画像を整えるための撮影アイテムを探せます。', 'href': amazon_search_url('撮影 小物 仕事道具'), 'category': 'product-photo', 'cta': '商品撮影アイテムを見る'},
-                {'label': '資料作成アイテムを見る', 'description': '資料画像の確認や作成に関係する道具を探せます。', 'href': amazon_search_url('資料作成 文房具'), 'category': 'material-tools', 'cta': '資料作成アイテムを見る'}
-            ] %}
-            {% with affiliate_context_title='商品画像・資料画像を整える', affiliate_context_lead='画像を書き出したあと、撮影や資料作成まわりの道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='image-cleanup', affiliate_context_placement='image-cleanup-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='PR', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
-                {% include 'includes/affiliate_context_block.html' %}
-            {% endwith %}
-            {% set affiliate_a8_rendered = true %}
-        </section>
-        {% include 'includes/tool_kb_cta.html' %}
-        {% include 'includes/tool_content_blocks.html' %}
-    </div>
-
-    {% with inline_affiliate_provider='a8' %}
-        {% include 'includes/affiliate_inline_secondary.html' %}
-    {% endwith %}
-    {% include 'includes/related_tools.html' %}
+        </div>
+        {% include 'includes/related_tools.html' %}
+    </main>
     {% include 'includes/footer.html' %}
     
     <script src="{{ url_for('static', filename='vendor/jszip/3.10.1/jszip.min.js') }}"></script>

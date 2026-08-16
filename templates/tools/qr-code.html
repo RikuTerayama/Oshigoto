@@ -75,6 +75,8 @@
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
     <main class="qr-shell tool-detail-shell">
+        <div class="page-with-affiliate-rail tool-detail-layout">
+        <div class="page-with-affiliate-rail__content">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'qr-code' %}
@@ -166,22 +168,15 @@
             </section>
         </div>
 
-        {% with inline_affiliate_provider='amazon', inline_affiliate_title_id='amazon-secondary-qr-title' %}
-            {% include 'includes/affiliate_inline_secondary.html' %}
-        {% endwith %}
-
         <section class="qr-notes" aria-label="QRコード作成の注意事項">
             <article><h2>ブラウザ内で完結</h2><p>入力内容をアップロードせず、表示中のブラウザでQRコードを作成します。入力内容はCookieやブラウザストレージへ保存しません。</p></article>
             <article><h2>使用前に読み取り確認</h2><p>読み取りやすさは、端末、印刷サイズ、色、汚れなどで変わります。重要な案内に使う前に、実際の端末で確認してください。</p></article>
         </section>
+        </div>
         {% with affiliate_rail_show_publisher=false %}
             {% include 'includes/affiliate_primary_rail.html' %}
         {% endwith %}
-        <p class="qr-guide-link"><a class="btn btn-secondary" href="/guide/qr-code">詳しい使い方と注意点を見る</a></p>
-        {% set current_path = '/tools/qr-code' %}
-        {% with inline_affiliate_provider='a8' %}
-        {% include 'includes/affiliate_inline_secondary.html' %}
-        {% endwith %}
+        </div>
         {% include 'includes/related_tools.html' %}
     </main>
     {% include 'includes/footer.html' %}
