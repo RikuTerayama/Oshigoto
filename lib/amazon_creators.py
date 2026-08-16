@@ -14,6 +14,7 @@ import requests
 from zoneinfo import ZoneInfo
 
 from lib.amazon_affiliate_map import (
+    AMAZON_EXACT_PATH_THEME_IDS,
     AMAZON_ICON_ALLOWLIST,
     AMAZON_THEME_ICON_MAP,
     AMAZON_THEME_POOL,
@@ -21,6 +22,7 @@ from lib.amazon_affiliate_map import (
     PATH_KEYWORD_RULES,
     get_amazon_page_policy,
     get_amazon_visible_limit,
+    normalize_amazon_path,
 )
 
 logger = logging.getLogger(__name__)
@@ -279,6 +281,10 @@ def build_rotating_theme_cards(
     max_count = max(1, int(count))
     exclude_ids = {str(v) for v in (exclude_theme_ids or []) if v}
     approved_pool = _enabled_theme_pool()
+    exact_theme_ids = AMAZON_EXACT_PATH_THEME_IDS.get(normalize_amazon_path(path), ())
+    if exact_theme_ids:
+        exact_id_set = set(exact_theme_ids)
+        approved_pool = [theme for theme in approved_pool if str(theme.get("id") or "") in exact_id_set]
     if not approved_pool:
         return []
 
@@ -351,6 +357,7 @@ def build_rotating_theme_cards(
             {
                 "title": str(theme.get("title") or search_keyword),
                 "category_label": str(theme.get("category_label") or "おすすめ"),
+                "lead": str(theme.get("lead") or ""),
                 "image_url": "",
                 "url": _build_search_url(settings, search_keyword),
                 "cta": str(theme.get("cta") or "Amazonで見る"),
@@ -442,7 +449,7 @@ def _finalize_single_recommendation(
     card.update(
         {
             "icon_key": icon_key,
-            "lead": "このページの作業に近いテーマの本や仕事道具をAmazonで探せます。",
+            "lead": str(card.get("lead") or "このページの作業に近いテーマの本や仕事道具をAmazonで探せます。"),
             "placement": placement,
             "render_target": render_target,
         }

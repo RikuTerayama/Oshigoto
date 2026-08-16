@@ -209,7 +209,29 @@
 .a8-creative-slot__creative,
 .a8-creative-slot__creative > a,
 .a8-creative-slot__creative > a > img {
+    animation: none !important;
     transition: none;
+}
+
+.amazon-single-card,
+.amazon-single-card * {
+    animation: none !important;
+}
+
+@media (hover: none), (pointer: coarse) {
+    :is(
+        .tool-card-v2,
+        .tool-catalog-card,
+        .guide-catalog-card,
+        .guide-preview-card,
+        .related-content__card,
+        .btn,
+        .button,
+        .link-button,
+        .guide-card
+    ):active {
+        transform: translateY(1px);
+    }
 }
 
 .a8-creative-slot:hover,

@@ -70,8 +70,13 @@ def main() -> int:
         amazon = rail.select_one(".global-affiliate-rail__amazon")
         publisher = rail.select_one(".global-affiliate-rail__publisher")
         a8 = rail.select_one(".global-affiliate-rail__a8")
-        require(amazon is not None and publisher is not None and a8 is not None, f"{path}: incomplete primary rail")
-        require(amazon.sourceline <= publisher.sourceline <= a8.sourceline, f"{path}: rail order changed")
+        require(amazon is not None and a8 is not None, f"{path}: incomplete primary rail")
+        if path in TOOL_PATHS:
+            require(publisher is None, f"{path}: publisher guide must not render in tool rail")
+            require(amazon.sourceline <= a8.sourceline, f"{path}: tool rail order changed")
+        else:
+            require(publisher is not None, f"{path}: publisher navigation missing")
+            require(amazon.sourceline <= publisher.sourceline <= a8.sourceline, f"{path}: rail order changed")
 
         amazon_cards = soup.select(".amazon-single-card")
         a8_cards = soup.select(".a8-creative-slot")
@@ -103,6 +108,8 @@ def main() -> int:
         require(workspace is not None and rail is not None, f"{path}: workspace or rail missing")
         require(workspace.find_parent(class_="tool-intro-layout") is None, f"{path}: workspace entered rail boundary")
         require(not workspace.select(".amazon-single-card, .a8-creative-slot"), f"{path}: affiliate inside controls")
+        require(workspace.sourceline < rail.sourceline, f"{path}: affiliate must follow workspace")
+        require(not soup.select_one("[data-tool-affiliate] .global-affiliate-rail__publisher"), f"{path}: tool guide block returned")
 
     css = (ROOT / "static" / "css" / "common.css").read_text(encoding="utf-8")
     require("@media (min-width: 1280px) and (min-height: 800px)" in css, "sticky guard missing")

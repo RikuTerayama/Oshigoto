@@ -221,7 +221,7 @@
         {% set tool_intro_what = 'HTMLやURLをもとに、SNS共有や検索結果で見える情報を確認できます。OGP画像やsitemap/robots作成も扱えます。' %}
         {% set tool_intro_steps = ['URLまたはHTMLを入力する', '確認したい項目を選ぶ', 'チェックする', '結果と修正ヒントを見る'] %}
         {% set tool_intro_notice = '外部URL確認には取得制限やタイムアウトがあります。取得できない場合はHTMLを貼り付けてください。' %}
-        <section class="tool-flow" aria-labelledby="seo-flow-heading">
+        <section class="tool-flow" aria-labelledby="seo-flow-heading" data-tool-flow>
             <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="seo-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
@@ -232,11 +232,10 @@
             </ol>
         </section>
         </div>
-        {% include 'includes/affiliate_primary_rail.html' %}
         </div>
         <div class="page-layout">
         <div class="page-main">
-        <div class="main-layout">
+        <div class="main-layout" data-tool-workspace>
             <!-- 左: 設定エリア -->
             <div class="panel tool-main-panel">
                 <h3>1・2・3. 入力して確認する</h3>
@@ -580,13 +579,16 @@
             <h3>確認のポイント</h3>
             <p>URLからHTMLを取得できない場合は、ページのHTMLを貼り付けて確認してください。社内サイトや非公開URLの入力は避けてください。</p>
         </section>
+        {% with affiliate_rail_show_publisher=false %}
+            {% include 'includes/affiliate_primary_rail.html' %}
+        {% endwith %}
         <section class="tool-affiliate-row" aria-label="Web運用に関連する仕事道具">
             {% set affiliate_context_links = [
                 {'label': 'SEOの本を探す', 'description': 'SEOの基礎や運用を学べる本を探せます。', 'href': amazon_search_url('Kindle SEO'), 'category': 'seo-books', 'cta': 'SEOの本を探す'},
                 {'label': 'Webマーケティングの本を見る', 'description': 'サイト改善や集客に関係する本を探せます。', 'href': amazon_search_url('Kindle Webマーケティング'), 'category': 'web-marketing-books', 'cta': 'Webマーケティングの本を見る'},
                 {'label': 'SNS運用の本を見る', 'description': 'SNS投稿や運用設計に関係する本を探せます。', 'href': amazon_search_url('SNS運用 Kindle'), 'category': 'sns-books', 'cta': 'SNS運用の本を見る'}
             ] %}
-            {% with affiliate_context_title='Web運用・マーケティングを学ぶ', affiliate_context_lead='OGPやmetaを確認したあと、Web運用の学びにつながる本も探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='web-marketing', affiliate_context_placement='seo-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='作業に近い関連サービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
+            {% with affiliate_context_title='Web運用・マーケティングを学ぶ', affiliate_context_lead='OGPやmetaを確認したあと、Web運用の学びにつながる本も探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='web-marketing', affiliate_context_placement='seo-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='PR', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% set affiliate_a8_rendered = true %}

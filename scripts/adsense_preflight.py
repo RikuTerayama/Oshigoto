@@ -297,12 +297,15 @@ def run_checks(get):
     qr_template_path = os.path.join(qr_root, 'templates', 'tools', 'qr-code.html')
     with open(qr_template_path, encoding='utf-8') as handle:
         qr_template = handle.read()
-    qr_workspace = qr_template.split('<div id="qr-code-app"', 1)[-1]
+    qr_workspace_pos = qr_template.find('<div id="qr-code-app"')
+    qr_notes_pos = qr_template.find('<section class="qr-notes"')
+    qr_affiliate_pos = qr_template.find("includes/affiliate_primary_rail.html")
     add(
         'qr_no_inline_affiliate_near_controls',
         qr_template_path,
-        "includes/affiliate_primary_rail.html" in qr_template
-        and "includes/affiliate_primary_rail.html" not in qr_workspace
+        qr_workspace_pos != -1
+        and qr_notes_pos > qr_workspace_pos
+        and qr_affiliate_pos > qr_notes_pos
         and "includes/footer.html" in qr_template,
     )
     add('qr_fixed_colors', qr_template_path, 'type="color"' not in qr_template and '#000000' in qr_ui and '#FFFFFF' in qr_ui)

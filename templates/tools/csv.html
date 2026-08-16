@@ -29,7 +29,7 @@
         {% set tool_intro_what = '表データの文字化け確認、CSVとExcelの変換、重複削除、列の整理をまとめて行えます。' %}
         {% set tool_intro_steps = ['CSVまたはExcelを選ぶ', 'やりたい操作を選ぶ', 'プレビューで確認する', '結果をダウンロードする'] %}
         {% set tool_intro_notice = '文字コードや区切り文字が合わない場合は、プレビューで確認してから保存してください。' %}
-        <section class="tool-flow" aria-labelledby="csv-flow-heading">
+        <section class="tool-flow" aria-labelledby="csv-flow-heading" data-tool-flow>
             <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="csv-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
@@ -40,11 +40,10 @@
             </ol>
         </section>
         </div>
-        {% include 'includes/affiliate_primary_rail.html' %}
         </div>
         <div class="page-layout">
         <div class="page-main">
-        <div class="tool-workspace">
+        <div class="tool-workspace" data-tool-workspace>
         <div class="tool-section tool-main-panel">
             <h3>1. ファイルを選ぶ</h3>
             <p style="color: var(--brand-muted);">CSV または Excel ファイルをドラッグ＆ドロップ、または下のボタンで選択してください。（対応: .csv, .xlsx）</p>
@@ -114,13 +113,16 @@
             <h3>確認のポイント</h3>
             <p>Excelで開く前提ならUTF-8（BOMあり）が扱いやすいことがあります。名簿や顧客データなど、個人情報を含む表は保存先にも注意してください。</p>
         </section>
+        {% with affiliate_rail_show_publisher=false %}
+            {% include 'includes/affiliate_primary_rail.html' %}
+        {% endwith %}
         <section class="tool-affiliate-row" aria-label="表計算作業に関連する仕事道具">
             {% set affiliate_context_links = [
                 {'label': '表計算の本を探す', 'description': 'Excelや表計算の基礎・実務本を探せます。', 'href': amazon_search_url('Kindle Excel'), 'category': 'spreadsheet-books', 'cta': '表計算の本を探す'},
                 {'label': 'デスク作業アイテムを見る', 'description': '表作業や確認作業を進めやすいデスク道具を探せます。', 'href': amazon_search_url('テンキー オフィス用品'), 'category': 'desk-work', 'cta': 'デスク作業アイテムを見る'},
                 {'label': '仕事効率化の本を見る', 'description': '日々の表作業を見直すための仕事術本を探せます。', 'href': amazon_search_url('Kindle 仕事効率化'), 'category': 'productivity-books', 'cta': '仕事効率化の本を見る'}
             ] %}
-            {% with affiliate_context_title='表作業を少し楽にする', affiliate_context_lead='CSVやExcelを整えたあと、次の集計や確認作業に役立つ道具も探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='spreadsheet-desk', affiliate_context_placement='csv-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='作業に近い関連サービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
+            {% with affiliate_context_title='表作業を少し楽にする', affiliate_context_lead='CSVやExcelを整えたあと、次の集計や確認作業に役立つ道具も探せます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='spreadsheet-desk', affiliate_context_placement='csv-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='PR', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% set affiliate_a8_rendered = true %}

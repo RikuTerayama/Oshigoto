@@ -26,12 +26,14 @@ def main() -> int:
     with app.test_client() as client:
         landing = BeautifulSoup(client.get("/").get_data(as_text=True), "html.parser")
         catalog_paths = {item["path"] for item in get_public_products()}
-        hero = landing.select_one(".hero-tool-panel")
-        require(hero is not None, "homepage hero tool panel missing")
-        hero_paths = {anchor.get("href") for anchor in hero.select(".hero-tool-card")}
+        hero = landing.select_one(".hero-v2")
+        require(hero is not None, "homepage hero missing")
+        require(not hero.select(".hero-tool-panel, .hero-tool-card"), "homepage hero mini catalog returned")
+        catalog = landing.select_one(".landing-tools-zone")
+        catalog_links = {anchor.get("href") for anchor in catalog.select(".tool-card-v2 a.btn-primary")}
         require(len(catalog_paths) == 7, "public catalog must contain seven tools")
-        require(hero_paths == catalog_paths, "homepage hero hrefs differ from public catalog")
-        require("7つの道具" in hero.get_text(" ", strip=True), "dynamic seven-tool heading missing")
+        require(catalog_links == catalog_paths, "homepage catalog hrefs differ from public catalog")
+        require(len(landing.select(".landing-tools-zone")) == 1, "homepage must have one canonical tool catalog")
 
         glossary = BeautifulSoup(client.get("/glossary").get_data(as_text=True), "html.parser")
         glossary_grid = glossary.select_one(".glossary-grid.content-grid--single")

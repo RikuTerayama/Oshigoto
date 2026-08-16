@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Contract checks for the shared 4+3/2+1/1 tool catalog layout."""
+"""Contract checks for the canonical 4+3/2+1/1 tool catalog layout."""
 
 from __future__ import annotations
 
@@ -30,12 +30,11 @@ def main() -> int:
     with app.test_client() as client:
         home = BeautifulSoup(client.get("/").get_data(as_text=True), "html.parser")
         tools = BeautifulSoup(client.get("/tools").get_data(as_text=True), "html.parser")
-        hero = home.select_one(".hero-tool-grid.balanced-seven-grid")
         landing = home.select_one(".landing-tool-grid.balanced-seven-grid")
         catalog = tools.select_one(".tools-catalog-grid.balanced-seven-grid")
-        require(hero is not None and len(hero.select(":scope > *")) == 7, "homepage hero grid differs from catalog")
-        require({item.get("href") for item in hero.select(":scope > a")} == paths, "homepage hero paths differ from catalog")
+        require(not home.select(".hero-tool-grid, .hero-tool-card"), "homepage hero mini catalog returned")
         require(landing is not None and len(landing.select(":scope > *")) == 7, "homepage main grid differs from catalog")
+        require({item.get("href") for item in landing.select(":scope > article a.btn-primary")} == paths, "homepage paths differ from catalog")
         require(catalog is not None and len(catalog.select(":scope > *")) == 7, "tools grid differs from catalog")
 
     css = (ROOT / "static" / "css" / "public-system.css").read_text(encoding="utf-8")
@@ -45,7 +44,7 @@ def main() -> int:
     require("@media (max-width: 640px)" in css and "flex-basis: 100%" in css, "mobile one-card contract missing")
     require("nth-child" not in css, "new shared layout must not use item-specific nth-child positioning")
 
-    print("PASS: homepage and tools catalog share the centered seven-item responsive layout")
+    print("PASS: homepage and tools use one canonical seven-item responsive catalog")
     return 0
 
 
