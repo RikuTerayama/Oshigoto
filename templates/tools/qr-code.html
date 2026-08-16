@@ -82,7 +82,7 @@
         {% set tool_hero_lead = 'URL、テキスト、メール、電話番号、Wi-Fi接続情報をQRコードにして、PNGまたはSVGで保存できます。' %}
         {% set tool_hero_note = '入力内容と生成処理はブラウザ内に留まり、Oshigotoのサーバーへ送信されません。' %}
         {% include 'includes/tool_hero.html' %}
-        <section class="tool-flow" aria-labelledby="qr-flow-heading">
+        <section class="tool-flow" aria-labelledby="qr-flow-heading" data-tool-flow>
             <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="qr-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
@@ -93,10 +93,9 @@
             </ol>
         </section>
         </div>
-        {% include 'includes/affiliate_primary_rail.html' %}
         </div>
 
-        <div id="qr-code-app" class="qr-app">
+        <div id="qr-code-app" class="qr-app" data-tool-workspace>
             <form id="qr-code-form" class="qr-panel" novalidate>
                 <h2 class="qr-section-title">1. QRの種類を選ぶ</h2>
                 <p class="qr-section-lead">作成する内容に合う種類を選びます。</p>
@@ -174,6 +173,9 @@
             <article><h2>ブラウザ内で完結</h2><p>入力内容をアップロードせず、表示中のブラウザでQRコードを作成します。入力内容はCookieやブラウザストレージへ保存しません。</p></article>
             <article><h2>使用前に読み取り確認</h2><p>読み取りやすさは、端末、印刷サイズ、色、汚れなどで変わります。重要な案内に使う前に、実際の端末で確認してください。</p></article>
         </section>
+        {% with affiliate_rail_show_publisher=false %}
+            {% include 'includes/affiliate_primary_rail.html' %}
+        {% endwith %}
         <p class="qr-guide-link"><a class="btn btn-secondary" href="/guide/qr-code">詳しい使い方と注意点を見る</a></p>
         {% set current_path = '/tools/qr-code' %}
         {% with inline_affiliate_provider='a8' %}

@@ -274,7 +274,7 @@
         {% set tool_intro_what = '透明部分の白背景化、余白調整、サイズや比率を揃える作業をまとめて行えます。' %}
         {% set tool_intro_steps = ['画像を選ぶ', '整え方を選ぶ', '仕上がりを確認する', '画像を書き出す'] %}
         {% set tool_intro_notice = '背景調整は画像の状態によって仕上がりが変わります。大切な画像は出力後に確認してください。' %}
-        <section class="tool-flow" aria-labelledby="image-cleanup-flow-heading">
+        <section class="tool-flow" aria-labelledby="image-cleanup-flow-heading" data-tool-flow>
             <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="image-cleanup-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
@@ -285,11 +285,10 @@
             </ol>
         </section>
         </div>
-        {% include 'includes/affiliate_primary_rail.html' %}
         </div>
         <div class="page-layout">
         <div class="page-main">
-        <div class="tool-workspace">
+        <div class="tool-workspace" data-tool-workspace>
         <div class="tool-section tool-main-panel">
             <h3>1. 画像を選ぶ</h3>
             <div id="dropzone" class="file-dropzone" data-file-dropzone role="button" tabindex="0" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 60px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); transition: all 0.3s; cursor: pointer;">
@@ -474,13 +473,16 @@
             <h3>確認のポイント</h3>
             <p>白背景化は元画像の透明部分を白で合成します。被写体を推定して背景を削除する機能ではありません。EC画像や資料画像は、出力後に余白と輪郭を確認してください。</p>
         </section>
+        {% with affiliate_rail_show_publisher=false %}
+            {% include 'includes/affiliate_primary_rail.html' %}
+        {% endwith %}
         <section class="tool-affiliate-row" aria-label="画像補正に関連する仕事道具">
             {% set affiliate_context_links = [
                 {'label': '撮影小物を見る', 'description': '背景や小物など、撮影まわりの道具を探せます。', 'href': amazon_search_url('撮影 小物 仕事道具'), 'category': 'photo-props', 'cta': '撮影小物を見る'},
                 {'label': '商品撮影アイテムを見る', 'description': '商品画像を整えるための撮影アイテムを探せます。', 'href': amazon_search_url('撮影 小物 仕事道具'), 'category': 'product-photo', 'cta': '商品撮影アイテムを見る'},
                 {'label': '資料作成アイテムを見る', 'description': '資料画像の確認や作成に関係する道具を探せます。', 'href': amazon_search_url('資料作成 文房具'), 'category': 'material-tools', 'cta': '資料作成アイテムを見る'}
             ] %}
-            {% with affiliate_context_title='商品画像・資料画像を整える', affiliate_context_lead='画像を書き出したあと、撮影や資料作成まわりの道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='image-cleanup', affiliate_context_placement='image-cleanup-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='作業に近い関連サービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
+            {% with affiliate_context_title='商品画像・資料画像を整える', affiliate_context_lead='画像を書き出したあと、撮影や資料作成まわりの道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='image-cleanup', affiliate_context_placement='image-cleanup-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='PR', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% set affiliate_a8_rendered = true %}

@@ -9,16 +9,6 @@
 <body class="landing-page">
     {% from 'includes/tool_icons.html' import tool_icon %}
     {% set icon_tint_by_id = {'pdf': 'teal', 'csv': 'blue', 'image-batch': 'amber', 'image-compress': 'amber', 'qr-code': 'blue', 'image-cleanup': 'teal', 'seo': 'blue'} %}
-    {% set hero_tools = public_products|default(products) %}
-    {% set hero_tool_summaries = {
-        'pdf': '結合・分割・抽出・圧縮・保護',
-        'csv': '変換・文字コード確認・列整理',
-        'image-batch': '形式変換・リサイズ・まとめて処理',
-        'image-compress': '品質・サイズ調整・容量比較',
-        'qr-code': 'URL・テキスト・Wi-FiをQR化',
-        'image-cleanup': '白背景化・余白・比率の調整',
-        'seo': 'title・meta・OGP・URL一覧'
-    } %}
     {% include 'includes/header.html' %}
     <main class="landing-shell">
         <section class="hero-v2" aria-labelledby="landing-hero-heading">
@@ -35,22 +25,11 @@
                     <a href="/guide" class="btn btn-secondary">使い方を見る</a>
                 </div>
             </div>
-            <aside class="hero-v2__panel hero-tool-panel" aria-label="{{ hero_tools|length }}つの道具">
-                <div class="hero-v2__panel-header"><span class="editorial-kicker hero-v2__panel-kicker">TOOLS</span>{{ hero_tools|length }}つの道具</div>
-                <div class="hero-tool-grid balanced-seven-grid" role="list">
-                    {% for product in hero_tools %}
-                    <a class="hero-tool-card hero-tool-card--{{ product.id }} tool-accent--{{ product.id }}" href="{{ product.path }}" role="listitem">
-                        <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }}" aria-hidden="true">{{ tool_icon(product.id, 18) }}</span>
-                        <span class="hero-tool-card__copy"><strong>{{ product.name }}</strong><em>{{ hero_tool_summaries.get(product.id, product.description) }}</em></span>
-                    </a>
-                    {% endfor %}
-                </div>
-            </aside>
         </section>
 
         <div class="landing-tools-layout page-with-affiliate-rail">
         <section class="landing-tools-zone section-block--tools" aria-labelledby="landing-tools-heading">
-            <div class="section-heading section-heading--centered">
+            <div class="section-heading">
                 <p class="section-kicker">Tools</p>
                 <h2 id="landing-tools-heading">必要な作業を選ぶ</h2>
                 <p>目的に近いカードから、そのまま作業に進めます。</p>
@@ -87,7 +66,7 @@
         {% set affiliate_a8_rendered = true %}
 
         <section class="section-block landing-section-surface landing-section-surface--policy" id="safety">
-            <div class="section-heading section-heading--centered">
+            <div class="section-heading">
                 <p class="section-kicker">Policy</p>
                 <h2>安心して使うための基本方針</h2>
                 <p>ファイル処理の場所、広告の扱い、公開前の確認ポイントを分かりやすく示します。</p>
@@ -109,7 +88,7 @@
         </section>
 
         <section class="section-block landing-section-surface landing-section-surface--guide">
-            <div class="section-heading section-heading--centered">
+            <div class="section-heading">
                 <p class="section-kicker">Guide</p>
                 <h2>迷ったらガイドを見る</h2>
                 <p>ツールの選び方、ファイル処理の注意点、よくある失敗を短く確認できます。</p>
@@ -149,7 +128,7 @@
 
             {% if landing_secondary_a8_creative %}
             <div class="landing-monetization-band__a8">
-                {% with selected_a8_creative=landing_secondary_a8_creative, affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--lower-a8', affiliate_section_tier='context-a8', affiliate_section_placement='landing-lower-a8', affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_a8_label='PR' %}
+                {% with selected_a8_creative=landing_secondary_a8_creative, affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--lower-a8', affiliate_section_tier='context-a8', affiliate_section_placement='landing-lower-a8', affiliate_section_category='related-services', affiliate_section_heading='', affiliate_a8_label='PR' %}
                     {% include 'includes/affiliate_cards_section.html' %}
                 {% endwith %}
             </div>

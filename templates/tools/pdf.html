@@ -74,7 +74,7 @@
         {% set tool_intro_what = 'PDFをまとめる、必要なページだけ残す、不要ページを削る、向きを直す作業をまとめて扱えます。' %}
         {% set tool_intro_steps = ['操作を選ぶ', 'PDFまたは画像を選ぶ', '必要な設定を入れる', '実行してダウンロード'] %}
         {% set tool_intro_notice = '大きなPDFやページ数の多いPDFは処理に時間がかかることがあります。' %}
-        <section class="tool-flow" aria-labelledby="pdf-flow-heading">
+        <section class="tool-flow" aria-labelledby="pdf-flow-heading" data-tool-flow>
             <p class="editorial-kicker">HOW TO USE</p>
             <h2 id="pdf-flow-heading">使う順番</h2>
             <ol class="tool-step-list">
@@ -85,11 +85,10 @@
             </ol>
         </section>
         </div>
-        {% include 'includes/affiliate_primary_rail.html' %}
         </div>
         <div class="page-layout">
         <div class="page-main">
-        <div class="tool-workspace">
+        <div class="tool-workspace" data-tool-workspace>
         <div class="tool-section tool-operation-card">
             <h3>1. 操作を選ぶ</h3>
             <div class="option-group">
@@ -277,13 +276,16 @@
             <h3>安全に使うために</h3>
             <p>機密資料や個人情報を含むPDFは、必要な範囲だけ選んで処理してください。PDFに保護を付ける場合は、設定したパスワードを必ず控えてください。</p>
         </section>
+        {% with affiliate_rail_show_publisher=false %}
+            {% include 'includes/affiliate_primary_rail.html' %}
+        {% endwith %}
         <section class="tool-affiliate-row" aria-label="PDF作業に関連する仕事道具">
             {% set affiliate_context_links = [
                 {'label': 'PDF作業アイテムを見る', 'description': 'PDFや書類作業の周辺アイテムを探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-documents', 'cta': 'PDF作業アイテムを見る'},
                 {'label': '書類整理グッズを見る', 'description': '紙の書類やデスク周りを整理する仕事道具を探せます。', 'href': amazon_search_url('書類整理 文房具'), 'category': 'document-organization', 'cta': '書類整理グッズを見る'},
                 {'label': 'PDF作業に役立つ本を見る', 'description': '書類整理やPDF作業の基本を学べる本を探せます。', 'href': amazon_search_url('Kindle PDF 仕事効率化'), 'category': 'pdf-books', 'cta': 'PDF作業に役立つ本を見る'}
             ] %}
-            {% with affiliate_context_title='PDF・書類作業を整える仕事道具', affiliate_context_lead='処理が終わったら、次の書類作業に備える道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='pdf-documents', affiliate_context_placement='pdf-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='作業に近い関連サービス', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
+            {% with affiliate_context_title='PDF・書類作業を整える仕事道具', affiliate_context_lead='処理が終わったら、次の書類作業に備える道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='pdf-documents', affiliate_context_placement='pdf-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='PR', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
                 {% include 'includes/affiliate_context_block.html' %}
             {% endwith %}
             {% set affiliate_a8_rendered = true %}

@@ -34,7 +34,7 @@
         {% endif %}
         {% if footer_secondary_a8 and a8_can_render_placement(footer_secondary_a8.placement) %}
         <div class="site-affiliate-flow__secondary-a8">
-            {% with selected_a8_creative=footer_secondary_a8, affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--footer-a8 affiliate-cards-section--secondary-a8', affiliate_section_tier='context-a8', affiliate_section_placement=footer_secondary_a8.placement, affiliate_section_category='related-services', affiliate_section_heading='関連サービス', affiliate_a8_label='PR' %}
+            {% with selected_a8_creative=footer_secondary_a8, affiliate_networks=['a8'], affiliate_section_show_disclosure=false, affiliate_section_class='affiliate-cards-section--context-a8 affiliate-cards-section--compact-a8 affiliate-cards-section--footer-a8 affiliate-cards-section--secondary-a8', affiliate_section_tier='context-a8', affiliate_section_placement=footer_secondary_a8.placement, affiliate_section_category='related-services', affiliate_section_heading='', affiliate_a8_label='PR' %}
                 {% include 'includes/affiliate_cards_section.html' %}
             {% endwith %}
         </div>

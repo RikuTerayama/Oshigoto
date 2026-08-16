@@ -194,6 +194,262 @@
     }
 }
 
+/* Mobile-first final polish: task-first order, editorial alignment and subtle signal motion. */
+.landing-page .hero-v2 {
+    grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.landing-page .hero-v2__copy {
+    width: min(100%, 820px) !important;
+    max-width: 820px !important;
+    margin-inline: 0 !important;
+    justify-self: start !important;
+    text-align: left !important;
+}
+
+.landing-page .hero-v2__copy :is(h1, p),
+.landing-page .landing-hero__lead {
+    margin-inline: 0 !important;
+    text-align: left !important;
+}
+
+.landing-page .landing-hero__actions {
+    justify-content: flex-start !important;
+}
+
+:is(.landing-page, .tools-index-page) main :is(h1, h2, h3, h4, p, li, dt, dd),
+:is(.landing-page, .tools-index-page) main :is(.section-heading, .tools-hero, .guide-hero, .article-hero, .page-header),
+:is(.landing-page, .tools-index-page) :is(.amazon-single-card, .global-affiliate-rail__publisher, .affiliate-spotlight__header) {
+    text-align: left !important;
+}
+
+:is(.landing-page, .tools-index-page) .section-heading {
+    align-items: flex-start !important;
+}
+
+.tools-index-page .tools-hero,
+.landing-page :is(.guide-hero, .article-hero, .page-header) {
+    align-items: flex-start !important;
+    text-align: left !important;
+}
+
+.tools-index-page .tools-hero :is(h1, p),
+.landing-page :is(.guide-hero, .article-hero, .page-header) :is(h1, h2, p) {
+    margin-inline: 0 !important;
+}
+
+.landing-page.tool-page .tool-hero {
+    text-align: left !important;
+}
+
+.landing-page.tool-page .tool-hero__icon {
+    position: static !important;
+    inset: auto !important;
+    margin: 0 0 16px !important;
+    animation: public-tool-icon-float 5.6s ease-in-out infinite;
+}
+
+.landing-page.tool-page .tool-hero__lead,
+.landing-page.tool-page .tool-hero .tool-processing-note {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    text-align: left !important;
+}
+
+.landing-page.tool-page .tool-hero::before {
+    right: clamp(28px, 7%, 64px) !important;
+    left: clamp(28px, 7%, 64px) !important;
+    opacity: .38;
+}
+
+.landing-page.tool-page .tool-hero::after {
+    top: 0 !important;
+    right: clamp(28px, 7%, 64px) !important;
+    left: clamp(28px, 7%, 64px) !important;
+    width: auto !important;
+    height: 2px !important;
+    border: 0 !important;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent 0 35%, var(--tool-accent) 45% 53%, transparent 63% 100%);
+    background-size: 260% 100%;
+    opacity: .82;
+    animation: public-tool-signal 4.8s ease-in-out infinite;
+}
+
+.landing-page.tool-page .tool-step-list > li {
+    grid-template-columns: 37px minmax(0, 1fr) !important;
+    column-gap: 14px !important;
+}
+
+.landing-page.tool-page .tool-step-list > li::before {
+    width: 37px !important;
+    height: 37px !important;
+    font-size: 13px !important;
+}
+
+.landing-page.tool-page .global-affiliate-rail--tool {
+    position: static !important;
+    width: min(100%, 920px) !important;
+    margin: clamp(36px, 5vw, 56px) auto 0 !important;
+}
+
+.landing-page.tool-page .global-affiliate-rail--tool .global-affiliate-rail__inner {
+    position: static !important;
+    max-height: none !important;
+    padding-right: 0 !important;
+    overflow: visible !important;
+}
+
+:is(.landing-page .tool-card-v2__icon, .tools-index-page .tool-catalog-card__icon) {
+    position: static !important;
+    inset: auto !important;
+    flex: 0 0 auto;
+    margin: 0 !important;
+}
+
+.site-nav__links[data-mobile-menu-panel] {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+}
+
+.amazon-single-card,
+.amazon-single-card *,
+.a8-creative-slot,
+.a8-creative-slot * {
+    animation: none !important;
+}
+
+@keyframes public-tool-signal {
+    0%, 8% { background-position: 100% 0; opacity: .35; }
+    48%, 58% { background-position: 0 0; opacity: .86; }
+    92%, 100% { background-position: -100% 0; opacity: .35; }
+}
+
+@keyframes public-tool-icon-float {
+    0%, 100% { border-color: var(--tool-accent-line); transform: translateY(0); }
+    50% { border-color: var(--tool-accent); transform: translateY(-2px); }
+}
+
+@media (max-width: 767px) {
+    .site-nav__links[data-mobile-menu-panel] {
+        flex-wrap: nowrap !important;
+    }
+
+    .site-nav__dropdown-wrap:not([data-open="true"]) > [data-mobile-accordion-panel],
+    [data-mobile-accordion-panel][hidden] {
+        display: none !important;
+    }
+
+    .site-nav__dropdown-wrap[data-open="true"] > [data-mobile-accordion-panel] {
+        display: grid !important;
+    }
+
+    .landing-page .landing-tools-layout {
+        width: calc(100% + 32px) !important;
+        max-width: none !important;
+        margin-right: -16px !important;
+        margin-left: -16px !important;
+    }
+
+    .tools-index-page .tools-main-layout {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+    }
+
+    .landing-page .landing-tools-zone,
+    .tools-index-page .tools-page-shell {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-right: clamp(16px, 5vw, 20px) !important;
+        padding-left: clamp(16px, 5vw, 20px) !important;
+        box-sizing: border-box !important;
+    }
+
+    .landing-page .landing-tools-zone > .section-heading {
+        padding-inline: 0 !important;
+    }
+
+    .tools-index-page .tools-catalog-panel {
+        padding: 18px 0 !important;
+        border-right: 0 !important;
+        border-left: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+    }
+
+    .landing-page .landing-tool-grid > .tool-card-v2,
+    .tools-index-page .tools-catalog-grid > .tool-catalog-card {
+        width: 100% !important;
+        padding: 18px !important;
+    }
+
+    .landing-page .tool-card-v2__meta,
+    .tools-index-page .tool-catalog-card__meta {
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 10px !important;
+    }
+
+    .landing-page.tool-page .tool-step-list > li {
+        grid-template-columns: 33px minmax(0, 1fr) !important;
+        column-gap: 12px !important;
+    }
+
+    .landing-page.tool-page .tool-step-list > li::before {
+        width: 33px !important;
+        height: 33px !important;
+        font-size: 12px !important;
+    }
+
+    .landing-page.tool-page .tool-hero::before,
+    .landing-page.tool-page .tool-hero::after {
+        right: 18px !important;
+        left: 18px !important;
+    }
+}
+
+@media (hover: none), (pointer: coarse) {
+    :is(
+        .tool-card-v2,
+        .tool-catalog-card,
+        .guide-catalog-card,
+        .guide-preview-card,
+        .related-content__card,
+        .btn,
+        .button,
+        .link-button,
+        .guide-card
+    ):active {
+        transform: translateY(1px) !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .landing-page.tool-page .tool-hero::after,
+    .landing-page.tool-page .tool-hero__icon {
+        animation: none !important;
+        transform: none !important;
+    }
+
+    :is(
+        .tool-card-v2,
+        .tool-catalog-card,
+        .guide-catalog-card,
+        .guide-preview-card,
+        .related-content__card,
+        .btn,
+        .button,
+        .link-button,
+        .guide-card
+    ) {
+        transition: none !important;
+        transform: none !important;
+    }
+}
+
 .landing-page,
 .tools-index-page,
 .guide-index-page,
@@ -374,7 +630,7 @@
     color: var(--brand-ink);
     font-size: clamp(1.35rem, 3vw, 1.7rem);
     line-height: 1.35;
-    text-align: left;
+    text-align: left !important;
 }
 
 .landing-page.tool-page .tool-step-list {

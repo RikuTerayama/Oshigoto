@@ -87,7 +87,7 @@ def main() -> int:
             require(html.count("SMALL TOOLS FOR EVERYDAY WORK") == 1, f"{path}: footer brand block must render once")
 
         home_soup = BeautifulSoup(client.get("/").get_data(as_text=True), "html.parser")
-        require(len(home_soup.select(".hero-tool-card[class*='tool-accent--']")) == 7, "home hero must render seven subtle tool accents")
+        require(not home_soup.select(".hero-tool-panel, .hero-tool-card"), "home hero mini catalog must stay removed")
         require(len(home_soup.select(".tool-card-v2[class*='tool-accent--']")) == 7, "home catalog must render seven subtle tool accents")
 
         catalog_soup = BeautifulSoup(client.get("/tools").get_data(as_text=True), "html.parser")
