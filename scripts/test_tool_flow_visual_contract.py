@@ -15,7 +15,7 @@ TOOLS = ("pdf", "csv", "image-batch", "image-compress", "image-cleanup", "qr-cod
 
 def main() -> int:
     assert ".tool-step-list > li:not(:last-child)::after" not in CSS
-    assert ".tool-kb-anchor-link > a" in CSS
+    assert ".tool-kb-anchor-link" not in CSS
     assert "min-height: 44px" in CSS
 
     for tool in TOOLS:
@@ -23,13 +23,13 @@ def main() -> int:
         soup = BeautifulSoup(source, "html.parser")
         flow = soup.select_one(".tool-flow")
         assert flow is not None, f"{tool}: flow missing"
-        assert flow.find_parent(class_="tool-intro-layout__content") is not None, f"{tool}: flow outside main intro column"
+        assert flow.find_parent(class_="page-with-affiliate-rail__content") is not None, f"{tool}: flow outside main content column"
         assert len(flow.select(".tool-step-list > li")) == 4, f"{tool}: expected four steps"
         assert "position: absolute" not in (flow.get("style") or ""), f"{tool}: absolute flow positioning"
+        assert "使い方・FAQを見る" not in source, f"{tool}: obsolete knowledge CTA returned"
 
-    cta_partial = (ROOT / "templates/includes/tool_kb_cta.html").read_text(encoding="utf-8")
-    assert "tool-kb-anchor-link" in cta_partial and "href=" in cta_partial
-    print("PASS: all seven tool flows are connector-free inside the main column with a 44px CTA contract")
+    assert not (ROOT / "templates/includes/tool_kb_cta.html").exists()
+    print("PASS: all seven tool flows are connector-free inside the canonical main column without duplicate CTA")
     return 0
 
 

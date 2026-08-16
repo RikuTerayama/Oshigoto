@@ -2,20 +2,38 @@
 {% set current_path = request.path|default('/') %}
 {% set all_tools = products_catalog|default([]) %}
 {% set icon_tint_by_id = {'pdf': 'teal', 'csv': 'blue', 'image-batch': 'amber', 'image-compress': 'amber', 'image-cleanup': 'teal', 'seo': 'blue'} %}
-{% if all_tools %}
+{% set related_ids_by_tool = {
+    'pdf': ['csv', 'image-batch', 'image-compress'],
+    'csv': ['pdf', 'seo', 'image-batch'],
+    'image-batch': ['image-compress', 'image-cleanup', 'pdf'],
+    'image-compress': ['image-batch', 'image-cleanup', 'pdf'],
+    'image-cleanup': ['image-batch', 'image-compress', 'qr-code'],
+    'qr-code': ['seo', 'image-batch', 'pdf'],
+    'seo': ['qr-code', 'csv', 'image-batch']
+} %}
+{% set related_state = namespace(current_id='', tools=[]) %}
+{% for product in all_tools %}
+    {% if product.path == current_path or product.guide_path == current_path %}{% set related_state.current_id = product.id %}{% endif %}
+{% endfor %}
+{% set related_ids = related_ids_by_tool.get(related_state.current_id, []) %}
+{% for related_id in related_ids %}
+    {% for product in all_tools %}
+        {% if product.id == related_id and product.path != current_path and product.guide_path != current_path and related_state.tools|length < 3 %}
+            {% set related_state.tools = related_state.tools + [product] %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+{% if related_state.tools %}
 <section class="related-tools-section" aria-labelledby="related-tools-heading">
     <div class="related-tools-container">
         <div class="related-tools-header">
-            <p class="section-kicker">関連ツール</p>
+            <p class="section-kicker">MORE TOOLS</p>
             <h2 id="related-tools-heading" class="related-tools-heading" data-reveal>関連ツール</h2>
             <p>いまの作業に近い道具も、続けて確認できます。</p>
         </div>
         <div class="related-tools-grid cards-grid--balanced" data-reveal data-reveal-delay="50">
-            {% for product in all_tools %}
-            <article class="related-tools-card {{ 'related-tools-card--current' if product.path == current_path else '' }}">
-                {% if product.path == current_path %}
-                <span class="related-tools-card__badge" aria-label="現在のページ">表示中</span>
-                {% endif %}
+            {% for product in related_state.tools %}
+            <article class="related-tools-card">
                 <span class="icon-tile icon-tile--{{ icon_tint_by_id.get(product.id, 'teal') }} related-tools-card__icon" aria-hidden="true">{{ tool_icon(product.id) if product.id in ['pdf','csv','image-batch','image-compress','qr-code','image-cleanup','seo'] else tool_icon('toolbox') }}</span>
                 <h3 class="related-tools-card__title">{{ product.name|default('') }}</h3>
                 <p class="related-tools-card__desc">{{ product.description|default('') }}</p>

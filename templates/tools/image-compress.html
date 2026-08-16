@@ -87,6 +87,8 @@
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
     <main class="compress-shell tool-detail-shell">
+        <div class="page-with-affiliate-rail tool-detail-layout">
+        <div class="page-with-affiliate-rail__content">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'image-compress' %}
@@ -186,31 +188,13 @@
             <article><h3>AVIF（対応ブラウザのみ）</h3><p>実行時の書き出し検証に成功したブラウザだけ選択肢を表示します。保存後に利用先の対応状況を確認してください。</p></article>
             <article><h3>注意</h3><ul><li>容量が必ず小さくなるとは限りません。</li><li>印刷用途では寸法や品質を下げすぎないでください。</li><li>大きな画像は端末性能により処理できない場合があります。</li><li>静止画のみ対応し、アニメーション画像は処理しません。</li></ul></article>
         </section>
+        </div>
         {% with affiliate_rail_show_publisher=false %}
             {% include 'includes/affiliate_primary_rail.html' %}
         {% endwith %}
-
-        {% with tool_kb_href='/guide/image-compress', tool_kb_label='画像圧縮の使い方と用途別の目安を見る' %}{% include 'includes/tool_kb_cta.html' %}{% endwith %}
-
-        <section class="tool-affiliate-row" aria-label="画像作業に関連する仕事道具">
-            {% set affiliate_context_links = [
-                {'label': '画像・素材整理の道具を見る', 'description': '画像や資料を整理する作業まわりの道具を探せます。', 'href': amazon_search_url('画像 素材整理 仕事道具'), 'category': 'image-organization', 'cta': '画像整理の道具を見る'},
-                {'label': '資料作成に役立つ本を見る', 'description': '画像を使った資料づくりに関係する本を探せます。', 'href': amazon_search_url('資料作成 デザイン 本'), 'category': 'material-books', 'cta': '資料作成の本を見る'}
-            ] %}
-            {% with affiliate_context_title='画像・資料作成まわりを整える', affiliate_context_lead='画像を軽くしたあと、素材整理や資料作成に使う道具も参照できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='image-materials', affiliate_context_placement='image-compress-post-content', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='PR', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
-                {% include 'includes/affiliate_context_block.html' %}
-            {% endwith %}
-            {% set affiliate_upper_amazon_rendered = true %}
-            {% set affiliate_mid_amazon_rendered = true %}
-            {% set affiliate_a8_rendered = true %}
-            {% set affiliate_disclosure_rendered = true %}
-        </section>
+        </div>
+        {% include 'includes/related_tools.html' %}
     </main>
-
-    {% with inline_affiliate_provider='a8' %}
-        {% include 'includes/affiliate_inline_secondary.html' %}
-    {% endwith %}
-    {% include 'includes/related_tools.html' %}
     {% include 'includes/footer.html' %}
     <script src="{{ url_for('static', filename='vendor/jszip/3.10.1/jszip.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/file-utils.js') }}"></script>

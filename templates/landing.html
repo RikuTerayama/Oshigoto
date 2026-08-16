@@ -27,28 +27,39 @@
             </div>
             <div class="hero-v2__signal" aria-hidden="true" data-no-reveal>
                 <div class="work-signal-visual">
-                    <svg class="work-signal-visual__map" viewBox="0 0 520 340" focusable="false">
-                        <path d="M82 92 C150 92 164 166 252 166 S356 72 438 90" />
-                        <path d="M88 260 C162 260 174 188 252 188 S356 270 432 244" />
-                        <path d="M252 166 V188" />
-                        <circle cx="252" cy="177" r="54" />
+                    <svg class="work-signal-visual__map" viewBox="0 0 520 300" focusable="false">
+                        <path class="work-signal-visual__input-line" d="M132 58 H214 M132 104 H214 M132 150 H214 M132 196 H214 M132 242 H214" />
+                        <path class="work-signal-visual__output-line" d="M326 150 H404" />
                     </svg>
-                    <span class="work-signal-node work-signal-node--pdf">{{ tool_icon('pdf', 24) }}<small>PDF</small></span>
-                    <span class="work-signal-node work-signal-node--csv">{{ tool_icon('csv', 24) }}<small>CSV</small></span>
-                    <span class="work-signal-node work-signal-node--image">{{ tool_icon('image-batch', 24) }}<small>IMAGE</small></span>
-                    <span class="work-signal-node work-signal-node--qr">{{ tool_icon('qr-code', 24) }}<small>QR</small></span>
-                    <span class="work-signal-node work-signal-node--web">{{ tool_icon('seo', 24) }}<small>WEB</small></span>
-                    <span class="work-signal-visual__pulse"></span>
-                    <span class="work-signal-visual__status">WORK SIGNAL / READY</span>
+                    <div class="work-signal-stage work-signal-stage--inputs">
+                        <small>INPUT</small>
+                        <span>{{ tool_icon('pdf', 18) }} PDF</span>
+                        <span>{{ tool_icon('csv', 18) }} CSV</span>
+                        <span>{{ tool_icon('image-batch', 18) }} IMAGE</span>
+                        <span>{{ tool_icon('qr-code', 18) }} QR</span>
+                        <span>{{ tool_icon('seo', 18) }} WEB</span>
+                    </div>
+                    <div class="work-signal-stage work-signal-stage--process">
+                        <small>PROCESS</small>
+                        <span class="work-signal-stage__icon">{{ tool_icon('toolbox', 30) }}</span>
+                        <strong>しごと道具箱</strong>
+                    </div>
+                    <div class="work-signal-stage work-signal-stage--ready">
+                        <small>OUTPUT</small>
+                        <span class="work-signal-stage__check">✓</span>
+                        <strong>READY</strong>
+                    </div>
+                    <span class="work-signal-visual__pulse work-signal-visual__pulse--input"></span>
+                    <span class="work-signal-visual__pulse work-signal-visual__pulse--output"></span>
                 </div>
-                <div class="work-signal-strip"><span></span><i></i><span></span><i></i><span></span></div>
+                <div class="work-signal-strip"><span>PDF · CSV · IMAGE</span><i>→</i><strong>✓ READY</strong></div>
             </div>
         </section>
 
         <div class="landing-tools-layout page-with-affiliate-rail">
         <section class="landing-tools-zone section-block--tools signal-surface" aria-labelledby="landing-tools-heading">
             <span class="signal-track" aria-hidden="true"></span>
-            <div class="section-heading">
+            <div class="section-heading landing-section-header">
                 <p class="section-kicker">Tools</p>
                 <h2 id="landing-tools-heading">必要な作業を選ぶ</h2>
                 <p>目的に近いカードから、そのまま作業に進めます。</p>
@@ -84,8 +95,9 @@
         {% set affiliate_disclosure_rendered = true %}
         {% set affiliate_a8_rendered = true %}
 
-        <section class="section-block landing-section-surface landing-section-surface--policy" id="safety">
-            <div class="section-heading">
+        <section class="section-block landing-section-surface landing-section-surface--policy signal-surface" id="safety">
+            <span class="signal-track" aria-hidden="true"></span>
+            <div class="section-heading landing-section-header">
                 <p class="section-kicker">Policy</p>
                 <h2>安心して使うための基本方針</h2>
                 <p>ファイル処理の場所、広告の扱い、公開前の確認ポイントを分かりやすく示します。</p>
@@ -108,7 +120,7 @@
         </section>
 
         <section class="section-block landing-section-surface landing-section-surface--guide">
-            <div class="section-heading">
+            <div class="section-heading landing-section-header">
                 <p class="section-kicker">Guide</p>
                 <h2>迷ったらガイドを見る</h2>
                 <p>ツールの選び方、ファイル処理の注意点、よくある失敗を短く確認できます。</p>

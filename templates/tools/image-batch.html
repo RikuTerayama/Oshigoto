@@ -351,7 +351,9 @@
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
 
-    <div class="container tool-detail-shell">
+    <main class="container tool-detail-shell">
+        <div class="page-with-affiliate-rail tool-detail-layout">
+        <div class="page-with-affiliate-rail__content">
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'image-batch' %}
@@ -375,8 +377,6 @@
         </section>
         </div>
         </div>
-        <div class="page-layout">
-        <div class="page-main">
         <div class="tool-workspace" data-tool-workspace>
         <div class="tool-section tool-main-panel" data-reveal data-reveal-delay="150">
             <h3>1. 画像をまとめて選ぶ</h3>
@@ -485,48 +485,18 @@
             <div id="error-message" class="error-message"></div>
         </div>
         </div>
-        </div>
-        <div class="page-sidebar">
-            <div class="sticky-side-box">
-                {% set side_box_links = [
-                    {'label': '画像整理アイテムを見る', 'description': '画像や素材を扱う作業まわりの道具を探せます。', 'href': amazon_search_url('画像整理 文房具'), 'category': 'image-organization'},
-                    {'label': 'デスク環境を整える', 'description': '画像確認や資料作成を進めやすい作業環境を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-setup'}
-                ] %}
-                {% with side_box_title='画像・資料作成まわりを整える', side_box_lead='変換の合間に、関連する仕事道具も確認できます。', side_box_links=side_box_links, side_box_placement='image-batch-side-box', side_box_category='image-materials' %}
-                    {% include 'includes/affiliate_side_box.html' %}
-                {% endwith %}
-                {% include 'includes/tool_flow_side_box.html' %}
-            </div>
-            <p class="info-text">JPEGでは透明部分が白色になります。</p>
-        </div>
-        </div>
 
         <section class="tool-note" aria-label="画像変換時の注意">
             <h3>確認のポイント</h3>
-            <p>画像の幅を小さくするとファイルは軽くなりますが、印刷や大きな表示には向かない場合があります。用途に合わせてサイズを選んでください。</p>
+            <p>画像の幅を小さくするとファイルは軽くなりますが、印刷や大きな表示には向かない場合があります。用途に合わせてサイズを選んでください。JPEGでは透明部分が白色になります。</p>
         </section>
+        </div>
         {% with affiliate_rail_show_publisher=false %}
             {% include 'includes/affiliate_primary_rail.html' %}
         {% endwith %}
-        <section class="tool-affiliate-row" aria-label="画像作業に関連する仕事道具">
-            {% set affiliate_context_links = [
-                {'label': '画像整理アイテムを見る', 'description': '画像や素材を扱う作業まわりの道具を探せます。', 'href': amazon_search_url('画像整理 文房具'), 'category': 'image-organization', 'cta': '画像整理アイテムを見る'},
-                {'label': '資料作成に役立つ本を見る', 'description': '見やすい資料づくりに関係する本を探せます。', 'href': amazon_search_url('資料作成 Kindle'), 'category': 'material-books', 'cta': '資料作成に役立つ本を見る'},
-                {'label': 'デスク環境を整える', 'description': '画像確認や資料作成を進めやすい作業環境を探せます。', 'href': amazon_search_url('デスク整理 収納'), 'category': 'desk-setup', 'cta': 'デスク環境を整える'}
-            ] %}
-            {% with affiliate_context_title='画像・資料作成まわりを整える', affiliate_context_lead='画像を変換したあと、素材整理や資料作成に使う道具も確認できます。', affiliate_context_links=affiliate_context_links, affiliate_context_category='image-materials', affiliate_context_placement='image-batch-post-action', affiliate_context_class='post-action-affiliate', affiliate_context_show_a8=true, affiliate_context_a8_title='PR', affiliate_context_a8_lead='承認済み案件がある場合だけ、作業内容に近いサービスを表示します。' %}
-                {% include 'includes/affiliate_context_block.html' %}
-            {% endwith %}
-            {% set affiliate_a8_rendered = true %}
-        </section>
-        {% include 'includes/tool_kb_cta.html' %}
-        {% include 'includes/tool_content_blocks.html' %}
-    </div>
-
-    {% with inline_affiliate_provider='a8' %}
-        {% include 'includes/affiliate_inline_secondary.html' %}
-    {% endwith %}
-    {% include 'includes/related_tools.html' %}
+        </div>
+        {% include 'includes/related_tools.html' %}
+    </main>
     {% include 'includes/footer.html' %}
     
     <script src="{{ url_for('static', filename='vendor/jszip/3.10.1/jszip.min.js') }}"></script>
