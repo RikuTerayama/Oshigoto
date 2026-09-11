@@ -14,6 +14,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 PYTHON_CHECKS = (
+    ("AI search readiness", "scripts/test_ai_search_readiness.py"),
+    ("IndexNow validation", "scripts/test_indexnow.py"),
     ("manifest", "scripts/generate_sitemap_lastmod_manifest.py", "--check"),
     ("Google Analytics", "scripts/test_google_analytics.py"),
     ("smoke", "scripts/smoke_test.py"),

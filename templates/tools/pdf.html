@@ -69,9 +69,9 @@
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'pdf' %}
-        {% set tool_hero_title = 'PDFツール' %}
-        {% set tool_hero_lead = '結合、抽出、分割、ページ削除、回転、圧縮、画像変換、保護付与をまとめて進められます。' %}
-        {% set tool_hero_note = '多くの操作はブラウザ内で処理します。サーバー処理が必要な機能は画面内で明記します。' %}
+        {% set tool_hero_title = product.name %}
+        {% set tool_hero_lead = product.summary %}
+        {% set tool_hero_note = '保護付与ではPDFと設定するパスワードをサーバーへ送信し、メモリ内で処理します。その他の操作はブラウザ内で行います。' %}
         {% include 'includes/tool_hero.html' %}
         {% set tool_intro_what = 'PDFをまとめる、必要なページだけ残す、不要ページを削る、向きを直す作業をまとめて扱えます。' %}
         {% set tool_intro_steps = ['操作を選ぶ', 'PDFまたは画像を選ぶ', '必要な設定を入れる', '実行してダウンロード'] %}

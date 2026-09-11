@@ -31,13 +31,13 @@
 
 {% if seo_web_application_schema %}
 <script type="application/ld+json">
-{{ seo_web_application_schema|tojson(indent=2) }}
+{{ dict(seo_web_application_schema, description=effective_page_description)|tojson(indent=2) }}
 </script>
 {% endif %}
 
 {% if seo_article_schema %}
 <script type="application/ld+json">
-{{ seo_article_schema|tojson(indent=2) }}
+{{ dict(seo_article_schema, headline=page_heading, description=effective_page_description)|tojson(indent=2) }}
 </script>
 {% endif %}
 

@@ -24,8 +24,8 @@
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'csv' %}
-        {% set tool_hero_title = '表を整える' %}
-        {% set tool_hero_lead = 'CSVやExcelを、文字化け確認・変換・重複削除・列整理までまとめて処理します。' %}
+        {% set tool_hero_title = product.name %}
+        {% set tool_hero_lead = product.summary %}
         {% set tool_hero_note = 'ファイル内容はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。計測・広告のために外部サービスへ通信することがあります。' %}
         {% include 'includes/tool_hero.html' %}
         {% set tool_intro_what = '表データの文字化け確認、CSVとExcelの変換、重複削除、列の整理をまとめて行えます。' %}
@@ -47,11 +47,11 @@
         <div class="tool-workspace" data-tool-workspace>
         <div class="tool-section tool-main-panel">
             <h3>1. ファイルを選ぶ</h3>
-            <p style="color: var(--brand-muted);">CSV または Excel ファイルをドラッグ＆ドロップ、または下のボタンで選択してください。（対応: .csv, .xlsx）</p>
+            <p style="color: var(--brand-muted);">CSV・XLSXを選択してください。最大10件、1件10MB、合計50MB。XLSXは先頭シートの値を扱い、書式・数式・マクロは再現しません。CSV処理は10万行までです。</p>
             <div id="dropzone" data-file-dropzone role="button" tabindex="0" style="border: 2px dashed rgba(74, 158, 255, 0.5); border-radius: 12px; padding: 40px 20px; text-align: center; background: rgba(74, 158, 255, 0.05); cursor: pointer;">
                 <div style="font-size: 2.5em; margin-bottom: 15px;">📁</div>
                 <p style="margin: 0; color: var(--brand-ink);">クリックまたはドロップでファイルを選択</p>
-                <input type="file" id="file-input" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" multiple style="display: none;">
+                <input type="file" id="file-input" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple style="display: none;">
             </div>
             <p class="info-text">ファイルを選ぶと、プレビューと操作設定が表示されます。</p>
             <div id="file-list" style="margin-top: 15px;"></div>

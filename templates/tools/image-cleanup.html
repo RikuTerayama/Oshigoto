@@ -269,8 +269,8 @@
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'image-cleanup' %}
-        {% set tool_hero_title = '画像を見やすくする' %}
-        {% set tool_hero_lead = '余白、背景、比率、枠まわりを整えて、資料や添付画像に使いやすい見た目にします。' %}
+        {% set tool_hero_title = product.name %}
+        {% set tool_hero_lead = product.summary %}
         {% set tool_hero_note = '画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。' %}
         {% include 'includes/tool_hero.html' %}
         {% set tool_intro_what = '透明部分の白背景化、余白調整、サイズや比率を揃える作業をまとめて行えます。' %}

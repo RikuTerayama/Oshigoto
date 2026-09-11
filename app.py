@@ -1516,7 +1516,9 @@ def tools_seo():
     """Render the SEO utility tool."""
     from lib.routes import get_product_by_path
     product = get_product_by_path('/tools/seo')
-    return render_template('tools/seo.html', product=product)
+    return render_template('tools/seo.html', product=product,
+                           seo_crawl_max_urls=MAX_SEO_CRAWL_URLS,
+                           seo_crawl_max_depth=MAX_SEO_CRAWL_DEPTH)
 
 @app.route('/tools/csv')
 def tools_csv():
@@ -1732,6 +1734,16 @@ def ads_txt():
     content = "google.com, pub-4232725615106709, DIRECT, f08c47fec0942fa0"
     return Response(content, mimetype='text/plain')
 
+@app.route('/indexnow-key.txt')
+def indexnow_key():
+    """Expose the configured ownership key only when IndexNow is enabled."""
+    from lib.indexnow import valid_key
+    key = os.getenv('INDEXNOW_KEY', '')
+    if not valid_key(key):
+        return Response('', status=404, mimetype='text/plain')
+    return Response(key, mimetype='text/plain',
+                    headers={'X-Robots-Tag': 'noindex, follow', 'Cache-Control': 'no-store'})
+
 @app.route('/robots.txt')
 def robots_txt():
     """Serve robots.txt with the current production sitemap URL."""
@@ -1869,13 +1881,14 @@ def sitemap():
     ]
     
     for url_path, changefreq, priority, lastmod_default in urls:
-        lastmod = _sitemap_lastmod_for_path(url_path) or lastmod_default
+        lastmod = _sitemap_lastmod_for_path(url_path)
         full_url = base_url + url_path
         xml_parts.append('  <url>')
         xml_parts.append(f'    <loc>{full_url}</loc>')
         xml_parts.append(f'    <changefreq>{changefreq}</changefreq>')
         xml_parts.append(f'    <priority>{priority}</priority>')
-        xml_parts.append(f'    <lastmod>{lastmod}</lastmod>')
+        if lastmod:
+            xml_parts.append(f'    <lastmod>{lastmod}</lastmod>')
         xml_parts.append('  </url>')
     
     xml_parts.append('</urlset>')

@@ -3,6 +3,7 @@
 <head>
     {% set page_title = 'CSV/Excelツールの使い方ガイド | しごと道具箱' %}
     {% set page_description = 'CSV/Excelユーティリティの使い方ガイド。文字コード変換、CSV⇄XLSX変換、重複削除、列操作、分割の方法を解説。' %}
+    {% set page_heading = 'CSV/Excelツールガイド' %}
     {% include 'includes/head_meta.html' %}
     <style>
         body { font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif; margin: 0; padding: 0; background: var(--brand-bg); min-height: 100vh; color: var(--brand-ink); line-height: 1.8; }
@@ -29,12 +30,12 @@
 <body class="landing-page guide-detail-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <div class="page-with-affiliate-rail guide-shell">
+    <main class="page-with-affiliate-rail guide-shell">
     <div class="page-with-affiliate-rail__content">
     <div class="container guide-content">
         <header class="guide-hero">
         <p class="guide-hero__kicker">CSV / Excel Guide</p>
-        <h1>CSV/Excelツールガイド</h1>
+        <h1>{{ page_heading }}</h1>
         <p><strong>できること:</strong> CSVの文字コード変換（Shift-JIS/UTF-8）、CSV⇄XLSX変換、キー列指定の重複削除、列の抽出・並べ替え、N行ごとの分割。すべてブラウザ内で完結し、ファイルはサーバーに送信されません。</p>
         <p><strong>想定ユーザー:</strong> 名簿や集計データなどのCSV/Excelを、文字コード変換・形式変換・整形したい方。</p>
         </header>
@@ -200,7 +201,7 @@
     </div>
     </div>
     {% include 'includes/affiliate_primary_rail.html' %}
-    </div>
+    </main>
     {% include 'includes/footer.html' %}
 </body>
 </html>

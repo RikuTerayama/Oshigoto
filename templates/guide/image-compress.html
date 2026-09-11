@@ -4,6 +4,7 @@
     {% set page_title = '画像圧縮の使い方 | しごと道具箱' %}
     {% set page_description = 'JPEG・PNG・WebP画像の品質、最大寸法、出力形式を調整し、容量を比較して保存する手順を説明します。' %}
     {% set breadcrumb_title = '画像圧縮の使い方' %}
+    {% set page_heading = '画像圧縮の使い方' %}
     {% include 'includes/head_meta.html' %}
     <style>
         .compress-guide-page { background: var(--brand-bg); color: var(--brand-ink); }
@@ -36,7 +37,7 @@
         <div class="page-with-affiliate-rail__content">
         <header class="compress-guide__hero guide-hero">
             <p class="guide-hero__kicker">Image Compression Guide</p>
-            <h1>画像圧縮の使い方</h1>
+            <h1>{{ page_heading }}</h1>
             <p>JPEG・PNG・WebPの静止画像を、用途に合わせて軽量化する手順です。画像はブラウザ内で処理され、Oshigotoのサーバーへ送信されません。</p>
         </header>
 

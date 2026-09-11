@@ -2,6 +2,7 @@
 """Shared SEO defaults and helpers for public metadata, breadcrumbs, and schema."""
 
 from copy import deepcopy
+from lib.products_catalog import get_public_products
 
 SITE_NAME = 'しごと道具箱'
 SITE_DESCRIPTION = 'PDF、CSV、画像、ページ確認など、仕事でたまに必要になる作業をまとめた軽量ツール集です。'
@@ -58,13 +59,13 @@ SEO_DEFAULTS = {
 NOINDEX_PATHS = frozenset(path for path, config in SEO_DEFAULTS.items() if config.get('robots', '').startswith('noindex'))
 
 TOOL_APPLICATIONS = {
-    '/tools/pdf': {'name': 'PDFツール', 'category': 'UtilitiesApplication', 'feature_list': ['PDFの結合、抽出、分割、ページ削除、ページ回転、圧縮、画像変換、保護付与']},
-    '/tools/csv': {'name': 'CSV/Excelツール', 'category': 'BusinessApplication', 'feature_list': ['CSVとXLSXの変換、文字コード確認、列整理']},
-    '/tools/image-batch': {'name': '画像一括変換', 'category': 'UtilitiesApplication', 'feature_list': ['JPEG・PNG・WebPの形式変換、複数サイズ、リネーム、ZIP保存。追加入力形式とAVIF出力は対応ブラウザのみ']},
-    '/tools/image-compress': {'name': '画像圧縮', 'category': 'UtilitiesApplication', 'feature_list': ['JPEG・PNG・WebPの品質調整、リサイズ、容量比較、個別・ZIP保存']},
-    '/tools/qr-code': {'name': 'QRコード作成', 'category': 'UtilitiesApplication', 'feature_list': ['URL、テキスト、メール、電話番号、Wi-Fi接続情報からのQRコード作成、PNG・SVG保存']},
-    '/tools/image-cleanup': {'name': '画像クリーンアップ', 'category': 'UtilitiesApplication', 'feature_list': ['白背景化、余白調整、比率調整、PNG・JPEG・WebP出力']},
-    '/tools/seo': {'name': 'SEO/URL確認', 'category': 'BusinessApplication', 'feature_list': ['OGP、meta、sitemap、robots.txtの確認']},
+    '/tools/pdf': {'name': 'PDFツール', 'category': 'UtilitiesApplication'},
+    '/tools/csv': {'name': 'CSV/Excelツール', 'category': 'BusinessApplication'},
+    '/tools/image-batch': {'name': '画像一括変換', 'category': 'UtilitiesApplication'},
+    '/tools/image-compress': {'name': '画像圧縮', 'category': 'UtilitiesApplication'},
+    '/tools/qr-code': {'name': 'QRコード作成', 'category': 'UtilitiesApplication'},
+    '/tools/image-cleanup': {'name': '画像クリーンアップ', 'category': 'UtilitiesApplication'},
+    '/tools/seo': {'name': 'SEO/URL確認', 'category': 'BusinessApplication'},
 }
 
 BLOG_ARTICLES = [
@@ -72,7 +73,6 @@ BLOG_ARTICLES = [
         'path': '/blog/excel-format-mistakes-and-design',
         'title': 'CSV/Excelで崩れやすい形式と整え方',
         'description': 'CSV/Excelの形式崩れを減らすために、文字コード、日付、列名、空欄の扱いを整理します。',
-        'date_published': '2026-07-10',
         'section': 'CSV/Excel',
     },
 ]
@@ -221,12 +221,12 @@ def get_web_application_schema(path, title, description, base_url):
         'isAccessibleForFree': True,
         'description': description,
         'offers': {'@type': 'Offer', 'price': '0', 'priceCurrency': 'JPY'},
-        'featureList': config['feature_list'],
+        'featureList': next(product['features'] for product in get_public_products() if product['path'] == path),
     }
 
 
 def get_blog_articles(limit=None):
-    articles = sorted(BLOG_ARTICLES, key=lambda article: article['date_published'], reverse=True)
+    articles = sorted(BLOG_ARTICLES, key=lambda article: article.get('date_published', ''), reverse=True)
     if limit is not None:
         return deepcopy(articles[:limit])
     return deepcopy(articles)
