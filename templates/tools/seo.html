@@ -216,8 +216,8 @@
         <div class="tool-intro-layout">
         <div class="tool-intro-layout__content">
         {% set tool_hero_icon = 'seo' %}
-        {% set tool_hero_title = 'ページを確認する' %}
-        {% set tool_hero_lead = '公開前やSNS共有前に、title、meta description、OGP、canonical、robots、sitemapを確認します。' %}
+        {% set tool_hero_title = product.name %}
+        {% set tool_hero_lead = product.summary %}
         {% set tool_hero_note = 'ブラウザ内で完結する機能と、入力URLへサーバーから接続する機能を画面内で区別して表示します。' %}
         {% include 'includes/tool_hero.html' %}
         {% set tool_intro_what = 'HTMLやURLをもとに、SNS共有や検索結果で見える情報を確認できます。OGP画像やsitemap/robots作成も扱えます。' %}
@@ -439,8 +439,8 @@
                         <label>URLを自動収集</label>
                         <p class="info-text">ベースURLを起点に同一ドメイン内をクロールしてURL一覧を取得します（最大URL数・深さで制限あり）。</p>
                         <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 10px;">
-                            <label style="display: flex; align-items: center; gap: 6px;">最大URL数 <input type="number" id="sitemap-crawl-max-urls" min="1" max="1000" value="300" style="width: 80px;"></label>
-                            <label style="display: flex; align-items: center; gap: 6px;">深さ <input type="number" id="sitemap-crawl-max-depth" min="0" max="10" value="3" style="width: 60px;"></label>
+                            <label style="display: flex; align-items: center; gap: 6px;">最大URL数 <input type="number" id="sitemap-crawl-max-urls" min="1" max="{{ seo_crawl_max_urls }}" value="{{ seo_crawl_max_urls }}" style="width: 80px;"></label>
+                            <label style="display: flex; align-items: center; gap: 6px;">深さ <input type="number" id="sitemap-crawl-max-depth" min="0" max="{{ seo_crawl_max_depth }}" value="{{ seo_crawl_max_depth }}" style="width: 60px;"></label>
                             <button type="button" class="action-button" id="sitemap-crawl-btn" onclick="crawlUrls()">URLを自動収集</button>
                         </div>
                         <p class="info-text" id="sitemap-crawl-status" style="min-height: 1.2em;"></p>

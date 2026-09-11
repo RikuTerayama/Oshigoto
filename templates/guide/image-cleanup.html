@@ -3,6 +3,7 @@
 <head>
     {% set page_title = '画像クリーンアップツールの使い方ガイド | しごと道具箱' %}
     {% set page_description = '画像ユーティリティの使い方ガイド。透過PNGの白背景化、余白トリム、縦横比統一、枠・余白・角丸の手順を解説します。' %}
+    {% set page_heading = '画像クリーンアップガイド' %}
     {% include 'includes/head_meta.html' %}
     <style>
         body { font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif; margin: 0; padding: 0; background: var(--brand-bg); min-height: 100vh; color: var(--brand-ink); line-height: 1.8; }
@@ -28,12 +29,12 @@
 <body class="landing-page guide-detail-page">
     {% include 'includes/header.html' %}
     {% include 'includes/breadcrumb.html' %}
-    <div class="page-with-affiliate-rail guide-shell">
+    <main class="page-with-affiliate-rail guide-shell">
     <div class="page-with-affiliate-rail__content">
     <div class="container guide-content">
         <header class="guide-hero">
         <p class="guide-hero__kicker">Image Cleanup Guide</p>
-        <h1>画像クリーンアップガイド</h1>
+        <h1>{{ page_heading }}</h1>
         <p><strong>できること:</strong> 透過PNGの白背景化、余白トリム、縦横比統一（1:1/4:5/16:9等）、枠・余白・角丸の付与。ブラウザ内で完結し、画像は当サーバーに送信されません。</p>
         <p><strong>想定ユーザー:</strong> EC・SNS運用、デザイナー、マーケターなど、商品画像の統一や投稿用画像の整形が必要な方。</p>
         </header>
@@ -165,7 +166,7 @@
     </div>
     </div>
     {% include 'includes/affiliate_primary_rail.html' %}
-    </div>
+    </main>
     {% include 'guide/_partials/guide_faq_jsonld.html' %}
     {% include 'includes/footer.html' %}
 </body>

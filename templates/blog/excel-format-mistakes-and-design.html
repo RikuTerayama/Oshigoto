@@ -5,6 +5,7 @@
     {% set page_description = 'CSVやExcelファイルで起きやすい文字化け、列ずれ、空白行、日付形式の揺れなどを、作業前に見直しやすいチェックリストとして整理します。' %}
     {% set page_og_type = 'article' %}
     {% set breadcrumb_title = 'CSV/Excelファイルのよくあるミス' %}
+    {% set page_heading = 'CSV/Excelファイルを扱うときのよくあるミス' %}
     {% include 'includes/head_meta.html' %}
     {% include 'includes/public_system_styles.html' %}
 </head>
@@ -13,15 +14,14 @@
     {% include 'includes/breadcrumb.html' %}
     <main class="page-shell page-shell--article page-with-affiliate-rail">
         <div class="page-with-affiliate-rail__content">
-        <article class="article-shell" itemscope itemtype="https://schema.org/BlogPosting">
+        <article class="article-shell">
             <header class="article-hero">
                 <p class="eyebrow">CSV / Excel</p>
-                <h1 itemprop="headline">CSV/Excelファイルを扱うときのよくあるミス</h1>
-                <p itemprop="description">文字化け、列ずれ、空白行、日付形式の揺れ。小さな表データほど、あとから直す手間が大きくなりがちです。作業前に見直したいポイントをまとめます。</p>
-                <p class="article-meta"><time itemprop="datePublished" datetime="2025-01-18">2025-01-18</time></p>
+                <h1>{{ page_heading }}</h1>
+                <p>文字化け、列ずれ、空白行、日付形式の揺れ。小さな表データほど、あとから直す手間が大きくなりがちです。作業前に見直したいポイントをまとめます。</p>
             </header>
 
-            <section class="article-body" itemprop="articleBody">
+            <section class="article-body">
                 <p>CSVやExcelは、ちょっとした一覧を受け渡すにはとても便利です。一方で、文字コードや列名、日付の形式が少し違うだけで、集計や変換の途中で手が止まることがあります。</p>
                 <p>ここでは、しごと道具箱のCSV/Excelツールを使う前後で確認しやすいように、実務で起きやすいミスを整理します。</p>
 
